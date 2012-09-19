@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Log-Linear Models</title>
+    <!-- original jquery tools
+	 <script type="text/javascript" src="http://cdn.jquerytools.org/1.2.7/full/jquery.tools.min.js"></script>
+	 -->    
+    <script type="text/javascript" src="scripts/jquery.tools.min.js"></script>
+    <script type="text/javascript" src="scripts/prototype.js"></script>    
+    <script type="text/javascript">
+      jQuery.noConflict();
+    </script>
+
+    <script type="text/javascript" src="scripts/init.js"></script>
+    <script type="text/javascript" src="scripts/util.js"></script>
+    <!-- original d3
+	 <script src="http://d3js.org/d3.v2.js"></script>
+	 -->
+    <script src="scripts/d3.v2.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="styles/main.css" />
+    <link rel="stylesheet" type="text/css" href="styles/sliderskin.css" />
+
+    <style type="text/css">
+      path {
+      stroke: steelblue;
+      stroke-width: 2;
+      fill: none;
+      }
+
+      line {
+      stroke: black;
+      }
+
+      text {
+      font-family: Arial;
+      font-size: 9pt;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="body">
+      <h1 id="lesson_title" class="textcenter">Lesson <span id="header_lesson_number"></span></h1>
+      <div id="button_navigation_area">
+	<ul class="hlist ulcenter">
+	  <!--<li>
+	    Number of tokens: <input type="text" id="user_num_tokens" />
+	  </li>-->
+	  <li>
+	    <span id="show_how_many_previous_lessons"></span> (of <span class="of_total_lessons"></span>) 
+	    <button type="button" id="prev_lesson" disabled="disabled">Previous Lesson</button>
+	  </li>
+	  <li>
+	    <button type="button" id="new_challenge">New Random Challenge</button>
+	  </li>
+	  <li class="lastli">
+	    <button type="button" id="next_lesson" disabled="disabled">Next Lesson</button> 
+	    <span id="show_how_many_next_lessons"></span> (of <span class="of_total_lessons"></span>) 
+	  </li>
+	</ul>
+      </div>
+      <br /> 
+      
+      <div id="score_area">
+	<fieldset>
+	  <legend>Log Likelihood Scores</legend>
+	  <div id="ll_area">
+	  </div>
+	  <div>
+	    <button type="button" id="cheat_button">Peek at the True Model!</button>
+	  </div>
+	</fieldset>
+      </div>
+
+      <br />      
+
+      <div id="shapes_area" class="">
+	Try to make the distributions be the same... <br />
+	<div id="draw_area" class="center">
+	</div>
+	<br />
+      </div>
+
+
+      <div id="slider_area" class="">
+	<div id="model_option_area" class="left">
+	  <form>
+	    <input type="checkbox" id="delay_normalization" name="delay_normalization" />
+	    <label for="delay_normalization">Delay Normalization</label>
+	    <br />
+	    <input type="checkbox" id="show_gradients" name="show_gradients" />
+	    <label for="show_gradients">Show Gradients </label>
+	    <br />
+	    <div id="gradient_fieldset_div" class="novis">
+	      <fieldset id="gradient_fieldset">
+		<legend>Gradient Components</legend>
+		<input type="radio" id="show_net_grad"  class="component_radio" name="show_components" checked="yes" value="1"/>
+		<label for="show_net_grad">Net gradient </label>
+		<br/>
+		<input type="radio" id="show_pos_neg_grad" class="component_radio" name="show_components" value="2"/>
+		<label for="show_pos_neg_grad">Pos/Neg </label>
+		<br/>
+		<input type="radio" id="show_all_grad"  class="component_radio" name="show_components" value="3"/>
+		<label for="show_all_grad">All components </label>
+		<br/>
+	      </fieldset>
+	    </div>
+	    <br />
+	    <div>
+	      <fieldset>
+		<legend>Regularizer Options</legend>
+		<input type="radio" class="regularization_radio" name="use_regularization" checked="yes" value="0" id="no_reg_button">No Regularizer</input><br/>
+		<input type="radio" class="regularization_radio use_reg" name="use_regularization" value="1">&ell;<sub>1</sub></input><br/>
+		<input type="radio" class="regularization_radio use_reg" name="use_regularization" value="2">&ell;<sub>2</sub></input>
+		<div id="sigma2area" style="display:none;">
+		  <br />
+		  &sigma;<sup>2</sup> = <input type="text" name="sigma2" id="sigma2text" value="1.0" size="5"/>
+		</div>
+	      </fieldset>
+	    </div>
+	  </form>
+	  <br />
+	  <form>
+	    <div>
+	      Gradient step = 
+	      <br />
+	      <input type="text" name="gradient_step" id="gradient_step" value="0.001" size="12"/>
+	      <br />
+	      <button type="button" id="step_button">Step</button>
+	      <button type="button" id="solve_button">Solve</button>
+	    </div>
+	  </form>
+	</div>
+	<div id="feature_slider_area" class="tablecenter">
+	  <table id="feature_table" class="left" cellpadding="10px">
+	  </table>
+	  <br />
+	  <form style="clear:both;">
+	    <div>
+	      <button type="button" id="zero_weights_button">Reset Weights to Zero</button>
+	    </div>
+	  </form>
+	</div>
+      </div>
+
+      <br /> 
+
+      <hr />
+      <p>
+	<?php
+$last_mod = filemtime(".");
+?>
+	Last change: <?= $last_mod?date("F jS, Y H:i", $last_mod):"18 August 2011" ?><br />
+      </p>
+      
+      <?php
+include('include/bottomnav.php');
+?>
+    </div><!--end body div--> 
+    <!-- DO NOT DELETE THIS!!! -->
+    <svg id="svg_stripe_def" display="none">
+      <defs id="stripe_def">
+    	<pattern id="stripe" patternUnits="userSpaceOnUse" x="0" y="0" width="6" height="6">
+    	  <path id="gen_stripe_path_def" d="M 0 0 6 0" style="stroke: black; stroke-width:4; fill: none;"/>
+    	</pattern>
+      </defs>
+    </svg>
+
+  </body>
+</html>
