@@ -634,6 +634,28 @@ hr.slider{
     clear:both;
 }
 
+#zero_weights_button{
+    width:150px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+#instruction_wrapper{
+    width:80%;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.observed_counts_text{
+    color: #696969;
+    font-weight:bold;
+}
+
+.expected_counts_text{
+    font-weight:bold;
+ }   
+    
+
 input[type=range].feature_slider{
     /*-webkit-appearance: none;
     padding-left:1px; padding-right:1px;

@@ -103,6 +103,7 @@ REGULARIZATION_SIGMA2=1.0;
 
 EXPECTED_TRANSPARENCY=0.4;
 EXPECTED_STROKE_WIDTH=3;
+EXPECTED_COUNT_COLOR='#A043BF';
 
 COUNTS_TOO_LOW='red';
 COUNTS_TOO_HIGH='blue';
@@ -121,7 +122,7 @@ sigmoid_y_define_constant = 7.0/8.0; //ratio
 sigmoid_x_define_constant = 1.0; 
 SIGMOID_CONSTANT = 1/sigmoid_x_define_constant * Math.log(sigmoid_y_define_constant/(1-sigmoid_y_define_constant));
 
-initialize=1;
+initialize=0;
 svg_loaded=0;
 
 function isNumber(n) {
@@ -240,6 +241,12 @@ window.onload = function(){
     	    SOLVE_ITERATION=1;
     	    generate_new_observations();
     	};
+    }
+
+    if($$('.expected_counts_text')){
+	$$('.expected_counts_text').forEach(function(e){
+		e.style.color = EXPECTED_COUNT_COLOR;
+	    });
     }
 
     if($('next_lesson') && $('prev_lesson')){

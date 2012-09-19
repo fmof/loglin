@@ -41,7 +41,6 @@
 
   <body>
     <div class="body">
-      <h1 id="lesson_title" class="textcenter">Lesson <span id="header_lesson_number"></span></h1>
       <div id="button_navigation_area">
 	<ul class="hlist ulcenter">
 	  <!--<li>
@@ -61,6 +60,17 @@
 	</ul>
       </div>
       <br /> 
+
+      <h1 id="lesson_title" class="textcenter">Lesson <span id="header_lesson_number"></span></h1>
+      <div id="instruction_wrapper">
+	<div id="instruction_area">
+	  Instructions go here! 
+	  Try to make the distributions be the same... <br />
+	  I'll basically just kill the innerHTML of this when I load in a new file.
+	</div>
+	
+	<br />
+      </div>
       
       <div id="score_area">
 	<fieldset>
@@ -76,9 +86,12 @@
       <br />      
 
       <div id="shapes_area" class="">
-	Try to make the distributions be the same... <br />
-	<div id="draw_area" class="center">
-	</div>
+	<fieldset>
+	  <legend>Type Counts: <span class="observed_counts_text">Observed</span> and 
+	    <span class="expected_counts_text">Expected</span></legend>
+	  <div id="draw_area" class="center">
+	  </div>
+	</fieldset>
 	<br />
       </div>
 

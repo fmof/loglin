@@ -704,9 +704,9 @@ function addLLBar(){
 	.attr('y',function(d,i){
 		return (2*i + 1)*20;
 	    })
-	.attr('stroke','#A043BF')
+	.attr('stroke',EXPECTED_COUNT_COLOR)
 	.attr('fill',function(d){
-		return "#A043BF";
+		return EXPECTED_COUNT_COLOR;
 	    })
 	.attr('class','true_ll_bar');
     //now see about regularization...
@@ -1098,7 +1098,8 @@ function drawSVGBoxes(selectObj){
 	var num_rows=Math.ceil(NUM_OBSERVATIONS_C[c]/NUM_PER_ROW);
 	if(selectObj.style.width == undefined || selectObj.style.width == null ||
 	   selectObj.style.width.length == 0){
-	    selectObj.style.width = NUM_PER_ROW * width + (NUM_PER_ROW*offset)+'px';
+	    var npr = NUM_OBSERVATIONS_C[c]/NUM_PER_ROW<1 ? NUM_OBSERVATIONS_C[c] : NUM_PER_ROW;
+	    selectObj.style.width = npr * width + (npr*offset)+'px';
 	    selectObj.style.overflow='hidden';
 	}
 	for(var i=0;i<num_rows;i++){
