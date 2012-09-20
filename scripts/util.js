@@ -1,5 +1,3 @@
-//but new structure is
-//that boxid is the actual slider range/text...
 function load_html5_slider(boxid,val){
     val = val || slider_step;
     return function(batch){
@@ -299,9 +297,17 @@ function addSliderEffects(){
     group.rangeinput();
     if(group=$$(".feature_slider")){
 	for(var i=0;i<group.length;i++){
-	    var tmpfn=load_html5_slider(group[i],SLIDER_DIV);
+	    var handle_tmpfn=function(){
+		//handle
+		this.parentNode.parentNode.childNodes[1].value=inverse_sigmoid(parseFloat(this.style['left']));
+		load_html5_slider(group[i],SLIDER_DIV);
+	    };
+	    var tmpfn=function(){
+		this.value = inverse_sigmoid(parseFloat(this.parentNode.childNodes[0].childNodes[1].style['left']));
+		load_html5_slider(group[i],SLIDER_DIV);
+	    };
 	    group[i].onchange = tmpfn;
-	    group[i].parentNode.childNodes[0].childNodes[1].ondrag=tmpfn;
+	    group[i].parentNode.childNodes[0].childNodes[1].ondrag=handle_tmpfn;
 	    group[i].onchange();
 	    var theta_index = group[i].parentNode.parentNode.childNodes[0].getAttribute('theta_index');
 	    if(USED_FEATURES[theta_index]==undefined){//is unused/unavailable

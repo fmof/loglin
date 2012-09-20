@@ -118,9 +118,9 @@ GRAD_LOW_C='#334455';
 GRAD_HIGH_C='#AA03FF';
 slider_width = 155;
 handle_width = 12;
-sigmoid_y_define_constant = 7.0/8.0; //ratio
-sigmoid_x_define_constant = 1.0; 
-SIGMOID_CONSTANT = 1/sigmoid_x_define_constant * Math.log(sigmoid_y_define_constant/(1-sigmoid_y_define_constant));
+sigmoid_y_define_ratio = 7.0/8.0;
+sigmoid_x_define = Math.PI; 
+SIGMOID_CONSTANT = 1/sigmoid_x_define * Math.log(sigmoid_y_define_ratio/(1-sigmoid_y_define_ratio));
 
 initialize=0;
 svg_loaded=0;
@@ -131,10 +131,10 @@ function isNumber(n) {
 }
 
 function sigmoid_transform(x){
-    return slider_width/(1+Math.pow(Math.E,-SIGMOID_CONSTANT*Math.E));
+    return (slider_width-handle_width)/(1+Math.pow(Math.E,-SIGMOID_CONSTANT*(x)));
 }
 function inverse_sigmoid(x){
-    var ret= -1/SIGMOID_CONSTANT * Math.log(slider_width/x - 1);
+    var ret= -1/SIGMOID_CONSTANT * Math.log((slider_width-handle_width)/(x) - 1);
     return ret;
 }
 
@@ -359,7 +359,7 @@ window.onload = function(){
 
     if($('show_gradients')){
     	$('show_gradients').onclick = function(){
-    	    $('gradient_fieldset_div').style.display= this.checked ? 'block' : 'none';
+    	    //$('gradient_fieldset_div').style.display= this.checked ? 'block' : 'none';
     	    SHOW_GRADIENTS=this.checked;
     	    if(SHOW_GRADIENTS){
     		group=$$('.component_radio'); var t;
