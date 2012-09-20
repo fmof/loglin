@@ -113,6 +113,8 @@ slider_min= -2* Math.E;
 slider_max= 2*Math.E;
 slider_step = 0.00001;
 
+col_for_true_theta='#AB9347';
+
 gradients_drawn = 0;
 GRAD_LOW_C='#334455';
 GRAD_HIGH_C='#AA03FF';
@@ -286,10 +288,14 @@ window.onload = function(){
     	    if(!has_cheated){
     		var llb=$('ll_bars');
     		var th=llb.getAttribute('height');
-    		console.log(th);
     		llb.setAttribute('height',2*th+1);
     		has_cheated=1;
     		$('cheat_button').style.display='none';
+		draw_gradient();
+		var uufs=$$('.unused_feature');
+		for(var u=0;u<uufs.length;u++){
+		    uufs[u].style.display='block';
+		}
     	    }
     	};
     }
@@ -441,5 +447,13 @@ window.onload = function(){
     // 	    expLinks[i].onclick=toggleAllDivs;
     // 	}
     // }
+
+
+
+
+
+
+    
+    $("zero_weights_button").onclick();
 }
 

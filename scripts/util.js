@@ -1,22 +1,22 @@
 function load_html5_slider(boxid,val){
     val = val || slider_step;
-    return function(batch){
-	var actual_weight = boxid.value / val;
-	var feature_info = boxid.parentNode.parentNode.childNodes[0];
-	feature_info.setAttribute('dirty',1);
-	if(svg_loaded){
-	    //get feature index by boxid.parentVal.childNodes[0
-	    var context =  parseInt(feature_info.getAttribute('context'));
-	    var feature_name = feature_info.getAttribute('feature_name').split(',')[1];
-	    var feat_name = INVERSE_FEATURE_LIST[ [CONTEXTS[context],feature_name] ];
-	    var old_theta = THETA[feat_name];
-	    //store THETA value
-	    THETA[feat_name]=actual_weight;
-	    redraw_all();
-	} else{
-	    feature_info.className+=' feature_name_box';
-	}
-    };
+    //return function(batch){
+    var actual_weight = boxid.value / val;
+    var feature_info = boxid.parentNode.parentNode.childNodes[0];
+    feature_info.setAttribute('dirty',1);
+    if(svg_loaded){
+	//get feature index by boxid.parentVal.childNodes[0
+	var context =  parseInt(feature_info.getAttribute('context'));
+	var feature_name = feature_info.getAttribute('feature_name').split(',')[1];
+	var feat_name = INVERSE_FEATURE_LIST[ [CONTEXTS[context],feature_name] ];
+	var old_theta = THETA[feat_name];
+	//store THETA value
+	THETA[feat_name]=actual_weight;
+	redraw_all();
+    } else{
+	feature_info.className+=' feature_name_box';
+    }
+    //};
 }
 
 function get_handle(slider_value_box){
@@ -295,16 +295,18 @@ function initializeThetaValue(){
 function addSliderEffects(){
     var group=jQuery(".feature_slider");
     group.rangeinput();
+    var lb = inverse_sigmoid(0.000001);
+    var ub = inverse_sigmoid(slider_width-handle_width-0.000001);
     if(group=$$(".feature_slider")){
 	for(var i=0;i<group.length;i++){
 	    var handle_tmpfn=function(){
 		//handle
-		this.parentNode.parentNode.childNodes[1].value=inverse_sigmoid(parseFloat(this.style['left']));
-		load_html5_slider(group[i],SLIDER_DIV);
+		this.parentNode.parentNode.childNodes[1].value=Math.max(lb,Math.min(ub,inverse_sigmoid(parseFloat(this.style['left']))));
+		load_html5_slider(this.parentNode.parentNode.childNodes[1],SLIDER_DIV);
 	    };
 	    var tmpfn=function(){
-		this.value = inverse_sigmoid(parseFloat(this.parentNode.childNodes[0].childNodes[1].style['left']));
-		load_html5_slider(group[i],SLIDER_DIV);
+		this.value = Math.max(lb,Math.min(ub,inverse_sigmoid(parseFloat(this.parentNode.childNodes[0].childNodes[1].style['left']))));
+		load_html5_slider(this,SLIDER_DIV);
 	    };
 	    group[i].onchange = tmpfn;
 	    group[i].parentNode.childNodes[0].childNodes[1].ondrag=handle_tmpfn;
@@ -312,6 +314,8 @@ function addSliderEffects(){
 	    var theta_index = group[i].parentNode.parentNode.childNodes[0].getAttribute('theta_index');
 	    if(USED_FEATURES[theta_index]==undefined){//is unused/unavailable
 		group[i].parentNode.parentNode.style.display='none';
+		group[i].parentNode.parentNode.className += ' unused_feature';
+		group[i].disabled='disabled';
 	    }
 	}
     }
@@ -339,6 +343,15 @@ function formatExpected(ecp){
     return (ecp > 1.0)?Math.round(ecp):ecp.toFixed(2);
 }
 
+function determine_color(obs,exp){
+    if(Math.abs(obs-exp)<1.5){
+	return COUNTS_EQUAL
+    } else{
+	if(obs>exp) return COUNTS_TOO_LOW;
+	else return COUNTS_TOO_HIGH;
+    }
+}
+
 function recompute_expected_counts(){
     for(var c=0;c<CONTEXTS.length;c++){
 	var obs_in_c=TYPE_OBSERVATIONS_IN_C[c];
@@ -349,7 +362,7 @@ function recompute_expected_counts(){
 	    p.innerHTML =  formatExpected(ecp);
 	    EXPECTED_COUNTS[c][id_num]=ecp;
 	    var obs_count = COUNTS[c][id_num];
-	    var color=obs_count>ecp?COUNTS_TOO_LOW:(obs_count<ecp?COUNTS_TOO_HIGH:COUNTS_EQUAL);
+	    var color=determine_color(obs_count,ecp);
 	    p.style.color=color;
 	    p.setAttribute('dirty',0);
 	    p.setAttribute('value',ecp);
@@ -462,16 +475,15 @@ function setComponentDisplay(){
     DISPLAY_GRADIENT_COMPONENTS=parseInt(this.value);
 }
 
-function fold_colors_percents(percents,colors){
-    var ml = Math.min(percents.length,colors.length);
+function fold_colors_percents(pcs){
     var ret=[];
-    for(var i=0;i<ml;i++){
-	ret.push(colors[i]+" "+percents[i]+'%');
+    for(var i=0;i<pcs.length;i++){
+	ret.push(pcs[i][1]+" "+pcs[i][0]+'%');
     }
     return ret.join(', ');
 }
 
-function generate_gradient_style(percents,colors){
+function generate_gradient_style(npcs){
     var ret='';
     var names = {'-ms-linear-gradient':'left',
 		 '-moz-linear-gradient':'left',
@@ -479,10 +491,16 @@ function generate_gradient_style(percents,colors){
 		 '-webkit-linear-gradient':'left',
 		 'linear-gradient':'to right'};
     for(var name in names){
-	ret+='background-image: '+name+'('+names[name]+ ', #FFFFFF 0%, '+ fold_colors_percents(percents,colors) +', #FFFFFF 100%); ';
-    }//    ret+="background-image: -moz-linear-gradient(left, #FFFFFF 0%, #FFFFFF 50%, #FF32EF 50%, #FFFFFF 100%);";
+	ret+='background-image: '+name+'('+names[name]+ ', #FFFFFF 0%, '+ fold_colors_percents(npcs) +', #FFFFFF 100%); ';
+    }
     ret += ' height:9px; position:relative; cursor:pointer; border:1px solid #333; width:155px; float:left; clear:right; margin-top:10px; -moz-border-radius:5px; -webkit-border-radius:5px; -moz-box-shadow:inset 0 0 8px #000;';
     return ret;
+}
+
+function draw_true_theta_on_slider(tt){
+    var t=[[tt-1.0001,'#FFFFFF'],[tt-1, col_for_true_theta],
+	   [tt+1, col_for_true_theta],[tt+1.0001,'#FFFFFF']];
+    return generate_gradient_style(t);
 }
 
 function clear_gradient_color(){
@@ -493,9 +511,12 @@ function clear_gradient_color(){
 function draw_gradient(){
     if(!SHOW_GRADIENTS){
 	var slds = $$(".slider");
-	if(slds && gradients_drawn){
-	    for(var i=0;i<slds.length;i++){
-		slds[i].setAttribute('style',clear_gradient_color());
+	if(slds && (gradients_drawn || has_cheated)){
+	    for(var i=0;i<slds.length;i++){	
+		var g = slds[i].parentNode.parentNode.childNodes[0];
+		var theta_id = parseInt(g.getAttribute('theta_index'));
+		var sattribute=has_cheated?draw_true_theta_on_slider(bound_dom_range(TRUE_THETA[theta_id])):clear_gradient_color();
+		slds[i].setAttribute('style',sattribute);
 	    }
 	}
 	gradients_drawn = 0;
@@ -506,31 +527,45 @@ function draw_gradient(){
     var fn; var colors;
     switch(DISPLAY_GRADIENT_COMPONENTS){
     case 1:
-	fn = function(grad_val, maxabs_grad, cent, M){
-	    //if g>0, then have first point be current mid-point
-	    //and second be mid +
-	    var g_e; var points; var colors; var g_b;
-	    if(grad_val > 0){
-		g_b = (cent + handle_width/2);
-		g_e = (g_b + (M * grad_val / maxabs_grad))*100/slider_width;
-		g_b = g_b *100/slider_width;
-		points = [g_b, g_b, g_e, g_e];
-		colors = ['#FFFFFF',GRAD_LOW_C,GRAD_HIGH_C, '#FFFFFF'];
-		
-	    } else if(grad_val < 0){
-		g_b = (cent - handle_width/2);
-		g_e = (g_b + (M * grad_val / maxabs_grad))*100/slider_width;
-		g_b *= 100/slider_width;
-		points = [g_e, g_e, g_b, g_b];
-		colors = ['#FFFFFF',GRAD_HIGH_C,GRAD_LOW_C, '#FFFFFF'];
+	fn = function(theta,grad,true_theta){
+	    var ntheta = theta + grad;
+	    var st = bound_dom_range(theta); var snt = bound_dom_range(ntheta); var sh = bound_dom_range(inverse_sigmoid(slider_width/2));
+	    var tt = bound_dom_range(true_theta); 
+	    var st1=st; var snt1=snt;
+	    if(grad>0){
+		st1+=0.0001; snt1+=0.0001;
 	    } else{
-		g_b=(cent-handle_width/2)*100/slider_width; 
-		g_e=(cent+handle_width/2)*100/slider_width;
-		points = [g_b,g_b,g_e,g_e];
-		colors = ['#FFFFFF',GRAD_HIGH_C,GRAD_HIGH_C,'#FFFFFF'];
+		st1-=0.0001; snt1-=0.0001;
 	    }
-	    return [points,colors];
-	};
+	    var t = [[sh-1.0001,'#FFFFFF'],
+		     [sh-1,'#FF0000'],
+		     [sh+1,'#FF0000'],
+		     [sh+1.0001,'#FFFFFF'],
+		     [st,'#FFFFFF'],
+		     [st1,GRAD_LOW_C],
+		     [snt,GRAD_HIGH_C],
+		     [snt1,'#FFFFFF']];
+	    if(has_cheated){
+		t.push([tt-1.0001,'']);
+		t.push([tt-1, col_for_true_theta]);
+		t.push([tt+1, col_for_true_theta]);
+		t.push([tt+1.0001,'']);
+	    }
+	    t=t.sortBy(function(d){return d[0];});
+	    var first=0; var def_color='#FFFFFF';
+	    for(var i=0;i<t.length;i++){
+		if(t[i][1]==''){
+		    if(first==0){
+			t[i][1]= (i>0)?(t[i-1][1]):def_color;
+			first++;
+		    } else{
+			t[i][1] = (i+1<t.length)?t[i+1][1]:def_color;
+			break;
+		    }
+		}
+	    }
+	    return t;
+	}
 	break;
     case 2:
 	break;
@@ -541,22 +576,8 @@ function draw_gradient(){
     }
     var group=$$(".slider");
     //scale gradient
-    var abs_max_val = GRADIENT.reduce(function(x,y){
-	    return Math.max(Math.abs(x),Math.abs(y));
-	}, 0);
-    abs_max_val = Math.log(abs_max_val)/Math.log(10);
+    var abs_max_val = SOLVE_STEP;
     var scaled_grad = GRADIENT.map(function(g){ return g/Math.pow(10,Math.floor(abs_max_val)+1); });
-    var M = $$(".slider").reduce(function(x,y){ 
-	    var g = y.parentNode.parentNode.childNodes[0];
-	    var theta_id = parseInt(g.getAttribute('theta_index'));
-	    var slider = y.childNodes[1]; var sl = parseFloat(slider.style.left);
-	    var gg = scaled_grad[theta_id];
-	    if(gg>=0){
-		return Math.min(x,slider_width - sl+handle_width);
-	    } else{
-		return Math.min(x,sl);
-	    }
-	}, 1000000000);
     for(var i=0;i<group.length;i++){
 	//to get percents 
 	var g = group[i].parentNode.parentNode.childNodes[0];
@@ -564,9 +585,13 @@ function draw_gradient(){
 	var hand_left =parseFloat(handle.style.left);
 	//get the THETA id
 	var theta_id = parseInt(g.getAttribute('theta_index'));
-	var npcs=fn(scaled_grad[theta_id],abs_max_val,hand_left+handle_width/2, M);
-	group[i].setAttribute('style',generate_gradient_style(npcs[0],npcs[1]));
+	var npcs = fn(THETA[theta_id],scaled_grad[theta_id],TRUE_THETA[theta_id]);
+	group[i].setAttribute('style',generate_gradient_style(npcs));
     }
+}
+
+function bound_dom_range(x){
+    return Math.max(.00001,Math.min(slider_width-handle_width-.0001,sigmoid_transform(x)))*100/slider_width;
 }
 
 function compute_ll(theta, ztable, ll, reg){
@@ -1019,6 +1044,8 @@ function INVERSE_FEATURE_LOOKUP(context,val){
 function get_prob(context,id_num,log,theta){
     var ret = 0; var print=0;
     var theta = theta || THETA;
+    //    console.log('theta is ');
+    //console.log(THETA);
     var data= DATA_BY_CONTEXT[context][id_num];
     if(print){
 	console.log(DATA_BY_CONTEXT[context]);
@@ -1060,7 +1087,7 @@ function drawExpectedData(context, i, container){
     var shapen = vis['shape'];
     var obs_count = COUNTS[context][i];
     var exp_count = EXPECTED_COUNTS[context][i];
-    var color=obs_count>exp_count?COUNTS_TOO_LOW:(obs_count<exp_count?COUNTS_TOO_HIGH:COUNTS_EQUAL);
+    var color=determine_color(obs_count,exp_count);
     //scale by the max observed count...
     var max_count=-1;
     for(var other in COUNTS[context]){
@@ -1100,24 +1127,44 @@ function drawSVGBoxes(selectObj){
     var id=0;
     var width=SVG_WIDTH; var height=SVG_HEIGHT;
     var svg_offset=1; var offset=2*svg_offset + 3;
+    var num_axes=0;
     for(var c=0;c<CONTEXTS.length;c++){
-	var num_rows=Math.ceil(NUM_OBSERVATIONS_C[c]/NUM_PER_ROW);
+	var vis_in_c=VISUALS[c];
+	var axes={}; var place_in_axis={};
+	for(var v in vis_in_c){
+	    place_in_axis[v]=
+	    for(var vv in vis_in_c[v]){
+		if(axes[vv]==undefined){
+		    axes[vv]={};
+		    num_axes++;
+		    place_in_axis[vv]={};
+		}
+		axes[vv][vis_in_c[v][vv]]=1;
+		place_in_axis[vv][v]=vis_in_c[v][vv];
+	    }
+	}
+	console.log('axes ');
+	console.log(axes);
+	console.log(place_in_axis);
+	var num_rows = num_axes;
+	var npr=NUM_PER_ROW;
+	console.log('num rows '+num_rows);
 	if(selectObj.style.width == undefined || selectObj.style.width == null ||
 	   selectObj.style.width.length == 0){
-	    var npr = NUM_OBSERVATIONS_C[c]/NUM_PER_ROW<1 ? NUM_OBSERVATIONS_C[c] : NUM_PER_ROW;
+	    npr = NUM_OBSERVATIONS_C[c]/num_rows<1 ? NUM_OBSERVATIONS_C[c] : Math.ceil(NUM_OBSERVATIONS_C[c]/num_rows);
 	    selectObj.style.width = npr * width + (npr*offset)+'px';
 	    selectObj.style.overflow='hidden';
 	}
 	for(var i=0;i<num_rows;i++){
 	    var divi=document.createElement('div');
 	    selectObj.appendChild(divi);
-	    for(var j=0;j<NUM_PER_ROW && id<TYPE_INDEX.length;j++){
+	    for(var j=0;j<npr && id<TYPE_INDEX.length;j++){
 		var features_for_type_id = TYPE_INDEX[id];
 		var divj=document.createElement('div');
 		divj.style.overflow='hidden';
 		divi.appendChild(divj);
 		divj.style.border = '1px dashed gray';
-		if(j+1 < NUM_PER_ROW){
+		if(j+1 < npr){
 		    divj.style.cssFloat='left';
 		}
 		divj.style.width = (width+svg_offset)+'px';
@@ -1132,8 +1179,6 @@ function drawSVGBoxes(selectObj){
 		divk.appendChild(obs_count_p);
 
 		var exp_count_p = document.createElement('p');
-		console.log(i+', '+j+', '+id);
-		console.log(features_for_type_id);
 		
 		var ecp=get_expected_count(c,id);
 		exp_count_p.innerHTML = ecp.toFixed(2);
@@ -1142,7 +1187,7 @@ function drawSVGBoxes(selectObj){
 		exp_count_p.setAttribute('dirty',1);
 		exp_count_p.id = 'exp_count_text_'+id;
 		exp_count_p.className += ' count_text expected_count_text';
-		var color=obs_count>ecp?COUNTS_TOO_LOW:(obs_count<ecp?COUNTS_TOO_HIGH:COUNTS_EQUAL);
+		var color=determine_color(obs_count,ecp);
 		var vis = VISUALS[c][id];
 		var fill=vis['fill'];
 		exp_count_p.style.color=color;
