@@ -11,6 +11,16 @@
       jQuery.noConflict();
     </script>
 
+    <!-- STUFF YOU NEED FOR BEAUTYTIPS -->
+    <script src="scripts/bt/jquery.hoverIntent.minified.js" type="text/javascript" charset="utf-8"></script>
+    <script src="scripts/bt/jquery.bgiframe.min.js" type="text/javascript" charset="utf-8"></script>
+    <!--[if IE]><script src="../other_libs/excanvas_r3/excanvas.js" type="text/javascript" charset="utf-8"></script><![endif]-->
+    <script src="scripts/bt/jquery.bt.min.js" type="text/javascript" charset="utf-8"></script>
+    <!-- /STUFF -->
+    <!-- cool easing stuff for animations -->
+    <script src="scripts/bt/jquery.easing.1.3.js" type="text/javascript" charset="utf-8"></script>
+    <!-- /easing -->
+
     <script type="text/javascript" src="scripts/init.js"></script>
     <script type="text/javascript" src="scripts/util.js"></script>
     <!-- original d3
@@ -41,6 +51,13 @@
 
   <body>
     <div class="body">
+      <div id="example1" class="target" title="The content of this tooltip is provided by the 'title' attribute of the target element.">hover </div>
+      <script type="text/javascript">
+	//or
+	//$('#example2').bt('Contents of the tip is provided in the .bt() call', {trigger: 'click', positions: 'top'});
+	jQuery('#example1').bt();
+      </script>
+
       <div id="button_navigation_area">
 	<ul class="hlist ulcenter">
 	  <!--<li>
@@ -64,9 +81,7 @@
       <h1 id="lesson_title" class="textcenter">Lesson <span id="header_lesson_number"></span></h1>
       <div id="instruction_wrapper">
 	<div id="instruction_area">
-	  Instructions go here! 
-	  Try to make the distributions be the same... <br />
-	  I'll basically just kill the innerHTML of this when I load in a new file.
+	  
 	</div>
 	
 	<br />
@@ -128,7 +143,7 @@
 		<input type="radio" class="regularization_radio use_reg" name="use_regularization" value="2">&ell;<sub>2</sub></input>
 		<div id="sigma2area" style="display:none;">
 		  <br />
-		  &sigma;<sup>2</sup> = <input type="text" name="sigma2" id="sigma2text" value="1.0" size="5"/>
+		  C = <input type="text" name="regularization_constant" id="regularization_constant" value="1.0" size="5"/>
 		</div>
 	      </fieldset>
 	    </div>

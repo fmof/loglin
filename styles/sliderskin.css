@@ -38,7 +38,7 @@
 
 /* drag handle */
 .handle {
-    background:#fff url('http://jquerytools.org/media/img/gradient/h30.png') repeat-x 0 0;
+    /*background:#fff url('http://jquerytools.org/media/img/gradient/h30.png') repeat-x 0 0;*/
     height:12px;
     width:12px;
     top:-4px;

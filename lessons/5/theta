@@ -1,5 +1,6 @@
-context	feature	value
-	circle	.5
-	triangle	-.23
+context	feature	value	weight
+	square	.5	4
+	triangle	-.23	3
+	pentagon	0.2	5
 	solid	-.89
 	striped	1.2

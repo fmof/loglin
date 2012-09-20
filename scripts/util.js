@@ -11,7 +11,7 @@ function load_html5_slider(boxid,val){
 	var feat_name = INVERSE_FEATURE_LIST[ [CONTEXTS[context],feature_name] ];
 	var old_theta = THETA[feat_name];
 	//store THETA value
-	THETA[feat_name]=actual_weight;
+	THETA[feat_name]=isFinite(actual_weight)?actual_weight:(actual_weight>0? 100: -100);
 	redraw_all();
     } else{
 	feature_info.className+=' feature_name_box';
@@ -58,10 +58,11 @@ function normal(mu,sigma){
 }
 
 function generate_new_observations(){
-    TRUE_Z_THETA=TRUE_Z_THETA.map(function(d){
-	    return d-d;});
+    /*TRUE_Z_THETA=TRUE_Z_THETA.map(function(d){
+	    return d-d;});*/
+    var n=normal(0,0.5);
     for(var l=0;l<FEATURE_LIST.length;l++){
-	TRUE_THETA[l] = normal(0,0.5).sample();
+	TRUE_THETA[l] = n.sample();
     }
     console.log("TRUE THETA:: ");
     console.log(TRUE_THETA);
@@ -71,6 +72,12 @@ function generate_new_observations(){
 
 
 function sample_from_true(num_times){
+    //enumerate possible types
+    //for every context...
+    for(var c=0;c<CONTEXTS.length;c++){
+	var num_times = num_times || NUM_TOKENS_C[c] || 50;
+
+    }
     var num_times=num_times || NUM_TOKENS || 500;
     //first lay-out each type along the unit interval
     var a=enumerate_possible_types();
@@ -104,6 +111,8 @@ function sample_from_true(num_times){
 }
 
 function enumerate_possible_types(begin){
+    //iterate through visual 
+    //ZZZ
     var begin=begin || 0;
     var arr =[]; var l0, l1; var b=[]; var ncounts={};
     for(var i=0;i<REVDIM[0].length;i++){
@@ -121,6 +130,12 @@ function enumerate_possible_types(begin){
     console.log(arr);
     var msum=sum(arr);
     return [arr.map(function(n){ return n/msum;}), b, ncounts];
+}
+
+function load_instructions(){
+    d3.text(INSTRUCTION_PATH,function(txt){
+	    $('instruction_area').innerHTML=txt;
+	});
 }
 
 function load_textfile(){
@@ -152,9 +167,20 @@ function load_textfile(){
 		    OBS_FEAT_COUNT[feature_number]=0;
 		    EXP_FEAT_COUNT[feature_number]=0;
 		    REG_FOR_GRAD[feature_number]=0;
+		    //check for 'weight' --- how strongly the feature fires
+		    if(record.hasOwnProperty('weight')){
+			var ts=parseFloat(record['weight']);
+			if(! isFinite(ts)){
+			    ts=1;
+			}
+			THETA_STRENGTH[feature_number] = ts;
+		    } else{
+			THETA_STRENGTH[feature_number] = 1;
+		    }
 		});
 	    d3.tsv(OBSERVATION_PATH,function(rows){
 		    record_data(rows,0);
+		    $("zero_weights_button").onclick();
 		});
 });
 }
@@ -301,11 +327,11 @@ function addSliderEffects(){
 	for(var i=0;i<group.length;i++){
 	    var handle_tmpfn=function(){
 		//handle
-		this.parentNode.parentNode.childNodes[1].value=Math.max(lb,Math.min(ub,inverse_sigmoid(parseFloat(this.style['left']))));
+		this.parentNode.parentNode.childNodes[1].value= inverse_sigmoid(parseFloat(this.style['left']+handle_width/2)); //Math.max(lb,Math.min(ub,inverse_sigmoid(parseFloat(this.style['left']))));
 		load_html5_slider(this.parentNode.parentNode.childNodes[1],SLIDER_DIV);
 	    };
 	    var tmpfn=function(){
-		this.value = Math.max(lb,Math.min(ub,inverse_sigmoid(parseFloat(this.parentNode.childNodes[0].childNodes[1].style['left']))));
+		this.value = inverse_sigmoid(parseFloat(this.parentNode.childNodes[0].childNodes[1].style['left'] + handle_width/2)); //Math.max(lb,Math.min(ub,inverse_sigmoid(parseFloat(this.parentNode.childNodes[0].childNodes[1].style['left']))));
 		load_html5_slider(this,SLIDER_DIV);
 	    };
 	    group[i].onchange = tmpfn;
@@ -370,16 +396,12 @@ function recompute_expected_counts(){
     }
 }
 
-function theta_to_pixel(theta){
-    return slider_width/(slider_max-slider_min) * (theta - slider_min);
-}
 
 function reset_sliders_manually(arr){
     var group = $$('.feature_slider');
     for(var i=0;i<group.length;i++){
 	group[i].value = arr[i][1];
-	var val=theta_to_pixel(arr[i][1]);
-	val=Math.max(0,Math.min(val,slider_width));
+	var val=sigmoid_transform(arr[i][1]);
 	get_handle(group[i]).style.left = val+'px';
 	THETA[arr[i][0]]=parseFloat(arr[i][1]);
     }
@@ -434,8 +456,8 @@ function compute_gradient(){
     for(var l=0;l < gl; l++) {
 	if(USE_REGULARIZATION){
 	    var local_theta = THETA[l];
-	    var lte=(REGULARIZATION_EXPONENT==1)?1:local_theta;
-	    lte *= REGULARIZATION_EXPONENT/(2*REGULARIZATION_SIGMA2);
+	    var lte=(REGULARIZATION_EXPONENT==1)?(local_theta>=0?1:-1):local_theta;
+	    lte *= REGULARIZATION_EXPONENT*REGULARIZATION_SIGMA2;
 	    REG_FOR_GRAD[l]=lte;
 	    GRADIENT[l] = lte;
 	} else{ GRADIENT[l]=0; REG_FOR_GRAD[l]=0;}	
@@ -457,10 +479,10 @@ function compute_gradient(){
 		var feat_num = INVERSE_FEATURE_LIST[ [CONTEXTS[c], data[i]]];
 		local_theta = THETA[feat_num];
 		//observed feature counts
-		tmp = COUNTS[c][id_num]-0;
+		tmp = (COUNTS[c][id_num]-0)*THETA_STRENGTH[feat_num];
 		OBS_FEAT_COUNT[feat_num] += tmp;
 		//expected feature counts
-		var tmp_e=NUM_TOKENS_C[c]*get_prob(c,id_num)/Z_THETA[c];
+		var tmp_e=NUM_TOKENS_C[c]*get_prob(c,id_num)/Z_THETA[c]*THETA_STRENGTH[feat_num];
 		EXP_FEAT_COUNT[feat_num]+=tmp_e;
 		tmp -= tmp_e;
 		//regularization has been taken care of...
@@ -531,19 +553,21 @@ function draw_gradient(){
 	    var ntheta = theta + grad;
 	    var st = bound_dom_range(theta); var snt = bound_dom_range(ntheta); var sh = bound_dom_range(inverse_sigmoid(slider_width/2));
 	    var tt = bound_dom_range(true_theta); 
-	    var st1=st; var snt1=snt;
+	    var st1=st; var snt1=snt; var grad_color;
 	    if(grad>0){
 		st1+=0.0001; snt1+=0.0001;
+		grad_color='#EE4455';
 	    } else{
 		st1-=0.0001; snt1-=0.0001;
+		grad_color='#4455EE';
 	    }
 	    var t = [[sh-1.0001,'#FFFFFF'],
-		     [sh-1,'#FF0000'],
-		     [sh+1,'#FF0000'],
+		     [sh-1,'#00FF00'],
+		     [sh+1,'#00FF00'],
 		     [sh+1.0001,'#FFFFFF'],
 		     [st,'#FFFFFF'],
-		     [st1,GRAD_LOW_C],
-		     [snt,GRAD_HIGH_C],
+		     [st1,grad_color],
+		     [snt,grad_color],
 		     [snt1,'#FFFFFF']];
 	    if(has_cheated){
 		t.push([tt-1.0001,'']);
@@ -591,7 +615,7 @@ function draw_gradient(){
 }
 
 function bound_dom_range(x){
-    return Math.max(.00001,Math.min(slider_width-handle_width-.0001,sigmoid_transform(x)))*100/slider_width;
+    return Math.max(.00001,Math.min(slider_width-handle_width-.0001,sigmoid_transform(x)+handle_width/2))*100/slider_width;
 }
 
 function compute_ll(theta, ztable, ll, reg){
@@ -625,7 +649,7 @@ function compute_ll(theta, ztable, ll, reg){
 	for(var i=0;i<theta.length;i++){
 		sum += fn(theta[i]);
 	}
-	sum = sum/(2*REGULARIZATION_SIGMA2);
+	sum = sum*REGULARIZATION_SIGMA2;
 	reg[0]=sum;
 	ll = ll.map(function(d){
 		return d - sum;
@@ -1055,7 +1079,7 @@ function get_prob(context,id_num,log,theta){
     for(var i=0;i<data.length;i++){
 	var ifl=INVERSE_FEATURE_LOOKUP(context,data[i]);
 	if(ifl>=0){
-	    ret += theta[ifl];
+	    ret += theta[ifl]*THETA_STRENGTH[ifl];
 	}
     }
     if(print){
@@ -1126,7 +1150,7 @@ function drawSVGBoxes(selectObj){
     var max_num_rows=-1;
     var id=0;
     var width=SVG_WIDTH; var height=SVG_HEIGHT;
-    var svg_offset=1; var offset=2*svg_offset + 3;
+    var svg_offset=8; var offset=2*svg_offset + 3;
     var num_axes=0;
     for(var c=0;c<CONTEXTS.length;c++){
 	var vis_in_c=VISUALS[c];
@@ -1150,21 +1174,25 @@ function drawSVGBoxes(selectObj){
 	var num_rows = num_axes;
 	var npr=NUM_PER_ROW;
 	console.log('num rows '+num_rows);
-	if(selectObj.style.width == undefined || selectObj.style.width == null ||
-	   selectObj.style.width.length == 0){
-	    npr = NUM_OBSERVATIONS_C[c]/num_rows<1 ? NUM_OBSERVATIONS_C[c] : Math.ceil(NUM_OBSERVATIONS_C[c]/num_rows);
-	    selectObj.style.width = npr * width + (npr*offset)+'px';
-	    selectObj.style.overflow='hidden';
-	}
+	//if(selectObj.style.width == undefined || selectObj.style.width == null ||
+	//	selectObj.style.width.length == 0){
+	npr = NUM_OBSERVATIONS_C[c]/num_rows<1 ? NUM_OBSERVATIONS_C[c] : Math.ceil(NUM_OBSERVATIONS_C[c]/num_rows);
+	selectObj.style.width = npr * width + (npr*offset)+'px';
+	selectObj.style.overflow='hidden';
+	//}
+	console.log('npr '+npr);
 	for(var i=0;i<num_rows;i++){
 	    var divi=document.createElement('div');
 	    selectObj.appendChild(divi);
 	    for(var j=0;j<npr && id<TYPE_INDEX.length;j++){
 		var features_for_type_id = TYPE_INDEX[id];
+		console.log('looking at type_id '+id);
+		console.log(features_for_type_id);
 		var divj=document.createElement('div');
 		divj.style.overflow='hidden';
 		divi.appendChild(divj);
-		divj.style.border = '1px dashed gray';
+		divj.style.padding = '2px 4px 0px 4px';
+		divj.style.border = '1px solid gray';
 		if(j+1 < npr){
 		    divj.style.cssFloat='left';
 		}

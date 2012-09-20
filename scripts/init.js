@@ -1,10 +1,11 @@
 TRUE_THETA_PATH='';
 OBSERVATION_PATH='';
+INSTRUCTION_PATH='';
 has_cheated=0;
 SLIDER_DIV=1; //amount to scale slider by (for display)
 
 CURRENT_LESSON=1;
-MAX_LESSONS=4;
+MAX_LESSONS=5;
 
 TYPE_INDEX=[]; //type-string -> type-id, e.g., "circle,solid" -> 12
 TYPE_MAP={}; //reverse of above
@@ -69,6 +70,7 @@ TRUE_Z_THETA=[];
 //[dimension #][feature value id (int)] -> float (weight)
 
 THETA=[];
+THETA_STRENGTH=[];
 INVERSE_THETA_MAP={};
 TRUE_THETA=[];
 
@@ -78,7 +80,7 @@ OBS_FEAT_COUNT=[];
 EXP_FEAT_COUNT=[];
 REG_FOR_GRAD=[];
 
-SOLVE_STEP=0.001;
+SOLVE_STEP=0.1;
 ORIG_SOLVE_STEP=SOLVE_STEP;
 SHOW_GRADIENTS=0;
 DISPLAY_GRADIENT_COMPONENTS=0;
@@ -116,8 +118,10 @@ slider_step = 0.00001;
 col_for_true_theta='#AB9347';
 
 gradients_drawn = 0;
-GRAD_LOW_C='#334455';
-GRAD_HIGH_C='#AA03FF';
+//GRAD_LOW_C='#334455';
+//GRAD_HIGH_C='#AA03FF';
+GRAD_LOW_C='red';
+GRAD_HIGH_C='blue';
 slider_width = 155;
 handle_width = 12;
 sigmoid_y_define_ratio = 7.0/8.0;
@@ -183,10 +187,10 @@ function reset_data_structures(full){
     EXP_FEAT_COUNT=[];
     REG_FOR_GRAD=[];
 
-    SOLVE_STEP=0.001;
+    SOLVE_STEP=0.1;
     ORIG_SOLVE_STEP=SOLVE_STEP;
-    SHOW_GRADIENTS=0;
-    DISPLAY_GRADIENT_COMPONENTS=0;
+    //    SHOW_GRADIENTS=0;
+    //DISPLAY_GRADIENT_COMPONENTS=0;
     SOLVE_ITERATION=1;
     SOLVE_TIMEOUT_ID={};
     STOPPING_EPS=0.001;
@@ -196,10 +200,7 @@ function reset_data_structures(full){
     REGULARIZATION=[0];
     TRUE_LOG_LIKELIHOOD = [0];
     TRUE_REGULARIZATION=[0];
-    USE_REGULARIZATION=0;
-    REGULARIZATION_EXPONENT=2;
-    REGULARIZATION_SIGMA2=1.0;
-
+    
     EXPECTED_TRANSPARENCY=0.4;
     EXPECTED_STROKE_WIDTH=3;
 
@@ -223,7 +224,10 @@ function load_lesson(initial){
 	$('cheat_button').style.display="block";
     }
     TRUE_THETA_PATH = 'lessons/'+CURRENT_LESSON+'/theta';
-    OBSERVATION_PATH = 'lessons/'+CURRENT_LESSON+'/observations';
+    OBSERVATION_PATH = 'lessons/'+CURRENT_LESSON+'/observations';    
+    INSTRUCTION_PATH = 'lessons/'+CURRENT_LESSON+'/instructions.html';
+    load_instructions();
+
     //huge function that loads data
     //and features
     load_textfile();
@@ -356,9 +360,9 @@ window.onload = function(){
     	$('solve_button').onclick = function(){
     	    SOLVE_ITERATION=0;
     	    $('solve_button').disabled="disabled";
-	    $('gradient_step').value=scale_gamma_for_solve(SOLVE_STEP,1).toPrecision(5);
+	    $('gradient_step').value=scale_gamma_for_solve(SOLVE_STEP/Math.sqrt(10),1).toPrecision(5);
     	    SOLVE_TIMEOUT_ID = setInterval(function(){
-    		    solve_puzzle(SOLVE_STEP,++SOLVE_ITERATION, SOLVE_STEP);
+    		    solve_puzzle(SOLVE_STEP/Math.sqrt(10),++SOLVE_ITERATION, SOLVE_STEP);
     		}, SOLVE_TIME_DELAY);
     	};
     }
@@ -406,8 +410,8 @@ window.onload = function(){
     	};
     }
 
-    if($('sigma2text')){
-    	$('sigma2text').onchange = function(){
+    if($('regularization_constant')){
+    	$('regularization_constant').onchange = function(){
     	    if(isNumber(this.value)){
     		REGULARIZATION_SIGMA2=(this.value - 0);		
     		if(svg_loaded){
@@ -448,12 +452,5 @@ window.onload = function(){
     // 	}
     // }
 
-
-
-
-
-
-    
-    $("zero_weights_button").onclick();
 }
 
