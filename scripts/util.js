@@ -1132,7 +1132,8 @@ function drawSVGBoxes(selectObj){
 	var vis_in_c=VISUALS[c];
 	var axes={}; var place_in_axis={};
 	for(var v in vis_in_c){
-	    place_in_axis[v]=
+	    //ZZZ
+	    //place_in_axis[v]=
 	    for(var vv in vis_in_c[v]){
 		if(axes[vv]==undefined){
 		    axes[vv]={};
