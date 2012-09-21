@@ -1281,7 +1281,7 @@ function drawSVGBoxes(selectObj){
 		divj.style.width = (width+svg_offset)+'px';
 		//create the count text reps
 		var obs_count_p = document.createElement('p');
-		var obs_count= COUNTS[c][];
+		var obs_count= COUNTS[c][id];
 		obs_count_p.innerHTML = obs_count;
 		obs_count_p.style.display='inline';
 		obs_count_p.id = 'obs_count_text_'+id;
