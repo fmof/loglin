@@ -163,34 +163,35 @@ function reset_data_structures(full){
 	NUM_OBSERVATIONS=0; //the number of *type* observations
 	NUM_OBSERVATIONS_C=[];//number of types by context
 	TYPE_OBSERVATIONS_IN_C=[];//context_id -> list(array) of type indices
+	
+	TRUE_Z_THETA=[];
+	TRUE_THETA=[];
+	Z_THETA=[];
+	THETA=[];
+	
 	NUM_TOKENS=0; //the number of *token* observations
-	NUM_TOKENS_C=[];//the number of *tokens* observations by context		
-    }
+	GRADIENT=[]; OBS_FEAT_COUNT=[]; EXP_FEAT_COUNT=[]; REG_FOR_GRAD=[];
+	POSITIONS=[];
+	REVERSE_POSITIONS={};
+	USED_FEATURES={};
+	//context_id -> associative array :: this stores features
+	DATA_BY_CONTEXT=[];
 	//context-id -> Associative Array of counts, e.g., 0 -> {4=>3, 1=>12,..}
-    COUNTS=[];
-    POSITIONS=[];
-    REVERSE_POSITIONS={};
-    USED_FEATURES={};
-    //context_id -> associative array
-    DATA_BY_CONTEXT=[];
-
-    Z_THETA=[];
-    TRUE_Z_THETA=[];
-
-    THETA=[];
-    INVERSE_THETA_MAP={};
-    TRUE_THETA=[];
+	COUNTS=[];
+	svg_loaded=0;
+    }
+    for(var c in NUM_TOKENS_C){
+	NUM_TOKENS_C[c]=0;
+    }
 
     //feature ID number -> float
-    GRADIENT=[];
-    OBS_FEAT_COUNT=[];
-    EXP_FEAT_COUNT=[];
-    REG_FOR_GRAD=[];
+    GRADIENT=GRADIENT.map(function(d){return d-d;});
+    OBS_FEAT_COUNT=OBS_FEAT_COUNT.map(function(d){return d-d;});
+    EXP_FEAT_COUNT=EXP_FEAT_COUNT.map(function(d){return d-d;});
+    REG_FOR_GRAD=REG_FOR_GRAD.map(function(d){return d-d;});
 
     SOLVE_STEP=0.1;
     ORIG_SOLVE_STEP=SOLVE_STEP;
-    //    SHOW_GRADIENTS=0;
-    //DISPLAY_GRADIENT_COMPONENTS=0;
     SOLVE_ITERATION=1;
     SOLVE_TIMEOUT_ID={};
     STOPPING_EPS=0.001;
@@ -206,7 +207,6 @@ function reset_data_structures(full){
 
     gradients_drawn = 0;
 
-    svg_loaded=0;
 }
 
 //load current lesson

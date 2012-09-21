@@ -58,62 +58,75 @@ function normal(mu,sigma){
 }
 
 function generate_new_observations(){
-    /*TRUE_Z_THETA=TRUE_Z_THETA.map(function(d){
-	    return d-d;});*/
     var n=normal(0,0.5);
     for(var l=0;l<FEATURE_LIST.length;l++){
 	TRUE_THETA[l] = n.sample();
     }
-    console.log("TRUE THETA:: ");
-    console.log(TRUE_THETA);
+    recompute_partition_function();
     recompute_partition_function(TRUE_THETA,TRUE_Z_THETA);
     sample_from_true();
+    //some clean up
+    //$$(".feature_slider").forEach(function(t){t.onchange();});
+    updateObservedImages();
+    svg_loaded=1;
+    redraw_all();
 }
 
 
 function sample_from_true(num_times){
+    //clear various arrays...
+    reset_data_structures();
     //enumerate possible types
     //for every context...
     for(var c=0;c<CONTEXTS.length;c++){
-	var num_times = num_times || NUM_TOKENS_C[c] || 50;
-
-    }
-    var num_times=num_times || NUM_TOKENS || 500;
-    //first lay-out each type along the unit interval
-    var a=enumerate_possible_types();
-    console.log(a);
-    /*    var s = []; var prev=0; var ncounts = a[2];
-    for(var i=0;i<a[0].length;i++){
-	s[i]=a[0][i]+prev;
-	prev=s[i];
-
-    }
-    var dtr=[];
-    for(var i = 0;i<num_times;i++){
-	var n=Math.random();
-	var j=0;
-	while(n > s[j] && (j++)<s.length){}
-	var t=a[1][j];
-	ncounts[t]++;
-    }
-    for(var type_tuple in ncounts){
-	var o={};
-	var sk = type_tuple.split(',');
-	for(var i=0;i<sk.length;i++){
-	    o[KEYS_TO_CARE_ABOUT[i]] = REVDIM[i][sk[i]];
+	var a=enumerate_possible_types(c,VISUALS[c]);
+	var num_times = num_times || NUM_TOKENS_C[c] || 50;	
+	//first lay-out each type along the unit interval
+	var s = []; var prev=0; var ncounts = a[1];
+	for(var i in a[0]){
+	    s[i]=a[0][i]+prev;
+	    prev=s[i];
 	}
-	o['count']=ncounts[type_tuple];
-	dtr.push(o);
+	prev=0;
+	//smooth it out, and use negation as a flag
+	for(var i=0;i<s.length;i++){
+	    if(s[i] == undefined){
+		s[i]=-prev;
+	    } else{
+		prev=s[i];
+	    }
+	}
+	for(var i = 0;i<num_times;i++){
+	    var n=Math.random();
+	    var j=0;
+	    while(n > s[j] && (j++)<s.length){}
+	    ncounts[j]++;
+	}
+	for(var type_id in ncounts){
+	    var t=ncounts[type_id];
+	    COUNTS[c][type_id]=t;
+	    NUM_TOKENS_C[c]+=t;
+	}
     }
-    //clear various arrays...
-    reset_data_structures();*/
-    //handle_data(dtr,1);
 }
 
-function enumerate_possible_types(begin){
+function enumerate_possible_types(context, types_for_context){
+    var arr={}; var msum=0; var ncounts={};
+    for(var type_id in types_for_context){
+	//get the probability of that type
+	var t=get_prob(context,type_id,0,TRUE_THETA);
+	msum+=t;
+	arr[type_id]=t;
+	ncounts[type_id]=0;
+    }
+    for(var tid in arr){
+	arr[tid]=arr[tid]/msum;
+    }
+    return [arr,ncounts];
+
+    //OLD****
     //iterate through visual 
-    //ZZZ
-    var begin=begin || 0;
+    /*var begin=begin || 0;
     var arr =[]; var l0, l1; var b=[]; var ncounts={};
     for(var i=0;i<REVDIM[0].length;i++){
 	l0=TRUE_THETA[INVERSE_FEATURE_LIST[[0,i]]];
@@ -129,7 +142,7 @@ function enumerate_possible_types(begin){
     }
     console.log(arr);
     var msum=sum(arr);
-    return [arr.map(function(n){ return n/msum;}), b, ncounts];
+    return [arr.map(function(n){ return n/msum;}), b, ncounts];*/
 }
 
 function load_instructions(){
@@ -1128,20 +1141,28 @@ function drawExpectedData(context, i, container){
     }
 }
 
-
-//ZZZ CHANGE from  DATA_BY_POINT...
 function updateObservedImages(){
-    for(var i=0;i<NUM_OBSERVATIONS;i++){
-	var rev=DATA_BY_POINT[i];
-	var color = rev[1]; var fill=rev[2]; var shapen = rev[0];
-	var count = SORT_COUNT_INDICES[MAP_COUNT_INDICES[i]][0];
-	//scale by the max observed count...
-	var max_obs_count = SORT_COUNT_INDICES[SORT_COUNT_INDICES.length-1][0];
-	//otherwise, update it...
-	var s=updateD3Shape(d3.select('#observed_point_'+i),i,'obs_count_pic_'+i,SVG_WIDTH,SVG_HEIGHT,shapen,'gray','hollow',count,max_obs_count);
+    var g=$$('.observed_count');
+    var mcpc = [];
+    for(var i=0;i<g.length;i++){
+	//#observed_point_context_X_Y
+	var s=g[i].id.split('_');
+	var c = s[3] ; //get context -- X
+	var j = s[4] ; //get type_id -- Y
+	var count = COUNTS[c][j];
+	if(mcpc[c]==undefined){
+	    //get max count
+	    mcpc[c]=-1;
+	    for(var k in COUNTS[c]){
+		mcpc[c]=Math.max(mcpc[c],COUNTS[c][k]);
+	    }
+	}
+	var s=updateD3Shape(d3.select('#observed_point_context_'+c+'_'+j),j,'obs_count_pic_'+c+'_'+j,SVG_WIDTH,SVG_HEIGHT,VISUALS[c][j]['shape'],'gray','hollow',count,mcpc[c]);
 	s.attr('stroke-opacity',1).attr('stroke-width',3);
 	$('obs_count_text_'+i).innerHTML=count;
     }
+    //var fill=rev[2]; var shapen = rev[0];
+    //var count = SORT_COUNT_INDICES[MAP_COUNT_INDICES[i]][0];
 }
 
 
@@ -1209,6 +1230,7 @@ function drawSVGBoxes(selectObj){
 
 		var exp_count_p = document.createElement('p');
 		
+		//ZZZ 
 		var ecp=get_expected_count(c,id);
 		exp_count_p.innerHTML = ecp.toFixed(2);
 		exp_count_p.setAttribute('value',ecp);
