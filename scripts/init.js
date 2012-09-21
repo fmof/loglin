@@ -5,7 +5,7 @@ has_cheated=0;
 SLIDER_DIV=1; //amount to scale slider by (for display)
 
 CURRENT_LESSON=1;
-MAX_LESSONS=5;
+MAX_LESSONS=16;
 
 TYPE_INDEX=[]; //type-string -> type-id, e.g., "circle,solid" -> 12
 TYPE_MAP={}; //reverse of above
@@ -83,7 +83,7 @@ REG_FOR_GRAD=[];
 SOLVE_STEP=0.1;
 ORIG_SOLVE_STEP=SOLVE_STEP;
 SHOW_GRADIENTS=0;
-DISPLAY_GRADIENT_COMPONENTS=0;
+DISPLAY_GRADIENT_COMPONENTS=1;
 SOLVE_ITERATION=1;
 SOLVE_TIMEOUT_ID={};
 SOLVE_TIME_DELAY=750; //in milliseconds
@@ -107,6 +107,8 @@ EXPECTED_TRANSPARENCY=0.4;
 EXPECTED_STROKE_WIDTH=3;
 EXPECTED_COUNT_COLOR='#A043BF';
 
+TRUE_MODEL_COLOR='#11EE23';
+
 COUNTS_TOO_LOW='red';
 COUNTS_TOO_HIGH='blue';
 COUNTS_EQUAL='gray';
@@ -115,7 +117,7 @@ slider_min= -2* Math.E;
 slider_max= 2*Math.E;
 slider_step = 0.00001;
 
-col_for_true_theta='#AB9347';
+col_for_true_theta=TRUE_MODEL_COLOR;
 
 gradients_drawn = 0;
 //GRAD_LOW_C='#334455';
@@ -213,6 +215,7 @@ function reset_data_structures(full){
 //load current lesson
 function load_lesson(initial){
     $('header_lesson_number').innerHTML=CURRENT_LESSON;
+    $('header_lesson_number').setAttribute('lesson',CURRENT_LESSON);
     $('show_how_many_previous_lessons').innerHTML = Math.max(1,CURRENT_LESSON-1);
     $('show_how_many_next_lessons').innerHTML = Math.min(CURRENT_LESSON+1,MAX_LESSONS);
     reset_data_structures(1);
@@ -238,7 +241,10 @@ window.onload = function(){
     var group;
     $('ll_area').style.width = (DIV_LL_WIDTH+RESERVE_LL_WIDTH)+'px';
     $$('.of_total_lessons').forEach(function(e){e.innerHTML=MAX_LESSONS;});
-    load_lesson(1);
+    if(parseInt($('header_lesson_number').getAttribute('lesson')) != 0){
+	CURRENT_LESSON=parseInt($('header_lesson_number').getAttribute('lesson'));
+    }
+    load_lesson(CURRENT_LESSON==1?1:0);
 
     if($('change_num_tokens_form')){
 	$('change_num_tokens_form').style.display='none';
@@ -398,7 +404,10 @@ window.onload = function(){
     			redraw_all();
     		    }
     		};
-    	    } 
+    	    }
+	    if(group[i].checked){
+		group[i].onclick();
+	    }
     	}
     }	
 
@@ -411,6 +420,9 @@ window.onload = function(){
     if($('solve_button')){
     	$('solve_button').onclick = function(){
     	    SOLVE_ITERATION=0;
+	    $('next_lesson').disabled="disabled";
+	    $('prev_lesson').disabled="disabled";
+	    $('change_num_tokens').disabled="disabled";
     	    $('solve_button').disabled="disabled";
 	    $('gradient_step').value=scale_gamma_for_solve(SOLVE_STEP/Math.sqrt(10),1).toPrecision(5);
     	    SOLVE_TIMEOUT_ID = setInterval(function(){
@@ -419,35 +431,43 @@ window.onload = function(){
     	};
     }
 
-    if($('show_gradients')){
-    	$('show_gradients').onclick = function(){
-    	    //$('gradient_fieldset_div').style.display= this.checked ? 'block' : 'none';
-    	    SHOW_GRADIENTS=this.checked;
-    	    if(SHOW_GRADIENTS){
-    		group=$$('.component_radio'); var t;
-    		for(var i=0;i<group.length;i++){
-    		    if(group[i].checked){
-    			t=group[i];
-    			break;
-    		    }
-    		}
-    		t.onclick();
-    		recompute_partition_function();
-    		compute_gradient();
-    		draw_gradient();
-    	    } else{
-    		recompute_partition_function();
-    		compute_gradient();
-    		draw_gradient();
-    	    }
-    	};
-    }
-
     if(group=$$('.component_radio')){
     	for(var i=0;i<group.length;i++){
     	    group[i].onclick = setComponentDisplay;
     	}
     }
+    if($('show_gradients')){
+    	$('show_gradients').onclick = function(){
+    	    //$('gradient_fieldset_div').style.display= this.checked ? 'block' : 'none';
+    	    SHOW_GRADIENTS=this.checked;
+    	    if(SHOW_GRADIENTS){
+    		if(group=$$('.component_radio')){
+		    var t;
+		    for(var i=0;i<group.length;i++){
+			if(group[i].checked){
+			    t=group[i];
+			    break;
+			}
+		    }
+		    if(t!=undefined || t!=null){
+			console.log('t');
+			console.log(t);
+			t.onclick();
+		    }
+		}
+    		recompute_partition_function();
+    		compute_gradient();
+    	    } else{
+    		recompute_partition_function();
+    		compute_gradient();
+    	    }
+    	};
+	if($('show_gradients').checked){
+	    $('show_gradients').onclick();
+	}
+    }
+
+
 
     if($('gradient_step')){
     	$('gradient_step').value = SOLVE_STEP;

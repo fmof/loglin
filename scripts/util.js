@@ -172,6 +172,7 @@ function load_textfile(){
 			context_id = REVERSE_CONTEXTS[record['context']];
 		    }
 		    //add record['feature'] to theta list
+		    console.log('adding ['+record['context']+', '+record['feature']+']');
 		    FEATURE_LIST.push([record['context'],record['feature']]);
 		    var feature_number = FEATURE_LIST.length -1;
 		    INVERSE_FEATURE_LIST[[record['context'],record['feature']]]=feature_number;
@@ -399,10 +400,10 @@ function recompute_expected_counts(){
 	for(var i=0;i<obs_in_c.length;i++){
 	    var id_num = obs_in_c[i];
 	    var p=$('exp_count_text_'+id_num); var ecp=get_expected_count(c,id_num);
-	    p.innerHTML =  formatExpected(ecp);
 	    EXPECTED_COUNTS[c][id_num]=ecp;
 	    var obs_count = COUNTS[c][id_num];
 	    var color=determine_color(obs_count,ecp);
+	    p.innerHTML =  color==COUNTS_EQUAL?obs_count:formatExpected(ecp);
 	    p.style.color=color;
 	    p.setAttribute('dirty',0);
 	    p.setAttribute('value',ecp);
@@ -456,6 +457,9 @@ function solve_puzzle(gamma, step_num, orig_step_size){
     if(step_num==MAX_SOLVE_ITERATIONS || converged(prev_ll,gamma)){
 	$('solve_button').disabled="";
 	clearInterval(SOLVE_TIMEOUT_ID);
+	$('next_lesson').disabled="";
+	$('prev_lesson').disabled="";
+	$('change_num_tokens').disabled="";
 	$('gradient_step').value = orig_step_size.toPrecision(5);
 	$('gradient_step').onchange();
     }
@@ -540,14 +544,17 @@ function draw_true_theta_on_slider(tt){
 }
 
 function clear_gradient_color(){
-    return 'height:9px; position:relative; cursor:pointer; border:1px solid #333; width:155px; float:left; clear:right; margin-top:10px; -moz-border-radius:5px; -webkit-border-radius:5px; -moz-box-shadow:inset 0 0 8px #000;';
+    var sh=50.5;
+    var t=[[sh-1.0001,'#FFFFFF'],[sh-1, '#000000'],
+	   [sh+1, '#000000'],[sh+1.0001,'#FFFFFF']];
+    return generate_gradient_style(t);
 }
 
 
 function draw_gradient(){
     if(!SHOW_GRADIENTS){
 	var slds = $$(".slider");
-	if(slds && (gradients_drawn || has_cheated)){
+	if(slds){// && (gradients_drawn || has_cheated)){
 	    for(var i=0;i<slds.length;i++){	
 		var g = slds[i].parentNode.parentNode.childNodes[0];
 		var theta_id = parseInt(g.getAttribute('theta_index'));
@@ -569,41 +576,47 @@ function draw_gradient(){
 	    var tt = bound_dom_range(true_theta); 
 	    var st1=st; var snt1=snt; var grad_color;
 	    if(grad>0){
-		st1+=0.0001; snt1+=0.0001;
+		st1+=0.00000001; snt1+=0.00000001;
 		grad_color='#EE4455';
 	    } else{
-		st1-=0.0001; snt1-=0.0001;
+		st1-=0.00000001; snt1-=0.00000001;
 		grad_color='#4455EE';
 	    }
-	    var t = [[sh-1.0001,'#FFFFFF'],
-		     [sh-1,'#00FF00'],
-		     [sh+1,'#00FF00'],
-		     [sh+1.0001,'#FFFFFF'],
+	    var t = [[sh-1.00000001,''],
+		     [sh-1,'#000000'],
+		     [sh+1,'#000000'],
+		     [sh+1.00000001,''],
 		     [st,'#FFFFFF'],
 		     [st1,grad_color],
 		     [snt,grad_color],
 		     [snt1,'#FFFFFF']];
 	    if(has_cheated){
-		t.push([tt-1.0001,'']);
+		t.push([tt-1.00000001,'']);
 		t.push([tt-1, col_for_true_theta]);
 		t.push([tt+1, col_for_true_theta]);
-		t.push([tt+1.0001,'']);
+		t.push([tt+1.00000001,'']);
 	    }
 	    t=t.sortBy(function(d){return d[0];});
-	    var first=0; var def_color='#FFFFFF';
+	    var first=0; var def_color='#FFFFFF'; var grad_seen=0;
+	    var prev_col='#FFFFFF'; var prev_col1='#FFFFFF';
 	    for(var i=0;i<t.length;i++){
 		if(t[i][1]==''){
-		    if(first==0){
-			t[i][1]= (i>0)?(t[i-1][1]):def_color;
-			first++;
+		    t[i][1]=prev_col;
+		} else{
+		    if(t[i][1]==grad_color){
+			grad_seen = grad_seen + (grad_seen>0 ? -1:1);
+		    }
+		    if(prev_col!=t[i][1]){
+			prev_col1=prev_col;
+			prev_col=t[i][1];
 		    } else{
-			t[i][1] = (i+1<t.length)?t[i+1][1]:def_color;
-			break;
+			prev_col=prev_col1;
 		    }
 		}
 	    }
+	    t[t.length-1][1]='#FFFFFF';
 	    return t;
-	}
+	};
 	break;
     case 2:
 	break;
@@ -773,9 +786,9 @@ function addLLBar(){
 	.attr('y',function(d,i){
 		return (2*i + 1)*20;
 	    })
-	.attr('stroke',EXPECTED_COUNT_COLOR)
+	.attr('stroke',TRUE_MODEL_COLOR)
 	.attr('fill',function(d){
-		return EXPECTED_COUNT_COLOR;
+		return TRUE_MODEL_COLOR;
 	    })
 	.attr('class','true_ll_bar');
     //now see about regularization...
@@ -820,9 +833,9 @@ function addLLBar(){
 	.attr('y',function(d,i){
 		return (2*i+2)*20 - 7;
 	    })
-	.attr('stroke',"#A043BF")
+	.attr('stroke',TRUE_MODEL_COLOR)
 	.attr('fill',function(d){
-		return "#A043BF";
+		return TRUE_MODEL_COLOR;
 	    })
 	.attr('class','true_ll_text');
 
@@ -981,7 +994,7 @@ function updateD3Shape(container, id_num, id_name, width,height,shape,color,fill
 	s.attr('cx',width/2)
 	    .attr('cy',height/2)
 	    .attr('r', createCircleRadius(count,max_count,scale))
-    } else if(shape=="rect"){
+    } else if(shape=="square"){
 	s=container.selectAll('#'+id_name).data([count]);
 	var rwid, rhei;
 	rwid = Math.sqrt(count/max_count)*2*scale;
@@ -993,6 +1006,15 @@ function updateD3Shape(container, id_num, id_name, width,height,shape,color,fill
     } else if(shape=="tri" || shape=="triangle"){
 	s=container.selectAll('#'+id_name).data([count]);
 	s.attr('points',createTrianglePoints(width/2,width,height/2,height,count,max_count,scale).map(function(d){return d.join(",");}).join(" "));
+    }  else if(shape=="pentagon"){
+	s=container.selectAll('#'+id_name).data([count]);
+	var rwid, rhei;
+	rwid = Math.sqrt(count/max_count)*2*scale;
+	rhei=rwid;
+	s.attr('x',(width-rwid)/2)
+	    .attr("y",(height-rhei)/2)
+	    .attr("width",rwid)
+	    .attr("height",rhei);
     }
     s.attr('stroke',color);
     if(fill=='solid'){
@@ -1022,7 +1044,7 @@ function createD3Shape(container, id_num, id_name, width,height,shape,color,fill
 	s.attr('cx',width/2)
 	    .attr('cy',height/2)
 	    .attr('r', createCircleRadius(count,max_count,scale));
-    } else if(shape=="rect"){
+    } else if(shape=="square"){
 	s=container.selectAll('#'+id_name).data([count]).enter().append("rect");
 	var rwid, rhei;
 	rwid = Math.sqrt(count/max_count)*2*scale;
@@ -1034,6 +1056,15 @@ function createD3Shape(container, id_num, id_name, width,height,shape,color,fill
     } else if(shape=="tri" || shape=="triangle"){
 	s=container.selectAll('#'+id_name).data([count]).enter().append("polygon");
 	s.attr('points',createTrianglePoints(width/2,width,height/2,height,count,max_count,scale).map(function(d){return d.join(",");}).join(" "));
+    } else if(shape=="pentagon"){
+	s=container.selectAll('#'+id_name).data([count]).enter().append("rect");
+	var rwid, rhei;
+	rwid = Math.sqrt(count/max_count)*2*scale;
+	rhei=rwid;
+	s.attr('x',(width-rwid)/2)
+	    .attr("y",(height-rhei)/2)
+	    .attr("width",rwid)
+	    .attr("height",rhei);
     }
     s.attr('stroke',color);
     s.attr('stroke-width',EXPECTED_STROKE_WIDTH);
@@ -1199,8 +1230,12 @@ function drawSVGBoxes(selectObj){
     var svg_offset=8; var offset=2*svg_offset + 3;
     var num_axes=0;
     for(var c=0;c<CONTEXTS.length;c++){
+	console.log('beginning to draw area for '+c+', '+CONTEXTS[c]);
 	var vis_in_c=VISUALS[c];
 	var axes={}; var place_in_axis={};
+	var div_context=document.createElement('div');
+	div_context.id='context_draw_area_'+c;
+	selectObj.appendChild(div_context);
 	for(var v in vis_in_c){
 	    //ZZZ
 	    //place_in_axis[v]=
@@ -1229,7 +1264,8 @@ function drawSVGBoxes(selectObj){
 	console.log('npr '+npr);
 	for(var i=0;i<num_rows;i++){
 	    var divi=document.createElement('div');
-	    selectObj.appendChild(divi);
+	    divi.style.width='inherit';
+	    div_context.appendChild(divi);
 	    for(var j=0;j<npr && id<TYPE_INDEX.length;j++){
 		var features_for_type_id = TYPE_INDEX[id];
 		//		console.log('looking at type_id '+id);
@@ -1245,7 +1281,7 @@ function drawSVGBoxes(selectObj){
 		divj.style.width = (width+svg_offset)+'px';
 		//create the count text reps
 		var obs_count_p = document.createElement('p');
-		var obs_count= COUNTS[c][id];
+		var obs_count= COUNTS[c][];
 		obs_count_p.innerHTML = obs_count;
 		obs_count_p.style.display='inline';
 		obs_count_p.id = 'obs_count_text_'+id;
