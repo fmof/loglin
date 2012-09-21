@@ -57,14 +57,14 @@ function normal(mu,sigma){
 	    }});
 }
 
-function generate_new_observations(){
+function generate_new_observations(ntimes){
     var n=normal(0,0.5);
     for(var l=0;l<FEATURE_LIST.length;l++){
 	TRUE_THETA[l] = n.sample();
     }
     recompute_partition_function();
     recompute_partition_function(TRUE_THETA,TRUE_Z_THETA);
-    sample_from_true();
+    sample_from_true(ntimes);
     //some clean up
     //$$(".feature_slider").forEach(function(t){t.onchange();});
     updateObservedImages();
@@ -75,12 +75,13 @@ function generate_new_observations(){
 
 function sample_from_true(num_times){
     //clear various arrays...
+    var oldntokc=NUM_TOKENS_C.slice();
     reset_data_structures();
     //enumerate possible types
     //for every context...
     for(var c=0;c<CONTEXTS.length;c++){
 	var a=enumerate_possible_types(c,VISUALS[c]);
-	var num_times = num_times || NUM_TOKENS_C[c] || 50;	
+	var num_times = num_times || oldntokc[c] || 50;	
 	//first lay-out each type along the unit interval
 	var s = []; var prev=0; var ncounts = a[1];
 	for(var i in a[0]){
@@ -1165,6 +1166,30 @@ function updateObservedImages(){
     //var count = SORT_COUNT_INDICES[MAP_COUNT_INDICES[i]][0];
 }
 
+function is_int(value){ 
+    if((parseFloat(value) == parseInt(value)) && !isNaN(value)){
+	return true;
+    } else { 
+	return false;
+    } 
+}
+
+function update_token_count(){
+    var c = parseInt(this.getAttribute('context'));
+    var old_val=NUM_TOKENS_C[c];
+    if(is_int(this.value)){
+	var nval=parseInt(this.value);
+	NUM_TOKENS-= old_val;
+	NUM_TOKENS += nval;
+	console.log(NUM_TOKENS_C[c]+', '+old_val+', '+nval);
+	NUM_TOKENS_C[c] = NUM_TOKENS_C[c] - old_val;
+	console.log(NUM_TOKENS_C);
+	NUM_TOKENS_C[c] = NUM_TOKENS_C[c] + nval;
+	console.log(NUM_TOKENS_C);
+    } else{
+	this.value=old_val;
+    }
+}
 
 function drawSVGBoxes(selectObj){
     var nf=0;
@@ -1207,8 +1232,8 @@ function drawSVGBoxes(selectObj){
 	    selectObj.appendChild(divi);
 	    for(var j=0;j<npr && id<TYPE_INDEX.length;j++){
 		var features_for_type_id = TYPE_INDEX[id];
-		console.log('looking at type_id '+id);
-		console.log(features_for_type_id);
+		//		console.log('looking at type_id '+id);
+		//console.log(features_for_type_id);
 		var divj=document.createElement('div');
 		divj.style.overflow='hidden';
 		divi.appendChild(divj);

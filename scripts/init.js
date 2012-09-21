@@ -130,7 +130,7 @@ SIGMOID_CONSTANT = 1/sigmoid_x_define * Math.log(sigmoid_y_define_ratio/(1-sigmo
 
 initialize=0;
 svg_loaded=0;
-
+user_input_tokens_added=0;
 function isNumber(n) {
     return (n==null || n==undefined || !(n.length)) || 
 	(!isNaN(parseFloat(n)) && isFinite(n));
@@ -179,6 +179,7 @@ function reset_data_structures(full){
 	//context-id -> Associative Array of counts, e.g., 0 -> {4=>3, 1=>12,..}
 	COUNTS=[];
 	svg_loaded=0;
+	user_input_tokens_added=0;
     }
     for(var c in NUM_TOKENS_C){
 	NUM_TOKENS_C[c]=0;
@@ -238,6 +239,57 @@ window.onload = function(){
     $('ll_area').style.width = (DIV_LL_WIDTH+RESERVE_LL_WIDTH)+'px';
     $$('.of_total_lessons').forEach(function(e){e.innerHTML=MAX_LESSONS;});
     load_lesson(1);
+
+    if($('change_num_tokens_form')){
+	$('change_num_tokens_form').style.display='none';
+	$('done_changing_counts_button').onclick=function(){
+	    $('change_num_tokens_form').style.display='none';
+	    $('slider_area').style.display='block';
+	    $('change_num_tokens').disabled='';
+	    generate_new_observations();
+	};
+    }
+
+    if($('change_num_tokens')){
+	$('change_num_tokens').onclick=function(){
+	    var form=$('change_num_tokens_form');
+	    form.style.display="block";
+	    form=form.childNodes[1];
+	    $('slider_area').style.display='none';
+	    this.disabled="disabled";
+	    if(user_input_tokens_added){
+		
+	    } else{
+		if(CONTEXTS.length==1){
+		    var i = document.createElement('input');
+		    i.type='text'; i.name='input_tokens_context_0'; i.id=i.name;
+		    i.value=NUM_TOKENS_C[0]; i.setAttribute('context',0);
+		    var d=document.createElement('div');
+		    d.innerHTML='Tokens: ';
+		    d.appendChild(i);
+		    form.appendChild(d);
+		    i.onchange = update_token_count;
+		} else{
+		    for(var c=0;c<CONTEXTS.length;c++){
+			//input type="text" name = "" id="" value="" size=""
+			var i = document.createElement('input');
+			i.type='text'; i.name='input_tokens_context_'+c; i.id=i.name;
+			i.setAttribute('context',c);
+			i.value=NUM_TOKENS_C[c];
+			var d=document.createElement('div');
+			d.innerHTML='Tokens in Context '+c+': ';
+			d.appendChild(i);
+			form.appendChild(d);
+			i.onchange=update_token_count;
+		    }
+		}
+		user_input_tokens_added=1;
+	    }
+	    $('done_changing_counts_button').style.display='block';
+	};
+    }
+
+    
 
     if($('new_challenge')){
     	$('new_challenge').onclick = function(){
