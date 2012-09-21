@@ -111,6 +111,7 @@ function sample_from_true(num_times){
     }
 }
 
+
 function enumerate_possible_types(context, types_for_context){
     var arr={}; var msum=0; var ncounts={};
     for(var type_id in types_for_context){
@@ -168,6 +169,7 @@ function load_textfile(){
 			REVERSE_CONTEXTS[record['context']]=context_id;
 			DATA_BY_CONTEXT[context_id]={};
 			TYPE_OBSERVATIONS_IN_C[context_id]=[];
+			POSITION_BY_CONTEXT[context_id]={};
 		    } else{
 			context_id = REVERSE_CONTEXTS[record['context']];
 		    }
@@ -232,8 +234,11 @@ function record_data(rows,already_created){
     //so that we can draw in the expected images
     redrawAllExpected();
     //and, more importantly, the loglikelihood score bar
+    console.log('computing ll');
     compute_ll();
+    console.log('... then ll of true');
     compute_ll(TRUE_THETA,TRUE_Z_THETA,TRUE_LOG_LIKELIHOOD, TRUE_REGULARIZATION);
+    console.log('... then gradient');
     compute_gradient();
     /*console.log('gradient is ');
     console.log(GRADIENT);	 
@@ -242,7 +247,9 @@ function record_data(rows,already_created){
     console.log(REG_FOR_GRAD);*/
     
     if(!already_created){
+	console.log('add ll bars...');
      	addLLBar();
+	console.log('..done');
     } else{
     	updateLLBar();
     }
@@ -267,13 +274,11 @@ function record_observation(record){
 	NUM_OBSERVATIONS_C[context_id]=0;
 	REVERSE_CONTEXTS[record['context']]=context_id;
 	DATA_BY_CONTEXT[context_id]={};
-	//ZZZ: how to deal with position vector
+	POSITION_BY_CONTEXT[context_id]={};
     } else{
 	context_id = REVERSE_CONTEXTS[record['context']];
     }
     DATA_BY_CONTEXT[context_id][type_index]=split_features;
-    //go through feature list and initialize any features not yet seen
-    //ZZZ
 
     //updated USED_FEATURES list
     for(var sf=0;sf<split_features.length;sf++){
@@ -302,9 +307,9 @@ function record_observation(record){
 
     //now deal with positions
     var temp_pos=(d3.csv.parseRows(record['position'])[0]).map(function(d){return parseInt(d);});
-    //POSITION_BY_CONTEXT[context_id][
-    REVERSE_POSITIONS[temp_pos] = features.split(',');
-    POSITIONS.push(temp_pos);
+    POSITION_BY_CONTEXT[context_id][temp_pos] = type_index;
+    //REVERSE_POSITIONS[temp_pos] = features.split(',');
+    //    POSITIONS.push(temp_pos);
     MAX_ROWS = temp_pos[0]>=MAX_ROWS?temp_pos[0]+1:MAX_ROWS;
     MAX_COLS = temp_pos[1]>=MAX_COLS?temp_pos[1]+1:MAX_COLS;
     var temp_vis = VISUALS[context_id];
@@ -381,11 +386,12 @@ function recompute_partition_function(theta,ztheta){
 }
 
 function formatExpected(ecp){
-    return (ecp > 1.0)?Math.round(ecp):ecp.toFixed(2);
+    //return (ecp > 1.0)?Math.round(ecp):ecp.toFixed(2);
+    return ecp.toFixed(2);
 }
 
 function determine_color(obs,exp){
-    if(Math.abs(obs-exp)<1.5){
+    if(Math.abs(obs-exp)<0.01){
 	return COUNTS_EQUAL
     } else{
 	if(obs>exp) return COUNTS_TOO_LOW;
@@ -654,8 +660,9 @@ function compute_ll(theta, ztable, ll, reg){
     for(var c = 0; c<CONTEXTS.length;c++){
 	//iterate through type observations
 	var obs_in_c=TYPE_OBSERVATIONS_IN_C[c];
-	for(var id_num=0;id_num<obs_in_c.length;id_num++){
-	    sum += COUNTS[c][id_num] * get_prob(c,obs_in_c[id_num],1,theta);
+	for(var i=0;i<obs_in_c.length;i++){
+	    var id_num=obs_in_c[i];
+	    sum += COUNTS[c][id_num] * get_prob(c,id_num,1,theta);
 	}
 	sum -= NUM_TOKENS_C[c]*Math.log(ztable[c]);
     }
@@ -715,7 +722,12 @@ function addFeaturesToList(selectObj, array){
 	    var p=document.createElement('p');
 	    var split_fl = FEATURE_LIST[feature_index];
 	    var cont_id = REVERSE_CONTEXTS[split_fl[0]];
-	    p.innerHTML=split_fl[1];
+	    console.log('adding feature '+split_fl[1]+', given '+split_fl[0]);
+	    if(split_fl[0]==''){
+		p.innerHTML=split_fl[1];
+	    } else{
+		p.innerHTML=split_fl[1]+', given '+split_fl[0];
+	    }
 	    p.setAttribute('feature_dimension',i);
 	    p.setAttribute('context',cont_id);
 	    p.setAttribute('feature_name',FEATURE_LIST[feature_index]);
@@ -1128,6 +1140,7 @@ function get_prob(context,id_num,log,theta){
 	}
     }
     if(print){
+	console.log('unnorm prob: '+Math.exp(ret));
 	console.log('------------');
     }
     return log?ret:Math.exp(ret);
@@ -1142,7 +1155,8 @@ function redrawAllExpected(){
     for(var c=0;c<CONTEXTS.length;c++){
 	var obs_in_c=TYPE_OBSERVATIONS_IN_C[c];
 	//go through type IDs
-	for(var id_num=0;id_num<obs_in_c.length;id_num++){
+	for(var i=0;i<obs_in_c.length;i++){
+	    var id_num=obs_in_c[i];
 	    drawExpectedData(c,id_num, d3.select('#observed_point_context_'+c+'_'+id_num));
 	}
     }
@@ -1236,9 +1250,10 @@ function drawSVGBoxes(selectObj){
 	var div_context=document.createElement('div');
 	div_context.id='context_draw_area_'+c;
 	selectObj.appendChild(div_context);
-	for(var v in vis_in_c){
-	    //ZZZ
-	    //place_in_axis[v]=
+	selectObj.appendChild(document.createElement('br'));
+	selectObj.appendChild(document.createElement('hr'));
+	selectObj.appendChild(document.createElement('br'));
+	/*for(var v in vis_in_c){
 	    for(var vv in vis_in_c[v]){
 		if(axes[vv]==undefined){
 		    axes[vv]={};
@@ -1250,26 +1265,34 @@ function drawSVGBoxes(selectObj){
 	    }
 	}
 	console.log('axes ');
+
 	console.log(axes);
-	console.log(place_in_axis);
-	var num_rows = num_axes;
-	var npr=NUM_PER_ROW;
-	console.log('num rows '+num_rows);
-	//if(selectObj.style.width == undefined || selectObj.style.width == null ||
-	//	selectObj.style.width.length == 0){
-	npr = NUM_OBSERVATIONS_C[c]/num_rows<1 ? NUM_OBSERVATIONS_C[c] : Math.ceil(NUM_OBSERVATIONS_C[c]/num_rows);
+	console.log(place_in_axis);*/
+
+	var highest_row_cols=[-1,-1];
+	for(var position_pair in POSITION_BY_CONTEXT[c]){
+	    var pp = position_pair.split(',').map(function(d){return parseInt(d);});
+	    for(var i=0;i<pp.length;i++){
+		highest_row_cols[i]= (pp[i]>highest_row_cols[i])?pp[i]:highest_row_cols[i];
+	    }
+	}
+	var num_rows = highest_row_cols[0]+1;
+	var num_cols = highest_row_cols[1]+1;
+	var npr=num_cols;
+	//var npr=NUM_PER_ROW;
+	//set the number of items per row (npr)
+	//npr = NUM_OBSERVATIONS_C[c]/num_rows<1 ? NUM_OBSERVATIONS_C[c] : Math.ceil(NUM_OBSERVATIONS_C[c]/num_rows);
 	selectObj.style.width = npr * width + (npr*offset)+'px';
 	selectObj.style.overflow='hidden';
-	//}
-	console.log('npr '+npr);
+		
 	for(var i=0;i<num_rows;i++){
 	    var divi=document.createElement('div');
 	    divi.style.width='inherit';
 	    div_context.appendChild(divi);
-	    for(var j=0;j<npr && id<TYPE_INDEX.length;j++){
-		var features_for_type_id = TYPE_INDEX[id];
-		//		console.log('looking at type_id '+id);
-		//console.log(features_for_type_id);
+	    for(var j=0;j<npr; j++){
+		//get type id
+		var type_id = POSITION_BY_CONTEXT[c][[i,j]];
+		//always make a div, no matter what
 		var divj=document.createElement('div');
 		divj.style.overflow='hidden';
 		divi.appendChild(divj);
@@ -1279,12 +1302,19 @@ function drawSVGBoxes(selectObj){
 		    divj.style.cssFloat='left';
 		}
 		divj.style.width = (width+svg_offset)+'px';
+		
+		//but then we may not have actually observed anything for this type id
+		//that is, we may not have observed the full joint
+		if(type_id==undefined){
+		    continue;
+		} 
+		var features_for_type_id = TYPE_INDEX[type_id];
 		//create the count text reps
 		var obs_count_p = document.createElement('p');
-		var obs_count= COUNTS[c][id];
+		var obs_count= COUNTS[c][type_id];
 		obs_count_p.innerHTML = obs_count;
 		obs_count_p.style.display='inline';
-		obs_count_p.id = 'obs_count_text_'+id;
+		obs_count_p.id = 'obs_count_text_'+type_id;
 		obs_count_p.className += ' count_text observed_count_text';
 		var divk=document.createElement('div');
 		divk.appendChild(obs_count_p);
@@ -1292,15 +1322,15 @@ function drawSVGBoxes(selectObj){
 		var exp_count_p = document.createElement('p');
 		
 		//ZZZ 
-		var ecp=get_expected_count(c,id);
+		var ecp=get_expected_count(c,type_id);
 		exp_count_p.innerHTML = ecp.toFixed(2);
 		exp_count_p.setAttribute('value',ecp);
 		exp_count_p.style.display='inline';
 		exp_count_p.setAttribute('dirty',1);
-		exp_count_p.id = 'exp_count_text_'+id;
+		exp_count_p.id = 'exp_count_text_'+type_id;
 		exp_count_p.className += ' count_text expected_count_text';
 		var color=determine_color(obs_count,ecp);
-		var vis = VISUALS[c][id];
+		var vis = VISUALS[c][type_id];
 		var fill=vis['fill'];
 		exp_count_p.style.color=color;
 		var shapen = vis['shape'];
@@ -1310,22 +1340,21 @@ function drawSVGBoxes(selectObj){
 		//and now the image
 		var svg = document.createElementNS("http://www.w3.org/2000/svg",'svg');
 		svg.setAttribute('class',svg.className+' observed_count '+ ['fill','shape'].map(function(e,i){ return "feature_"+e+"_"+vis[e];}).join(' '));
-		svg.setAttribute('id','observed_point_context_'+c+'_'+id);
+		svg.setAttribute('id','observed_point_context_'+c+'_'+type_id);
 		svg.setAttribute('width',width);
 		svg.setAttribute('height',height);
 		divj.appendChild(svg);
-		svg = d3.select('#observed_point_context_'+c+'_'+id);
+		svg = d3.select('#observed_point_context_'+c+'_'+type_id);
 		var max_count=-1;
 		for(var other in COUNTS[c]){
 		    if(COUNTS[c][other] > max_count){
 			max_count=COUNTS[c][other];
 		    }
 		}
-		var shape = createD3Shape(svg, id, 'obs_count_pic_'+c+'_'+id, width,height,shapen,'gray','hollow',obs_count,max_count,1);
+		var shape = createD3Shape(svg, type_id, 'obs_count_pic_'+c+'_'+type_id, width,height,shapen,'gray','hollow',obs_count,max_count,1);
 		shape.attr('stroke-opacity',1).attr('stroke-width',3);
-		shape.attr('id','obs_count_pic_'+c+'_'+id);
-		id++
-		    }
+		shape.attr('id','obs_count_pic_'+c+'_'+type_id);
+	    } //end for over columns
 	    divi.className += ' drawrow';
 	}
     }

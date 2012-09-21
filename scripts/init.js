@@ -15,8 +15,10 @@ REVERSE_CONTEXTS={};//reverse of above, e.g., circle -> 0
 
 VISUALS=[];
 
-//context-id -> Associative Array of counts, e.g., 0 -> {4=>3, 1=>12,..}
+//context-id -> Associative Array of counts (by type-id), e.g., 0 -> {4=>3, 1=>12,..}
 COUNTS=[];
+//context id -> associative array of positions (by type id), e.g., 0 -> {[0,0] => 0, [0,1] => 4}
+POSITION_BY_CONTEXT=[];
 POSITIONS=[];
 REVERSE_POSITIONS={};
 
@@ -257,6 +259,7 @@ window.onload = function(){
     }
 
     if($('change_num_tokens')){
+	//jQuery('#change_num_tokens').bt("you can change the number of <em>tokens</em> observed.");
 	$('change_num_tokens').onclick=function(){
 	    var form=$('change_num_tokens_form');
 	    form.style.display="block";

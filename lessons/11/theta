@@ -1,6 +1,6 @@
 context	feature	value
-circle	circle	0.9g685129182588561
-circle	striped 4
+circle	circle	0.9685129182588561
+circle	striped	-1.5342
 circle	hollow	1
 circle	solid	-.5
 triangle	triangle	0.35069021869520595

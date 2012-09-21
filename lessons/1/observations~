@@ -1,5 +1,0 @@
-count	position	context	features	visualization
-30	0,0		circle,solid	shape=circle,fill=solid
-10	0,1		circle,striped	shape=circle,fill=striped
-20	1,0		triangle,solid	shape=triangle,fill=solid
-5	1,1		triangle,striped	shape=triangle,fill=striped

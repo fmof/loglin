@@ -1,7 +1,7 @@
 count	position	context	features	visualization
-18	1,0		triangle,solid	shape=triangle,fill=solid
-5	1,1		triangle,striped	shape=triangle,fill=striped
-34	0,0		square,solid	shape=square,fill=solid
-10	0,1		square,striped	shape=square,fill=striped
-21	1,0		pentagon,solid	shape=pentagon,fill=solid
-7	1,1		pentagon,striped	shape=pentagon,fill=striped
+18	0,0		triangle,solid	shape=triangle,fill=solid
+5	1,0		triangle,striped	shape=triangle,fill=striped
+34	0,1		square,solid	shape=square,fill=solid
+10	1,1		square,striped	shape=square,fill=striped
+21	0,2		pentagon,solid	shape=pentagon,fill=solid
+7	1,2		pentagon,striped	shape=pentagon,fill=striped
