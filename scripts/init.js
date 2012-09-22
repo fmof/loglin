@@ -182,6 +182,7 @@ function reset_data_structures(full){
 	DATA_BY_CONTEXT=[];
 	//context-id -> Associative Array of counts, e.g., 0 -> {4=>3, 1=>12,..}
 	COUNTS=[];
+	EXPECTED_COUNTS=[];
 	svg_loaded=0;
 	user_input_tokens_added=0;
     }

@@ -125,26 +125,6 @@ function enumerate_possible_types(context, types_for_context){
 	arr[tid]=arr[tid]/msum;
     }
     return [arr,ncounts];
-
-    //OLD****
-    //iterate through visual 
-    /*var begin=begin || 0;
-    var arr =[]; var l0, l1; var b=[]; var ncounts={};
-    for(var i=0;i<REVDIM[0].length;i++){
-	l0=TRUE_THETA[INVERSE_FEATURE_LIST[[0,i]]];
-	for(var j=0;j<REVDIM[1].length;j++){
-	    l1=TRUE_THETA[INVERSE_FEATURE_LIST[[1,j]]];;
-	    for(var k=0;k<REVDIM[2].length;k++){
-		arr.push(Math.exp(l0+l1+TRUE_THETA[INVERSE_FEATURE_LIST[[2,k]]]));
-		var c=[]; c[0]=i; c[1]=j; c[2]=k;
-		b.push(c);
-		ncounts[c]=0;
-	    }
-	}
-    }
-    console.log(arr);
-    var msum=sum(arr);
-    return [arr.map(function(n){ return n/msum;}), b, ncounts];*/
 }
 
 function load_instructions(){
@@ -228,10 +208,13 @@ function record_data(rows,already_created){
     }
     svg_loaded=1;
     //compute the true partition function
+    console.log('computing true partition');
     recompute_partition_function(TRUE_THETA,TRUE_Z_THETA);
     //compute expected counts
+    console.log('computing expected');
     recompute_expected_counts();
     //so that we can draw in the expected images
+    console.log('redrawing expected');
     redrawAllExpected();
     //and, more importantly, the loglikelihood score bar
     console.log('computing ll');
@@ -275,18 +258,20 @@ function record_observation(record){
 	REVERSE_CONTEXTS[record['context']]=context_id;
 	DATA_BY_CONTEXT[context_id]={};
 	POSITION_BY_CONTEXT[context_id]={};
+	TYPE_OBSERVATIONS_IN_C[context_id]=[];
+	console.log('seeing new context '+record['context']);
     } else{
 	context_id = REVERSE_CONTEXTS[record['context']];
     }
     DATA_BY_CONTEXT[context_id][type_index]=split_features;
 
     //updated USED_FEATURES list
-    for(var sf=0;sf<split_features.length;sf++){
+    /*for(var sf=0;sf<split_features.length;sf++){
 	var ifl=INVERSE_FEATURE_LOOKUP(context_id,split_features[sf]);
 	if(ifl>=0){
 	    USED_FEATURES[ifl]=1;
 	}
-    }
+    }*/
 
     //update counts, both observed and expected
     var temp_counts = COUNTS[context_id];
@@ -347,22 +332,22 @@ function addSliderEffects(){
 	for(var i=0;i<group.length;i++){
 	    var handle_tmpfn=function(){
 		//handle
-		this.parentNode.parentNode.childNodes[1].value= inverse_sigmoid(parseFloat(this.style['left']+handle_width/2)); //Math.max(lb,Math.min(ub,inverse_sigmoid(parseFloat(this.style['left']))));
+		this.parentNode.parentNode.childNodes[1].value= inverse_sigmoid(parseFloat(this.style['left']+handle_width/2));
 		load_html5_slider(this.parentNode.parentNode.childNodes[1],SLIDER_DIV);
 	    };
 	    var tmpfn=function(){
-		this.value = inverse_sigmoid(parseFloat(this.parentNode.childNodes[0].childNodes[1].style['left'] + handle_width/2)); //Math.max(lb,Math.min(ub,inverse_sigmoid(parseFloat(this.parentNode.childNodes[0].childNodes[1].style['left']))));
+		this.value = inverse_sigmoid(parseFloat(this.parentNode.childNodes[0].childNodes[1].style['left'] + handle_width/2));
 		load_html5_slider(this,SLIDER_DIV);
 	    };
 	    group[i].onchange = tmpfn;
 	    group[i].parentNode.childNodes[0].childNodes[1].ondrag=handle_tmpfn;
 	    group[i].onchange();
 	    var theta_index = group[i].parentNode.parentNode.childNodes[0].getAttribute('theta_index');
-	    if(USED_FEATURES[theta_index]==undefined){//is unused/unavailable
+	    /*if(USED_FEATURES[theta_index]==undefined){//is unused/unavailable
 		group[i].parentNode.parentNode.style.display='none';
 		group[i].parentNode.parentNode.className += ' unused_feature';
 		group[i].disabled='disabled';
-	    }
+		}*/
 	}
     }
 }
@@ -405,7 +390,7 @@ function recompute_expected_counts(){
 	//go through type IDs
 	for(var i=0;i<obs_in_c.length;i++){
 	    var id_num = obs_in_c[i];
-	    var p=$('exp_count_text_'+id_num); var ecp=get_expected_count(c,id_num);
+	    var p=$('exp_count_text_context_'+c+'_'+id_num); var ecp=get_expected_count(c,id_num);
 	    EXPECTED_COUNTS[c][id_num]=ecp;
 	    var obs_count = COUNTS[c][id_num];
 	    var color=determine_color(obs_count,ecp);
@@ -658,12 +643,18 @@ function compute_ll(theta, ztable, ll, reg){
     var reg = reg || REGULARIZATION;
     var sum=0; var altsum=0;
     for(var c = 0; c<CONTEXTS.length;c++){
+	if(ztable[c]==0){continue;}
+	//	console.log('for context c='+c);
 	//iterate through type observations
 	var obs_in_c=TYPE_OBSERVATIONS_IN_C[c];
+	//	console.log('obs_in_c='+obs_in_c);
 	for(var i=0;i<obs_in_c.length;i++){
+	    //	    console.log("\ti="+i);
 	    var id_num=obs_in_c[i];
 	    sum += COUNTS[c][id_num] * get_prob(c,id_num,1,theta);
+	    
 	}
+	//	console.log("\t\tsum is="+sum);
 	sum -= NUM_TOKENS_C[c]*Math.log(ztable[c]);
     }
     ll[0] = sum;
@@ -775,6 +766,8 @@ function addLLBar(){
     }
     //    console.log(TRUE_LOG_LIKELIHOOD.map(resizer));
     //console.log(LOG_LIKELIHOOD.map(resizer));
+    //    console.log('ll is '+ll+', '+resizer(ll[0]));
+    //console.log('tll is '+tll+', '+resizer(tll[0]));
     var llrects=svg.selectAll(".ll_bar").data(ll).enter().append("rect");
     llrects.attr('x',0)
 	.attr('width',function(d,i){
@@ -1137,6 +1130,12 @@ function get_prob(context,id_num,log,theta){
 	var ifl=INVERSE_FEATURE_LOOKUP(context,data[i]);
 	if(ifl>=0){
 	    ret += theta[ifl]*THETA_STRENGTH[ifl];
+	} 
+	if((ifl=INVERSE_FEATURE_LIST[['',data[i]]])!=undefined){
+	    ret += theta[ifl]*THETA_STRENGTH[ifl];
+	}
+	if((ifl=INVERSE_FEATURE_LIST[[CONTEXTS[context],'']])!=undefined){
+	    ret += theta[ifl]*THETA_STRENGTH[ifl];
 	}
     }
     if(print){
@@ -1179,11 +1178,11 @@ function drawExpectedData(context, i, container){
 	}
     }
     if(! $("exp_count_pic_"+context+'_'+i)){
-	var exp_count_pic = createD3Shape(container,i,'exp_count_pic_'+context+'_'+i,SVG_WIDTH,SVG_HEIGHT,shapen,color,fill,exp_count,max_count);
+	var exp_count_pic = createD3Shape(container,i,'exp_count_pic_'+context+'_'+i,SVG_WIDTH,SVG_HEIGHT,shapen,color,fill,exp_count+1,max_count+1);
 	exp_count_pic.attr('id','exp_count_pic_'+context+'_'+i);
     } else{
 	//otherwise, update it...
-	updateD3Shape(container,i,'exp_count_pic_'+context+'_'+i,SVG_WIDTH,SVG_HEIGHT,shapen,color,fill,exp_count,max_count);
+	updateD3Shape(container,i,'exp_count_pic_'+context+'_'+i,SVG_WIDTH,SVG_HEIGHT,shapen,color,fill,exp_count+1,max_count+1);
     }
 }
 
@@ -1250,9 +1249,7 @@ function drawSVGBoxes(selectObj){
 	var div_context=document.createElement('div');
 	div_context.id='context_draw_area_'+c;
 	selectObj.appendChild(div_context);
-	selectObj.appendChild(document.createElement('br'));
 	selectObj.appendChild(document.createElement('hr'));
-	selectObj.appendChild(document.createElement('br'));
 	/*for(var v in vis_in_c){
 	    for(var vv in vis_in_c[v]){
 		if(axes[vv]==undefined){
@@ -1321,13 +1318,12 @@ function drawSVGBoxes(selectObj){
 
 		var exp_count_p = document.createElement('p');
 		
-		//ZZZ 
 		var ecp=get_expected_count(c,type_id);
 		exp_count_p.innerHTML = ecp.toFixed(2);
 		exp_count_p.setAttribute('value',ecp);
 		exp_count_p.style.display='inline';
 		exp_count_p.setAttribute('dirty',1);
-		exp_count_p.id = 'exp_count_text_'+type_id;
+		exp_count_p.id = 'exp_count_text_context_'+c+'_'+type_id;
 		exp_count_p.className += ' count_text expected_count_text';
 		var color=determine_color(obs_count,ecp);
 		var vis = VISUALS[c][type_id];
@@ -1351,7 +1347,7 @@ function drawSVGBoxes(selectObj){
 			max_count=COUNTS[c][other];
 		    }
 		}
-		var shape = createD3Shape(svg, type_id, 'obs_count_pic_'+c+'_'+type_id, width,height,shapen,'gray','hollow',obs_count,max_count,1);
+		var shape = createD3Shape(svg, type_id, 'obs_count_pic_'+c+'_'+type_id, width,height,shapen,'gray','hollow',obs_count+1,max_count+1,1);
 		shape.attr('stroke-opacity',1).attr('stroke-width',3);
 		shape.attr('id','obs_count_pic_'+c+'_'+type_id);
 	    } //end for over columns
