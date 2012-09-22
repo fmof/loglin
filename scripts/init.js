@@ -247,6 +247,11 @@ function load_lesson(initial){
     TRUE_THETA_PATH = 'lessons/'+CURRENT_LESSON+'/theta';
     OBSERVATION_PATH = 'lessons/'+CURRENT_LESSON+'/observations';    
     INSTRUCTION_PATH = 'lessons/'+CURRENT_LESSON+'/instructions.html';
+    if(CURRENT_LESSON == 3 || CURRENT_LESSON==7){
+	$('new_challenge').style.display='none';
+    } else{
+	$('new_challenge').style.display='inline';
+    }
     load_instructions();
 
     //huge function that loads data
