@@ -1004,6 +1004,28 @@ function createCircleRadius(count,max_count,scale){
     //return Math.sqrt(count/(max_count*Math.PI))*(scale-1);
 }
 
+function createPentagonPoints(cx,width,cy,height,count,max_count,scale){
+    var points=[];
+    var a = 2*Math.sqrt(count/max_count)/Math.sqrt(Math.sqrt(25+10*Math.sqrt(5)));
+    var r=.1*a*Math.sqrt(50+10*Math.sqrt(5));
+    var c1=.25*(Math.sqrt(5)-1)*r;
+    var c2=.25*(Math.sqrt(5)+1)*r;
+    var s1=.25*Math.sqrt(10+2*Math.sqrt(5))*r;
+    var s2=.25*Math.sqrt(10-2*Math.sqrt(5))*r;    
+    var b = Math.sqrt(r*r-.25*a*a);
+    var b1= Math.sqrt(r*r+.25*a*a);
+    var xt = r*Math.cos(Math.PI/10);
+    var yt = r*Math.sin(Math.PI/10);
+    points.push([cx,cy-r]);
+    points.push([cx+xt,cy-yt]);
+    points.push([cx+a/2,cy+b]);
+    points.push([cx-a/2,cy+b]);
+    points.push([cx-xt,cy-yt]);
+    console.log('pentagon a='+a+', r='+r);
+    console.log('points '+points);
+    return points;
+}
+
 function createTrianglePoints(cx,width,cy,height,count,max_count,scale){
     var points=[];
     //var side=Math.sqrt(4*count/(Math.sqrt(3)*max_count));
@@ -1027,7 +1049,7 @@ function updateD3Shape(container, id_num, id_name, width,height,shape,color,fill
     } else if(shape=="square"){
 	s=container.selectAll('#'+id_name).data([count]);
 	var rwid, rhei;
-	rwid = Math.sqrt(count/max_count)*scale;
+	rwid = Math.sqrt(count/max_count);
 	rhei=rwid;
 	s.attr('x',(width-rwid)/2)
 	    .attr("y",(height-rhei)/2)
@@ -1037,14 +1059,8 @@ function updateD3Shape(container, id_num, id_name, width,height,shape,color,fill
 	s=container.selectAll('#'+id_name).data([count]);
 	s.attr('points',createTrianglePoints(width/2,width,height/2,height,count,max_count,scale).map(function(d){return d.join(",");}).join(" "));
     }  else if(shape=="pentagon"){
-	s=container.selectAll('#'+id_name).data([count]);
-	var rwid, rhei;
-	rwid = Math.sqrt(count/max_count)*2*scale;
-	rhei=rwid;
-	s.attr('x',(width-rwid)/2)
-	    .attr("y",(height-rhei)/2)
-	    .attr("width",rwid)
-	    .attr("height",rhei);
+	s=container.selectAll('#'+id_name).data([count]).enter().append("polygon");
+	s.attr('points',createPentagonPoints(width/2,width,height/2,height,count,max_count,scale).map(function(d){return d.join(",");}).join(" "));
     }
     s.attr('stroke',color);
     if(fill=='solid'){
@@ -1081,7 +1097,7 @@ function createD3Shape(container, id_num, id_name, width,height,shape,color,fill
     } else if(shape=="square"){
 	s=container.selectAll('#'+id_name).data([count]).enter().append("rect");
 	var rwid, rhei;
-	rwid = Math.sqrt(count/max_count)*2*scale;
+	rwid = Math.sqrt(count/max_count);
 	rhei=rwid;
 	s.attr('x',(width-rwid)/2)
 	    .attr("y",(height-rhei)/2)
@@ -1091,14 +1107,8 @@ function createD3Shape(container, id_num, id_name, width,height,shape,color,fill
 	s=container.selectAll('#'+id_name).data([count]).enter().append("polygon");
 	s.attr('points',createTrianglePoints(width/2,width,height/2,height,count,max_count,scale).map(function(d){return d.join(",");}).join(" "));
     } else if(shape=="pentagon"){
-	s=container.selectAll('#'+id_name).data([count]).enter().append("rect");
-	var rwid, rhei;
-	rwid = Math.sqrt(count/max_count)*2*scale;
-	rhei=rwid;
-	s.attr('x',(width-rwid)/2)
-	    .attr("y",(height-rhei)/2)
-	    .attr("width",rwid)
-	    .attr("height",rhei);
+	s=container.selectAll('#'+id_name).data([count]).enter().append("polygon");
+	s.attr('points',createPentagonPoints(width/2,width,height/2,height,count,max_count,scale).map(function(d){return d.join(",");}).join(" "));
     }
     s.attr('stroke',color);
     s.attr('stroke-width',EXPECTED_STROKE_WIDTH);
@@ -1208,7 +1218,7 @@ function compute_max_prob(counts,mep,mept,mea){
 	    mea[c] = SVG_HEIGHT*SVG_WIDTH*mp;//3*Math.sqrt(3)/4*Math.pow(SVG_HEIGHT/2-1,2);
 	} else if(shape=="pentagon"){
 	    //ZZZ
-	    mea[c] = 5/2*.96;
+	    mea[c] = SVG_HEIGHT*SVG_WIDTH*mp;
 	}
 
     }
