@@ -1239,18 +1239,18 @@ function compute_max_prob(counts,mep,mept,mea){
     for(var c=0;c<CONTEXTS.length;c++){
 	var index = mept[c];
 	var mp = mep[c];
-	mea[c]=SVG_HEIGHT*SVG_WIDTH*mp;
-	/*var vis=VISUALS[c][index];
+	//mea[c]=SVG_HEIGHT*SVG_WIDTH*mp;
+	var vis=VISUALS[c][index];
 	var shape=vis['shape'];
 	if(shape=="circle"){
-	    mea[c] = SVG_HEIGHT*SVG_WIDTH*mp; //Math.PI*Math.pow(SVG_HEIGHT/2-1,2);
+	    mea[c] = mp*Math.PI*Math.pow(SVG_HEIGHT/2-1,2);
 	} else if(shape=="square"){
 	    mea[c] = SVG_HEIGHT*SVG_WIDTH*mp;
 	} else if(shape=="tri" || shape=="triangle"){
-	    mea[c] = SVG_HEIGHT*SVG_WIDTH*mp;//3*Math.sqrt(3)/4*Math.pow(SVG_HEIGHT/2-1,2);
+	    mea[c] = mp*3*Math.sqrt(3)/4*Math.pow(SVG_HEIGHT/2-1,2);
 	} else if(shape=="pentagon"){
-	    mea[c] = SVG_HEIGHT*SVG_WIDTH*mp;
-	}*/
+	    mea[c] = 25*Math.pow(SVG_HEIGHT/2-1,2)*Math.sqrt(25+10*Math.sqrt(5))/(50+10*Math.sqrt(5));
+	}
 
     }
 }
@@ -1352,25 +1352,14 @@ function drawSVGBoxes(selectObj){
 	console.log('beginning to draw area for '+c+', '+CONTEXTS[c]);
 	var vis_in_c=VISUALS[c];
 	var axes={}; var place_in_axis={};
+	//var div_token_input=document.createElement('div');
+	//div_token_input.className+=' left';
+	//div_token_input.appendChild(document.createElement('input'));
+	//selectObj.appendChild(div_token_input);
 	var div_context=document.createElement('div');
 	div_context.id='context_draw_area_'+c;
 	selectObj.appendChild(div_context);
 	selectObj.appendChild(document.createElement('hr'));
-	/*for(var v in vis_in_c){
-	    for(var vv in vis_in_c[v]){
-		if(axes[vv]==undefined){
-		    axes[vv]={};
-		    num_axes++;
-		    place_in_axis[vv]={};
-		}
-		axes[vv][vis_in_c[v][vv]]=1;
-		place_in_axis[vv][v]=vis_in_c[v][vv];
-	    }
-	}
-	console.log('axes ');
-
-	console.log(axes);
-	console.log(place_in_axis);*/
 
 	var highest_row_cols=[-1,-1];
 	for(var position_pair in POSITION_BY_CONTEXT[c]){
