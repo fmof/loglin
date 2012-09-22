@@ -27,7 +27,8 @@ function get_handle(slider_value_box){
 function redraw_all(){
     if(!svg_loaded){return;}
     recompute_partition_function();
-    recompute_expected_counts();
+    recompute_expected_counts();    
+    compute_max_prob(EXPECTED_COUNTS,MAX_EXP_EMP_PROB,MAX_EXP_EMP_PROB_TYPE,MAX_EXP_EMP_AREA);
     redrawAllExpected();
     compute_ll();
     compute_ll(TRUE_THETA,TRUE_Z_THETA,TRUE_LOG_LIKELIHOOD,TRUE_REGULARIZATION);
@@ -65,8 +66,7 @@ function generate_new_observations(ntimes){
     recompute_partition_function();
     recompute_partition_function(TRUE_THETA,TRUE_Z_THETA);
     sample_from_true(ntimes);
-    //some clean up
-    //$$(".feature_slider").forEach(function(t){t.onchange();});
+    compute_max_prob(COUNTS,MAX_EMP_PROB,MAX_EMP_PROB_TYPE,MAX_EMP_AREA);
     updateObservedImages();
     svg_loaded=1;
     redraw_all();
@@ -199,6 +199,10 @@ function record_data(rows,already_created){
     	$$(".feature_slider").forEach(function(t){t.onchange();});
     }
     recompute_partition_function(THETA,Z_THETA);
+    compute_max_prob(COUNTS,MAX_EMP_PROB,MAX_EMP_PROB_TYPE,MAX_EMP_AREA);
+    //compute the true partition function
+    console.log('computing true partition');
+    recompute_partition_function(TRUE_THETA,TRUE_Z_THETA);
     console.log(Z_THETA);
     //draw the data here!
     if(!already_created){
@@ -207,12 +211,10 @@ function record_data(rows,already_created){
     	updateObservedImages();
     }
     svg_loaded=1;
-    //compute the true partition function
-    console.log('computing true partition');
-    recompute_partition_function(TRUE_THETA,TRUE_Z_THETA);
     //compute expected counts
     console.log('computing expected');
-    recompute_expected_counts();
+    recompute_expected_counts(); 
+    compute_max_prob(EXPECTED_COUNTS,MAX_EXP_EMP_PROB,MAX_EXP_EMP_PROB_TYPE,MAX_EXP_EMP_AREA);
     //so that we can draw in the expected images
     console.log('redrawing expected');
     redrawAllExpected();
@@ -377,7 +379,7 @@ function formatExpected(ecp){
 
 function determine_color(obs,exp){
     if(Math.abs(obs-exp)<0.01){
-	return COUNTS_EQUAL
+	return COUNTS_EQUAL;
     } else{
 	if(obs>exp) return COUNTS_TOO_LOW;
 	else return COUNTS_TOO_HIGH;
@@ -976,14 +978,15 @@ function createCircleRadius(count,max_count,scale){
     //when maximal, I want radius to be half of height
     //I need to absorb the 1/Math.sqrt(Math.PI) into the scale...
     //so don't even bother including it
-    return Math.sqrt(count/max_count)*(scale-1);
+    return Math.sqrt(count/(max_count*Math.PI));
+    //return Math.sqrt(count/(max_count*Math.PI))*(scale-1);
 }
 
 function createTrianglePoints(cx,width,cy,height,count,max_count,scale){
     var points=[];
     //var side=Math.sqrt(4*count/(Math.sqrt(3)*max_count));
-    //check this...
-    var r = Math.sqrt(count/max_count * 8/(3*Math.sqrt(3)))*2*scale/3;
+    var r = Math.sqrt(3)/3 * Math.sqrt(4*count/(Math.sqrt(3)*max_count));
+    //var r = Math.sqrt(count/max_count * 8/(3*Math.sqrt(3)))*2*scale/3;
     //var r=side/Math.sqrt(3) * scale;
     points.push([cx,height/2 - r]);
     points.push([cx - r * Math.sqrt(3)/2, cy + r/2]);
@@ -1002,7 +1005,7 @@ function updateD3Shape(container, id_num, id_name, width,height,shape,color,fill
     } else if(shape=="square"){
 	s=container.selectAll('#'+id_name).data([count]);
 	var rwid, rhei;
-	rwid = Math.sqrt(count/max_count)*2*scale;
+	rwid = Math.sqrt(count/max_count)*scale;
 	rhei=rwid;
 	s.attr('x',(width-rwid)/2)
 	    .attr("y",(height-rhei)/2)
@@ -1034,6 +1037,9 @@ function updateD3Shape(container, id_num, id_name, width,height,shape,color,fill
 }
 
 function createD3Shape(container, id_num, id_name, width,height,shape,color,fill,count,max_count,opacity){
+    console.log('count is '+count);
+    console.log('max_count is '+max_count);
+    console.log(' ');
     if(fill=='striped'){
 	var cloned=$('stripe_def').cloneNode(true);
 	cloned.setAttribute('id','stripe_def_'+id_name);
@@ -1049,6 +1055,7 @@ function createD3Shape(container, id_num, id_name, width,height,shape,color,fill
 	s.attr('cx',width/2)
 	    .attr('cy',height/2)
 	    .attr('r', createCircleRadius(count,max_count,scale));
+	console.log('for id='+id_num+', rad='+createCircleRadius(count,max_count,scale));
     } else if(shape=="square"){
 	s=container.selectAll('#'+id_name).data([count]).enter().append("rect");
 	var rwid, rhei;
@@ -1114,6 +1121,10 @@ function INVERSE_FEATURE_LOOKUP(context,val){
     return isNumber(ret)?ret:-1;
 }
 
+function get_empirical_prob(context,id_num){
+    return COUNTS[context][id_num]/NUM_TOKENS_C[context];
+}
+
 //id_num is type_id!!!
 function get_prob(context,id_num,log,theta){
     var ret = 0; var print=0;
@@ -1143,6 +1154,42 @@ function get_prob(context,id_num,log,theta){
 	console.log('------------');
     }
     return log?ret:Math.exp(ret);
+}
+
+//get's max empirical prob
+function compute_max_prob(counts,mep,mept,mea){
+    for(var c=0;c<CONTEXTS.length;c++){
+	var obs_in_c=TYPE_OBSERVATIONS_IN_C[c];
+	var max_prob=0; mep[c]=0;
+	//go through type IDs
+	for(var i=0;i<obs_in_c.length;i++){
+	    var id_num=obs_in_c[i];
+	    var p = counts[c][id_num]/NUM_TOKENS_C[c];
+	    if(p>mep[c]){
+		mep[c]=p;
+		mept[c]=id_num;
+	    }
+	    console.log('id_num='+id_num+', p='+p);
+	}
+    }
+    //now go through and compute/store the area
+    for(var c=0;c<CONTEXTS.length;c++){
+	var index = mept[c];
+	var mp = mep[c];
+	var vis=VISUALS[c][index];
+	var shape=vis['shape'];
+	if(shape=="circle"){
+	    mea[c] = SVG_HEIGHT*SVG_WIDTH*mp; //Math.PI*Math.pow(SVG_HEIGHT/2-1,2);
+	} else if(shape=="square"){
+	    mea[c] = SVG_HEIGHT*SVG_WIDTH*mp;
+	} else if(shape=="tri" || shape=="triangle"){
+	    mea[c] = SVG_HEIGHT*SVG_WIDTH*mp;//3*Math.sqrt(3)/4*Math.pow(SVG_HEIGHT/2-1,2);
+	} else if(shape=="pentagon"){
+	    //ZZZ
+	    mea[c] = 5/2*.96;
+	}
+
+    }
 }
 
 function get_expected_count(context,id_num){
@@ -1178,11 +1225,12 @@ function drawExpectedData(context, i, container){
 	}
     }
     if(! $("exp_count_pic_"+context+'_'+i)){
-	var exp_count_pic = createD3Shape(container,i,'exp_count_pic_'+context+'_'+i,SVG_WIDTH,SVG_HEIGHT,shapen,color,fill,exp_count+1,max_count+1);
+	var exp_count_pic = createD3Shape(container,i,'exp_count_pic_'+context+'_'+i,SVG_WIDTH,SVG_HEIGHT,shapen,color,fill,exp_count/NUM_TOKENS_C[context],MAX_EXP_EMP_PROB[context]/MAX_EXP_EMP_AREA[context],EXPECTED_TRANSPARENCY);
 	exp_count_pic.attr('id','exp_count_pic_'+context+'_'+i);
     } else{
 	//otherwise, update it...
-	updateD3Shape(container,i,'exp_count_pic_'+context+'_'+i,SVG_WIDTH,SVG_HEIGHT,shapen,color,fill,exp_count+1,max_count+1);
+	//updateD3Shape(container,i,'exp_count_pic_'+context+'_'+i,SVG_WIDTH,SVG_HEIGHT,shapen,color,fill,get_prob(context,i)/Z_THETA[context],max_prob);
+	updateD3Shape(container,i,'exp_count_pic_'+context+'_'+i,SVG_WIDTH,SVG_HEIGHT,shapen,color,fill,exp_count/NUM_TOKENS_C[context],MAX_EXP_EMP_PROB[context]/MAX_EXP_EMP_AREA[context]);
     }
 }
 
@@ -1202,7 +1250,7 @@ function updateObservedImages(){
 		mcpc[c]=Math.max(mcpc[c],COUNTS[c][k]);
 	    }
 	}
-	var s=updateD3Shape(d3.select('#observed_point_context_'+c+'_'+j),j,'obs_count_pic_'+c+'_'+j,SVG_WIDTH,SVG_HEIGHT,VISUALS[c][j]['shape'],'gray','hollow',count,mcpc[c]);
+	var s=updateD3Shape(d3.select('#observed_point_context_'+c+'_'+j),j,'obs_count_pic_'+c+'_'+j,SVG_WIDTH,SVG_HEIGHT,VISUALS[c][j]['shape'],'gray','hollow',get_prob(c,j,0,TRUE_THETA)/TRUE_Z_THETA[c],max_prob);
 	s.attr('stroke-opacity',1).attr('stroke-width',3);
 	$('obs_count_text_'+i).innerHTML=count;
     }
@@ -1347,7 +1395,7 @@ function drawSVGBoxes(selectObj){
 			max_count=COUNTS[c][other];
 		    }
 		}
-		var shape = createD3Shape(svg, type_id, 'obs_count_pic_'+c+'_'+type_id, width,height,shapen,'gray','hollow',obs_count+1,max_count+1,1);
+		var shape = createD3Shape(svg, type_id, 'obs_count_pic_'+c+'_'+type_id, width,height,shapen,'gray','hollow',get_empirical_prob(c,type_id),MAX_EMP_PROB[c]/MAX_EMP_AREA[c],1);
 		shape.attr('stroke-opacity',1).attr('stroke-width',3);
 		shape.attr('id','obs_count_pic_'+c+'_'+type_id);
 	    } //end for over columns

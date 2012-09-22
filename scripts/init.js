@@ -76,6 +76,14 @@ THETA_STRENGTH=[];
 INVERSE_THETA_MAP={};
 TRUE_THETA=[];
 
+MAX_EXP_EMP_PROB=[];
+MAX_EXP_EMP_PROB_TYPE=[];
+MAX_EXP_EMP_AREA=[];
+
+MAX_EMP_PROB=[];
+MAX_EMP_PROB_TYPE=[];
+MAX_EMP_AREA=[];
+
 //feature ID number -> float
 GRADIENT=[];
 OBS_FEAT_COUNT=[];
@@ -190,6 +198,10 @@ function reset_data_structures(full){
 	NUM_TOKENS_C[c]=0;
     }
 
+    MAX_EMP_PROB=[];
+    MAX_EMP_PROB_TYPE=[];
+    MAX_EMP_AREA=[];
+
     //feature ID number -> float
     GRADIENT=GRADIENT.map(function(d){return d-d;});
     OBS_FEAT_COUNT=OBS_FEAT_COUNT.map(function(d){return d-d;});
@@ -214,6 +226,8 @@ function reset_data_structures(full){
     gradients_drawn = 0;
 
 }
+
+max_prob=1;
 
 //load current lesson
 function load_lesson(initial){
