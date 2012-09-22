@@ -137,7 +137,7 @@ GRAD_HIGH_C='blue';
 slider_width = 155;
 handle_width = 12;
 sigmoid_y_define_ratio = 7.0/8.0;
-sigmoid_x_define = Math.PI; 
+sigmoid_x_define = Math.sqrt(2); 
 SIGMOID_CONSTANT = 1/sigmoid_x_define * Math.log(sigmoid_y_define_ratio/(1-sigmoid_y_define_ratio));
 
 initialize=0;
