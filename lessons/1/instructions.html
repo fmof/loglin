@@ -1,13 +1,13 @@
 <div id="welcome" class="showable_instructions">
   <p>Welcome!  This interactive visualization will help you understand
   the popular technique of log-linear modeling.  For a quick intro
-  with the simple defining formulas, consult the second half
+  to the simple defining formulas, consult the second half
   of <A HREF="http://cs.jhu.edu/~jason/465/hw-prob/hw-prob.pdf">this
-  homework</A>.</p>
+  homework handout</A>.</p>
 </div>
 
 <div id="p1" class="showable_instructions">
-  <p>The sliders below control the parameters ("weights") of a log-linear model.
+  <p><b>Try it out:</b> The sliders below control the parameters ("weights") of a log-linear model.
     When you increase the <i>circle</i> weight, which filled shapes get
     bigger?  Which ones get smaller?</p>
 </div>
@@ -23,20 +23,38 @@
 </div>
 
 <div id="p1" class="showable_instructions">
-  <p>Your model is defining a probability for each shape, shown by the
-    area of the shape.  When the weights are 0, all 4 shapes are equally likely
-    (probability 1/4).</p>
+  <p><b>What the picture means:</b> Your model is defining a
+    probability for each shape.  When the weights are 0, all 4 shapes
+    have equal probability of 1/4.  This is shown by their equal
+    areas.</p>
 
   <p>But the <i>empirical</i> probability of solid circles is 1/2, because
   30 of the 60 shapes in your <i>training data</i> are solid circles.
-  This "target" of 1/2 is shown by the area outlined in gray.</p>
+  This "target" of 1/2 is shown by the larger area outlined in gray.</p>
 
   <p>When your model says that <i>p</i>(solid circle) = 1/4, then it
     incorrectly expects only about 15 of 60
   shapes to be solid circles.  The <i>observed count</i> of 30 and the
   <i>expected count</i> of 15 are contrasted in the solid circle box.
-  You are trying to make them match.  So fix your model by increasing
-  the <i>circle</i> weight!</p>
+  By increasing the <i>circle</i> weight, you can improve your model
+  until it predicts the observed count of 30.</p>
+
+  <p><b>Activity 1: </b>What weights are needed to approximately match
+  the training data?  (All 4 shapes will match their outlines and turn
+  gray, and their expected counts will equal their observed counts.)</p>
+
+  <p><b>Activity 2:</b> Use the sliders to try the following weight
+    settings.  In each case, can you calculate the probabilities of
+    the four shapes, using the log-linear formula when needed?
+    <ol type="a">
+      <li><i>circle</i> = 1, <i>solid</i> = 1
+      <li><i>circle</i> = 1, <i>solid</i> = -1
+      <li><i>circle</i> = 1, <i>solid</i> = &infin;
+      <li><i>circle</i> = 1, <i>solid</i> = -&infin;
+      <li><i>circle</i> = &infin;, <i>solid</i> = -&infin;
+    </ol>
+    How could you make each solid shape be exactly twice as big as its
+    striped counterpart?</p>
 
   <p>When you're done playing, click "Next Lesson" above.</p>
 </div>
