@@ -212,29 +212,24 @@ function record_data(rows,already_created){
     }
     svg_loaded=1;
     //compute expected counts
-    console.log('computing expected');
+    //console.log('computing expected');
     recompute_expected_counts(); 
     compute_max_prob(EXPECTED_COUNTS,MAX_EXP_EMP_PROB,MAX_EXP_EMP_PROB_TYPE,MAX_EXP_EMP_AREA);
     //so that we can draw in the expected images
-    console.log('redrawing expected');
+    //console.log('redrawing expected');
     redrawAllExpected();
     //and, more importantly, the loglikelihood score bar
-    console.log('computing ll');
+    //console.log('computing ll');
     compute_ll();
-    console.log('... then ll of true');
+    //console.log('... then ll of true');
     compute_ll(TRUE_THETA,TRUE_Z_THETA,TRUE_LOG_LIKELIHOOD, TRUE_REGULARIZATION);
-    console.log('... then gradient');
+    //console.log('... then gradient');
     compute_gradient();
-    /*console.log('gradient is ');
-    console.log(GRADIENT);	 
-    console.log(OBS_FEAT_COUNT);
-    console.log(EXP_FEAT_COUNT);
-    console.log(REG_FOR_GRAD);*/
     
     if(!already_created){
-	console.log('add ll bars...');
+	//console.log('add ll bars...');
      	addLLBar();
-	console.log('..done');
+	//console.log('..done');
     } else{
     	updateLLBar();
     }
@@ -351,7 +346,6 @@ function addSliderEffects(){
 		load_html5_slider(this,SLIDER_DIV);
 	    };
 	    group[i].onchange = tmpfn;
-	    console.log(group[i]);
 	    group[i].parentNode.childNodes[0].childNodes[1].ondrag=handle_tmpfn;
 	    group[i].onchange();
 	    var theta_index = group[i].parentNode.parentNode.childNodes[0].getAttribute('theta_index');
@@ -553,8 +547,11 @@ function generate_gradient_style(npcs){
 }
 
 function draw_true_theta_on_slider(tt){
-    var t=[[tt-1.0001,'#FFFFFF'],[tt-1, col_for_true_theta],
-	   [tt+1, col_for_true_theta],[tt+1.0001,'#FFFFFF']];
+    /*var t=[[tt-1.0001,'#FFFFFF'],[tt-1, col_for_true_theta],
+      [tt+1, col_for_true_theta],[tt+1.0001,'#FFFFFF']];*/
+    var sh=50.5;
+    var t=[[sh-1.0001,'#FFFFFF'],[sh-1, '#000000'],
+	   [sh+1, '#000000'],[sh+1.0001,'#FFFFFF']];
     return generate_gradient_style(t);
 }
 
@@ -569,7 +566,7 @@ function clear_gradient_color(){
 function draw_gradient(){
     if(!SHOW_GRADIENTS){
 	var slds = $$(".slider");
-	if(slds){// && (gradients_drawn || has_cheated)){
+	if(slds){
 	    for(var i=0;i<slds.length;i++){	
 		var g = slds[i].parentNode.parentNode.childNodes[0];
 		var theta_id = parseInt(g.getAttribute('theta_index'));
@@ -793,7 +790,7 @@ function addLLBar(){
     //    console.log('ll is '+ll+', '+resizer(ll[0]));
     //console.log('tll is '+tll+', '+resizer(tll[0]));
     var llrects=svg.selectAll(".ll_bar").data(ll).enter().append("rect");
-    llrects.attr('x',0)
+    llrects.attr('x',70)
 	.attr('width',function(d,i){
 		return resizer(d);
 	    })
@@ -807,7 +804,7 @@ function addLLBar(){
 	    })
 	.attr('class','ll_bar');
     var tllrects=svg.selectAll(".true_ll_bar").data(tll).enter().append("rect");
-    tllrects.attr('x',0)
+    tllrects.attr('x',70)
 	.attr('width',function(d,i){
 		return resizer(d);
 	    })
@@ -837,6 +834,31 @@ function addLLBar(){
     addLLRegBars(svg,TRUE_LOG_LIKELIHOOD,tll,'true_reg_bar',regdata,function(d,i){return (2*i+1)*20;},resizer);
 
     //add the text LAST!!!
+    var lllegend=svg.selectAll(".ll_legend").data([0]).enter().append("text");
+     lllegend.text('Current LL: ')
+	 .attr('x',0)
+	.attr('y',function(d,i){
+		return (2*i+1)*20 - 7;
+	    })
+	.attr('stroke','gray')
+	.attr('fill',function(d){
+		return "gray";
+	    });
+     lllegend.attr('id','ll_legend');
+     var tlllegend=svg.selectAll("#true_ll_legend").data(['True LL: ']).enter().append("text");
+     tlllegend.text(function(d){
+	     return d;
+	 })
+	 .attr('x',0)
+	 .attr('y',function(d,i){
+		 return (2*i+2)*20 - 7;
+	     })
+	 .attr('stroke',TRUE_MODEL_COLOR)
+	 .attr('fill',function(d){
+		 return TRUE_MODEL_COLOR;
+	     })
+	 .attr('id','true_ll_legend');
+     
      var lltext=svg.selectAll(".ll_text").data(LOG_LIKELIHOOD).enter().append("text");
      lltext.text(function(d){
 	     return d.toFixed(3);
@@ -851,7 +873,7 @@ function addLLBar(){
 	.attr('fill',function(d){
 		return "gray";
 	    });
-     lltext.attr('class','ll_text');
+     lltext.attr('id','ll_text');
     var tlltext=svg.selectAll("#true_ll_text").data(TRUE_LOG_LIKELIHOOD).enter().append("text");
     tlltext.text(function(d){
 	    return d.toFixed(3);
@@ -866,7 +888,7 @@ function addLLBar(){
 	.attr('fill',function(d){
 		return TRUE_MODEL_COLOR;
 	    })
-	.attr('class','true_ll_text');
+	.attr('id','true_ll_text');
 
 }
 
@@ -935,8 +957,7 @@ function updateLLBar(){
     var resizer = ll_resizer(worst_ll,overall_max);
 
     var llrects=svg.selectAll(".ll_bar").data(ll);
-    llrects.attr('x',0)
-	.attr('width',function(d,i){
+    llrects.attr('width',function(d,i){
 		return resizer(d);
 	    })
 	.attr('y',function(d,i){
@@ -953,8 +974,7 @@ function updateLLBar(){
 		return (2*i+1)*20 - 7;
 	    });
     var tllrects=svg.selectAll(".true_ll_bar").data(tll);
-    tllrects.attr('x',0)
-	.attr('width',function(d,i){
+    tllrects.attr('width',function(d,i){
 		return resizer(d);
 	    })
 	.attr('y',function(d,i){
@@ -1021,8 +1041,6 @@ function createPentagonPoints(cx,width,cy,height,count,max_count,scale){
     points.push([cx+a/2,cy+b]);
     points.push([cx-a/2,cy+b]);
     points.push([cx-xt,cy-yt]);
-    console.log('pentagon a='+a+', r='+r);
-    console.log('points '+points);
     return points;
 }
 
@@ -1030,9 +1048,11 @@ function createTrianglePoints(cx,width,cy,height,count,max_count,scale){
     var points=[];
     //var side=Math.sqrt(4*count/(Math.sqrt(3)*max_count));
     var r = Math.sqrt(3)/3 * Math.sqrt(4*count/(Math.sqrt(3)*max_count));
+    var d = (height - 1.5*r)/2;
+    cy=r+d;
     //var r = Math.sqrt(count/max_count * 8/(3*Math.sqrt(3)))*2*scale/3;
     //var r=side/Math.sqrt(3) * scale;
-    points.push([cx,height/2 - r]);
+    points.push([cx,cy - r]);
     points.push([cx - r * Math.sqrt(3)/2, cy + r/2]);
     points.push([cx + r * Math.sqrt(3)/2, cy + r/2]);
     return points;
@@ -1059,7 +1079,7 @@ function updateD3Shape(container, id_num, id_name, width,height,shape,color,fill
 	s=container.selectAll('#'+id_name).data([count]);
 	s.attr('points',createTrianglePoints(width/2,width,height/2,height,count,max_count,scale).map(function(d){return d.join(",");}).join(" "));
     }  else if(shape=="pentagon"){
-	s=container.selectAll('#'+id_name).data([count]).enter().append("polygon");
+	s=container.selectAll('#'+id_name).data([count]);
 	s.attr('points',createPentagonPoints(width/2,width,height/2,height,count,max_count,scale).map(function(d){return d.join(",");}).join(" "));
     }
     s.attr('stroke',color);
@@ -1172,6 +1192,7 @@ function get_prob(context,id_num,log,theta){
     for(var i=0;i<data.length;i++){
 	var ifl=INVERSE_FEATURE_LOOKUP(context,data[i]);
 	if(ifl>=0){
+	    //console.log("\tadding "+data[i]);
 	    ret += theta[ifl]*THETA_STRENGTH[ifl];
 	} 
 	if((ifl=INVERSE_FEATURE_LIST[['',data[i]]])!=undefined){
@@ -1208,7 +1229,8 @@ function compute_max_prob(counts,mep,mept,mea){
     for(var c=0;c<CONTEXTS.length;c++){
 	var index = mept[c];
 	var mp = mep[c];
-	var vis=VISUALS[c][index];
+	mea[c]=SVG_HEIGHT*SVG_WIDTH*mp;
+	/*var vis=VISUALS[c][index];
 	var shape=vis['shape'];
 	if(shape=="circle"){
 	    mea[c] = SVG_HEIGHT*SVG_WIDTH*mp; //Math.PI*Math.pow(SVG_HEIGHT/2-1,2);
@@ -1217,9 +1239,8 @@ function compute_max_prob(counts,mep,mept,mea){
 	} else if(shape=="tri" || shape=="triangle"){
 	    mea[c] = SVG_HEIGHT*SVG_WIDTH*mp;//3*Math.sqrt(3)/4*Math.pow(SVG_HEIGHT/2-1,2);
 	} else if(shape=="pentagon"){
-	    //ZZZ
 	    mea[c] = SVG_HEIGHT*SVG_WIDTH*mp;
-	}
+	}*/
 
     }
 }
