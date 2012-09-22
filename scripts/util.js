@@ -450,7 +450,7 @@ function step_gradient(solve_step){
     redraw_all();
 }
 
-function converged1(prev_ll,step_size){
+function converged(prev_ll,step_size){
     var good=true;
     return sum(GRADIENT.map(function(d){return d*d;})) < STOPPING_EPS;
 }
@@ -1058,8 +1058,9 @@ function createTrianglePoints(cx,width,cy,height,count,max_count,scale){
     var points=[];
     //var side=Math.sqrt(4*count/(Math.sqrt(3)*max_count));
     var r = Math.sqrt(3)/3 * Math.sqrt(4*count/(Math.sqrt(3)*max_count));
-    var d = (height - 1.5*r)/2;
-    cy=r+d;
+    console.log(height);
+    //var d = (height - 1.5*r)/2;
+    //cy=r+d;
     //var r = Math.sqrt(count/max_count * 8/(3*Math.sqrt(3)))*2*scale/3;
     //var r=side/Math.sqrt(3) * scale;
     points.push([cx,cy - r]);

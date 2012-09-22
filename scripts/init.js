@@ -270,7 +270,7 @@ function setDeceleratingTimeout( callback, factor, times ){
     }( times, 0 );
     window.setTimeout( internalCallback, factor );
 };
-setDeceleratingTimeout( function(){ console.log( 'hi' );}, 10, 10 );
+//setDeceleratingTimeout( function(){ console.log( 'hi' );}, 10, 10 );
 
 window.onload = function(){
     var group;
