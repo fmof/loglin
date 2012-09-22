@@ -242,7 +242,7 @@ function load_lesson(initial){
 	jQuery('#ll_area').empty();
 	jQuery('#feature_table').empty();
 	//redisplay some things...
-	$('cheat_button').style.display="block";
+	$('cheat_button').style.display="none";
     }
     TRUE_THETA_PATH = 'lessons/'+CURRENT_LESSON+'/theta';
     OBSERVATION_PATH = 'lessons/'+CURRENT_LESSON+'/observations';    
@@ -378,6 +378,7 @@ window.onload = function(){
 		}
     	    }
     	};
+	$('cheat_button').style.display='none';
     }
 
     if($('delay_normalization')){

@@ -70,6 +70,7 @@ function generate_new_observations(ntimes){
     updateObservedImages();
     svg_loaded=1;
     redraw_all();
+    $('cheat_button').style.display='block';
 }
 
 
@@ -390,11 +391,9 @@ function formatExpected(ecp){
 }
 
 function determine_color(p_emp,p_mod){
-    console.log(p_emp+', '+p_mod);
     if(p_emp == 0){ return COUNTS_EQUAL;}
     if(p_mod ==0){ return COUNTS_TOO_LOW;}
     var arg = p_emp * Math.log(p_emp/p_mod);
-    console.log(arg);
     if(Math.abs(arg)<.01)
 	return COUNTS_EQUAL;
     if(arg>0)
@@ -1305,14 +1304,8 @@ function updateObservedImages(){
 	var c = s[3] ; //get context -- X
 	var j = s[4] ; //get type_id -- Y
 	var count = COUNTS[c][j];
-	if(mcpc[c]==undefined){
-	    //get max count
-	    mcpc[c]=-1;
-	    for(var k in COUNTS[c]){
-		mcpc[c]=Math.max(mcpc[c],COUNTS[c][k]);
-	    }
-	}
-	var s=updateD3Shape(d3.select('#observed_point_context_'+c+'_'+j),j,'obs_count_pic_'+c+'_'+j,SVG_WIDTH,SVG_HEIGHT,VISUALS[c][j]['shape'],'gray','hollow',get_prob(c,j,0,TRUE_THETA)/TRUE_Z_THETA[c],max_prob);
+	console.log(count);
+	var s=updateD3Shape(d3.select('#observed_point_context_'+c+'_'+j),j,'obs_count_pic_'+c+'_'+j,SVG_WIDTH,SVG_HEIGHT,VISUALS[c][j]['shape'],'gray','hollow',get_empirical_prob(c,j),MAX_EMP_PROB[c]/MAX_EMP_AREA[c]);
 	s.attr('stroke-opacity',1).attr('stroke-width',3);
 	$('obs_count_text_'+i).innerHTML=count;
     }
