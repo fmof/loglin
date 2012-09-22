@@ -390,11 +390,12 @@ function formatExpected(ecp){
 }
 
 function determine_color(p_emp,p_mod){
+    console.log(p_emp+', '+p_mod);
     if(p_emp == 0){ return COUNTS_EQUAL;}
     if(p_mod ==0){ return COUNTS_TOO_LOW;}
-    var arg = p_emp - Math.log(p_emp/p_mod);
-    //    console.log(Math.abs(arg));
-    if(Math.abs(arg)<.5)
+    var arg = p_emp * Math.log(p_emp/p_mod);
+    console.log(arg);
+    if(Math.abs(arg)<.01)
 	return COUNTS_EQUAL;
     if(arg>0)
 	return COUNTS_TOO_LOW;
@@ -769,7 +770,7 @@ function addFeaturesToList(selectObj, array){
 function ll_resizer(min,max){
     var m = (.95-.25)*DIV_LL_WIDTH / (max-min);
     return function(l){
-	return m * (l - max) + (.95*DIV_LL_WIDTH);
+	return m * (l - max) + (.95*DIV_LL_WIDTH) ;
     };
 };
 
@@ -841,7 +842,7 @@ function addLLBar(){
     addLLRegBars(svg,TRUE_LOG_LIKELIHOOD,tll,'true_reg_bar',regdata,function(d,i){return (2*i+1)*20;},resizer);
 
     //add the text LAST!!!
-    var lllegend=svg.selectAll(".ll_legend").data([0]).enter().append("text");
+    var lllegend=svg.selectAll("#ll_legend").data([0]).enter().append("text");
      lllegend.text('Current LL: ')
 	 .attr('x',0)
 	.attr('y',function(d,i){
@@ -866,7 +867,7 @@ function addLLBar(){
 	     })
 	 .attr('id','true_ll_legend');
      
-     var lltext=svg.selectAll(".ll_text").data(LOG_LIKELIHOOD).enter().append("text");
+     var lltext=svg.selectAll("#ll_text").data(LOG_LIKELIHOOD).enter().append("text");
      lltext.text(function(d){
 	     return d.toFixed(3);
 	 })
@@ -1202,7 +1203,7 @@ function get_prob(context,id_num,log,theta){
 	    //console.log("\tadding "+data[i]);
 	    ret += theta[ifl]*THETA_STRENGTH[ifl];
 	} 
-	if((ifl=INVERSE_FEATURE_LIST[['',data[i]]])!=undefined){
+	if(CONTEXTS[context]!='' && (ifl=INVERSE_FEATURE_LIST[['',data[i]]])!=undefined){
 	    ret += theta[ifl]*THETA_STRENGTH[ifl];
 	}
 	if((ifl=INVERSE_FEATURE_LIST[[CONTEXTS[context],'']])!=undefined){
