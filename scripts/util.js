@@ -338,10 +338,20 @@ function addSliderEffects(){
 		load_html5_slider(this.parentNode.parentNode.childNodes[1],SLIDER_DIV);
 	    };
 	    var tmpfn=function(){
-		this.value = inverse_sigmoid(parseFloat(this.parentNode.childNodes[0].childNodes[1].style['left'] + handle_width/2));
+		if(window.event){
+		    if(window.event.type=="change"){
+			if(isNumber(this.value) && parseFloat(this.value))
+			    this.value = parseFloat(this.value);
+			else
+			    this.value = inverse_sigmoid(parseFloat(this.parentNode.childNodes[0].childNodes[1].style['left'] + handle_width/2));
+		    }
+		} else{
+		    this.value = inverse_sigmoid(parseFloat(this.parentNode.childNodes[0].childNodes[1].style['left'] + handle_width/2));
+		}
 		load_html5_slider(this,SLIDER_DIV);
 	    };
 	    group[i].onchange = tmpfn;
+	    console.log(group[i]);
 	    group[i].parentNode.childNodes[0].childNodes[1].ondrag=handle_tmpfn;
 	    group[i].onchange();
 	    var theta_index = group[i].parentNode.parentNode.childNodes[0].getAttribute('theta_index');
@@ -373,17 +383,26 @@ function recompute_partition_function(theta,ztheta){
 }
 
 function formatExpected(ecp){
-    //return (ecp > 1.0)?Math.round(ecp):ecp.toFixed(2);
-    return ecp.toFixed(2);
+    return (ecp > 1.0)?Math.round(ecp):ecp.toFixed(2);
 }
 
-function determine_color(obs,exp){
+function determine_color(p_emp,p_mod){
+    if(p_emp == 0){ return COUNTS_EQUAL;}
+    if(p_mod ==0){ return COUNTS_TOO_LOW;}
+    var arg = p_emp - Math.log(p_emp/p_mod);
+    //    console.log(Math.abs(arg));
+    if(Math.abs(arg)<.5)
+	return COUNTS_EQUAL;
+    if(arg>0)
+	return COUNTS_TOO_LOW;
+    return COUNTS_TOO_HIGH;
+    /*
     if(Math.abs(obs-exp)<0.01){
 	return COUNTS_EQUAL;
     } else{
 	if(obs>exp) return COUNTS_TOO_LOW;
 	else return COUNTS_TOO_HIGH;
-    }
+	}*/
 }
 
 function recompute_expected_counts(){
@@ -395,7 +414,8 @@ function recompute_expected_counts(){
 	    var p=$('exp_count_text_context_'+c+'_'+id_num); var ecp=get_expected_count(c,id_num);
 	    EXPECTED_COUNTS[c][id_num]=ecp;
 	    var obs_count = COUNTS[c][id_num];
-	    var color=determine_color(obs_count,ecp);
+	    var color = determine_color(get_empirical_prob(c,id_num),get_prob(c,id_num)/Z_THETA[c]);
+	    //var color=determine_color(obs_count,ecp);
 	    p.innerHTML =  color==COUNTS_EQUAL?obs_count:formatExpected(ecp);
 	    p.style.color=color;
 	    p.setAttribute('dirty',0);
@@ -1037,9 +1057,9 @@ function updateD3Shape(container, id_num, id_name, width,height,shape,color,fill
 }
 
 function createD3Shape(container, id_num, id_name, width,height,shape,color,fill,count,max_count,opacity){
-    console.log('count is '+count);
-    console.log('max_count is '+max_count);
-    console.log(' ');
+    //    console.log('count is '+count);
+    //console.log('max_count is '+max_count);
+    //console.log(' ');
     if(fill=='striped'){
 	var cloned=$('stripe_def').cloneNode(true);
 	cloned.setAttribute('id','stripe_def_'+id_name);
@@ -1055,7 +1075,7 @@ function createD3Shape(container, id_num, id_name, width,height,shape,color,fill
 	s.attr('cx',width/2)
 	    .attr('cy',height/2)
 	    .attr('r', createCircleRadius(count,max_count,scale));
-	console.log('for id='+id_num+', rad='+createCircleRadius(count,max_count,scale));
+	//console.log('for id='+id_num+', rad='+createCircleRadius(count,max_count,scale));
     } else if(shape=="square"){
 	s=container.selectAll('#'+id_name).data([count]).enter().append("rect");
 	var rwid, rhei;
@@ -1169,7 +1189,7 @@ function compute_max_prob(counts,mep,mept,mea){
 		mep[c]=p;
 		mept[c]=id_num;
 	    }
-	    console.log('id_num='+id_num+', p='+p);
+	    //console.log('id_num='+id_num+', p='+p);
 	}
     }
     //now go through and compute/store the area
@@ -1215,8 +1235,9 @@ function drawExpectedData(context, i, container){
     var fill=vis['fill'];
     var shapen = vis['shape'];
     var obs_count = COUNTS[context][i];
-    var exp_count = EXPECTED_COUNTS[context][i];
-    var color=determine_color(obs_count,exp_count);
+    var exp_count = EXPECTED_COUNTS[context][i];	    
+    var color = determine_color(get_empirical_prob(context,i),get_prob(context,i)/Z_THETA[context]);
+    //var color=determine_color(obs_count,exp_count);
     //scale by the max observed count...
     var max_count=-1;
     for(var other in COUNTS[context]){
@@ -1373,7 +1394,8 @@ function drawSVGBoxes(selectObj){
 		exp_count_p.setAttribute('dirty',1);
 		exp_count_p.id = 'exp_count_text_context_'+c+'_'+type_id;
 		exp_count_p.className += ' count_text expected_count_text';
-		var color=determine_color(obs_count,ecp);
+		var color = determine_color(get_empirical_prob(c,type_id),get_prob(c,type_id)/Z_THETA[c]);
+		//var color=determine_color(obs_count,ecp);
 		var vis = VISUALS[c][type_id];
 		var fill=vis['fill'];
 		exp_count_p.style.color=color;
