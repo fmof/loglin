@@ -767,9 +767,9 @@ function addFeaturesToList(selectObj, array){
 }
 
 function ll_resizer(min,max){
-    var m = (.95-.25)*DIV_LL_WIDTH / (max-min);
+    var m = (.85-.25)*DIV_LL_WIDTH / (max-min);
     return function(l){
-	return m * (l - max) + (.95*DIV_LL_WIDTH) + 70;
+	return m * (l - max) + (.85*DIV_LL_WIDTH) + 70;
     };
 };
 
@@ -792,10 +792,6 @@ function addLLBar(){
     if(max_t_ll >= max_u_ll){
     } else{
     }
-    //    console.log(TRUE_LOG_LIKELIHOOD.map(resizer));
-    //console.log(LOG_LIKELIHOOD.map(resizer));
-    //    console.log('ll is '+ll+', '+resizer(ll[0]));
-    //console.log('tll is '+tll+', '+resizer(tll[0]));
     var llrects=svg.selectAll(".ll_bar").data(ll).enter().append("rect");
     llrects.attr('x',70)
 	.attr('width',function(d,i){
@@ -865,8 +861,8 @@ function addLLBar(){
 		 return TRUE_MODEL_COLOR;
 	     })
 	 .attr('id','true_ll_legend');
-     
-     var lltext=svg.selectAll("#ll_text").data(LOG_LIKELIHOOD).enter().append("text");
+    
+     var lltext=svg.selectAll(".ll_text").data(LOG_LIKELIHOOD).enter().append("text");
      lltext.text(function(d){
 	     return d.toFixed(3);
 	 })
@@ -880,8 +876,8 @@ function addLLBar(){
 	.attr('fill',function(d){
 		return "gray";
 	    });
-     lltext.attr('id','ll_text');
-    var tlltext=svg.selectAll("#true_ll_text").data(TRUE_LOG_LIKELIHOOD).enter().append("text");
+     lltext.attr('class','ll_text');
+    var tlltext=svg.selectAll(".true_ll_text").data(TRUE_LOG_LIKELIHOOD).enter().append("text");
     tlltext.text(function(d){
 	    return d.toFixed(3);
 	})
@@ -895,14 +891,14 @@ function addLLBar(){
 	.attr('fill',function(d){
 		return TRUE_MODEL_COLOR;
 	    })
-	.attr('id','true_ll_text');
+	.attr('class','true_ll_text');
 
 }
 
 function addLLRegBars(svg,ll,unregged,cname,regdata,yfn,resizer){
     var regrects=svg.selectAll('.'+cname+'_overlay').data(regdata).enter().append("rect");
     regrects.attr('x',function(d,i){
-	    return resizer(ll[i]);
+	    return resizer(ll[i])+70;
 	})
 	.attr('width',function(d,i){
 		return resizer(unregged[i]) - resizer(ll[i]);
@@ -914,7 +910,7 @@ function addLLRegBars(svg,ll,unregged,cname,regdata,yfn,resizer){
 	.attr('class',cname+'_overlay');
     regrects=svg.selectAll('.'+cname).data(regdata).enter().append("rect");
     regrects.attr('x',function(d,i){
-	    return resizer(ll[i]);
+	    return resizer(ll[i])+70;
 	})
 	.attr('width',function(d,i){
 		return resizer(unregged[i]) - resizer(ll[i]);
@@ -932,14 +928,14 @@ function addLLRegBars(svg,ll,unregged,cname,regdata,yfn,resizer){
 function updateLLRegBars(svg,ll,unregged,cname,regdata,resizer){
     var regrects=svg.selectAll('.'+cname+'_overlay').data(regdata);
     regrects.attr('x',function(d,i){
-	    return resizer(ll[i]);
+	    return resizer(ll[i])+70;
 	})
 	.attr('width',function(d,i){
 		return resizer(unregged[i]) - resizer(ll[i]);
 	    });
     regrects=svg.selectAll('.'+cname).data(regdata);
     regrects.attr('x',function(d,i){
-	    return resizer(ll[i]);
+	    return resizer(ll[i])+70;
 	})
 	.attr('width',function(d,i){
 		return resizer(unregged[i]) - resizer(ll[i]);
