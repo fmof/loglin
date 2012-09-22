@@ -383,7 +383,9 @@ function recompute_partition_function(theta,ztheta){
 }
 
 function formatExpected(ecp){
-    return (ecp > 1.0)?Math.round(ecp):ecp.toFixed(2);
+    var ret= (ecp > 1.0)?Math.round(ecp):ecp.toFixed(2);
+    if(ret==0.0) return 0;
+    else return ret;
 }
 
 function determine_color(p_emp,p_mod){
