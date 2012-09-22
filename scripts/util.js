@@ -769,7 +769,7 @@ function addFeaturesToList(selectObj, array){
 function ll_resizer(min,max){
     var m = (.95-.25)*DIV_LL_WIDTH / (max-min);
     return function(l){
-	return m * (l - max) + (.95*DIV_LL_WIDTH) ;
+	return m * (l - max) + (.95*DIV_LL_WIDTH) + 70;
     };
 };
 
@@ -871,7 +871,7 @@ function addLLBar(){
 	     return d.toFixed(3);
 	 })
 	 .attr('x',function(d){
-	     return resizer(d)+10;
+	     return resizer(d)+80;
 	 })
 	.attr('y',function(d,i){
 		return (2*i+1)*20 - 7;
@@ -886,7 +886,7 @@ function addLLBar(){
 	    return d.toFixed(3);
 	})
 	.attr('x',function(d){
-		return resizer(d)+10;
+		return resizer(d)+80;
 	    })
 	.attr('y',function(d,i){
 		return (2*i+2)*20 - 7;
@@ -975,7 +975,7 @@ function updateLLBar(){
 	    return d.toFixed(3);
 	})
 	.attr('x',function(d,i){
-		return resizer(d)+10;
+		return resizer(d)+80;
 	    })
 	.attr('y',function(d,i){
 		return (2*i+1)*20 - 7;
@@ -992,7 +992,7 @@ function updateLLBar(){
 	    return d.toFixed(3);
 	})
 	.attr('x',function(d,i){
-		return resizer(d)+10;
+		return resizer(d)+80;
 	    })
 	.attr('y',function(d,i){
 		return (2*i+2)*20 - 7;
