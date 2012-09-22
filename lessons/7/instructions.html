@@ -1,14 +1,27 @@
 <div id="p1" class="showable_instructions">
-  <p>Paragraph.</p>
-  <p>Paragraph.</p>
-</div> 
+  <p>Same model, new dataset.  This time you won't be able to match
+  exactly.  The model is wrong: the new dataset did not actually come
+  from this 6-feature log-linear model.  Its 9 probabilities cannot be
+  matched well by manipulating the 6 parameters of this model.</p>
 
-<div id="p2"  class="showable_instructions">
-  <p>Paragraph.</p>
-  <p>Paragraph.</p>
-</div>
+  <p>So, just do the best you can with this model by following the
+  gradient hints.</p>
 
-<div id="p3" class="showable_instructions">
-  <p>Paragraph.</p>
-  <p>Paragraph.</p>
+  <p>As a convenience, you can click the "Step" button.  This moves all
+  of the sliders slightly in the direction of their hints.  The
+  "Step size" field (which you can change) controls how far they move.
+  However, a slider with a longer hint bar will always move farther
+  than one with a shorter hint bar.</p>
+
+  <p>As a further convenience, you can click the "Solve" button.  This
+  clicks the "Step" button over and over for you until the
+  log-likelihood is maximized.  This is the method of <i>gradient ascent</i>.</p>
+
+  <p>If the step size is too big, the solver could jump back and
+  forth over the maximum without ever landing on it.  So it gradually
+  reduces the step size as it goes, allowing it to zero in on the
+  maximum.</p>
+
+  <p>Occasionally the solver may stop too early.  You can try reducing
+  the stepsize and trying again.</p>
 </div>
