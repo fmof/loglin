@@ -140,6 +140,13 @@ function load_textfile(){
     }
     d3.tsv(TRUE_THETA_PATH,function(rows){
 	    rows.forEach(function(record){ 
+		    var good=true;
+		    for(var t in record){
+			good = good && (record[t]!=undefined);
+		    }
+		    if(!good){
+			return;
+		    }
 		    var context_id;
 		    if(REVERSE_CONTEXTS[record['context']] == undefined){
 			CONTEXTS.push(record['context']);
@@ -412,7 +419,7 @@ function recompute_expected_counts(){
 	    var obs_count = COUNTS[c][id_num];
 	    var color = determine_color(get_empirical_prob(c,id_num),get_prob(c,id_num)/Z_THETA[c]);
 	    //var color=determine_color(obs_count,ecp);
-	    p.innerHTML =  color==COUNTS_EQUAL?obs_count:formatExpected(ecp);
+	    p.innerHTML =  formatExpected(ecp);//color==COUNTS_EQUAL?obs_count:formatExpected(ecp);
 	    p.style.color=color;
 	    p.setAttribute('dirty',0);
 	    p.setAttribute('value',ecp);
