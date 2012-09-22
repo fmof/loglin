@@ -5,14 +5,18 @@
   the 6 parameters of this model.</p>
 
   <p>So, just do the best you can with this model by following the
-  gradient hints.</p>
+  gradient hints.  At the optimum, there will be no red or blue left
+  on the sliders (e.g., the total number of circles will be correct).
+  However, there will still be red and blue left on the shapes (e.g., the
+  counts for individual kinds of circles will be rather wrong).</p>
 
   <p><b>Automatic parameter tuning.</b> As a convenience, you can
   click the "Step" button.  This moves all of the sliders slightly in
-  the direction of their hints.  The "Step size" field (which you can
-  change) controls how far they move.  However, a slider with a longer
-  hint bar will always move farther than one with a shorter hint
-  bar.</p>
+  the direction of their hints.  Note that the "Step" button controls
+  the sliders more precisely than your mouse can.  The "Step size"
+  field (which you can change) controls how far they move.  However, a
+  slider with a longer hint bar will always move farther than one with
+  a shorter hint bar.</p>
 
   <p>As a further convenience, you can click the "Solve" button.  This
   clicks the "Step" button over and over for you until the
@@ -28,10 +32,9 @@
   <p><b>Dangers.</b> If the step size is too big, the solver could
   jump back and forth over the optimal weights without ever landing on
   them.  Taking too big a step can even make the log-likelihood worse.
-  So our solver gradually reduces the step size as it goes, allowing
-  it to zero in on the answer.  It jumps rapidly toward the right
-  answer and then starts to fine-tune.
-</p>
+  So our solver gradually reduces the step size as it goes.  It jumps
+  quickly toward the right neighborhood at first, then starts to
+  fine-tune so it can zero in on the exact answer.</p>
 
   <p>Occasionally the solver may stop too early.  You can try reducing
   the stepsize and clicking "Solve" again.</p>
