@@ -428,6 +428,12 @@ h3.fakelink {
 	float:right;
 }
 
+.cdrawrow{
+    float:left;
+    clear:right;
+    overflow:hidden;
+}
+
 .floatleft > img.floatleft, .floatright > img.floatright{
 	width:inherit;
 	margin-left:auto;

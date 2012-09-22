@@ -1352,10 +1352,12 @@ function drawSVGBoxes(selectObj){
 	console.log('beginning to draw area for '+c+', '+CONTEXTS[c]);
 	var vis_in_c=VISUALS[c];
 	var axes={}; var place_in_axis={};
-	//var div_token_input=document.createElement('div');
-	//div_token_input.className+=' left';
-	//div_token_input.appendChild(document.createElement('input'));
-	//selectObj.appendChild(div_token_input);
+	var div_token_input=document.createElement('div');
+	div_token_input.className+=' floatleft';
+	var ntok=document.createElement('input');
+	ntok.setAttribute('size',5);
+	div_token_input.appendChild(ntok);
+	selectObj.appendChild(div_token_input);
 	var div_context=document.createElement('div');
 	div_context.id='context_draw_area_'+c;
 	selectObj.appendChild(div_context);
@@ -1374,9 +1376,13 @@ function drawSVGBoxes(selectObj){
 	//var npr=NUM_PER_ROW;
 	//set the number of items per row (npr)
 	//npr = NUM_OBSERVATIONS_C[c]/num_rows<1 ? NUM_OBSERVATIONS_C[c] : Math.ceil(NUM_OBSERVATIONS_C[c]/num_rows);
-	selectObj.style.width = npr * width + (npr*offset)+'px';
+	console.log(selectObj);
+	var rowwidth = (npr) * width + (npr*offset);
+	div_context.style.width=rowwidth+'px';
+	div_context.className+=' cdrawrow';
+	selectObj.style.width = rowwidth+100+'px';
 	selectObj.style.overflow='hidden';
-		
+	selectObj.className+= ' redborder';
 	for(var i=0;i<num_rows;i++){
 	    var divi=document.createElement('div');
 	    divi.style.width='inherit';
