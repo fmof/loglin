@@ -98,7 +98,7 @@ SOLVE_ITERATION=1;
 SOLVE_TIMEOUT_ID={};
 SOLVE_TIME_DELAY=750; //in milliseconds
 STOPPING_EPS=0.001;
-MAX_SOLVE_ITERATIONS = 10;
+MAX_SOLVE_ITERATIONS = 125;
 
 SVG_WIDTH=100; SVG_HEIGHT=100;
 
@@ -259,6 +259,19 @@ function load_lesson(initial){
     load_textfile();
 }
 
+function setDeceleratingTimeout( callback, factor, times ){
+    var internalCallback = function( t, counter ){
+	return function(){
+	    if ( --t > 0 ){
+		window.setTimeout( internalCallback, ++counter * factor );
+		callback();
+	    }
+	}
+    }( times, 0 );
+    window.setTimeout( internalCallback, factor );
+};
+setDeceleratingTimeout( function(){ console.log( 'hi' );}, 10, 10 );
+
 window.onload = function(){
     var group;
     $('ll_area').style.width = (DIV_LL_WIDTH+RESERVE_LL_WIDTH)+'px';
@@ -322,6 +335,7 @@ window.onload = function(){
 
     if($('new_challenge')){
     	$('new_challenge').onclick = function(){
+	    $('step_button').disabled='disabled';
     	    var gs=$('gradient_step');
     	    gs.value = ORIG_SOLVE_STEP;
     	    gs.onchange();
@@ -441,9 +455,27 @@ window.onload = function(){
     	};
     }
 
+    if($('stop_solving')){
+	$('stop_solving').onclick = function(){
+	    clearInterval(SOLVE_TIMEOUT_ID);
+	    $('stop_solving_div').style.display='none';
+	    $('solve_button').disabled="";
+	    $('step_button').disabled='';
+	    $('next_lesson').disabled="";
+	    $('prev_lesson').disabled="";
+	    $('next_lesson').verify(); $('prev_lesson').verify();
+	    $('change_num_tokens').disabled="";
+	    $('gradient_step').value = orig_step_size.toPrecision(5);
+	    $('gradient_step').onchange();
+	};
+	$('stop_solving_div').style.display='none';
+    }
+
     if($('solve_button')){
     	$('solve_button').onclick = function(){
     	    SOLVE_ITERATION=0;
+	    $('stop_solving_div').style.display='block';
+	    $('step_button').disabled='disabled';
 	    $('next_lesson').disabled="disabled";
 	    $('prev_lesson').disabled="disabled";
 	    $('change_num_tokens').disabled="disabled";

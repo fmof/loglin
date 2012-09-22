@@ -450,7 +450,11 @@ function step_gradient(solve_step){
     redraw_all();
 }
 
-function converged(prev_ll,step_size){
+function converged1(prev_ll,step_size){
+    var good=true;
+    return sum(GRADIENT.map(function(d){return d*d;})) < STOPPING_EPS;
+}
+function converged1(prev_ll,step_size){
     var good=true;
     for(var i=0;i<prev_ll.length;i++){
 	good = good && 
@@ -459,7 +463,7 @@ function converged(prev_ll,step_size){
     return good;
 }
 function scale_gamma_for_solve(gamma0,step_num){
-    return gamma0/Math.sqrt(step_num/10);
+    return gamma0/(step_num/Math.sqrt(10));
 }
 
 //gamma is original gamma
@@ -472,12 +476,15 @@ function solve_puzzle(gamma, step_num, orig_step_size){
     step_gradient(gamma);
     if(step_num==MAX_SOLVE_ITERATIONS || converged(prev_ll,gamma)){
 	$('solve_button').disabled="";
+	$('step_button').disabled='';
 	clearInterval(SOLVE_TIMEOUT_ID);
 	$('next_lesson').disabled="";
 	$('prev_lesson').disabled="";
+	$('next_lesson').verify(); $('prev_lesson').verify();
 	$('change_num_tokens').disabled="";
 	$('gradient_step').value = orig_step_size.toPrecision(5);
 	$('gradient_step').onchange();
+	$('stop_solving_div').style.display='none';
     }
 }
 
