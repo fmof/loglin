@@ -5,7 +5,7 @@ has_cheated=0;
 SLIDER_DIV=1; //amount to scale slider by (for display)
 
 CURRENT_LESSON=1;
-MAX_LESSONS=16;
+MAX_LESSONS=8;
 
 TYPE_INDEX=[]; //type-string -> type-id, e.g., "circle,solid" -> 12
 TYPE_MAP={}; //reverse of above
@@ -121,7 +121,7 @@ TRUE_MODEL_COLOR='#11EE23';
 
 COUNTS_TOO_LOW='red';
 COUNTS_TOO_HIGH='blue';
-COUNTS_EQUAL='gray';
+COUNTS_EQUAL='#484848';
 
 slider_min= -2* Math.E;
 slider_max= 2*Math.E;
@@ -262,7 +262,7 @@ function load_lesson(initial){
     load_textfile();
 }
 
-function setDeceleratingTimeout( callback, factor, times ){
+function setITimeout( callback, factor, times ){
     var internalCallback = function( t, counter ){
 	return function(){
 	    if ( --t > 0 ){
@@ -273,7 +273,8 @@ function setDeceleratingTimeout( callback, factor, times ){
     }( times, 0 );
     window.setTimeout( internalCallback, factor );
 };
-//setDeceleratingTimeout( function(){ console.log( 'hi' );}, 10, 10 );
+/*
+setDeceleratingTimeout( function(){ console.log( 'hi' ); console.log('ext');}, 10, 10 );*/
 
 window.onload = function(){
     var group;
@@ -504,7 +505,7 @@ window.onload = function(){
 		$('gradient_step').value=scale_gamma_for_solve(SOLVE_STEP/Math.sqrt(10),1).toPrecision(5);
 		SOLVE_TIMEOUT_ID = setInterval(function(){
 			solve_puzzle(SOLVE_STEP/Math.sqrt(10),++SOLVE_ITERATION, SOLVE_STEP);
-		    }, SOLVE_TIME_DELAY);
+			}, SOLVE_TIME_DELAY);
 	    }
     	};
     }

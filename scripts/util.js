@@ -1,4 +1,5 @@
 function load_html5_slider(boxid,val){
+    console.log('is being called');
     val = val || slider_step;
     //return function(batch){
     var tmpval = boxid.value; var actual_weight;
@@ -440,14 +441,20 @@ function recompute_expected_counts(){
     }
 }
 
+function sign(x){
+    return x>=0?1:-1;
+}
+
 
 function reset_sliders_manually(arr){
     var group = $$('.feature_slider');
     for(var i=0;i<group.length;i++){
+	console.log('what is arr[i][1]? '+arr[i][1]);
 	group[i].value = arr[i][1];
-	var val=sigmoid_transform(arr[i][1]);
+	//var val=Math.min(slider_width-handle_width-0.00001,Math.max(.00001,sigmoid_transform(arr[i][1]))); //bring to some pixel value
+	var val = sigmoid_transform(arr[i][1]);
 	get_handle(group[i]).style.left = val+'px';
-	THETA[arr[i][0]]=parseFloat(arr[i][1]);
+	THETA[arr[i][0]]=(parseFloat(arr[i][1]));
     }
 }
 
@@ -457,7 +464,29 @@ function step_gradient(solve_step){
     var group = $$('.feature_slider');
     var arr = group.map(function(d,i){
 	    var tindex = group[i].parentNode.parentNode.childNodes[0].getAttribute('theta_index');
-	    return [tindex,THETA[tindex] + solve_step*GRADIENT[tindex]];
+	    //hack for non-differentiability of L1 reg.
+	    if(USE_REGULARIZATION && REGULARIZATION_EXPONENT==1){
+		var propval=THETA[tindex] + solve_step*GRADIENT[tindex];
+		if(THETA[tindex]!=0){
+		    if(sign(THETA[tindex]*propval)<0){
+			return [tindex,0];
+		    } else{
+			return [tindex,THETA[tindex] + solve_step*GRADIENT[tindex]];
+		    }
+		} else{ //theta == 0
+		    var g = OBS_FEAT_COUNT[tindex] - EXP_FEAT_COUNT[tindex];
+		    if(Math.abs(g) <= REGULARIZATION_SIGMA2){
+			return [tindex,0];
+		    }
+		    if(g>REGULARIZATION_SIGMA2){
+			return [tindex,g-REGULARIZATION_SIGMA2];
+		    } else{
+			return [tindex, g+REGULARIZATION_SIGMA2];
+		    }
+		}
+	    } else{ //otherwise, normal L2 stuff
+		return [tindex,THETA[tindex] + solve_step*GRADIENT[tindex]];
+	    }
 	});
     reset_sliders_manually(arr);
     redraw_all();
@@ -1328,7 +1357,7 @@ function updateObservedImages(){
 	var j = s[4] ; //get type_id -- Y
 	var count = COUNTS[c][j];
 	console.log(count);
-	var s=updateD3Shape(d3.select('#observed_point_context_'+c+'_'+j),j,'obs_count_pic_'+c+'_'+j,SVG_WIDTH,SVG_HEIGHT,VISUALS[c][j]['shape'],'gray','hollow',get_empirical_prob(c,j),MAX_EMP_PROB[c]/MAX_EMP_AREA[c]);
+	var s=updateD3Shape(d3.select('#observed_point_context_'+c+'_'+j),j,'obs_count_pic_'+c+'_'+j,SVG_WIDTH,SVG_HEIGHT,VISUALS[c][j]['shape'],'#B8B8B8','hollow',get_empirical_prob(c,j),MAX_EMP_PROB[c]/MAX_EMP_AREA[c]);
 	s.attr('stroke-opacity',1).attr('stroke-width',3);
 	$('obs_count_text_'+i).innerHTML=count;
     }
@@ -1378,7 +1407,10 @@ function drawSVGBoxes(selectObj){
 	//handle number of tokens in context
 	var div_token_input=document.createElement('div');
 	div_token_input.className+=' floatleft';
+	var ntokp = document.createElement('p');
+	//ntokp.innerHTML = 
 	var ntok=document.createElement('input');
+	ntok.setAttribute('value',NUM_TOKENS_C[c]);
 	ntok.setAttribute('size',5);
 	div_token_input.appendChild(ntok);
 	td_tok.appendChild(div_token_input);
@@ -1405,7 +1437,6 @@ function drawSVGBoxes(selectObj){
 	//var npr=NUM_PER_ROW;
 	//set the number of items per row (npr)
 	//npr = NUM_OBSERVATIONS_C[c]/num_rows<1 ? NUM_OBSERVATIONS_C[c] : Math.ceil(NUM_OBSERVATIONS_C[c]/num_rows);
-	console.log(selectObj);
 	var rowwidth = (npr) * width + (npr*offset);
 	div_context.style.width=rowwidth+'px';
 	div_context.className+=' cdrawrow';
@@ -1477,8 +1508,8 @@ function drawSVGBoxes(selectObj){
 			max_count=COUNTS[c][other];
 		    }
 		}
-		var shape = createD3Shape(svg, type_id, 'obs_count_pic_'+c+'_'+type_id, width,height,shapen,'gray','hollow',get_empirical_prob(c,type_id),MAX_EMP_PROB[c]/MAX_EMP_AREA[c],1);
-		shape.attr('stroke-opacity',1).attr('stroke-width',3);
+		var shape = createD3Shape(svg, type_id, 'obs_count_pic_'+c+'_'+type_id, width,height,shapen,'#B8B8B8','hollow',get_empirical_prob(c,type_id),MAX_EMP_PROB[c]/MAX_EMP_AREA[c],1);
+		shape.attr('stroke-opacity',.7).attr('stroke-width',3);
 		shape.attr('id','obs_count_pic_'+c+'_'+type_id);
 	    } //end for over columns
 	    divi.className += ' drawrow';
