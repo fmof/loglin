@@ -450,9 +450,16 @@ function step_gradient(solve_step){
     redraw_all();
 }
 
-function converged(prev_ll,step_size){
+function converged(){
     var good=true;
-    return sum(GRADIENT.map(function(d){return d*d;})) < STOPPING_EPS;
+    var s=sum(GRADIENT.map(function(d){return d*d;}));
+    /*console.log('||grad||^2 ='+s+', sqrt(s)='+Math.sqrt(s)+', < ' + STOPPING_EPS);
+    if(s<STOPPING_EPS){
+	console.log('yes');
+    } else{
+	console.log('sum = '+s);
+	}*/
+    return s < STOPPING_EPS;
 }
 function converged1(prev_ll,step_size){
     var good=true;
@@ -474,18 +481,9 @@ function solve_puzzle(gamma, step_num, orig_step_size){
     //SOLVE_STEP=gamma;
     $('gradient_step').value = gamma.toPrecision(5);
     step_gradient(gamma);
-    if(step_num==MAX_SOLVE_ITERATIONS || converged(prev_ll,gamma)){
-	$('solve_button').disabled="";
-	$('step_button').disabled='';
-	clearInterval(SOLVE_TIMEOUT_ID);
-	$('next_lesson').disabled="";
-	$('prev_lesson').disabled="";
-	$('next_lesson').verify(); $('prev_lesson').verify();
-	$('change_num_tokens').disabled="";
-	$('gradient_step').value = orig_step_size.toPrecision(5);
-	$('gradient_step').onchange();
-	$('stop_solving_div').style.display='none';
-    }
+    if(step_num==MAX_SOLVE_ITERATIONS || converged()){
+	$('solve_button').onclick();
+    } 
 }
 
 function compute_gradient(){
@@ -500,7 +498,7 @@ function compute_gradient(){
 	    var lte=(REGULARIZATION_EXPONENT==1)?(local_theta>=0?1:-1):local_theta;
 	    lte *= REGULARIZATION_EXPONENT*REGULARIZATION_SIGMA2;
 	    REG_FOR_GRAD[l]=lte;
-	    GRADIENT[l] = lte;
+	    GRADIENT[l] = -lte;
 	} else{ GRADIENT[l]=0; REG_FOR_GRAD[l]=0;}	
 	OBS_FEAT_COUNT[l]=EXP_FEAT_COUNT[l]=0;
     }
@@ -1058,8 +1056,8 @@ function createTrianglePoints(cx,width,cy,height,count,max_count,scale){
     var points=[];
     //var side=Math.sqrt(4*count/(Math.sqrt(3)*max_count));
     var r = Math.sqrt(3)/3 * Math.sqrt(4*count/(Math.sqrt(3)*max_count));
-    console.log(height);
-    //var d = (height - 1.5*r)/2;
+   
+ //var d = (height - 1.5*r)/2;
     //cy=r+d;
     //var r = Math.sqrt(count/max_count * 8/(3*Math.sqrt(3)))*2*scale/3;
     //var r=side/Math.sqrt(3) * scale;
@@ -1247,7 +1245,6 @@ function compute_max_prob(counts,mep,mept,mea){
 	    mea[c]=1;
 	    continue;
 	}
-	console.log('index'+index);
 	var mp = mep[c];
 	//mea[c]=SVG_HEIGHT*SVG_WIDTH*mp;
 	var vis=VISUALS[c][index];
