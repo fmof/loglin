@@ -1,20 +1,20 @@
 <div id="p1" class="showable_instructions">
   <p>Let's move up to a bigger example with 9 shape types.  Try matching
-  the gray outlines now.  The better the match, the longer the
-  log-likelihood bar should be.</p>
+  the gray outlines now.  The log-likelihood bar tells you how well you're
+  matching them overall.</p>
 
   <p><b>Getting hints.</b> In this larger problem, it's hard to decide which sliders to
     move.  So, let's get some automatic help!  Check the "Show
     gradients" checkbox.  Now each slider shows a hint about the best
     direction to move it.  
     <ul>
-      <li>Move the weight in the direction of the bar to improve the
+      <li>Move the weight along the hint bar to improve the
 	log-likelihood.  
-      <li>The direction is color-coded as well.  Red says to
+      <li>The direction of the hint bar is also color-coded.  Red says to
 	increase, blue says to decrease.
-      <li>A long bar indicates that the log-likelihood is very
-	sensitive to this weight.  You can increase it <i>rapidly</i> by
-	moving the slider in that direction.
+      <li>A long hint bar indicates that the log-likelihood is very
+	sensitive to this weight.  You can increase the log-likelihood 
+	<i>rapidly</i> by moving the slider in that direction.
     </ul>
   </p>
 
@@ -22,22 +22,25 @@
   Easier?</p>
 
   <p>Drag the <code>triangle</code> slider back and forth to make its weight
-    very big and very small.  As you do this, what happens to the hints on the 
+    very big and very small.  As you do this, what happens to the hint
+    on the triangle slider?  What happens to the hints on the 
   <code>circle</code> and <code>square</code> sliders?  Why?</p>
  
-  <p><b>Understanding the hints.</b> Recall the two games from lesson
-  3.  The hint on the slider can be interpreted as a hint
+  <p><b>Understanding the hints.</b> Recall the two games from
+  lesson 3.  The hint on the slider can be interpreted as a hint
   for <i>either</i> game.
 
     <ul>
-      <li><p><b>Log-likelihood game.</b> Following the hint on the <code>circle</code> slider will increase
-      the log-likelihood.  That's because the length of the hint bar is
-      the partial derivative of the log-likelihood with respect to
+      <li><p><b>Log-likelihood game.</b> Following the hint on
+      the <code>circle</code> slider will increase the log-likelihood.
+      That's because the length of the hint bar is the partial
+      derivative of the log-likelihood with respect to
       the <code>circle</code> weight.</p>
 
-      <li><p><b>Matching game.</b> Following the same hint will also improve the match between
-      the expected and observed number of circles.  That's because the
-      length of the hint bar is (observed circles - expected circles).</p>
+      <li><p><b>Matching game.</b> Following the same hint will also
+      improve the match between the expected and observed number of
+      circles.  That's because the length of the hint bar is (observed
+      circles - expected circles).</p>
     </ul>
 
     <p>These two lengths are the same.  The formula for the partial
