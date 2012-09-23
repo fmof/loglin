@@ -106,12 +106,12 @@ DIV_LL_WIDTH=800;
 RESERVE_LL_WIDTH=100;
 worst_ll=2;
 LOG_LIKELIHOOD=[0];
-REGULARIZATION=[0];
+REGULARIZATION=[0]; //for LL
 TRUE_LOG_LIKELIHOOD = [0];
 TRUE_REGULARIZATION=[0];
 USE_REGULARIZATION=0;
 REGULARIZATION_EXPONENT=2;
-REGULARIZATION_SIGMA2=1.0;
+REGULARIZATION_SIGMA2=1.0; //actually, the constant C (1/\sigma^2)
 
 EXPECTED_TRANSPARENCY=0.4;
 EXPECTED_STROKE_WIDTH=3;
@@ -566,8 +566,8 @@ window.onload = function(){
     		REGULARIZATION_SIGMA2=(this.value - 0);		
     		if(svg_loaded){
     		    redraw_all();
-    		    console.log(REGULARIZATION);
-    		    console.log(TRUE_REGULARIZATION);
+		    //    		    console.log(REGULARIZATION);
+		    //    		    console.log(TRUE_REGULARIZATION);
     		} else{
     		    recompute_partition_function_single();
     		    compute_gradient();
