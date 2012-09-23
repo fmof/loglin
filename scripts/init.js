@@ -262,19 +262,27 @@ function load_lesson(initial){
     load_textfile();
 }
 
-function setITimeout( callback, factor, times ){
-    var internalCallback = function( t, counter ){
+function setITimeout( callback, init_time, times ){
+    var internalCallback = function( t, ep, counter ){
 	return function(){
-	    if ( --t > 0 ){
-		window.setTimeout( internalCallback, ++counter * factor );
-		callback();
+	    if ( t-- > 0 ){
+		counter++;
+		if(counter%10==0){
+		    ep++;
+		}
+		var nt = init_time/(counter/Math.sqrt(10));
+		SOLVE_TIMEOUT_ID = window.setTimeout(internalCallback, nt);
+		callback(counter)();
+	    } else{
+		$('solve_button').onclick();
+		//end solve here
 	    }
 	}
-    }( times, 0 );
-    window.setTimeout( internalCallback, factor );
+    }( times, 0, 0 );
+    SOLVE_TIMEOUT_ID=window.setTimeout( internalCallback, init_time/Math.sqrt(10) );
 };
-/*
-setDeceleratingTimeout( function(){ console.log( 'hi' ); console.log('ext');}, 10, 10 );*/
+
+//setITimeout( function(){ console.log( 'hi' );}, 750, 100 );
 
 window.onload = function(){
     var group;
@@ -340,6 +348,7 @@ window.onload = function(){
     if($('new_challenge')){
     	$('new_challenge').onclick = function(){
 	    $('step_button').disabled='disabled';
+	    $('solve_button').disabled='disabled';
     	    var gs=$('gradient_step');
     	    gs.value = ORIG_SOLVE_STEP;
     	    gs.onchange();
@@ -479,11 +488,12 @@ window.onload = function(){
     	$('solve_button').onclick = function(){
     	    SOLVE_ITERATION=0;
 	    if(in_solving){
+		clearInterval(SOLVE_TIMEOUT_ID);
 		in_solving=0;
 		this.style.backgroundColor=button_color;
 		//orig_solve_step
 		$('gradient_step').value=ORIG_SOLVE_STEP;
-		clearInterval(SOLVE_TIMEOUT_ID);
+		
 		this.innerHTML="Solve";
 		$('stop_solving_div').style.display='none';
 		$('step_button').disabled='';
@@ -503,9 +513,16 @@ window.onload = function(){
 		$('prev_lesson').disabled="disabled";
 		$('change_num_tokens').disabled="disabled";
 		$('gradient_step').value=scale_gamma_for_solve(SOLVE_STEP/Math.sqrt(10),1).toPrecision(5);
-		SOLVE_TIMEOUT_ID = setInterval(function(){
+		/*SOLVE_TIMEOUT_ID = setInterval(function(){
 			solve_puzzle(SOLVE_STEP/Math.sqrt(10),++SOLVE_ITERATION, SOLVE_STEP);
-			}, SOLVE_TIME_DELAY);
+			}, SOLVE_TIME_DELAY);*/
+		SOLVE_TIMEOUT_ID = setITimeout(function(iter){
+			return function(){
+			    solve_puzzle(SOLVE_STEP/Math.sqrt(10),
+					 iter,
+					 SOLVE_STEP);
+			};}, SOLVE_TIME_DELAY/Math.sqrt(10), MAX_SOLVE_ITERATIONS);
+				     
 	    }
     	};
     }
@@ -529,8 +546,6 @@ window.onload = function(){
 			}
 		    }
 		    if(t!=undefined || t!=null){
-			console.log('t');
-			console.log(t);
 			t.onclick();
 		    }
 		}
@@ -567,16 +582,14 @@ window.onload = function(){
     		REGULARIZATION_SIGMA2=(this.value - 0);		
     		if(svg_loaded){
     		    redraw_all();
-		    //    		    console.log(REGULARIZATION);
-		    //    		    console.log(TRUE_REGULARIZATION);
-    		} else{
+		} else{
     		    recompute_partition_function_single();
     		    compute_gradient();
     		    draw_gradient();
     		}
     	    } else{
     		//ZZZ !!!
-    		alert('not a proper number. yell at creator for making this an alert');
+    		
     		//display error
     	    }
     	};
