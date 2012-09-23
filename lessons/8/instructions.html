@@ -1,14 +1,43 @@
 <div id="p1" class="showable_instructions">
-  <p>Paragraph.</p>
-  <p>Paragraph.</p>
-</div> 
+  <p><b>Novel events.</b> Now let's consider a case where our training
+    set contains no squares.  What is the optimal weight for
+    the <code>square</code> feature in this case, and why?</p>
 
-<div id="p2"  class="showable_instructions">
-  <p>Paragraph.</p>
-  <p>Paragraph.</p>
-</div>
+  <p>Click "Solve."  What weight does the gradient ascent solver find
+    for the <code>square</code> feature?  Is it what you predicted
+    above?  Can you improve the log-likelihood by changing it to your
+    prediction?</p>
 
-<div id="p3" class="showable_instructions">
-  <p>Paragraph.</p>
-  <p>Paragraph.</p>
+  <p>The training set contained 500 events (tokens).  What
+    probabilities are predicted for the three novel event types&mdash;solid
+    square, striped square, hollow square?  Are these good estimates
+    for novel events?</p>
+
+  <p><b>Regularization.</b>  Read about regularization on the 
+    <A HREF="http://cs.jhu.edu/~jason/465/hw-prob/hw-prob.pdf">homework
+      handout</A>.</p>
+
+  <p>Open up <A HREF="index.html" target="_blank">lesson 1</A> in
+  a new window.  Use the radio buttons to experiment with
+  L<sub>1</sub> or L<sub>2</sub> regularization.  When regularization
+  is turned on, we are no longer trying to maximize the length of the
+  entire log-likelihood bar, but only the gray part.  The red part
+  corresponds to the regularizer that we subtract from the
+  log-likelihood.</p>
+
+  <p>As you move the sliders toward 0 or away from 0, what happens to
+    the size of the regularizer (the red part of the log-likelihood
+    bar)?</p>
+
+  <p>Experiment with changing the regularization coefficient <i>C</i>.
+  How does this affect the size of the regularizer?  How does it
+  affect the gradient hints?  What weights does "Solve" find
+  if <i>C</i> is large?  Is the answer different for L<sub>1</sub> and
+  L<sub>2</sub>?</p>
+
+  <p><b>Regularization as smoothing.</b> Now come back here to lesson
+  8.  Can you improve the estimated probability of novel events by
+  running the solver with regularization?  Describe what you did and
+  what happened.  Were the three novel events estimated to have equal
+  probabilities?  Explain.</p>
 </div>

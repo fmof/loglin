@@ -1,14 +1,11 @@
 <div id="p1" class="showable_instructions">
   <p>Same model, new dataset.  The model is wrong in this case: the
-  new dataset did not actually come from this 6-feature log-linear
-  model.  Its 9 probabilities cannot be matched well by manipulating
-  the 6 parameters of this model.</p>
+  new dataset was not actually sampled from a log-linear probability
+  distribution with these 6 features.  So its 9 probabilities cannot
+  be matched well by manipulating the 6 parameters of this model.</p>
 
   <p>So, just do the best you can with this model by following the
-  gradient hints.  At the optimum, there will be no red or blue left
-  on the sliders (e.g., the total number of circles will be correct).
-  However, there will still be red and blue left on the shapes (e.g., the
-  counts for individual kinds of circles will be rather wrong).</p>
+  gradient hints.</p>
 
   <p><b>Automatic parameter tuning.</b> As a convenience, you can
   click the "Step" button.  This moves all of the sliders slightly in
@@ -38,4 +35,13 @@
 
   <p>Occasionally the solver may stop too early.  You can try reducing
   the stepsize and clicking "Solve" again.</p>
+
+  <p><b>Questions.</b> Run the solver until there is no red or blue
+  left on the sliders.  Now how well does the <i>total</i> expected
+  number of circles match training data?  Why?</p>
+
+  <p>However, there will still be red and blue left on some of the
+  shapes.  How well do the expected counts for <i>individual</i> kinds
+  of circles match the training data?  Why?</p>
+
 </div>
