@@ -1,7 +1,17 @@
 function load_html5_slider(boxid,val){
     val = val || slider_step;
     //return function(batch){
-    var actual_weight = boxid.value / val;
+    var tmpval = boxid.value; var actual_weight;
+    if(!isFinite(tmpval)){
+	console.log('mapping '+tmpval+' to ');
+	if(tmpval>0){
+	    tmpval=inverse_sigmoid(slider_width-handle_width-0.000001);
+	} else{
+	    tmpval=inverse_sigmoid(0.000001);
+	}
+	console.log(tmpval);
+    }
+    var actual_weight = tmpval / val;
     var feature_info = boxid.parentNode.parentNode.childNodes[0];
     feature_info.setAttribute('dirty',1);
     if(svg_loaded){
@@ -336,8 +346,11 @@ function addSliderEffects(){
     if(group=$$(".feature_slider")){
 	for(var i=0;i<group.length;i++){
 	    var handle_tmpfn=function(){
-		//handle
-		this.parentNode.parentNode.childNodes[1].value= inverse_sigmoid(parseFloat(this.style['left']+handle_width/2));
+		//handle 
+		//this.parentNode.parentNode.childNodes[1].value= inverse_sigmoid(parseFloat(this.style['left']+handle_width/2));
+		var t = parseFloat(this.style['left']+handle_width/2);
+		t=Math.min(slider_width-handle_width,Math.max(0,t));
+		this.parentNode.parentNode.childNodes[1].value= inverse_sigmoid(t);
 		load_html5_slider(this.parentNode.parentNode.childNodes[1],SLIDER_DIV);
 	    };
 	    var tmpfn=function(){
