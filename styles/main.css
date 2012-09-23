@@ -429,7 +429,7 @@ h3.fakelink {
 }
 
 .cdrawrow{
-    float:left;
+    float:right;
     clear:right;
     overflow:hidden;
 }

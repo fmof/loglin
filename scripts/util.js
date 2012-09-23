@@ -1185,7 +1185,7 @@ function INVERSE_FEATURE_LOOKUP(context,val){
 }
 
 function get_empirical_prob(context,id_num){
-    return COUNTS[context][id_num]/NUM_TOKENS_C[context];
+    return NUM_TOKENS_C[context]==0?0:COUNTS[context][id_num]/NUM_TOKENS_C[context];
 }
 
 //id_num is type_id!!!
@@ -1223,6 +1223,10 @@ function get_prob(context,id_num,log,theta){
 //get's max empirical prob
 function compute_max_prob(counts,mep,mept,mea){
     for(var c=0;c<CONTEXTS.length;c++){
+	if(NUM_TOKENS_C[c]==0){
+	    mep[c]=1;
+	    continue;
+	}
 	var obs_in_c=TYPE_OBSERVATIONS_IN_C[c];
 	var max_prob=0; mep[c]=0;
 	//go through type IDs
@@ -1233,12 +1237,17 @@ function compute_max_prob(counts,mep,mept,mea){
 		mep[c]=p;
 		mept[c]=id_num;
 	    }
-	    //console.log('id_num='+id_num+', p='+p);
 	}
     }
     //now go through and compute/store the area
     for(var c=0;c<CONTEXTS.length;c++){
+	if(VISUALS[c]==undefined) continue;
 	var index = mept[c];
+	if(index==undefined){
+	    mea[c]=1;
+	    continue;
+	}
+	console.log('index'+index);
 	var mp = mep[c];
 	//mea[c]=SVG_HEIGHT*SVG_WIDTH*mp;
 	var vis=VISUALS[c][index];
@@ -1289,13 +1298,13 @@ function drawExpectedData(context, i, container){
 	    max_count=COUNTS[context][other];
 	}
     }
+    var ntc=NUM_TOKENS_C[context]==0?1:NUM_TOKENS_C[context];
     if(! $("exp_count_pic_"+context+'_'+i)){
-	var exp_count_pic = createD3Shape(container,i,'exp_count_pic_'+context+'_'+i,SVG_WIDTH,SVG_HEIGHT,shapen,color,fill,exp_count/NUM_TOKENS_C[context],MAX_EXP_EMP_PROB[context]/MAX_EXP_EMP_AREA[context],EXPECTED_TRANSPARENCY);
+	var exp_count_pic = createD3Shape(container,i,'exp_count_pic_'+context+'_'+i,SVG_WIDTH,SVG_HEIGHT,shapen,color,fill,exp_count/ntc,MAX_EXP_EMP_PROB[context]/MAX_EXP_EMP_AREA[context],EXPECTED_TRANSPARENCY);
 	exp_count_pic.attr('id','exp_count_pic_'+context+'_'+i);
     } else{
 	//otherwise, update it...
-	//updateD3Shape(container,i,'exp_count_pic_'+context+'_'+i,SVG_WIDTH,SVG_HEIGHT,shapen,color,fill,get_prob(context,i)/Z_THETA[context],max_prob);
-	updateD3Shape(container,i,'exp_count_pic_'+context+'_'+i,SVG_WIDTH,SVG_HEIGHT,shapen,color,fill,exp_count/NUM_TOKENS_C[context],MAX_EXP_EMP_PROB[context]/MAX_EXP_EMP_AREA[context]);
+	updateD3Shape(container,i,'exp_count_pic_'+context+'_'+i,SVG_WIDTH,SVG_HEIGHT,shapen,color,fill,exp_count/ntc,MAX_EXP_EMP_PROB[context]/MAX_EXP_EMP_AREA[context]);
     }
 }
 
@@ -1349,20 +1358,29 @@ function drawSVGBoxes(selectObj){
     var width=SVG_WIDTH; var height=SVG_HEIGHT;
     var svg_offset=8; var offset=2*svg_offset + 3;
     var num_axes=0;
+    var tab = document.createElement('table');
+    selectObj.appendChild(tab);
     for(var c=0;c<CONTEXTS.length;c++){
-	console.log('beginning to draw area for '+c+', '+CONTEXTS[c]);
-	var vis_in_c=VISUALS[c];
-	var axes={}; var place_in_axis={};
+	var tr=document.createElement('tr');
+	tab.appendChild(tr);
+	var td_tok = document.createElement('td');
+	tr.appendChild(td_tok);
+	//handle number of tokens in context
 	var div_token_input=document.createElement('div');
 	div_token_input.className+=' floatleft';
 	var ntok=document.createElement('input');
 	ntok.setAttribute('size',5);
 	div_token_input.appendChild(ntok);
-	selectObj.appendChild(div_token_input);
+	td_tok.appendChild(div_token_input);
+	
+	var vis_in_c=VISUALS[c];
+	var axes={}; var place_in_axis={};
+	var td_context=document.createElement('td');
 	var div_context=document.createElement('div');
+	td_context.appendChild(div_context);
+	tr.appendChild(td_context);
 	div_context.id='context_draw_area_'+c;
-	selectObj.appendChild(div_context);
-	selectObj.appendChild(document.createElement('hr'));
+	//selectObj.appendChild(div_context);
 
 	var highest_row_cols=[-1,-1];
 	for(var position_pair in POSITION_BY_CONTEXT[c]){
@@ -1383,7 +1401,6 @@ function drawSVGBoxes(selectObj){
 	div_context.className+=' cdrawrow';
 	selectObj.style.width = rowwidth+100+'px';
 	selectObj.style.overflow='hidden';
-	selectObj.className+= ' redborder';
 	for(var i=0;i<num_rows;i++){
 	    var divi=document.createElement('div');
 	    divi.style.width='inherit';
