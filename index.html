@@ -64,18 +64,18 @@
 	    Number of tokens: <input type="text" id="user_num_tokens" />
 	  </li>-->
 	  <li>
-	    <span id="show_how_many_previous_lessons"></span> (of <span class="of_total_lessons"></span>) 
-	    <button type="button" id="prev_lesson" disabled="disabled">Previous Lesson</button>
+	    <span id="show_how_many_previous_lessons"></span>&nbsp;(of&nbsp;<span class="of_total_lessons"></span>) 
+	    <button type="button" id="prev_lesson" disabled="disabled">Previous lesson</button>
 	  </li>
 	  <li>
-	    <button type="button" id="change_num_tokens" >Change Number of Tokens</button>	 
+	    <button type="button" id="change_num_tokens" >Change number of tokens</button>	 
 	  </li>
 	  <li>
-	      <button type="button" id="new_challenge">New Random Challenge</button>
+	      <button type="button" id="new_challenge">New random challenge</button>
 	  </li>
 	  <li class="lastli">
-	    <button type="button" id="next_lesson" disabled="disabled">Next Lesson</button> 
-	    <span id="show_how_many_next_lessons"></span> (of <span class="of_total_lessons"></span>) 
+	    <button type="button" id="next_lesson" disabled="disabled">Next lesson</button> 
+	    <span id="show_how_many_next_lessons"></span>&nbsp;(of&nbsp;<span class="of_total_lessons"></span>) 
 	  </li>
 	</ul>
       </div>
@@ -86,7 +86,7 @@
       <div id="change_num_tokens_form">
 	<form>
 	</form>			
-	<button type="button" id="done_changing_counts_button">Done Changing Counts</button>
+	<button type="button" id="done_changing_counts_button">Done changing counts</button>
       </div>
 
       <h1 id="lesson_title" class="textcenter">Lesson <span id="header_lesson_number" lesson="0"></span></h1>
@@ -103,7 +103,7 @@
 	  <div id="ll_area">
 	  </div>
 	  <div>
-	    <button type="button" id="cheat_button">Peek at the True Model!</button>
+	    <button type="button" id="cheat_button">Peek at the true model!</button>
 	  </div>
 	</fieldset>
       </div>
@@ -128,11 +128,11 @@
 	    <label for="delay_normalization">Delay Normalization</label>
 	    <br />-->
 	    <input type="checkbox" id="show_gradients" name="show_gradients" />
-	    <label for="show_gradients">Show Gradients </label>
+	    <label for="show_gradients">Show gradients </label>
 	    <br />
 	    <div id="gradient_fieldset_div" class="novis">
 	      <fieldset id="gradient_fieldset">
-		<legend>Gradient Components</legend>
+		<legend>Gradient components</legend>
 		<input type="radio" id="show_net_grad"  class="component_radio" name="show_components" checked="yes" value="1"/>
 		<label for="show_net_grad">Net gradient </label>
 		<br/>
@@ -147,8 +147,8 @@
 	    <br />
 	    <div>
 	      <fieldset>
-		<legend>Regularizer Options</legend>
-		<input type="radio" class="regularization_radio" name="use_regularization" checked="yes" value="0" id="no_reg_button">No Regularizer</input><br/>
+		<legend>Regularization</legend>
+		<input type="radio" class="regularization_radio" name="use_regularization" checked="yes" value="0" id="no_reg_button">None</input><br/>
 		<!--<input type="radio" class="regularization_radio use_reg" name="use_regularization" value="1">&ell;<sub>1</sub></input><br/>-->
 		<input type="radio" class="regularization_radio use_reg" name="use_regularization" value="2">&ell;<sub>2</sub></input>
 		<div id="sigma2area" style="display:none;">
@@ -161,16 +161,11 @@
 	  <br />
 	  <form>
 	    <div>
-	      Step size = 
-	      <br />
-	      <input type="text" name="gradient_step" id="gradient_step" value="0.001" size="12"/>
-	      <br />
 	      <button type="button" id="step_button">Step</button>
 	      <button type="button" id="solve_button">Solve</button>
-	      <div id="stop_solving_div">
-		<br/>
-		<button type="button" id="stop_solving">Stop</button>
-	      </div>
+	      <br />
+	      Step size&nbsp;= 
+	      <input type="text" name="gradient_step" id="gradient_step" value="0.001" size="5"/>
 	    </div>
 	  </form>
 	</div>
@@ -180,7 +175,7 @@
 	  <br />
 	  <form style="clear:both;">
 	    <div>
-	      <button type="button" id="zero_weights_button">Reset Weights to Zero</button>
+	      <button type="button" id="zero_weights_button">Zero weights</button>
 	    </div>
 	  </form>
 	</div>
@@ -190,6 +185,7 @@
 
       <hr />
       <p>
+	Authors: Frank Ferraro and Jason Eisner.  
 	<?php
 $last_mod = filemtime(".");
 ?>

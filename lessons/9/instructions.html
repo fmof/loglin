@@ -1,14 +1,37 @@
 <div id="p1" class="showable_instructions">
-  <p>Paragraph.</p>
-  <p>Paragraph.</p>
+  <p>Let's look at a similar situation with only <i>N</i> = 5 training
+    events.  Note that the log-likelihood is no longer very negative,
+    because it is summing over fewer events.</p>
+
+  <p>Solve using L<sub>2</sub> regularization with <i>C</i> = 1.
+    Which novel events get the highest probability, and why?
+    (Remember that the colored numbers show each event's expected
+    count; divide these by <i>N</i>=5 to recover the model's probability.)
+  </p>
+
+  <p>What if you use L<sub>1</sub> regularization instead?</p>
+
+  <p><b>Tradeoff between <i>N</i> and <i>C</i>.</b>  Regularization 
+    had a strong smoothing effect on this small dataset.  Change <i>N</i>
+    or <i>C</i><!-- say how --> to see how these control the strength of smoothing.</p>
+
+  <p>Remember that the optimal &theta; maximizes
+    <i>F</i> = (log-likelihood - regularizer), a difference of two
+    functions.</p>
+  <ul>
+    <li><p>Increasing <i>N</i> stretches the first function
+	vertically, so that it has more influence on the shape
+	of <i>F</i>.  So the
+	more training data there is, the more the solver just tries to
+	fit the training data.</p>
+    <li><p>Increasing <i>C</i> stretches the second function
+	vertically, so that it has more influence on the shape of <i>F</i>.
+	So the stronger the regularizer is, the harder the solver
+	will try to keep the weights close to 0.</p>
+    <li><p>Doubling both <i>N</i> and <i>C</i> will just
+	stretch <i>F</i> vertically, leaving the optimal &theta;
+	unchanged.</p>
+  </ul>
+
+  <!-- add something about resampling the weights -->
 </div> 
-
-<div id="p2"  class="showable_instructions">
-  <p>Paragraph.</p>
-  <p>Paragraph.</p>
-</div>
-
-<div id="p3" class="showable_instructions">
-  <p>Paragraph.</p>
-  <p>Paragraph.</p>
-</div>

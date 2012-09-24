@@ -5,7 +5,7 @@ has_cheated=0;
 SLIDER_DIV=1; //amount to scale slider by (for display)
 
 CURRENT_LESSON=1;
-MAX_LESSONS=8;
+MAX_LESSONS=9;
 
 TYPE_INDEX=[]; //type-string -> type-id, e.g., "circle,solid" -> 12
 TYPE_MAP={}; //reverse of above
