@@ -73,6 +73,11 @@
 	  <li>
 	      <button type="button" id="new_challenge">New random challenge</button>
 	  </li>
+	  <li>
+	    <select id="jump_to_lesson_select">
+	      <option value="0">Jump to Lesson...</option>
+	    </select>
+	  </li>
 	  <li class="lastli">
 	    <button type="button" id="next_lesson" disabled="disabled">Next lesson</button> 
 	    <span id="show_how_many_next_lessons"></span>&nbsp;(of&nbsp;<span class="of_total_lessons"></span>) 
@@ -149,7 +154,7 @@
 	      <fieldset>
 		<legend>Regularization</legend>
 		<input type="radio" class="regularization_radio" name="use_regularization" checked="yes" value="0" id="no_reg_button">None</input><br/>
-		<!--<input type="radio" class="regularization_radio use_reg" name="use_regularization" value="1">&ell;<sub>1</sub></input><br/>-->
+		<input type="radio" class="regularization_radio use_reg" name="use_regularization" value="1">&ell;<sub>1</sub></input><br/>
 		<input type="radio" class="regularization_radio use_reg" name="use_regularization" value="2">&ell;<sub>2</sub></input>
 		<div id="sigma2area" style="display:none;">
 		  <br />

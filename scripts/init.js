@@ -293,6 +293,26 @@ window.onload = function(){
     }
     load_lesson(CURRENT_LESSON==1?1:0);
 
+    //add listeners for "jump to lesson" select
+    if($('jump_to_lesson_select')){
+	var s=$('jump_to_lesson_select');
+	for(var i=1;i<=MAX_LESSONS;i++){
+	    var o = document.createElement('option');
+	    o.value=i;
+	    o.innerHTML=i;
+	    s.appendChild(o);
+	}
+	s.onchange=function(){
+	    var v=parseInt(this.value);
+	    if(v>0){
+		CURRENT_LESSON=v;
+		load_lesson(0);
+		$('prev_lesson').verify();
+		$('next_lesson').verify();
+	    }
+	};
+    }
+
     if($('change_num_tokens_form')){
 	$('change_num_tokens_form').style.display='none';
 	$('done_changing_counts_button').onclick=function(){
@@ -495,7 +515,7 @@ window.onload = function(){
 		$('gradient_step').value=ORIG_SOLVE_STEP;
 		
 		this.innerHTML="Solve";
-		$('stop_solving_div').style.display='none';
+		//$('stop_solving_div').style.display='none';
 		$('step_button').disabled='';
 		$('next_lesson').disabled="";
 		$('prev_lesson').disabled="";

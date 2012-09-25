@@ -26,7 +26,6 @@ function load_html5_slider(boxid,val){
     } else{
 	feature_info.className+=' feature_name_box';
     }
-    //};
 }
 
 function get_handle(slider_value_box){
@@ -457,55 +456,52 @@ function reset_sliders_manually(arr){
     }
 }
 
+
+function get_corrected_step(tindex, solve_step){
+    var propval=THETA[tindex] + solve_step*GRADIENT[tindex];
+    if(USE_REGULARIZATION && REGULARIZATION_EXPONENT==1){
+	if(THETA[tindex]!=0){
+	    if(sign(THETA[tindex]*propval)<0){
+		return [tindex,0];
+	    } else{
+		return [tindex,propval];
+	    }
+	} else{ //theta == 0
+	    var g = OBS_FEAT_COUNT[tindex] - EXP_FEAT_COUNT[tindex];
+	    if(Math.abs(g) <= REGULARIZATION_SIGMA2){
+		return [tindex,0];
+	    }
+	    if(g>REGULARIZATION_SIGMA2){
+		return [tindex,solve_step*(g-REGULARIZATION_SIGMA2)];
+	    } else{
+		return [tindex, solve_step*(g+REGULARIZATION_SIGMA2)];
+	    }
+	}
+    } else{ //otherwise, normal L2 stuff/no regularization
+	return [tindex, propval];
+    }
+    
+}
+
 function step_gradient(solve_step){
     var solve_step=solve_step || SOLVE_STEP;
     var all_zero=0;
     var group = $$('.feature_slider');
     var arr = group.map(function(d,i){
 	    var tindex = parseInt(group[i].parentNode.parentNode.childNodes[0].getAttribute('theta_index'));
-	    //hack for non-differentiability of L1 reg.
-	    if(USE_REGULARIZATION && REGULARIZATION_EXPONENT==1){
-		var propval=THETA[tindex] + solve_step*GRADIENT[tindex];
-		if(THETA[tindex]!=0){
-		    if(sign(THETA[tindex]*propval)<0){
-			return [tindex,0];
-		    } else{
-			return [tindex,THETA[tindex] + solve_step*GRADIENT[tindex]];
-		    }
-		} else{ //theta == 0
-		    var g = OBS_FEAT_COUNT[tindex] - EXP_FEAT_COUNT[tindex];
-		    console.log('g='+g);
-		    if(Math.abs(g) <= REGULARIZATION_SIGMA2){
-			console.log('\tstaying at 0');
-			return [tindex,0];
-		    }
-		    if(g>REGULARIZATION_SIGMA2){
-			console.log("\tg+C>0 ::: "+(g-REGULARIZATION_SIGMA2));
-			return [tindex,g-REGULARIZATION_SIGMA2];
-		    } else{
-			console.log("\tg-C<0 ::: "+(g+REGULARIZATION_SIGMA2));
-			return [tindex, g+REGULARIZATION_SIGMA2];
-		    }
-		}
-	    } else{ //otherwise, normal L2 stuff
-		return [tindex,THETA[tindex] + solve_step*GRADIENT[tindex]];
-	    }
+	    return get_corrected_step(tindex, solve_step);
 	});
     reset_sliders_manually(arr);
     redraw_all();
 }
 
+//gradient-based criteria for convergence
 function converged(){
     var good=true;
     var s=sum(GRADIENT.map(function(d){return d*d;}));
-    /*console.log('||grad||^2 ='+s+', sqrt(s)='+Math.sqrt(s)+', < ' + STOPPING_EPS);
-    if(s<STOPPING_EPS){
-	console.log('yes');
-    } else{
-	console.log('sum = '+s);
-	}*/
     return s < STOPPING_EPS;
 }
+
 function converged1(prev_ll,step_size){
     var good=true;
     for(var i=0;i<prev_ll.length;i++){
@@ -541,9 +537,9 @@ function compute_gradient(){
 	if(USE_REGULARIZATION){
 	    var local_theta = THETA[l];
 	    var lte=(REGULARIZATION_EXPONENT==1)?sign(local_theta):local_theta;
-	    console.log('before, lte='+lte);
+	    //console.log('before, lte='+lte);
 	    lte = lte * REGULARIZATION_EXPONENT*REGULARIZATION_SIGMA2;
-	    console.log('l='+l+', theta='+local_theta+', reg[l]='+(-lte));
+	    //console.log('l='+l+', C='+REGULARIZATION_SIGMA2+', exponent='+REGULARIZATION_EXPONENT+' theta='+local_theta+', reg[l]='+(-lte));
 	    REG_FOR_GRAD[l]=lte;
 	    GRADIENT[l] = -lte;
 	} else{ GRADIENT[l]=0; REG_FOR_GRAD[l]=0;}	
@@ -668,8 +664,9 @@ function draw_gradient(){
     var fn; var colors;
     switch(DISPLAY_GRADIENT_COMPONENTS){
     case 1:
-	fn = function(theta,grad,true_theta){
-	    var ntheta = theta + grad;
+	fn = function(theta,ntheta,true_theta){
+	    //var ntheta = theta + grad;
+	    var grad = ntheta-theta;
 	    var st = bound_dom_range(theta); var snt = bound_dom_range(ntheta); var sh = bound_dom_range(inverse_sigmoid(slider_width/2));
 	    var tt = bound_dom_range(true_theta); 
 	    var st1=st; var snt1=snt; var grad_color;
@@ -726,7 +723,11 @@ function draw_gradient(){
     var group=$$(".slider");
     //scale gradient
     var abs_max_val = SOLVE_STEP;
-    var scaled_grad = GRADIENT.map(function(g){ return g/Math.pow(10,Math.floor(abs_max_val)+1); });
+    var scaled_grad = GRADIENT.map(function(g,i){ 
+	    var x=get_corrected_step(i,SOLVE_STEP)[1];
+	    return x;
+	});
+    //return x/Math.pow(10,Math.floor(abs_max_val)+1); });
     for(var i=0;i<group.length;i++){
 	//to get percents 
 	var g = group[i].parentNode.parentNode.childNodes[0];
