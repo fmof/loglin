@@ -72,7 +72,9 @@ function generate_new_observations(ntimes){
     for(var l=0;l<FEATURE_LIST.length;l++){
 	TRUE_THETA[l] = n.sample();
     }
+    //let's keep our current weights
     recompute_partition_function();
+    //and because we have a true model now, compute the actual partition function
     recompute_partition_function(TRUE_THETA,TRUE_Z_THETA);
     sample_from_true(ntimes);
     compute_max_prob(COUNTS,MAX_EMP_PROB,MAX_EMP_PROB_TYPE,MAX_EMP_AREA);
@@ -431,8 +433,7 @@ function recompute_expected_counts(){
 	    EXPECTED_COUNTS[c][id_num]=ecp;
 	    var obs_count = COUNTS[c][id_num];
 	    var color = determine_color(get_empirical_prob(c,id_num),get_prob(c,id_num)/Z_THETA[c]);
-	    //var color=determine_color(obs_count,ecp);
-	    p.innerHTML =  formatExpected(ecp);//color==COUNTS_EQUAL?obs_count:formatExpected(ecp);
+	    p.innerHTML =  formatExpected(ecp);
 	    p.style.color=color;
 	    p.setAttribute('dirty',0);
 	    p.setAttribute('value',ecp);
@@ -628,19 +629,26 @@ function generate_gradient_style(npcs){
     return ret;
 }
 
+function get_slider_zero_positions(sh,known){
+    var onepx = .75/slider_width*100;
+    var c = known ? '#FFFFFF' : '';
+    return [[sh-onepx-0.00000001,c],
+	    [sh-onepx,'#000000'],
+	    [sh+onepx,'#000000'],
+	    [sh+onepx+0.00000001,c]];
+}
+
 function draw_true_theta_on_slider(tt){
     /*var t=[[tt-1.0001,'#FFFFFF'],[tt-1, col_for_true_theta],
       [tt+1, col_for_true_theta],[tt+1.0001,'#FFFFFF']];*/
     var sh=50.5;
-    var t=[[sh-1.0001,'#FFFFFF'],[sh-1, '#000000'],
-	   [sh+1, '#000000'],[sh+1.0001,'#FFFFFF']];
+    var t = get_slider_zero_positions(sh,1);
     return generate_gradient_style(t);
 }
 
 function clear_gradient_color(){
     var sh=50.5;
-    var t=[[sh-1.0001,'#FFFFFF'],[sh-1, '#000000'],
-	   [sh+1, '#000000'],[sh+1.0001,'#FFFFFF']];
+    var t = get_slider_zero_positions(sh,1);
     return generate_gradient_style(t);
 }
 
@@ -667,29 +675,28 @@ function draw_gradient(){
 	fn = function(theta,ntheta,true_theta){
 	    //var ntheta = theta + grad;
 	    var grad = ntheta-theta;
-	    var st = bound_dom_range(theta); var snt = bound_dom_range(ntheta); var sh = bound_dom_range(inverse_sigmoid(slider_width/2));
+	    var st = bound_dom_range(theta); var snt = bound_dom_range(ntheta); 
+	    var sh = 50.5;
 	    var tt = bound_dom_range(true_theta); 
 	    var st1=st; var snt1=snt; var grad_color;
+	    var seen={};
 	    if(grad>0){
-		st1+=0.00000001; snt1+=0.00000001;
+		st1+=0.000001; snt1+=0.000001;
 		grad_color='#EE4455';
 	    } else{
-		st1-=0.00000001; snt1-=0.00000001;
+		st1-=0.000001; snt1-=0.000001;
 		grad_color='#4455EE';
 	    }
-	    var t = [[sh-1.00000001,''],
-		     [sh-1,'#000000'],
-		     [sh+1,'#000000'],
-		     [sh+1.00000001,''],
-		     [st,'#FFFFFF'],
-		     [st1,grad_color],
-		     [snt,grad_color],
-		     [snt1,'#FFFFFF']];
+	    var t = get_slider_zero_positions(sh);
+	    t.push([st,'#FFFFFF']);
+	    t.push([st1,grad_color]);
+	    t.push([snt,grad_color]);
+	    t.push([snt1,'#FFFFFF']);
 	    if(has_cheated){
-		t.push([tt-1.00000001,'']);
+		t.push([tt-1.000001,'']);
 		t.push([tt-1, col_for_true_theta]);
 		t.push([tt+1, col_for_true_theta]);
-		t.push([tt+1.00000001,'']);
+		t.push([tt+1.000001,'']);
 	    }
 	    t=t.sortBy(function(d){return d[0];});
 	    var first=0; var def_color='#FFFFFF'; var grad_seen=0;
@@ -784,11 +791,10 @@ function compute_ll(theta, ztable, ll, reg){
 	}
 	sum = sum*REGULARIZATION_SIGMA2;
 	reg[0]=sum;
-	ll = ll.map(function(d){
-		return d - sum;
-	    });
+	ll[0] = ll[0] - sum;
     } 
-    //console.log("LOG LIKELIHOOD: "+ ll);
+    console.log("LOG LIKELIHOOD: "+ ll);
+    console.log('\t'+LOG_LIKELIHOOD);
 }
 
 function createSlider(val,isUnused){
@@ -1432,7 +1438,6 @@ function updateObservedImages(){
 	var c = s[3] ; //get context -- X
 	var j = s[4] ; //get type_id -- Y
 	var count = COUNTS[c][j];
-	console.log(count);
 	var s=updateD3Shape(d3.select('#observed_point_context_'+c+'_'+j),j,'obs_count_pic_'+c+'_'+j,SVG_WIDTH,SVG_HEIGHT,VISUALS[c][j]['shape'],'#B8B8B8','hollow',get_empirical_prob(c,j),MAX_EMP_PROB[c]/MAX_EMP_AREA[c]);
 	s.attr('stroke-opacity',1).attr('stroke-width',3);
 	$('obs_count_text_'+i).innerHTML=count;
