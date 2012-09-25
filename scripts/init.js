@@ -512,8 +512,7 @@ window.onload = function(){
 		in_solving=0;
 		this.style.backgroundColor=button_color;
 		//orig_solve_step
-		$('gradient_step').value=ORIG_SOLVE_STEP;
-		
+		$('gradient_step').value=SOLVE_STEP.toPrecision(5);		
 		this.innerHTML="Solve";
 		//$('stop_solving_div').style.display='none';
 		$('step_button').disabled='';
@@ -521,7 +520,6 @@ window.onload = function(){
 		$('prev_lesson').disabled="";
 		$('next_lesson').verify(); $('prev_lesson').verify();
 		$('change_num_tokens').disabled="";
-		$('gradient_step').value = ORIG_SOLVE_STEP.toPrecision(5);
 		$('gradient_step').onchange();
 	    } else{
 		in_solving=1;

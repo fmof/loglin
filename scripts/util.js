@@ -9,7 +9,7 @@ function load_html5_slider(boxid,val){
 	} else{
 	    tmpval=inverse_sigmoid(0.000001);
 	}
-	console.log(tmpval);
+
     }
     var actual_weight = tmpval / val;
     var feature_info = boxid.parentNode.parentNode.childNodes[0];
@@ -19,7 +19,6 @@ function load_html5_slider(boxid,val){
 	var context =  parseInt(feature_info.getAttribute('context'));
 	var feature_name = feature_info.getAttribute('feature_name').split(',')[1];
 	var feat_name = INVERSE_FEATURE_LIST[ [CONTEXTS[context],feature_name] ];
-	var old_theta = THETA[feat_name];
 	//store THETA value
 	THETA[feat_name]=isFinite(actual_weight)?actual_weight:(actual_weight>0? 100: -100);
 	redraw_all();
@@ -95,6 +94,8 @@ function sample_from_true(num_times){
     //for every context...
     for(var c=0;c<CONTEXTS.length;c++){
 	var a=enumerate_possible_types(c,VISUALS[c]);
+	console.log('enum pos types : '+VISUALS[c]);
+	console.log(a);
 	var num_times = num_times || oldntokc[c] || 50;	
 	//first lay-out each type along the unit interval
 	var s = []; var prev=0; var ncounts = a[1];
@@ -223,7 +224,6 @@ function record_data(rows,already_created){
     compute_max_prob(COUNTS,MAX_EMP_PROB,MAX_EMP_PROB_TYPE,MAX_EMP_AREA);
     //compute the true partition function
     recompute_partition_function(TRUE_THETA,TRUE_Z_THETA);
-    console.log(Z_THETA);
     //draw the data here!
     if(!already_created){
     	drawSVGBoxes($("draw_area"));
@@ -347,6 +347,7 @@ function addSliderEffects(){
     var ub = inverse_sigmoid(slider_width-handle_width-0.000001);
     if(group=$$(".feature_slider")){
 	for(var i=0;i<group.length;i++){
+	    var theta_index = group[i].parentNode.parentNode.childNodes[0].getAttribute('theta_index');
 	    var handle_tmpfn=function(){
 		//handle 
 		//this.parentNode.parentNode.childNodes[1].value= inverse_sigmoid(parseFloat(this.style['left']+handle_width/2));
@@ -355,23 +356,29 @@ function addSliderEffects(){
 		this.parentNode.parentNode.childNodes[1].value= inverse_sigmoid(t);
 		load_html5_slider(this.parentNode.parentNode.childNodes[1],SLIDER_DIV);
 	    };
-	    var tmpfn=function(){
-		if(window.event){
-		    if(window.event.type=="change"){
-			if(isNumber(this.value) && parseFloat(this.value))
-			    this.value = parseFloat(this.value);
-			else
+	    var tmpfn=function(e){
+		if(e){
+		    if(e.type=="change"){
+			if(isNumber(this.value) && parseFloat(this.value)){
+			    console.log('capturing this...');
+			    console.log(this.value+', '+sigmoid_transform(parseFloat(this.value)));
+			    reset_manually_from_theta(this,this.value);
+			    THETA[theta_index]=this.value;
+			    redraw_all();
+			}
+			else{
 			    this.value = inverse_sigmoid(parseFloat(this.parentNode.childNodes[0].childNodes[1].style['left'] + handle_width/2));
+			}
 		    }
 		} else{
 		    this.value = inverse_sigmoid(parseFloat(this.parentNode.childNodes[0].childNodes[1].style['left'] + handle_width/2));
-		}
-		load_html5_slider(this,SLIDER_DIV);
+		    load_html5_slider(this,SLIDER_DIV);
+		}	
 	    };
 	    group[i].onchange = tmpfn;
 	    group[i].parentNode.childNodes[0].childNodes[1].ondrag=handle_tmpfn;
 	    group[i].onchange();
-	    var theta_index = group[i].parentNode.parentNode.childNodes[0].getAttribute('theta_index');
+
 	    /*if(USED_FEATURES[theta_index]==undefined){//is unused/unavailable
 		group[i].parentNode.parentNode.style.display='none';
 		group[i].parentNode.parentNode.className += ' unused_feature';
@@ -445,32 +452,39 @@ function sign(x){
     return x>0?1:(x<0?-1:0);
 }
 
+function reset_manually_from_theta(slider,val){
+    var h = get_handle(slider);
+    var x = sigmoid_transform(parseFloat(val));
+    x=Math.max(0.000001,Math.min(slider_width-handle_width-0.00001,x));
+    h.style['left'] = parseFloat(x)+'px';
+}
+
 function reset_sliders_manually(arr){
     var group = $$('.feature_slider');
     for(var i=0;i<group.length;i++){
-	//console.log('what is arr[i][1]? '+arr[i][1]);
 	group[i].value = arr[i][1];
-	//var val=Math.min(slider_width-handle_width-0.00001,Math.max(.00001,sigmoid_transform(arr[i][1]))); //bring to some pixel value
+	reset_manually_from_theta(group[i],arr[i][1]);
 	var val = sigmoid_transform(arr[i][1]);
-	get_handle(group[i]).style.left = val+'px';
+	//console.log(arr[i][1] + ' ==> '+ val);
+	//get_handle(group[i]).style.left = val+'px';
 	THETA[arr[i][0]]=(parseFloat(arr[i][1]));
     }
 }
 
 
-function get_corrected_step(tindex, solve_step){
+function get_corrected_step(tindex, solve_step,grad_only){
     var propval=THETA[tindex] + solve_step*GRADIENT[tindex];
     if(USE_REGULARIZATION && REGULARIZATION_EXPONENT==1){
 	if(THETA[tindex]!=0){
 	    if(sign(THETA[tindex]*propval)<0){
-		return [tindex,0];
+		return [tindex,grad_only?(-THETA[tindex]):0];
 	    } else{
-		return [tindex,propval];
+		return [tindex,grad_only?(solve_step*GRADIENT[tindex]):propval];
 	    }
 	} else{ //theta == 0
 	    var g = OBS_FEAT_COUNT[tindex] - EXP_FEAT_COUNT[tindex];
 	    if(Math.abs(g) <= REGULARIZATION_SIGMA2){
-		return [tindex,0];
+		return [tindex,grad_only?(-THETA[tindex]):0];
 	    }
 	    if(g>REGULARIZATION_SIGMA2){
 		return [tindex,solve_step*(g-REGULARIZATION_SIGMA2)];
@@ -479,7 +493,7 @@ function get_corrected_step(tindex, solve_step){
 	    }
 	}
     } else{ //otherwise, normal L2 stuff/no regularization
-	return [tindex, propval];
+	return [tindex, grad_only?(GRADIENT[tindex]):propval];
     }
     
 }
@@ -492,25 +506,21 @@ function step_gradient(solve_step){
 	    var tindex = parseInt(group[i].parentNode.parentNode.childNodes[0].getAttribute('theta_index'));
 	    return get_corrected_step(tindex, solve_step);
 	});
+    //    console.log('arr is '+arr);
     reset_sliders_manually(arr);
     redraw_all();
 }
 
 //gradient-based criteria for convergence
-function converged(){
-    var good=true;
-    var s=sum(GRADIENT.map(function(d){return d*d;}));
+function converged(step){
+    var s=sum(GRADIENT.map(function(d,i){
+		var x = get_corrected_step(i,step,1)[1];
+		return x*x;
+	    }));
+    //console.log(s);
     return s < STOPPING_EPS;
 }
 
-function converged1(prev_ll,step_size){
-    var good=true;
-    for(var i=0;i<prev_ll.length;i++){
-	good = good && 
-	    (Math.abs(LOG_LIKELIHOOD[i] - prev_ll[i])/step_size<STOPPING_EPS);
-    }
-    return good;
-}
 function scale_gamma_for_solve(gamma0,step_num){
     return gamma0/(step_num/Math.sqrt(10));
 }
@@ -523,7 +533,7 @@ function solve_puzzle(gamma, step_num, orig_step_size){
     //SOLVE_STEP=gamma;
     $('gradient_step').value = gamma.toPrecision(5);
     step_gradient(gamma);
-    if(step_num==MAX_SOLVE_ITERATIONS || converged()){
+    if(step_num==MAX_SOLVE_ITERATIONS || converged(step_num)){
 	$('solve_button').onclick();
     } 
 }
@@ -793,8 +803,6 @@ function compute_ll(theta, ztable, ll, reg){
 	reg[0]=sum;
 	ll[0] = ll[0] - sum;
     } 
-    console.log("LOG LIKELIHOOD: "+ ll);
-    console.log('\t'+LOG_LIKELIHOOD);
 }
 
 function createSlider(val,isUnused){
