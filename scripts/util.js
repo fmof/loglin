@@ -357,9 +357,9 @@ function addSliderEffects(){
 		load_html5_slider(this.parentNode.parentNode.childNodes[1],SLIDER_DIV);
 	    };
 	    var tmpfn=function(e){
-		if(e){
+		if(0 && e){
 		    if(e.type=="change"){
-			if(isNumber(this.value) && parseFloat(this.value)){
+			if(1 && isNumber(this.value) && parseFloat(this.value)){
 			    console.log('capturing this...');
 			    console.log(this.value+', '+sigmoid_transform(parseFloat(this.value)));
 			    reset_manually_from_theta(this,this.value);
@@ -367,13 +367,14 @@ function addSliderEffects(){
 			    redraw_all();
 			}
 			else{
+			    console.log('this');
 			    this.value = inverse_sigmoid(parseFloat(this.parentNode.childNodes[0].childNodes[1].style['left'] + handle_width/2));
 			}
 		    }
 		} else{
 		    this.value = inverse_sigmoid(parseFloat(this.parentNode.childNodes[0].childNodes[1].style['left'] + handle_width/2));
 		    load_html5_slider(this,SLIDER_DIV);
-		}	
+		    }	
 	    };
 	    group[i].onchange = tmpfn;
 	    group[i].parentNode.childNodes[0].childNodes[1].ondrag=handle_tmpfn;
