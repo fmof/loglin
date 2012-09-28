@@ -65,6 +65,30 @@ function normal(mu,sigma){
 	    }});
 }
 
+function rescale_context_counts(context_id, old_val,n_val){
+    //go through TYPE_OBSERVATIONS_IN_C[context_id]
+    for(var i=0;i<TYPE_OBSERVATIONS_IN_C[context_id].length;i++){
+	var tid = TYPE_OBSERVATIONS_IN_C[context_id][i];
+	if(old_val!=0)
+	    COUNTS[context_id][tid] *= n_val/old_val;
+    }
+    updateObservedImages();
+    redraw_all();
+}
+
+function generate_new_counts_context(context_id,ntimes){
+    //let's keep our current weights
+    recompute_partition_function();
+    recompute_partition_function(TRUE_THETA,TRUE_Z_THETA);
+    sample_from_true(context_id,ntimes);
+    compute_max_prob(COUNTS,MAX_EMP_PROB,MAX_EMP_PROB_TYPE,MAX_EMP_AREA);
+    updateObservedImages();
+    svg_loaded=1;
+    redraw_all();
+    $('step_button').disabled='';
+    $('solve_button').disabled='';
+}
+
 function generate_new_observations(ntimes){
     var n=normal(0,0.5);
     for(var l=0;l<FEATURE_LIST.length;l++){
@@ -74,7 +98,7 @@ function generate_new_observations(ntimes){
     recompute_partition_function();
     //and because we have a true model now, compute the actual partition function
     recompute_partition_function(TRUE_THETA,TRUE_Z_THETA);
-    sample_from_true(ntimes);
+    sample_from_true(-1,ntimes);
     compute_max_prob(COUNTS,MAX_EMP_PROB,MAX_EMP_PROB_TYPE,MAX_EMP_AREA);
     updateObservedImages();
     svg_loaded=1;
@@ -82,19 +106,28 @@ function generate_new_observations(ntimes){
     $('cheat_button').style.display='block';
     $('step_button').disabled='';
     $('solve_button').disabled='';
+    var a = $$(".new_counts");
+    for(var ai=0;ai<a.length;ai++){
+	a[ai].disabled='';
+    }
 }
 
 
-function sample_from_true(num_times){
+function sample_from_true(context_id, num_times){
     //clear various arrays...
     var oldntokc=NUM_TOKENS_C.slice();
-    reset_data_structures();
+    var cstart=0, cend=CONTEXTS.length;
+    if(context_id!=-1){
+	cstart = context_id; cend=cstart+1;
+    } else{
+	reset_data_structures();
+    }
     //enumerate possible types
     //for every context...
-    for(var c=0;c<CONTEXTS.length;c++){
+    for(var c=cstart;c<cend;c++){
+	NUM_TOKENS-=NUM_TOKENS_C[c];
+	NUM_TOKENS_C[c]=0;
 	var a=enumerate_possible_types(c,VISUALS[c]);
-	console.log('enum pos types : '+VISUALS[c]);
-	console.log(a);
 	var num_times = num_times || oldntokc[c] || 50;	
 	//first lay-out each type along the unit interval
 	var s = []; var prev=0; var ncounts = a[1];
@@ -119,8 +152,12 @@ function sample_from_true(num_times){
 	}
 	for(var type_id in ncounts){
 	    var t=ncounts[type_id];
+	    if(COUNTS[c]==undefined){
+		continue;
+	    }
 	    COUNTS[c][type_id]=t;
 	    NUM_TOKENS_C[c]+=t;
+	    NUM_TOKENS += t;
 	}
     }
 }
@@ -1424,7 +1461,7 @@ function updateObservedImages(){
 	var count = COUNTS[c][j];
 	var s=updateD3Shape(d3.select('#observed_point_context_'+c+'_'+j),j,'obs_count_pic_'+c+'_'+j,SVG_WIDTH,SVG_HEIGHT,VISUALS[c][j]['shape'],'#B8B8B8','hollow',get_empirical_prob(c,j),MAX_EMP_PROB[c]/MAX_EMP_AREA[c]);
 	s.attr('stroke-opacity',1).attr('stroke-width',3);
-	$('obs_count_text_'+i).innerHTML=count;
+	$('obs_count_text_'+c+'_'+j).innerHTML=formatExpected(count);
     }
     //var fill=rev[2]; var shapen = rev[0];
     //var count = SORT_COUNT_INDICES[MAP_COUNT_INDICES[i]][0];
@@ -1481,10 +1518,38 @@ function drawSVGBoxes(selectObj){
 	    ntokp.innerHTML = 'Context: '+CONTEXTS[c];
 	}
 	var ntok=document.createElement('input');
+	ntok.setAttribute('id','num_tokens_context_'+c);
+	ntok.setAttribute('context_id',c);
 	ntok.setAttribute('value',NUM_TOKENS_C[c]);
 	ntok.setAttribute('size',5);
+	ntok.onchange = function(){
+	    var v = this.value; var cc = parseInt(this.getAttribute('context_id'));
+	    if(isNumber(v) && NUM_TOKENS_C[cc]!=0){
+		v=parseFloat(v);
+		var ov = NUM_TOKENS_C[cc];
+		NUM_TOKENS = NUM_TOKENS - ov + v;
+		NUM_TOKENS_C[cc]=v;
+		rescale_context_counts(cc,ov,v);
+	    } else{
+		this.value=NUM_TOKENS_C[cc];
+	    }
+	};
 	div_token_input.appendChild(ntokp);
+	var ncounts = document.createElement('button');
+	ncounts.type='button';
+	ncounts.setAttribute('contextid',c);
+	ncounts.className += ' new_counts';
+	ncounts.disabled='disabled';
+	ncounts.innerHTML='New Counts';
+	ncounts.onclick=function(){
+	    //disable a bunch of buttons...
+	    var cid = parseInt(this.getAttribute('contextid'));
+	    var v = $('num_tokens_context_'+cid).value;
+	    v= isNumber(v)?parseFloat(v):-1;
+	    generate_new_counts_context(cid,v);
+	};
 	div_token_input.appendChild(ntok);
+	div_token_input.appendChild(ncounts);
 	td_tok.appendChild(div_token_input);
 	
 	var vis_in_c=VISUALS[c];
@@ -1541,9 +1606,9 @@ function drawSVGBoxes(selectObj){
 		//create the count text reps
 		var obs_count_p = document.createElement('p');
 		var obs_count= COUNTS[c][type_id];
-		obs_count_p.innerHTML = obs_count;
+		obs_count_p.innerHTML = formatExpected(obs_count);
 		obs_count_p.style.display='inline';
-		obs_count_p.id = 'obs_count_text_'+type_id;
+		obs_count_p.id = 'obs_count_text_'+c+'_'+type_id;
 		obs_count_p.className += ' count_text observed_count_text';
 		var divk=document.createElement('div');
 		divk.appendChild(obs_count_p);

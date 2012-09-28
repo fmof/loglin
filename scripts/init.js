@@ -313,7 +313,7 @@ window.onload = function(){
 	};
     }
 
-    if($('change_num_tokens_form')){
+    /*if($('change_num_tokens_form')){
 	$('change_num_tokens_form').style.display='none';
 	$('done_changing_counts_button').onclick=function(){
 	    $('change_num_tokens_form').style.display='none';
@@ -321,7 +321,7 @@ window.onload = function(){
 	    $('change_num_tokens').disabled='';
 	    generate_new_observations();
 	};
-    }
+	}*/
 
     if($('change_num_tokens')){
 	//jQuery('#change_num_tokens').bt("you can change the number of <em>tokens</em> observed.");
@@ -497,7 +497,7 @@ window.onload = function(){
 	    $('next_lesson').disabled="";
 	    $('prev_lesson').disabled="";
 	    $('next_lesson').verify(); $('prev_lesson').verify();
-	    $('change_num_tokens').disabled="";
+	    //$('change_num_tokens').disabled="";
 	    $('gradient_step').value = orig_step_size.toPrecision(5);
 	    $('gradient_step').onchange();
 	};
@@ -519,7 +519,7 @@ window.onload = function(){
 		$('next_lesson').disabled="";
 		$('prev_lesson').disabled="";
 		$('next_lesson').verify(); $('prev_lesson').verify();
-		$('change_num_tokens').disabled="";
+		//$('change_num_tokens').disabled="";
 		$('gradient_step').onchange();
 	    } else{
 		in_solving=1;
@@ -529,7 +529,7 @@ window.onload = function(){
 		$('step_button').disabled='disabled';
 		$('next_lesson').disabled="disabled";
 		$('prev_lesson').disabled="disabled";
-		$('change_num_tokens').disabled="disabled";
+		//$('change_num_tokens').disabled="disabled";
 		$('gradient_step').value=scale_gamma_for_solve(SOLVE_STEP/Math.sqrt(10),1).toPrecision(5);
 		/*SOLVE_TIMEOUT_ID = setInterval(function(){
 			solve_puzzle(SOLVE_STEP/Math.sqrt(10),++SOLVE_ITERATION, SOLVE_STEP);
