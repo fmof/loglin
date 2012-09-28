@@ -3,7 +3,6 @@ function load_html5_slider(boxid,val){
     //return function(batch){
     var tmpval = boxid.value; var actual_weight;
     if(!isFinite(tmpval)){
-	console.log('mapping '+tmpval+' to ');
 	if(tmpval>0){
 	    tmpval=inverse_sigmoid(slider_width-handle_width-0.000001);
 	} else{
@@ -568,45 +567,21 @@ function compute_gradient(){
 	    var data = TYPE_INDEX[id_num];
 	    var stop_length = data.length;
 	    var tmp=0; var key; var local_theta;
+	    var ittc=CONTEXTS[c]==''?['']:[CONTEXTS[c],''];
 	    for(var i=0;i<stop_length;i++){
-		//get the unique identifying key for this feature in the context
-		var feat_num = INVERSE_FEATURE_LIST[ [CONTEXTS[c], data[i]]];
-		local_theta = THETA[feat_num];
-		//observed feature counts
-		tmp = (COUNTS[c][id_num]-0)*THETA_STRENGTH[feat_num];
-		OBS_FEAT_COUNT[feat_num] += tmp;
-		//expected feature counts
-		var tmp_e=NUM_TOKENS_C[c]*get_prob(c,id_num)/Z_THETA[c]*THETA_STRENGTH[feat_num];
-		EXP_FEAT_COUNT[feat_num]+=tmp_e;
-		tmp -= tmp_e;
-		//regularization has been taken care of...
-		GRADIENT[feat_num]= ((GRADIENT[feat_num]==undefined)?0:(GRADIENT[feat_num])) + tmp;
-	    }
-	}
-    }
-    //fix gradient for L1 regularization
-    if(0 &&USE_REGULARIZATION && REGULARIZATION_EXPONENT==1){
-	for(var tindex=0;tindex<GRADIENT.length;tindex++){
-	    var propval=THETA[tindex] + solve_step*GRADIENT[tindex];
-	    if(THETA[tindex]!=0){
-		if(sign(THETA[tindex]*propval)<0){
-		    return [tindex,0];
-		} else{
-		    return [tindex,THETA[tindex] + solve_step*GRADIENT[tindex]];
-		}
-	    } else{ //theta == 0
-		var g = OBS_FEAT_COUNT[tindex] - EXP_FEAT_COUNT[tindex];
-		console.log('g='+g);
-		if(Math.abs(g) <= REGULARIZATION_SIGMA2){
-		    console.log('\tstaying at 0');
-		    return [tindex,0];
-		}
-		if(g>REGULARIZATION_SIGMA2){
-		    console.log("\tg+C>0"+(g-REGULARIZATION_SIGMA2));
-		    return [tindex,g-REGULARIZATION_SIGMA2];
-		} else{
-		    console.log("\tg-C<0"+(g+REGULARIZATION_SIGMA2));
-		    return [tindex, g+REGULARIZATION_SIGMA2];
+		for(var ci=0;ci<ittc.length;ci++){
+		    //get the unique identifying key for this feature in the context
+		    var feat_num = INVERSE_FEATURE_LIST[ [ittc[ci], data[i]]];
+		    local_theta = THETA[feat_num];
+		    //observed feature counts
+		    tmp = (COUNTS[c][id_num]-0)*THETA_STRENGTH[feat_num];
+		    OBS_FEAT_COUNT[feat_num] += tmp;
+		    //expected feature counts
+		    var tmp_e=NUM_TOKENS_C[c]*get_prob(c,id_num)/Z_THETA[c]*THETA_STRENGTH[feat_num];
+		    EXP_FEAT_COUNT[feat_num]+=tmp_e;
+		    tmp -= tmp_e;
+		    //regularization has been taken care of...
+		    GRADIENT[feat_num]= ((GRADIENT[feat_num]==undefined)?0:(GRADIENT[feat_num])) + tmp;
 		}
 	    }
 	}
@@ -1118,8 +1093,9 @@ function createCircleRadius(count,max_count,scale){
     //when maximal, I want radius to be half of height
     //I need to absorb the 1/Math.sqrt(Math.PI) into the scale...
     //so don't even bother including it
-    return Math.sqrt(count/(max_count*Math.PI));
-    //return Math.sqrt(count/(max_count*Math.PI))*(scale-1);
+    var ret= Math.sqrt(count/(max_count*Math.PI));
+    console.log('ret rad= '+ret);
+    return ret<1 ? 1 : ret;
 }
 
 function createPentagonPoints(cx,width,cy,height,count,max_count,scale){
@@ -1428,12 +1404,11 @@ function drawExpectedData(context, i, container){
     }
     var ntc=NUM_TOKENS_C[context]==0?1:NUM_TOKENS_C[context];
     if(! $("exp_count_pic_"+context+'_'+i)){
-	//var exp_count_pic = createD3Shape(container,i,'exp_count_pic_'+context+'_'+i,SVG_WIDTH,SVG_HEIGHT,shapen,color,fill,exp_count/ntc,MAX_EXP_EMP_PROB[context]/MAX_EXP_EMP_AREA[context],EXPECTED_TRANSPARENCY);
 	var exp_count_pic = createD3Shape(container,i,'exp_count_pic_'+context+'_'+i,SVG_WIDTH,SVG_HEIGHT,shapen,color,fill,get_prob(context,i)/Z_THETA[context],MAX_EXP_EMP_PROB[context]/MAX_EXP_EMP_AREA[context],EXPECTED_TRANSPARENCY);
 	exp_count_pic.attr('id','exp_count_pic_'+context+'_'+i);
     } else{
-	//otherwise, update it...
-	//updateD3Shape(container,i,'exp_count_pic_'+context+'_'+i,SVG_WIDTH,SVG_HEIGHT,shapen,color,fill,exp_count/ntc,MAX_EXP_EMP_PROB[context]/MAX_EXP_EMP_AREA[context]);
+	//otherwise, update it..
+	console.log(get_prob(context,i)+", "+Z_THETA[context]+', '+MAX_EXP_EMP_PROB[context]+', '+MAX_EXP_EMP_AREA[context]);
 	updateD3Shape(container,i,'exp_count_pic_'+context+'_'+i,SVG_WIDTH,SVG_HEIGHT,shapen,color,fill,get_prob(context,i)/Z_THETA[context], MAX_EXP_EMP_PROB[context]/MAX_EXP_EMP_AREA[context]);
     }
 }
@@ -1490,6 +1465,10 @@ function drawSVGBoxes(selectObj){
     var tab = document.createElement('table');
     selectObj.appendChild(tab);
     for(var c=0;c<CONTEXTS.length;c++){
+	/*if(NUM_TOKENS_C[c]==0){
+	    console.log(c +', '+NUM_TOKENS_C[c]);
+	    continue;
+	    }*/
 	var tr=document.createElement('tr');
 	tab.appendChild(tr);
 	var td_tok = document.createElement('td');
@@ -1498,12 +1477,15 @@ function drawSVGBoxes(selectObj){
 	var div_token_input=document.createElement('div');
 	div_token_input.className+=' floatleft';
 	var ntokp = document.createElement('p');
-	//ntokp.innerHTML = 
-	//var ntok=document.createElement('input');
-	//ntok.setAttribute('value',NUM_TOKENS_C[c]);
-	//ntok.setAttribute('size',5);
-	//div_token_input.appendChild(ntok);
-	//td_tok.appendChild(div_token_input);
+	if(CONTEXTS[c]!=''){
+	    ntokp.innerHTML = 'Context: '+CONTEXTS[c];
+	}
+	var ntok=document.createElement('input');
+	ntok.setAttribute('value',NUM_TOKENS_C[c]);
+	ntok.setAttribute('size',5);
+	div_token_input.appendChild(ntokp);
+	div_token_input.appendChild(ntok);
+	td_tok.appendChild(div_token_input);
 	
 	var vis_in_c=VISUALS[c];
 	var axes={}; var place_in_axis={};
