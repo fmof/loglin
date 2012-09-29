@@ -82,9 +82,11 @@ function generate_new_counts_context(context_id,ntimes){
     recompute_partition_function(TRUE_THETA,TRUE_Z_THETA);
     sample_from_true(context_id,ntimes);
     compute_max_prob(COUNTS,MAX_EMP_PROB,MAX_EMP_PROB_TYPE,MAX_EMP_AREA);
+    $('num_tokens_context_'+context_id).value = NUM_TOKENS_C[context_id];
     updateObservedImages();
     svg_loaded=1;
-    redraw_all();
+    redraw_all();    
+    //update buttons
     $('step_button').disabled='';
     $('solve_button').disabled='';
 }
@@ -98,7 +100,13 @@ function generate_new_observations(ntimes){
     recompute_partition_function();
     //and because we have a true model now, compute the actual partition function
     recompute_partition_function(TRUE_THETA,TRUE_Z_THETA);
-    sample_from_true(-1,ntimes);
+    
+    for(var c=0;c<CONTEXTS.length;c++){
+	if(USED_CONTEXTS[c]){
+	    sample_from_true(c,ntimes);
+	    $('num_tokens_context_'+c).value = NUM_TOKENS_C[c];
+	}
+    }
     compute_max_prob(COUNTS,MAX_EMP_PROB,MAX_EMP_PROB_TYPE,MAX_EMP_AREA);
     updateObservedImages();
     svg_loaded=1;
@@ -106,10 +114,7 @@ function generate_new_observations(ntimes){
     $('cheat_button').style.display='block';
     $('step_button').disabled='';
     $('solve_button').disabled='';
-    var a = $$(".new_counts");
-    for(var ai=0;ai<a.length;ai++){
-	a[ai].disabled='';
-    }
+    $("new_counts").disabled='';
 }
 
 
@@ -317,7 +322,8 @@ function record_observation(record){
 	context_id = REVERSE_CONTEXTS[record['context']];
     }
     DATA_BY_CONTEXT[context_id][type_index]=split_features;
-
+    USED_CONTEXTS[context_id]=1;
+			
     //updated USED_FEATURES list
     /*for(var sf=0;sf<split_features.length;sf++){
 	var ifl=INVERSE_FEATURE_LOOKUP(context_id,split_features[sf]);
@@ -383,6 +389,7 @@ function addSliderEffects(){
     var ub = inverse_sigmoid(slider_width-handle_width-0.000001);
     if(group=$$(".feature_slider")){
 	for(var i=0;i<group.length;i++){
+	    group[i].setAttribute('readonly','readonly');
 	    var theta_index = group[i].parentNode.parentNode.childNodes[0].getAttribute('theta_index');
 	    var handle_tmpfn=function(){
 		//handle 
@@ -1131,7 +1138,6 @@ function createCircleRadius(count,max_count,scale){
     //I need to absorb the 1/Math.sqrt(Math.PI) into the scale...
     //so don't even bother including it
     var ret= Math.sqrt(count/(max_count*Math.PI));
-    console.log('ret rad= '+ret);
     return ret<1 ? 1 : ret;
 }
 
@@ -1157,13 +1163,7 @@ function createPentagonPoints(cx,width,cy,height,count,max_count,scale){
 
 function createTrianglePoints(cx,width,cy,height,count,max_count,scale){
     var points=[];
-    //var side=Math.sqrt(4*count/(Math.sqrt(3)*max_count));
     var r = Math.sqrt(3)/3 * Math.sqrt(4*count/(Math.sqrt(3)*max_count));
-   
- //var d = (height - 1.5*r)/2;
-    //cy=r+d;
-    //var r = Math.sqrt(count/max_count * 8/(3*Math.sqrt(3)))*2*scale/3;
-    //var r=side/Math.sqrt(3) * scale;
     points.push([cx,cy - r]);
     points.push([cx - r * Math.sqrt(3)/2, cy + r/2]);
     points.push([cx + r * Math.sqrt(3)/2, cy + r/2]);
@@ -1207,9 +1207,6 @@ function updateD3Shape(container, id_num, id_name, width,height,shape,color,fill
 }
 
 function createD3Shape(container, id_num, id_name, width,height,shape,color,fill,count,max_count,opacity){
-    //    console.log('count is '+count);
-    //console.log('max_count is '+max_count);
-    //console.log(' ');
     if(fill=='striped'){
 	var cloned=$('stripe_def').cloneNode(true);
 	cloned.setAttribute('id','stripe_def_'+id_name);
@@ -1225,7 +1222,6 @@ function createD3Shape(container, id_num, id_name, width,height,shape,color,fill
 	s.attr('cx',width/2)
 	    .attr('cy',height/2)
 	    .attr('r', createCircleRadius(count,max_count,scale));
-	//console.log('for id='+id_num+', rad='+createCircleRadius(count,max_count,scale));
     } else if(shape=="square"){
 	s=container.selectAll('#'+id_name).data([count]).enter().append("rect");
 	var rwid, rhei;
@@ -1293,8 +1289,6 @@ function get_empirical_prob(context,id_num){
 function get_prob(context,id_num,log,theta){
     var ret = 0; var print=0;
     var theta = theta || THETA;
-    //    console.log('theta is ');
-    //console.log(THETA);
     var data= DATA_BY_CONTEXT[context][id_num];
     if(print){
 	console.log(DATA_BY_CONTEXT[context]);
@@ -1304,7 +1298,6 @@ function get_prob(context,id_num,log,theta){
     for(var i=0;i<data.length;i++){
 	var ifl=INVERSE_FEATURE_LOOKUP(context,data[i]);
 	if(ifl>=0){
-	    //console.log("\tadding "+data[i]);
 	    ret += theta[ifl]*THETA_STRENGTH[ifl];
 	} 
 	if(CONTEXTS[context]!='' && (ifl=INVERSE_FEATURE_LIST[['',data[i]]])!=undefined){
@@ -1445,7 +1438,7 @@ function drawExpectedData(context, i, container){
 	exp_count_pic.attr('id','exp_count_pic_'+context+'_'+i);
     } else{
 	//otherwise, update it..
-	console.log(get_prob(context,i)+", "+Z_THETA[context]+', '+MAX_EXP_EMP_PROB[context]+', '+MAX_EXP_EMP_AREA[context]);
+	//	console.log(get_prob(context,i)+", "+Z_THETA[context]+', '+MAX_EXP_EMP_PROB[context]+', '+MAX_EXP_EMP_AREA[context]);
 	updateD3Shape(container,i,'exp_count_pic_'+context+'_'+i,SVG_WIDTH,SVG_HEIGHT,shapen,color,fill,get_prob(context,i)/Z_THETA[context], MAX_EXP_EMP_PROB[context]/MAX_EXP_EMP_AREA[context]);
     }
 }
@@ -1500,28 +1493,35 @@ function drawSVGBoxes(selectObj){
     var svg_offset=8; var offset=2*svg_offset + 3;
     var num_axes=0;
     var tab = document.createElement('table');
+    var tr;
+    if(CONTEXTS.length>1 || CONTEXTS[0]!=''){
+	tr= document.createElement('tr');
+	var th=document.createElement('th');
+	th.innerHTML='Context';
+	tr.appendChild(th);
+	tab.appendChild(tr);
+    }
     selectObj.appendChild(tab);
     for(var c=0;c<CONTEXTS.length;c++){
-	/*if(NUM_TOKENS_C[c]==0){
-	    console.log(c +', '+NUM_TOKENS_C[c]);
+	if(USED_CONTEXTS[c]!=1){
+	    console.log('context c='+c);
 	    continue;
-	    }*/
-	var tr=document.createElement('tr');
+	}
+	tr=document.createElement('tr');
+	tr.className += ' observation_row_num_context';
 	tab.appendChild(tr);
 	var td_tok = document.createElement('td');
 	tr.appendChild(td_tok);
 	//handle number of tokens in context
 	var div_token_input=document.createElement('div');
 	div_token_input.className+=' floatleft';
-	var ntokp = document.createElement('p');
-	if(CONTEXTS[c]!=''){
-	    ntokp.innerHTML = 'Context: '+CONTEXTS[c];
-	}
+	var ntoksp = document.createElement('span');
+	ntoksp.innerHTML = 'N<sub>'+ CONTEXTS[c] +'</sub>=';
 	var ntok=document.createElement('input');
 	ntok.setAttribute('id','num_tokens_context_'+c);
 	ntok.setAttribute('context_id',c);
 	ntok.setAttribute('value',NUM_TOKENS_C[c]);
-	ntok.setAttribute('size',5);
+	ntok.setAttribute('size',NUM_TOKENS_C[c].toString().length);
 	ntok.onchange = function(){
 	    var v = this.value; var cc = parseInt(this.getAttribute('context_id'));
 	    if(isNumber(v) && NUM_TOKENS_C[cc]!=0){
@@ -1530,26 +1530,19 @@ function drawSVGBoxes(selectObj){
 		NUM_TOKENS = NUM_TOKENS - ov + v;
 		NUM_TOKENS_C[cc]=v;
 		rescale_context_counts(cc,ov,v);
+		//and allow things to be updated
+		if(LAST_UPDATED_TOKEN_COUNT){
+		    $('num_tokens_context_'+LAST_UPDATED_TOKEN_COUNT).style['background-color']='';
+		}
+		LAST_UPDATED_TOKEN_COUNT=cc;
+		this.style['background-color']='#F6F5A2';
 	    } else{
 		this.value=NUM_TOKENS_C[cc];
 	    }
 	};
-	div_token_input.appendChild(ntokp);
-	var ncounts = document.createElement('button');
-	ncounts.type='button';
-	ncounts.setAttribute('contextid',c);
-	ncounts.className += ' new_counts';
-	ncounts.disabled='disabled';
-	ncounts.innerHTML='New Counts';
-	ncounts.onclick=function(){
-	    //disable a bunch of buttons...
-	    var cid = parseInt(this.getAttribute('contextid'));
-	    var v = $('num_tokens_context_'+cid).value;
-	    v= isNumber(v)?parseFloat(v):-1;
-	    generate_new_counts_context(cid,v);
-	};
+	div_token_input.appendChild(ntoksp);
+
 	div_token_input.appendChild(ntok);
-	div_token_input.appendChild(ncounts);
 	td_tok.appendChild(div_token_input);
 	
 	var vis_in_c=VISUALS[c];

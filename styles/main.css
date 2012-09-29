@@ -662,6 +662,10 @@ hr.slider{
  }   
     
 
+tr.observation_row_num_context > td{
+    padding-bottom:15px;
+}
+
 input[type=range].feature_slider{
     /*-webkit-appearance: none;
     padding-left:1px; padding-right:1px;

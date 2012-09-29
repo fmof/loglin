@@ -25,6 +25,9 @@ REVERSE_POSITIONS={};
 //context_id -> associative array
 DATA_BY_CONTEXT=[];
 
+LAST_UPDATED_TOKEN_COUNT=null;
+
+USED_CONTEXTS={};
 USED_FEATURES={};
 
 DATA_BY_POINT=[]; //maps type id_num to human readable feature vector (dim_0,...,dim_n)
@@ -188,6 +191,7 @@ function reset_data_structures(full){
 	GRADIENT=[]; OBS_FEAT_COUNT=[]; EXP_FEAT_COUNT=[]; REG_FOR_GRAD=[];
 	POSITIONS=[];
 	REVERSE_POSITIONS={};
+	USED_CONTEXTS={};
 	USED_FEATURES={};
 	//context_id -> associative array :: this stores features
 	DATA_BY_CONTEXT=[];
@@ -227,7 +231,7 @@ function reset_data_structures(full){
     EXPECTED_STROKE_WIDTH=3;
 
     gradients_drawn = 0;
-
+    LAST_UPDATED_TOKEN_COUNT=null;
 }
 
 max_prob=1;
@@ -246,6 +250,7 @@ function load_lesson(initial){
 	jQuery('#feature_table').empty();
 	//redisplay some things...
 	$('cheat_button').style.display="none";
+	$('new_counts').disabled='disabled';
     }
     TRUE_THETA_PATH = 'lessons/'+CURRENT_LESSON+'/theta';
     OBSERVATION_PATH = 'lessons/'+CURRENT_LESSON+'/observations';    
@@ -322,6 +327,22 @@ window.onload = function(){
 	    generate_new_observations();
 	};
 	}*/
+
+    if($('new_counts')){
+    	$('new_counts').onclick=function(){
+	    //disable a bunch of buttons...
+	    for(var c=0;c<CONTEXTS.length;c++){
+		if(USED_CONTEXTS[c]){
+		    var v = $('num_tokens_context_'+c).value;
+		    v= isNumber(v)?parseFloat(v):-1;
+		    //don't do the following when v == NUM_TOKENS_C[c]
+		    if(c==LAST_UPDATED_TOKEN_COUNT)
+			generate_new_counts_context(c,v);
+		}
+	    }
+	};
+	$('new_counts').disabled='disabled';
+    }
 
     if($('change_num_tokens')){
 	//jQuery('#change_num_tokens').bt("you can change the number of <em>tokens</em> observed.");
