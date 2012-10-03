@@ -100,7 +100,7 @@ DISPLAY_GRADIENT_COMPONENTS=1;
 SOLVE_ITERATION=1;
 SOLVE_TIMEOUT_ID={};
 SOLVE_TIME_DELAY=750; //in milliseconds
-STOPPING_EPS=0.1;
+STOPPING_EPS=0.05;
 MAX_SOLVE_ITERATIONS = 200;
 
 SVG_WIDTH=100; SVG_HEIGHT=100;
@@ -146,6 +146,8 @@ sigmoid_y_define_ratio = 7.0/8.0;
 sigmoid_x_define = Math.sqrt(2); 
 SIGMOID_CONSTANT = 1/sigmoid_x_define * Math.log(sigmoid_y_define_ratio/(1-sigmoid_y_define_ratio));
 
+INITIAL_LOAD=1;
+skip_next_hashchange=0;
 initialize=0;
 svg_loaded=0;
 user_input_tokens_added=0;
@@ -237,13 +239,13 @@ function reset_data_structures(full){
 max_prob=1;
 
 //load current lesson
-function load_lesson(initial){
+function load_lesson(){
     $('header_lesson_number').innerHTML=CURRENT_LESSON;
     $('header_lesson_number').setAttribute('lesson',CURRENT_LESSON);
     $('show_how_many_previous_lessons').innerHTML = Math.max(1,CURRENT_LESSON-1);
     $('show_how_many_next_lessons').innerHTML = Math.min(CURRENT_LESSON+1,MAX_LESSONS);
     reset_data_structures(1);
-    if(!initial){
+    if(!INITIAL_LOAD){
 	//remove a bunch of nodes...
 	jQuery('#draw_area').empty();
 	jQuery('#ll_area').empty();
@@ -251,6 +253,8 @@ function load_lesson(initial){
 	//redisplay some things...
 	$('cheat_button').style.display="none";
 	$('new_counts').disabled='disabled';
+    } else{
+	INITIAL_LOAD=0;
     }
     TRUE_THETA_PATH = 'lessons/'+CURRENT_LESSON+'/theta';
     OBSERVATION_PATH = 'lessons/'+CURRENT_LESSON+'/observations';    
@@ -265,6 +269,8 @@ function load_lesson(initial){
     //huge function that loads data
     //and features
     load_textfile();
+    document.title = 'Lesson '+CURRENT_LESSON;
+    history.pushState({CURRENT_LESSON:CURRENT_LESSON},'','#'+CURRENT_LESSON);
 }
 
 function setITimeout( callback, init_time, times ){
@@ -287,7 +293,44 @@ function setITimeout( callback, init_time, times ){
     SOLVE_TIMEOUT_ID=window.setTimeout( internalCallback, init_time/Math.sqrt(10) );
 };
 
-//setITimeout( function(){ console.log( 'hi' );}, 750, 100 );
+//http://stackoverflow.com/questions/4197591/parsing-url-hash-fragment-identifier-with-javascript
+function getHashParams(hs) {
+    var hashParams = {};
+    var e,
+        a = /\+/g,  // Regex for replacing addition symbol with a space
+        r = /([^&;=]+)=?([^&;]*)/g,
+        d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
+        q = window.location.hash.substring(1);
+
+	while (e = r.exec(q))
+	    hashParams[d(e[1])] = d(e[2]);
+
+	return hashParams;
+}
+
+window.onhashchange = function(){
+    if(skip_next_hashchange){
+	skip_next_hashchange=0;
+	return 0;
+    }
+    var n = parseInt(window.location.hash.substring(1));
+    if(isNumber(n) && isFinite(n)){
+	if(n>=1 && n<=MAX_LESSONS){
+	    CURRENT_LESSON=n;
+	    load_lesson();
+	} else{
+	    n=-CURRENT_LESSON;
+	    skip_next_hashchange=1;
+	    window.location.hash='#'+CURRENT_LESSON;
+	}
+    } else{
+	n=-CURRENT_LESSON;
+	    skip_next_hashchange=1;
+	    window.location.hash='#'+CURRENT_LESSON;
+    }
+    return n;
+}
+
 
 window.onload = function(){
     var group;
@@ -296,7 +339,8 @@ window.onload = function(){
     if(parseInt($('header_lesson_number').getAttribute('lesson')) != 0){
 	CURRENT_LESSON=parseInt($('header_lesson_number').getAttribute('lesson'));
     }
-    load_lesson(CURRENT_LESSON==1?1:0);
+    if(window.onhashchange()<0)
+	load_lesson();
 
     //add listeners for "jump to lesson" select
     if($('jump_to_lesson_select')){
@@ -550,14 +594,10 @@ window.onload = function(){
 		$('step_button').disabled='disabled';
 		$('next_lesson').disabled="disabled";
 		$('prev_lesson').disabled="disabled";
-		//$('change_num_tokens').disabled="disabled";
 		$('gradient_step').value=scale_gamma_for_solve(SOLVE_STEP/Math.sqrt(10),1).toPrecision(5);
-		/*SOLVE_TIMEOUT_ID = setInterval(function(){
-			solve_puzzle(SOLVE_STEP/Math.sqrt(10),++SOLVE_ITERATION, SOLVE_STEP);
-			}, SOLVE_TIME_DELAY);*/
 		SOLVE_TIMEOUT_ID = setITimeout(function(iter){
 			return function(){
-			    solve_puzzle(SOLVE_STEP/Math.sqrt(10),
+			    solve_puzzle(recompute_step_size(SOLVE_STEP/Math.sqrt(10)),
 					 iter,
 					 SOLVE_STEP);
 			};}, SOLVE_TIME_DELAY/Math.sqrt(10), MAX_SOLVE_ITERATIONS);

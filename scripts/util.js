@@ -509,8 +509,6 @@ function reset_sliders_manually(arr){
 	group[i].value = arr[i][1];
 	reset_manually_from_theta(group[i],arr[i][1]);
 	var val = sigmoid_transform(arr[i][1]);
-	//console.log(arr[i][1] + ' ==> '+ val);
-	//get_handle(group[i]).style.left = val+'px';
 	THETA[arr[i][0]]=(parseFloat(arr[i][1]));
     }
 }
@@ -542,7 +540,7 @@ function get_corrected_step(tindex, solve_step,grad_only){
     
 }
 
-function step_gradient(solve_step){
+function step_gradient(solve_step,dont_complete){
     var solve_step=solve_step || SOLVE_STEP;
     var all_zero=0;
     var group = $$('.feature_slider');
@@ -550,9 +548,11 @@ function step_gradient(solve_step){
 	    var tindex = parseInt(group[i].parentNode.parentNode.childNodes[0].getAttribute('theta_index'));
 	    return get_corrected_step(tindex, solve_step);
 	});
-    //    console.log('arr is '+arr);
-    reset_sliders_manually(arr);
-    redraw_all();
+    if(!dont_complete){
+	reset_sliders_manually(arr);
+	redraw_all();
+    }
+    return arr;
 }
 
 //gradient-based criteria for convergence
@@ -561,18 +561,52 @@ function converged(step){
 		var x = get_corrected_step(i,step,1)[1];
 		return x*x;
 	    }));
-    //console.log(s);
     return s < STOPPING_EPS;
 }
 
 function scale_gamma_for_solve(gamma0,step_num){
-    return gamma0/(step_num/Math.sqrt(10));
+    //return gamma0/(step_num/Math.sqrt(10));
+    return gamma0;
+}
+
+//auto-computes the step size
+//makes the solver more robust; less confusing (hopefully) for users
+function recompute_step_size(ostep){
+    var step = ostep;
+    var tztable = [];
+    var tll = [LOG_LIKELIHOOD[0]];
+    var tr=[0];
+    var tth = [];
+    var old_ll = LOG_LIKELIHOOD[0];
+    
+    var f = function(s){
+	var nt = step_gradient(s,1);
+	tth=[];
+	for(var i=0;i<nt.length;i++){
+	    tth[nt[i][0]] = nt[i][1];
+	}
+	recompute_partition_function(tth,tztable);
+	compute_ll(tth,tztable,tll,tr); 
+    };
+    f(step);
+    var di; var count=0;
+    var factors=[[1,2], [-1,0.5]];
+    for(var i=0;i<factors.length;i++){
+	while((di = improves_ll(tll[0],old_ll,0.01*sum(tth)))==factors[i][0]){
+	    step *= factors[i][1]; 
+	    f(step);
+	    count++;	
+	}
+    }
+    return step;
+}
+
+function improves_ll(ll,oll,foo){
+    return (ll>=oll)?1:-1;
 }
 
 //gamma is original gamma
 function solve_puzzle(gamma, step_num, orig_step_size){
-    //grab prev ll
-    var prev_ll = LOG_LIKELIHOOD.slice();
     var gamma = scale_gamma_for_solve(gamma,step_num);
     //SOLVE_STEP=gamma;
     $('gradient_step').value = gamma.toPrecision(5);
@@ -706,17 +740,28 @@ function draw_gradient(){
 	    //var ntheta = theta + grad;
 	    var grad = ntheta-theta;
 	    var st = bound_dom_range(theta); var snt = bound_dom_range(ntheta); 
+	   
 	    var sh = 50.5;
 	    var tt = bound_dom_range(true_theta); 
 	    var st1=st; var snt1=snt; var grad_color;
 	    var seen={};
 	    if(grad>0){
-		st1+=0.000001; snt1+=0.000001;
+		if(st1==snt){
+		    snt+= 2*0.000001;
+		    snt1=snt;
+		}
+		st1+=0.000001; 
+		snt1+=0.000001;
 		grad_color='#EE4455';
 	    } else{
-		st1-=0.000001; snt1-=0.000001;
+		if(st1==snt){
+		    snt-= 2*0.000001;
+		    snt1=snt;
+		}
+		st1-=0.000001; 
+		snt1-=0.000001;
 		grad_color='#4455EE';
-	    }
+	    } 
 	    var t = get_slider_zero_positions(sh);
 	    t.push([st,'#FFFFFF']);
 	    t.push([st1,grad_color]);
@@ -789,17 +834,13 @@ function compute_ll(theta, ztable, ll, reg){
     var sum=0; var altsum=0;
     for(var c = 0; c<CONTEXTS.length;c++){
 	if(ztable[c]==0){continue;}
-	//	console.log('for context c='+c);
 	//iterate through type observations
 	var obs_in_c=TYPE_OBSERVATIONS_IN_C[c];
-	//	console.log('obs_in_c='+obs_in_c);
 	for(var i=0;i<obs_in_c.length;i++){
-	    //	    console.log("\ti="+i);
 	    var id_num=obs_in_c[i];
 	    sum += COUNTS[c][id_num] * get_prob(c,id_num,1,theta);
 	    
 	}
-	//	console.log("\t\tsum is="+sum);
 	sum -= NUM_TOKENS_C[c]*Math.log(ztable[c]);
     }
     ll[0] = sum;
@@ -1516,12 +1557,12 @@ function drawSVGBoxes(selectObj){
 	var div_token_input=document.createElement('div');
 	div_token_input.className+=' floatleft';
 	var ntoksp = document.createElement('span');
-	ntoksp.innerHTML = 'N<sub>'+ CONTEXTS[c] +'</sub>=';
+	ntoksp.innerHTML = 'N<sub>'+ CONTEXTS[c] +'</sub> = ';
 	var ntok=document.createElement('input');
 	ntok.setAttribute('id','num_tokens_context_'+c);
 	ntok.setAttribute('context_id',c);
 	ntok.setAttribute('value',NUM_TOKENS_C[c]);
-	ntok.setAttribute('size',NUM_TOKENS_C[c].toString().length);
+	ntok.setAttribute('size',6);
 	ntok.onchange = function(){
 	    var v = this.value; var cc = parseInt(this.getAttribute('context_id'));
 	    if(isNumber(v) && NUM_TOKENS_C[cc]!=0){
