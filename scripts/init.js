@@ -142,9 +142,10 @@ GRAD_LOW_C='red';
 GRAD_HIGH_C='blue';
 slider_width = 155;
 handle_width = 12;
-sigmoid_y_define_ratio = 7.0/8.0;
-sigmoid_x_define = Math.sqrt(2); 
-SIGMOID_CONSTANT = 1/sigmoid_x_define * Math.log(sigmoid_y_define_ratio/(1-sigmoid_y_define_ratio));
+//now unused...
+//sigmoid_y_define_ratio = 7.0/8.0;
+//sigmoid_x_define = Math.sqrt(2); 
+//SIGMOID_CONSTANT = 1/sigmoid_x_define * Math.log(sigmoid_y_define_ratio/(1-sigmoid_y_define_ratio));
 
 INITIAL_LOAD=1;
 skip_next_hashchange=0;
@@ -156,13 +157,30 @@ function isNumber(n) {
 	(!isNaN(parseFloat(n)) && isFinite(n));
 }
 
+function get_sigmoid(amp,hmove, xdef, ratio){
+    return new Object({
+	    amp : amp,
+		hmove : hmove,
+		sconst : 1/(xdef-hmove) * Math.log(ratio/(1-ratio)),
+		transform : function(x){
+		return amp / (1+Math.exp(-this.sconst * (x - this.hmove)));
+	    },
+		inverse : function(x){
+		return -1/this.sconst * Math.log(this.amp/x - 1) + this.hmove;
+	    }});
+}
+
+var SLIDER_SIGMOID = get_sigmoid(slider_width-handle_width, 0, Math.sqrt(2), 7.0/8.0);
+var LL_SIGMOID;
+
+/*
 function sigmoid_transform(x){
     return (slider_width-handle_width)/(1+Math.pow(Math.E,-SIGMOID_CONSTANT*(x)));
 }
 function inverse_sigmoid(x){
     var ret= -1/SIGMOID_CONSTANT * Math.log((slider_width-handle_width)/(x) - 1);
     return ret;
-}
+    }*/
 
 function reset_paths(){
     TRUE_THETA_PATH='';

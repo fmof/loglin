@@ -4,9 +4,9 @@ function load_html5_slider(boxid,val){
     var tmpval = boxid.value; var actual_weight;
     if(!isFinite(tmpval)){
 	if(tmpval>0){
-	    tmpval=inverse_sigmoid(slider_width-handle_width-0.000001);
+	    tmpval=SLIDER_SIGMOID.inverse(slider_width-handle_width-0.000001);
 	} else{
-	    tmpval=inverse_sigmoid(0.000001);
+	    tmpval=SLIDER_SIGMOID.inverse(0.000001);
 	}
 
     }
@@ -273,24 +273,24 @@ function record_data(rows,already_created){
     }
     svg_loaded=1;
     //compute expected counts
-    //console.log('computing expected');
     recompute_expected_counts(); 
     compute_max_model_prob(EXPECTED_COUNTS,MAX_EXP_EMP_PROB,MAX_EXP_EMP_PROB_TYPE,MAX_EXP_EMP_AREA);
     //so that we can draw in the expected images
-    //console.log('redrawing expected');
     redrawAllExpected();
     //and, more importantly, the loglikelihood score bar
-    //console.log('computing ll');
     compute_ll();
-    //console.log('... then ll of true');
     compute_ll(TRUE_THETA,TRUE_Z_THETA,TRUE_LOG_LIKELIHOOD, TRUE_REGULARIZATION);
-    //console.log('... then gradient');
     compute_gradient();
     
     if(!already_created){
-	//console.log('add ll bars...');
+	//calculate LL(0)
+	var zerotheta = THETA.map(function(d){return 0;});
+	var zerotab=new Array(zerotheta.length);
+	var zeroll=[0]; var zeroreg=[0];
+	recompute_partition_function(zerotheta,zerotab);
+	compute_ll(zerotheta,zerotab,zeroll,zeroreg);
+	LL_SIGMOID = get_sigmoid(DIV_LL_WIDTH, zeroll[0], 0.0, .99- 70.0/DIV_LL_WIDTH);
      	addLLBar();
-	//console.log('..done');
     } else{
     	updateLLBar();
     }
@@ -385,8 +385,8 @@ function initializeThetaValue(){
 function addSliderEffects(){
     var group=jQuery(".feature_slider");
     group.rangeinput();
-    var lb = inverse_sigmoid(0.000001);
-    var ub = inverse_sigmoid(slider_width-handle_width-0.000001);
+    var lb = SLIDER_SIGMOID.inverse(0.000001);
+    var ub = SLIDER_SIGMOID.inverse(slider_width-handle_width-0.000001);
     if(group=$$(".feature_slider")){
 	for(var i=0;i<group.length;i++){
 	    group[i].setAttribute('readonly','readonly');
@@ -396,7 +396,7 @@ function addSliderEffects(){
 		//this.parentNode.parentNode.childNodes[1].value= inverse_sigmoid(parseFloat(this.style['left']+handle_width/2));
 		var t = parseFloat(this.style['left']+handle_width/2);
 		t=Math.min(slider_width-handle_width,Math.max(0,t));
-		this.parentNode.parentNode.childNodes[1].value= inverse_sigmoid(t);
+		this.parentNode.parentNode.childNodes[1].value= SLIDER_SIGMOID.inverse(t);
 		load_html5_slider(this.parentNode.parentNode.childNodes[1],SLIDER_DIV);
 	    };
 	    var tmpfn=function(e){
@@ -404,18 +404,18 @@ function addSliderEffects(){
 		    if(e.type=="change"){
 			if(1 && isNumber(this.value) && parseFloat(this.value)){
 			    console.log('capturing this...');
-			    console.log(this.value+', '+sigmoid_transform(parseFloat(this.value)));
+			    console.log(this.value+', '+SLIDER_SIGMOID.transform(parseFloat(this.value)));
 			    reset_manually_from_theta(this,this.value);
 			    THETA[theta_index]=this.value;
 			    redraw_all();
 			}
 			else{
 			    console.log('this');
-			    this.value = inverse_sigmoid(parseFloat(this.parentNode.childNodes[0].childNodes[1].style['left'] + handle_width/2));
+			    this.value = SLIDER_SIGMOID.inverse(parseFloat(this.parentNode.childNodes[0].childNodes[1].style['left'] + handle_width/2));
 			}
 		    }
 		} else{
-		    this.value = inverse_sigmoid(parseFloat(this.parentNode.childNodes[0].childNodes[1].style['left'] + handle_width/2));
+		    this.value = SLIDER_SIGMOID.inverse(parseFloat(this.parentNode.childNodes[0].childNodes[1].style['left'] + handle_width/2));
 		    load_html5_slider(this,SLIDER_DIV);
 		    }	
 	    };
@@ -498,7 +498,7 @@ function sign(x){
 
 function reset_manually_from_theta(slider,val){
     var h = get_handle(slider);
-    var x = sigmoid_transform(parseFloat(val));
+    var x = SLIDER_SIGMOID.transform(parseFloat(val));
     x=Math.max(0.000001,Math.min(slider_width-handle_width-0.00001,x));
     h.style['left'] = parseFloat(x)+'px';
 }
@@ -508,7 +508,7 @@ function reset_sliders_manually(arr){
     for(var i=0;i<group.length;i++){
 	group[i].value = arr[i][1];
 	reset_manually_from_theta(group[i],arr[i][1]);
-	var val = sigmoid_transform(arr[i][1]);
+	var val = SLIDER_SIGMOID.transform(arr[i][1]);
 	THETA[arr[i][0]]=(parseFloat(arr[i][1]));
     }
 }
@@ -823,7 +823,7 @@ function draw_gradient(){
 }
 
 function bound_dom_range(x){
-    return Math.max(.00001,Math.min(slider_width-handle_width-.0001,sigmoid_transform(x)+handle_width/2))*100/slider_width;
+    return Math.max(.00001,Math.min(slider_width-handle_width-.0001,SLIDER_SIGMOID.transform(x)+handle_width/2))*100/slider_width;
 }
 
 function compute_ll(theta, ztable, ll, reg){
@@ -921,12 +921,17 @@ function addFeaturesToList(selectObj, array){
     }
 }
 
-function ll_resizer(min,max){
+function ll_resizer(){
+    return function(l){
+	return LL_SIGMOID.transform(l) + 70;
+    };
+}
+/*function ll_resizer(min,max){
     var m = (.85-.25)*DIV_LL_WIDTH / (max-min);
     return function(l){
 	return m * (l - max) + (.85*DIV_LL_WIDTH) + 70;
     };
-};
+};*/
 
 function addLLBar(){
     var svg = d3.select("#ll_area").append("svg").attr('height',20*LOG_LIKELIHOOD.length - 1).attr('width',DIV_LL_WIDTH+RESERVE_LL_WIDTH);
@@ -943,7 +948,7 @@ function addLLBar(){
     var overall_max = Math.max(max_u_ll,max_t_ll);
     var overall_min = Math.min(min_u_ll,min_t_ll);
     worst_ll = Math.min(worst_ll,overall_min);
-    var resizer = ll_resizer(worst_ll,overall_max);
+    var resizer = ll_resizer();//worst_ll,overall_max);
     if(max_t_ll >= max_u_ll){
     } else{
     }
@@ -1112,7 +1117,7 @@ function updateLLBar(){
     var overall_max = Math.max(max_u_ll,max_t_ll); 
     var overall_min = Math.min(min_u_ll,min_t_ll);
     worst_ll = Math.min(worst_ll,overall_min);
-    var resizer = ll_resizer(worst_ll,overall_max);
+    var resizer = ll_resizer();//worst_ll,overall_max);
 
     var llrects=svg.selectAll(".ll_bar").data(ll);
     llrects.attr('width',function(d,i){
