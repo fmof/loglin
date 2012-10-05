@@ -3,12 +3,13 @@ function load_html5_slider(boxid,val){
     //return function(batch){
     var tmpval = boxid.value; var actual_weight;
     if(!isFinite(tmpval)){
-	if(tmpval>0){
-	    tmpval=SLIDER_SIGMOID.inverse(slider_width-handle_width-0.000001);
-	} else{
-	    tmpval=SLIDER_SIGMOID.inverse(0.000001);
+	if(!isNaN(tmpval)){
+	    if(tmpval>0){
+		tmpval=SLIDER_SIGMOID.inverse(slider_width-handle_width-0.000001);
+	    } else{
+		tmpval=SLIDER_SIGMOID.inverse(0.000001);
+	    }
 	}
-
     }
     var actual_weight = tmpval / val;
     var feature_info = boxid.parentNode.parentNode.childNodes[0];
@@ -18,6 +19,15 @@ function load_html5_slider(boxid,val){
 	var context =  parseInt(feature_info.getAttribute('context'));
 	var feature_name = feature_info.getAttribute('feature_name').split(',')[1];
 	var feat_name = INVERSE_FEATURE_LIST[ [CONTEXTS[context],feature_name] ];
+	if(isNaN(tmpval)){
+	    boxid.value = 1.7976931348623157E+10308;
+	    if(THETA[feat_name]>0){
+		actual_weight=SLIDER_SIGMOID.inverse(slider_width-handle_width-0.000001) / val;
+	    } else{
+		actual_weight = SLIDER_SIGMOID.inverse(0.000001) / val;
+		boxid.value *= -1;
+	    }
+	}
 	//store THETA value
 	THETA[feat_name]=isFinite(actual_weight)?actual_weight:(actual_weight>0? 100: -100);
 	redraw_all();
@@ -500,7 +510,7 @@ function reset_manually_from_theta(slider,val){
     var h = get_handle(slider);
     var x = SLIDER_SIGMOID.transform(parseFloat(val));
     x=Math.max(0.000001,Math.min(slider_width-handle_width-0.00001,x));
-    h.style['left'] = parseFloat(x)+'px';
+    h.style['left'] = x+'px';
 }
 
 function reset_sliders_manually(arr){
