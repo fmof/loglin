@@ -629,8 +629,8 @@ window.onload = function(){
     	    group[i].onclick = setComponentDisplay;
     	}
     }
-    if($('show_gradients')){
-    	$('show_gradients').onclick = function(){
+    if($('show_gradient')){
+    	$('show_gradient').onclick = function(){
     	    //$('gradient_fieldset_div').style.display= this.checked ? 'block' : 'none';
     	    SHOW_GRADIENTS=this.checked;
     	    if(SHOW_GRADIENTS){
@@ -653,8 +653,8 @@ window.onload = function(){
     		compute_gradient();
     	    }
     	};
-	if($('show_gradients').checked){
-	    $('show_gradients').onclick();
+	if($('show_gradient').checked){
+	    $('show_gradient').onclick();
 	}
     }
 

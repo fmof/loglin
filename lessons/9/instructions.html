@@ -9,15 +9,32 @@
     count; divide these by <i>N</i>=5 to recover the model's probability.)
   </p>
 
-  <p>What if you use L<sub>1</sub> regularization instead?</p>
+  <p>What if you use L<sub>1</sub> regularization instead?  Also, in
+    this case, did any of your weights come out to exactly 0?  (This
+    is often the case for the optimal solution under L<sub>1</sub>.)</p>
 
-  <p><b>Tradeoff between <i>N</i> and <i>C</i>.</b>  Regularization 
-    had a strong smoothing effect on this small dataset.  Change <i>N</i>
-    or <i>C</i><!-- say how --> to see how these control the strength of smoothing.</p>
+  <p><b>Smoothing on larger data.</b>  Regularization
+    had a strong smoothing effect on this small dataset.  However,
+    what if you had more evidence?  You can scale up the counts by 
+    increasing <i>N</i> in the text box to the left of the shapes.
+    Open a <A HREF="#9" target="_blank">second window</A> so that
+    you can easily compare <i>N</i> = 50 with <i>N</i> = 5000.  In both
+    cases, solve with L<sub>2</sub> regularization with <i>C</i> = 1.</b>
+    
+  <ul>
+    <li>What happens to the optimal log-likelihood and why?
+    <li>What happens to the weights and why?
+    <li>The observed counts increased by a factor of 100.  Which of
+      the expected counts increased by a factor of much <i>less</i>
+      than 100?  
+    <li>The model has decreased its estimated probability for those
+      events.  Which other events did it move their probability to?
+    <li>What happens if you also increase <i>C</i> by a factor of 100?
+  </ul>
 
-  <p>Remember that the optimal &theta; maximizes
-    <i>F</i> = (log-likelihood - regularizer), a difference of two
-    functions.</p>
+  <b>Discussion: tradeoff between <i>N</i> and <i>C</i>.</b> Remember that the optimal
+    &theta; maximizes <i>F</i> = (log-likelihood - regularizer), a
+    difference of two functions.</p>
   <ul>
     <li><p>Increasing <i>N</i> stretches the first function
 	vertically, so that it has more influence on the shape

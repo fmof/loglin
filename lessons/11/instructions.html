@@ -1,14 +1,64 @@
 <div id="p1" class="showable_instructions">
-  <p>Paragraph.</p>
-  <p>Paragraph.</p>
-</div> 
+  <p><b>Contexts.</b> Now we'll take our first look
+  at <i>conditional</i> log-linear models.  The three rows below
+  represent three different languages: <code>French</code>, <code>English</code>, and <code>Martian</code>.
+  At the left of each row, you can see the total size of your corpus
+  for that language.</p>
 
-<div id="p2"  class="showable_instructions">
-  <p>Paragraph.</p>
-  <p>Paragraph.</p>
-</div>
+  <p><b>Try it out!</b> Experiment with the sliders.  Moving
+    the <code>solid</code> slider affects all three rows.  If you
+    match the gray outlines in the first row, what happens to the
+    match in the second row?  How about the other way around?  Which
+    has a better value of the objective function (horizontal gray
+    bar)?</p>
 
-<div id="p3" class="showable_instructions">
-  <p>Paragraph.</p>
-  <p>Paragraph.</p>
+  <p>As you adjust the weights, what happens to the total expected
+    count for French?  For English?  For Martian?</p>
+
+  <p>Within each row, ignore the gray outlines (observed counts) and
+    look at the relative sizes of the three colored shapes.  How do
+    these differ from row to row?</p>
+
+  <p><b>What the picture means:</b> This model is predicting the
+    <i>conditional</i> probabilities that a speaker of a <i>given</i>
+    language would discuss <code>solid</code>, <code>striped</code>,
+    or <code>hollow</code>.  The shape areas in the first row depict
+    the <i>estimated</i> probabilities 
+    p(<code>solid</code> | <code>French</code>),
+    p(<code>striped</code> | <code>French</code>), and
+    p(<code>hollow</code> | <code>French</code>), as determined by the
+    current model weights.<p>
+
+  <p>Remember the concepts of conditional indepence and backoff.
+    Based on the relative sizes of the colored shapes, what can you
+    say about independence of the fill-pattern and language variables
+    in this model?  Explain your answer.</p>
+
+  <p>Notice that the <i>observed</i> counts are in different
+  proportions in each language.  E.g., French speakers discussed
+  <code>solid</code> at a lower rate than English speakers, at least
+  in these corpora.  The gray outlined areas show these proportions:
+  they reflect <i>empirical</i> (observed) conditional probabilities.
+  In the first row, the gray outlines depict
+  p(<code>solid</code> | <code>French</code>) = 1/3,
+  p(<code>striped</code> | <code>French</code>) = 1/3, and
+  p(<code>hollow</code> | <code>French</code>) = 1/3.</p>
+
+  <p><b>Objective function.</b> Our objective function (gray bar) is
+    now <i>conditional</i> log-likelihood as described in
+    the <A HREF="http://cs.jhu.edu/~jason/465/hw-prob/hw-prob.pdf">handout</A>.
+    Maximize it (without regularization) by following the gradient hints
+    or by clicking "Solve."</p>
+
+  <p><b>Results.</b> Look at the solution you just found.  For which
+    language do the estimated probabilities most closely fit the
+    empirical probabilities?  Why?  Relate this to the objective
+    function.</p>
+  
+  <p>Martian is a totally unobserved context
+    (<i>N</i><sub><code>Martian</code></sub> = 0).  Does our solution expect Martian
+    to be more like English or French?  Can you figure out the exact value
+    of p(<code>solid</code> | <code>Martian</code>)?  <i>Hint:</i>
+    look at the <i>total</i> expected count of <code>solid</code> in
+    all the training data.</p>
 </div>

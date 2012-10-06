@@ -1572,7 +1572,7 @@ function drawSVGBoxes(selectObj){
 	var div_token_input=document.createElement('div');
 	div_token_input.className+=' floatleft';
 	var ntoksp = document.createElement('span');
-	ntoksp.innerHTML = 'N<sub>'+ CONTEXTS[c] +'</sub> = ';
+	ntoksp.innerHTML = '<i>N</i><sub>'+ CONTEXTS[c] +'</sub> = ';
 	var ntok=document.createElement('input');
 	ntok.setAttribute('id','num_tokens_context_'+c);
 	ntok.setAttribute('context_id',c);

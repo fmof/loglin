@@ -22,23 +22,24 @@
   hints.</p>
 
   <p>(This is the method of <i>gradient ascent</i>.  Other automatic
-  solution methods would also work, such as improving or optimizing
-  one weight at a time.  Both methods require looping through all the
-  weights repeatedly until all the hints are 0.)</p>
+  solution methods would also work, such as <i>coordinate ascent</i>,
+  which improves or optimizes one weight at a time.  Both these methods
+  require looping through all the weights repeatedly until all the
+  hints are 0.)</p>
 
-  <p><b>Dangers.</b> If the step size is too big, the solver could
+  <p><b>Dangers.</b> Bigger steps can make faster progress, but steps
+  that go <i>too</i> far can hurt progress.  (Overly large steps could
   jump back and forth over the optimal weights without ever landing on
-  them.  Taking too big a step can even make the log-likelihood worse.
-  So our solver gradually reduces the step size as it goes.  It jumps
-  quickly toward the right neighborhood at first, then starts to
-  fine-tune so it can zero in on the exact answer.</p>
+  them.)  So our solver dynamically <i>adjusts</i> the step size to
+  increase the log-likelihood about as rapidly as possible.</p>
 
-  <p>Occasionally the solver may stop too early.  You can try reducing
-  the stepsize and clicking "Solve" again.</p>
+  <p>The solver has to decide when to stop.  You could try clicking
+  "Solve" again if you want further improvement.</p>
 
   <p><b>Questions.</b> Run the solver until there is no red or blue
   left on the sliders.  Now how well does the <i>total</i> expected
-  number of circles match training data?  Why?</p>
+  number of circles match the number of circles observed in training
+  data?  Why?</p>
 
   <p>However, there will still be red and blue left on some of the
   shapes.  How well do the expected counts for <i>individual</i> kinds

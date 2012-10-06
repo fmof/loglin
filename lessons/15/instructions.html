@@ -1,14 +1,59 @@
 <div id="p1" class="showable_instructions">
-  <p>Paragraph.</p>
-  <p>Paragraph.</p>
-</div> 
+  <p>To predict different event probabilities for each context, let's
+    add features that <i>conjoin</i> properties of the event with
+    properties of the context.</p>
 
-<div id="p2"  class="showable_instructions">
-  <p>Paragraph.</p>
-  <p>Paragraph.</p>
-</div>
+  <p>Play with the sliders to get a feel for how the model works.  The
+    new conjoined features resemble bigram features (as they consider
+    the probability of an event in context).  This model also retains
+    the original features, which resemble unigram features (as they
+    ignore context).</p>
 
-<div id="p3" class="showable_instructions">
-  <p>Paragraph.</p>
-  <p>Paragraph.</p>
+  <p>Now turn on "Show gradient" and play with the sliders some more.
+    When <code>triangle & solid</code> and <code>square & solid</code>
+    are the same color (e.g., both have red hints, meaning they need
+    to be increased), then what color is <code>solid</code>?  Why?</p>
+
+  <p>Run the solver.  How well can you fit the <code>triangle</code>
+   and <code>circle</code> data with this feature set?  What weights
+   were learned for the <code>square & ...</code> features?  What else
+   determines the probabilities of different events in
+   the <code>square</code> context?</p>
+
+  <p>Remember from <A HREF="#2" target="_blank">lesson 2</A> that
+    different weight settings can give the same answer.  How could you adjust
+    the weights found by the solver <i>without changing</i> the event
+    probabilities in the <code>triangle</code> and <code>circle</code>
+    contexts?  What effect would this adjustment have on conditional
+    log-likelihood?  What effect would it have on the event
+    probabilities in the <code>square</code> context?  Check your
+    answers by trying your adjustment!</p>
+
+  <p>Although different weights can give the same answer, a
+    regularizer can break the tie since it prefers most weights to be
+    close to 0.  Turn on L<sub>2</sub> regularization and look at how
+    this affects the horizontal gray bar that shows the objective
+    function (recall <A HREF="#8" target="_blank">lesson 8</A>).  Ofx
+    the two equivalent solutions you suggested above, which one has
+    the higher (better) <i>regularized</i> conditional log-likelihood,
+    and why?</p>
+
+  <p>Try running the solver with different values of <i>C</i> > 0.
+    Discuss your findings.</p>  Increasing <i>C</i> will drive the
+    weights closer to 0, in the sense of reducing the sum of squares
+    of all weights.  However, for small versus large <i>C</i>, the
+    work of modeling p(<code>solid</code> | ...)  may be divided
+    differently among the unigram and bigram features, with
+    consequences for generalization to p(<code>solid</code>
+    | <code>square</code>).
+
+  <p>Now try an L<sub>1</sub> regularizer with <i>C</i> = 1.0.  (You
+    may have to click "Solve" more than once.)  How does the model
+    make use of the features?  How does it therefore generalize to the
+    unobserved <code>square</code> context?</p>
+
+  <p>If you'd like to see other behaviors of L<sub>1</sub>
+    regularization, click "New random challenge" at the top of the
+    page.</p>
+
 </div>
