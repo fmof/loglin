@@ -568,7 +568,8 @@ function step_gradient(solve_step,dont_complete){
 //gradient-based criteria for convergence
 function converged(step){
     var s=sum(GRADIENT.map(function(d,i){
-		var x = get_corrected_step(i,step,1)[1];
+		//need this for L1 regularization
+		var x =get_corrected_step(i,step,1)[1];
 		return x*x;
 	    }));
     return s < STOPPING_EPS;
@@ -581,7 +582,12 @@ function scale_gamma_for_solve(gamma0,step_num){
 
 //auto-computes the step size
 //makes the solver more robust; less confusing (hopefully) for users
-function recompute_step_size(ostep){
+function recompute_step_size(ostep,step_num){
+    if(step_num!=undefined){
+	if(converged(step_num)){
+	    return ostep;
+	}
+    }
     var step = ostep;
     var tztable = [];
     var tll = [LOG_LIKELIHOOD[0]];
@@ -617,6 +623,10 @@ function improves_ll(ll,oll,foo){
 
 //gamma is original gamma
 function solve_puzzle(gamma, step_num, orig_step_size){
+    if(converged(step_num)){
+	$('solve_button').onclick();
+	return;
+    }
     var gamma = scale_gamma_for_solve(gamma,step_num);
     //SOLVE_STEP=gamma;
     $('gradient_step').value = gamma.toPrecision(5);
