@@ -606,6 +606,9 @@ window.onload = function(){
 		//$('change_num_tokens').disabled="";
 		$('gradient_step').onchange();
 	    } else{
+		if(USE_REGULARIZATION){
+		    $('regularization_constant').onchange();
+		}
 		in_solving=1;
 		button_color=this.style.backgroundColor;
 		this.style.backgroundColor='red';

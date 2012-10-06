@@ -584,6 +584,7 @@ function scale_gamma_for_solve(gamma0,step_num){
 //makes the solver more robust; less confusing (hopefully) for users
 function recompute_step_size(ostep,step_num){
     if(step_num!=undefined){
+	console.log('checking here...');
 	if(converged(step_num)){
 	    return ostep;
 	}
@@ -609,6 +610,7 @@ function recompute_step_size(ostep,step_num){
     var factors=[[1,2], [-1,0.5]];
     for(var i=0;i<factors.length;i++){
 	while((di = improves_ll(tll[0],old_ll,0.01*sum(tth)))==factors[i][0]){
+	    console.log('factor='+factors[i]+', di='+di);
 	    step *= factors[i][1]; 
 	    f(step);
 	    count++;	
