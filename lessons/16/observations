@@ -1,5 +1,82 @@
 count	position	context	features	visualization
-118	0,0		circle,solid,circle&solid	shape=circle,fill=solid
-15	0,1		circle,striped	shape=circle,fill=striped
-23	1,0		triangle,solid	shape=triangle,fill=solid
-118	1,1		triangle,striped	shape=triangle,fill=striped
+29	0,0	solid triangle	triangle,solid,triangle & solid,same event,same shape,same fill	shape=triangle,fill=solid
+33	0,1	solid triangle	triangle,striped,triangle & striped,same shape	shape=triangle,fill=striped
+9	0,2	solid triangle	triangle,hollow,triangle & hollow,same shape	shape=triangle,fill=hollow
+3	1,0	solid triangle	circle,solid,circle & solid,same fill	shape=circle,fill=solid
+5	1,1	solid triangle	circle,striped,circle & striped	shape=circle,fill=striped
+8	1,2	solid triangle	circle,hollow,circle & hollow	shape=circle,fill=hollow
+10	2,0	solid triangle	square,solid,square & solid,same fill	shape=square,fill=solid
+15	2,1	solid triangle	square,striped,square & striped	shape=square,fill=striped
+4	2,2	solid triangle	square,hollow,square & hollow	shape=square,fill=hollow
+32	0,0	striped triangle	triangle,solid,triangle & solid,same shape	shape=triangle,fill=solid
+92	0,1	striped triangle	triangle,striped,triangle & striped,same event,same shape,same fill	shape=triangle,fill=striped
+17	0,2	striped triangle	triangle,hollow,triangle & hollow,same shape	shape=triangle,fill=hollow
+17	1,0	striped triangle	circle,solid,circle & solid	shape=circle,fill=solid
+7	1,1	striped triangle	circle,striped,circle & striped,same fill	shape=circle,fill=striped
+9	1,2	striped triangle	circle,hollow,circle & hollow	shape=circle,fill=hollow
+21	2,0	striped triangle	square,solid,square & solid	shape=square,fill=solid
+10	2,1	striped triangle	square,striped,square & striped,same fill	shape=square,fill=striped
+5	2,2	striped triangle	square,hollow,square & hollow	shape=square,fill=hollow
+9	0,0	hollow triangle	triangle,solid,triangle & solid,same shape	shape=triangle,fill=solid
+21	0,1	hollow triangle	triangle,striped,triangle & striped,same shape	shape=triangle,fill=striped
+8	0,2	hollow triangle	triangle,hollow,triangle & hollow,same event,same shape,same fill	shape=triangle,fill=hollow
+0	1,0	hollow triangle	circle,solid,circle & solid	shape=circle,fill=solid
+2	1,1	hollow triangle	circle,striped,circle & striped	shape=circle,fill=striped
+4	1,2	hollow triangle	circle,hollow,circle & hollow,same fill	shape=circle,fill=hollow
+10	2,0	hollow triangle	square,solid,square & solid	shape=square,fill=solid
+2	2,1	hollow triangle	square,striped,square & striped	shape=square,fill=striped
+0	2,2	hollow triangle	square,hollow,square & hollow,same fill	shape=square,fill=hollow
+5	0,0	solid circle	triangle,solid,triangle & solid,same fill	shape=triangle,fill=solid
+10	0,1	solid circle	triangle,striped,triangle & striped	shape=triangle,fill=striped
+2	0,2	solid circle	triangle,hollow,triangle & hollow	shape=triangle,fill=hollow
+22	1,0	solid circle	circle,solid,circle & solid,same event,same shape,same fill	shape=circle,fill=solid
+13	1,1	solid circle	circle,striped,circle & striped,same shape	shape=circle,fill=striped
+14	1,2	solid circle	circle,hollow,circle & hollow,same shape	shape=circle,fill=hollow
+8	2,0	solid circle	square,solid,square & solid,same fill	shape=square,fill=solid
+8	2,1	solid circle	square,striped,square & striped	shape=square,fill=striped
+6	2,2	solid circle	square,hollow,square & hollow	shape=square,fill=hollow
+9	0,0	striped circle	triangle,solid,triangle & solid	shape=triangle,fill=solid
+5	0,1	striped circle	triangle,striped,triangle & striped,same fill	shape=triangle,fill=striped
+2	0,2	striped circle	triangle,hollow,triangle & hollow	shape=triangle,fill=hollow
+10	1,0	striped circle	circle,solid,circle & solid,same shape	shape=circle,fill=solid
+11	1,1	striped circle	circle,striped,circle & striped,same event,same shape,same fill	shape=circle,fill=striped
+20	1,2	striped circle	circle,hollow,circle & hollow,same shape	shape=circle,fill=hollow
+5	2,0	striped circle	square,solid,square & solid	shape=square,fill=solid
+3	2,1	striped circle	square,striped,square & striped,same fill	shape=square,fill=striped
+2	2,2	striped circle	square,hollow,square & hollow	shape=square,fill=hollow
+10	0,0	hollow circle	triangle,solid,triangle & solid	shape=triangle,fill=solid
+12	0,1	hollow circle	triangle,striped,triangle & striped	shape=triangle,fill=striped
+4	0,2	hollow circle	triangle,hollow,triangle & hollow,same fill	shape=triangle,fill=hollow
+21	1,0	hollow circle	circle,solid,circle & solid,same shape	shape=circle,fill=solid
+14	1,1	hollow circle	circle,striped,circle & striped,same shape	shape=circle,fill=striped
+27	1,2	hollow circle	circle,hollow,circle & hollow,same event,same shape,same fill	shape=circle,fill=hollow
+8	2,0	hollow circle	square,solid,square & solid	shape=square,fill=solid
+7	2,1	hollow circle	square,striped,square & striped	shape=square,fill=striped
+5	2,2	hollow circle	square,hollow,square & hollow,same fill	shape=square,fill=hollow
+11	0,0	solid square	triangle,solid,triangle & solid,same fill	shape=triangle,fill=solid
+24	0,1	solid square	triangle,striped,triangle & striped	shape=triangle,fill=striped
+5	0,2	solid square	triangle,hollow,triangle & hollow	shape=triangle,fill=hollow
+4	1,0	solid square	circle,solid,circle & solid,same fill	shape=circle,fill=solid
+11	1,1	solid square	circle,striped,circle & striped	shape=circle,fill=striped
+18	1,2	solid square	circle,hollow,circle & hollow	shape=circle,fill=hollow
+65	2,0	solid square	square,solid,square & solid,same event,same shape,same fill	shape=square,fill=solid
+34	2,1	solid square	square,striped,square & striped,same shape	shape=square,fill=striped
+15	2,2	solid square	square,hollow,square & hollow,same shape	shape=square,fill=hollow
+6	0,0	striped square	triangle,solid,triangle & solid	shape=triangle,fill=solid
+9	0,1	striped square	triangle,striped,triangle & striped,same fill	shape=triangle,fill=striped
+7	0,2	striped square	triangle,hollow,triangle & hollow	shape=triangle,fill=hollow
+7	1,0	striped square	circle,solid,circle & solid	shape=circle,fill=solid
+2	1,1	striped square	circle,striped,circle & striped,same fill	shape=circle,fill=striped
+7	1,2	striped square	circle,hollow,circle & hollow	shape=circle,fill=hollow
+36	2,0	striped square	square,solid,square & solid,same shape	shape=square,fill=solid
+30	2,1	striped square	square,striped,square & striped,same event,same shape,same fill	shape=square,fill=striped
+12	2,2	striped square	square,hollow,square & hollow,same shape	shape=square,fill=hollow
+4	0,0	hollow square	triangle,solid,triangle & solid	shape=triangle,fill=solid
+5	0,1	hollow square	triangle,striped,triangle & striped	shape=triangle,fill=striped
+2	0,2	hollow square	triangle,hollow,triangle & hollow,same fill	shape=triangle,fill=hollow
+4	1,0	hollow square	circle,solid,circle & solid	shape=circle,fill=solid
+2	1,1	hollow square	circle,striped,circle & striped	shape=circle,fill=striped
+1	1,2	hollow square	circle,hollow,circle & hollow,same fill	shape=circle,fill=hollow
+24	2,0	hollow square	square,solid,square & solid,same shape	shape=square,fill=solid
+7	2,1	hollow square	square,striped,square & striped,same shape	shape=square,fill=striped
+3	2,2	hollow square	square,hollow,square & hollow,same event,same shape,same fill	shape=square,fill=hollow

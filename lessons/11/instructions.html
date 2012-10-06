@@ -3,13 +3,14 @@
   at <i>conditional</i> log-linear models.  The three rows below
   represent three different languages: <code>French</code>, <code>English</code>, and <code>Martian</code>.
   At the left of each row, you can see the total size of your corpus
-  for that language.</p>
+  for that language.  For example, we haven't seen any Martian yet 
+    (<i>N</i><sub><code>Martian</code></sub> = 0).  </p>
 
   <p><b>Try it out!</b> Experiment with the sliders.  Moving
     the <code>solid</code> slider affects all three rows.  If you
     match the gray outlines in the first row, what happens to the
     match in the second row?  How about the other way around?  Which
-    has a better value of the objective function (horizontal gray
+    match gets a better value of the objective function (horizontal gray
     bar)?</p>
 
   <p>As you adjust the weights, what happens to the total expected
@@ -22,11 +23,11 @@
   <p><b>What the picture means:</b> This model is predicting the
     <i>conditional</i> probabilities that a speaker of a <i>given</i>
     language would discuss <code>solid</code>, <code>striped</code>,
-    or <code>hollow</code>.  The shape areas in the first row depict
+    or <code>hollow</code>.  The shape areas in the second row depict
     the <i>estimated</i> probabilities 
-    p(<code>solid</code> | <code>French</code>),
-    p(<code>striped</code> | <code>French</code>), and
-    p(<code>hollow</code> | <code>French</code>), as determined by the
+    p<sub>model</sub>(<code>solid</code> | <code>English</code>),
+    p<sub>model</sub>(<code>striped</code> | <code>English</code>), and
+    p<sub>model</sub>(<code>hollow</code> | <code>English</code>), as determined by the
     current model weights.<p>
 
   <p>Remember the concepts of conditional indepence and backoff.
@@ -39,10 +40,10 @@
   <code>solid</code> at a lower rate than English speakers, at least
   in these corpora.  The gray outlined areas show these proportions:
   they reflect <i>empirical</i> (observed) conditional probabilities.
-  In the first row, the gray outlines depict
-  p(<code>solid</code> | <code>French</code>) = 1/3,
-  p(<code>striped</code> | <code>French</code>) = 1/3, and
-  p(<code>hollow</code> | <code>French</code>) = 1/3.</p>
+  So in the second row, the gray outlines depict
+  p<sub>empirical</sub>(<code>solid</code> | <code>English</code>) = 0.7,
+  p<sub>empirical</sub>(<code>striped</code> | <code>English</code>) = 0.2, and
+  p<sub>empirical</sub>(<code>hollow</code> | <code>English</code>) = 0.1.</p>
 
   <p><b>Objective function.</b> Our objective function (gray bar) is
     now <i>conditional</i> log-likelihood as described in
@@ -52,11 +53,13 @@
 
   <p><b>Results.</b> Look at the solution you just found.  For which
     language do the estimated probabilities most closely fit the
-    empirical probabilities?  Why?  Relate this to the objective
-    function.</p>
+    empirical probabilities?  Why do we get that result by maximizing
+    this objective function?</p>
+
+  <p>What are the <i>total</i> expected and observed counts of solid
+  circles, across all languages?  How about striped circles?</p>
   
-  <p>Martian is a totally unobserved context
-    (<i>N</i><sub><code>Martian</code></sub> = 0).  Does our solution expect Martian
+  <p>Does our solution expect the novel language Martian
     to be more like English or French?  Can you figure out the exact value
     of p(<code>solid</code> | <code>Martian</code>)?  <i>Hint:</i>
     look at the <i>total</i> expected count of <code>solid</code> in

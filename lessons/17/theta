@@ -1,6 +1,23 @@
 context	feature	value
-	circle	-1.4337312065995762	
-	triangle	1.4337312065995766
-	solid	-1.1312928598100027
-	striped	1.1312928598100027
-	circle&solid	5.189469718452246
+	has bold text	0
+	mentions money	0
+	contains number	0
+	is question	0
+	'act'	0
+	'now'	0
+	'buy'	0
+	'HGH'	0
+	'need'	0
+	'sleep'	0
+	'trouble'	0
+	'substantial'	0
+	'fortune'	0
+	'only'		0
+	'$'			0
+	'tight'	0
+	'yada'	0
+	'cookie'	0
+	'baking'	0
+	'my'		0
+	'car'	0
+	'parents'	0

@@ -1,5 +1,29 @@
 count	position	context	features	visualization
-118	0,0		circle,solid,circle&solid	shape=circle,fill=solid
-15	0,1		circle,striped	shape=circle,fill=striped
-23	1,0		triangle,solid	shape=triangle,fill=solid
-118	1,1		triangle,striped	shape=triangle,fill=striped
+0	0,0	act *now*		shape=circle,fill=striped
+1	0,1	act *now*	has bold text,'act','now'	shape=circle,fill=solid
+0	0,0	buy HGH		shape=circle,fill=striped
+1	0,1	buy HGH	mentions money,'buy','HGH'	shape=circle,fill=solid
+0	0,0	need HGH?		shape=circle,fill=striped
+1	0,1	need HGH?	is question,'need','HGH'	shape=circle,fill=solid
+0	0,0	*sleep trouble?*		shape=circle,fill=striped
+1	0,1	*sleep trouble?*	has bold text,is question,'sleep','trouble'	shape=circle,fill=solid
+0	0,0	substantial fortune		shape=circle,fill=striped
+1	0,1	substantial fortune	mentions money,'substantial','fortune'	shape=circle,fill=solid
+0	0,0	only $49.95		shape=circle,fill=striped
+1	0,1	only $49.95	mentions money,'only','$',contains number	shape=circle,fill=solid
+1	0,0	sleep tight		shape=circle,fill=striped
+0	0,1	sleep tight	'sleep','tight'	shape=circle,fill=solid
+2	0,0	yada yada yada		shape=circle,fill=striped
+0	0,1	yada yada yada	'yada','yada','yada'	shape=circle,fill=solid
+1	0,0	fortune cookie		shape=circle,fill=striped
+0	0,1	fortune cookie	mentions money,'fortune','cookie'	shape=circle,fill=solid
+1	0,0	cookie baking		shape=circle,fill=striped
+0	0,1	cookie baking	'cookie','baking'	shape=circle,fill=solid
+1	0,0	my car		shape=circle,fill=striped
+0	0,1	my car	'my','car'	shape=circle,fill=solid
+1	0,0	my parents		shape=circle,fill=striped
+0	0,1	my parents	'my','parents'	shape=circle,fill=solid
+0	0,0	parents yada yada		shape=circle,fill=striped
+0	0,1	parents yada yada	'parents','yada','yada'	shape=circle,fill=solid
+0	0,0	*my substantial HGH $199.95*		shape=circle,fill=striped
+0	0,1	*my substantial HGH $199.95*	has bold text,mentions money,contains number,'my','substantial','HGH'	shape=circle,fill=solid

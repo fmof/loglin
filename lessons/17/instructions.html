@@ -1,11 +1,34 @@
 <div id="p1" class="showable_instructions">
-  Lead students through navigation, ask simple understanding questions. 
-</p> 
+  <p>Here's a little application of log-linear modeling to text
+  classification.  Each natural-language phrase is classified as to
+  whether it is spam.</p>
 
-<div id="p2"  class="showable_instructions">
-  If you make striped & circle really big, what happens to the four probabilities?  First ignore the gray outlines.  What are the probabilities and expected counts (given N) when all features are 0?  If the total score of one object is 1 or 2 more than the total score of another object, what happens to their relative probabilities?  (for example, set circle to 1 and striped to 1.  What are the relative probabilities of the 4 objects?)  What happens to the probabilities when circle goes to +infinity?  to -infinity?  What happens to the log likelihood in these cases and why?  Now try to match the gray outlines, which represent the counts you’re trying to match.  If circles overall have too low a count, you should increase circle slider: the tooltip on the slider adds up the expected and observed counts for you.  Show them the “new random challenge button.”  
-</p>
+  <p>Your job is to poke around and figure out what is going on here.
+  Remember, we must be modeling some conditional probability
+  distribution p(event | context).</p>
 
-<div id="p3" class="showable_instructions">
-  Encourage them to check out the tooltips.
-</p>
+  <ol type="a">
+    <li>What are the <i>contexts</i>?  Why do most (but not all) contexts have count 1?
+    <li>What are the possible <i>events</i>?  How are they displayed as shapes?
+    <li>What kind of information below indicates that a
+      particular <i>training</i> phrase has been labeled as spam?  
+    <li>Which are the two <i>test</i> phrases included below?  How do you know?
+    <li>If you train this model without regularization, what happens
+    to the log-likelihood and the weights?  Why?
+    <li>If you train this model with regularization, how does it
+      classify the two test phrases?  Look at the weights: what features helped it make
+      this classification?
+    <li>You might think that <code>'fortune'</code> fires on any
+      phrase that contains the word <code>'fortune'</code>.  But
+      <A HREF="#14" target="_blank">lesson 14</A> suggests that can't
+      quite work.  Let's be precise: what (context,event) pairs
+      is <code>'fortune'</code> really defined to fire on?
+    <li><code>mentions money</code> is a binary feature.  What are
+      some words that cause it to fire?  How did you find out?
+    <li>Is the feature <code>'yada'</code> a binary feature, or a counting feature?
+      That is, does <i>f</i><sub>yada</sub> return 1 or 3 on <code>yada yada yada</code>?
+      How did you find out?
+    <li>Which of the non-spam messages does your trained model think is
+      spammiest?  How do you know?
+  </ol>
+</div>

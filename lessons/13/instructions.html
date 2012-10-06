@@ -3,8 +3,20 @@
     different from maximizing joint likelihood.</p>
 
   <p>In the English (square) context, it is now <i>only</i> possible
-    to talk about <code>solid</code>.  As a result, there
-    are <i>lots</i> of solid shapes in our training data.  Yet
-    what are the weights that maxmize the conditional log-likelihood?
-    Discuss why this is.</p>
+    to talk about <code>solid</code>.  Since English is popular, this
+    means there are <i>lots</i> of solid shapes in our training data.
+    Yet what are the weights that maxmize the conditional
+    log-likelihood?  Discuss why this is.</p>
+
+  <p><b>Remark.</b> Did the format of this example surprise you?  Why
+    should different contexts have to choose among different event
+    sets?  Because different situations present different choices!
+    Consider estimating p(parse tree | sentence).  Each <i>n</i>-word
+    sentence presents a choice among many possible parse
+    trees&mdash;whose <i>n</i> leaves are labeled with the words of
+    the sentence, so they are parses of <i>that sentence only</i>.  So
+    how can we parse novel sentences at test time?  More generally,
+    how can we generalize to new contexts and events?  Because a
+    (context,event) pair we've never seen in training data may still
+    have many <i>features</i> that we've seen training data.</p>
 </div>
