@@ -5,7 +5,7 @@
 
   <p>Click "Solve."  What weight does the gradient ascent solver find
     for the <code>square</code> feature?  Is it what you predicted
-    above?  Can you improve the log-likelihood by changing it to your
+    above?  Can you improve the log-likelihood at all by changing it to your
     prediction?</p>
 
   <p>The training set contained 500 events (tokens).  What
@@ -19,7 +19,7 @@
 
   <p>Open up <A HREF="#1" target="_blank">lesson 1</A> in
   a new window.  Use the radio buttons to experiment with
-  L<sub>1</sub> or L<sub>2</sub> regularization.  When regularization
+  &ell;<sub>1</sub> or &ell;<sub>2</sub> regularization.  When regularization
   is turned on, we are no longer trying to maximize the length of the
   entire log-likelihood bar, but only the gray part.  The red part
   corresponds to the regularizer that we subtract from the
@@ -32,11 +32,11 @@
   <p>Experiment with changing the regularization coefficient <i>C</i>.
   How does this affect the size of the regularizer?  How does it
   affect the gradient hints?  What weights does "Solve" find
-  if <i>C</i> is large?  Is the answer different for L<sub>1</sub> and
-  L<sub>2</sub>?</p>
+  if <i>C</i> is large?  Is the answer different for &ell;<sub>1</sub> and
+  &ell;<sub>2</sub>?</p>
 
   <p><b>Regularization as smoothing.</b> Now come back here to lesson
-  8.  Can you improve the estimated probability of novel outcomes by
+  8.  Can you estimate more plausible probabilities for novel outcomes by
   running the solver with regularization?  Describe what you did and
   what happened.  Were the three novel outcomes estimated to have equal
   probabilities?  Explain.</p>
