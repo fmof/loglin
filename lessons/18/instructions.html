@@ -1,0 +1,166 @@
+<fudiv id="p1" class="showable_instructions">
+
+  <h2>Conclusions</h2>
+
+  <p>Congratulations on finishing this series of lessons.  We hope you
+    enjoyed them!  Beyond just learning about log-linear models, you've now
+    seen many other ideas that are pervasive in machine learning:</p>
+
+  <ul>
+    <li><b>Modeling</b>
+      <ul>
+	<li>Defining a family of models
+	<li>Defining useful features
+	<li>Interactions among parameters
+      </ul>
+    <li><b>Some types of model</b>
+      <ul>
+	<li>Conditional models
+	<li>Sequence models
+	<li>Binary classification
+      </ul>
+    <li><b>Parameter estimation</b>
+      <ul>
+	<li>Fitting your model's parameters to match data
+	<li>Log-likelihood and conditional log-likelihood as objective functions
+	<li>Gradient ascent and adaptive stepsize
+      </ul>
+    <li><b>Effects of choosing the objective function</b>
+      <ul>
+	<li>Overfitting to a small training sample
+	<li>Regularization (reduces the variance of your estimated
+          parameters on a small training sample)
+	<li>Smoothing = fitting the data imperfectly<br>(because the model
+	  has fewer parameters than outcomes, or because using too
+	  many parameters would be penalized by the regularizer)
+	<li>Backoff smoothing = making use of backoff features and not just
+	  fine-grained features<br>
+	  (to avoid being penalized by the regularizer)
+      </ul>
+  </ul>
+
+  <h2>Further Connections</h2>
+
+  <p>Log-linear models are a great way to get started with machine
+  learning.  The following connections may be useful if you've seen
+  other supervised methods for making predictions, or are planning to
+  read about them.</p>
+
+  <p><b>Other names for conditional log-linear models.</b> Log-linear
+    models can be found all over machine learning.  The special case of
+    binary classification with a conditional log-linear model
+    (<A HREF="#17">lesson 17</A>) is known as <u>logistic
+      regression.</u>  A <u>conditional random field (CRF)</u> is just a
+    conditional log-linear model where the contexts and outcomes are
+    complex: typically a CRF models p(Y1=y1, Y2=y2, Y3=y3 | X1=x1,
+    X2=x2) by using features on various subsets of the X and Y
+    variables.</p>
+
+  <p>These models are also known as <u>maximum-entropy models</u>.
+    This is because the log-linear <i>form</i> of the formula for
+    p(<i>y</i> |
+    <i>x</i>) <A HREF="http://acl.ldc.upenn.edu/J/J96/J96-1002.pdf">can be
+      justified</A> as the optimal solution to another problem that
+    involves maximizing entropy.  We may add lessons to the tutorial
+    that help you visualize this relationship.</p>
+  
+  <blockquote><font size=-1>The basic idea is this.  If you don't know
+      anything about your data, then you might make the "safe" guess
+      that all outcomes are equally likely (in each context).
+      This <i>uniform</i> distribution has the highest entropy of any
+      distribution that you could pick.  But you
+      <i>do</i> know something from observing training data: you can
+      measure the counts of several features.  Then you can insist on
+      guessing a distribution whose expected counts = those observed
+      counts.  Of all distributions that satisfy those constraints, the
+      distribution that has <i>maximum entropy</i> turns out to be our
+      best log-linear model.  That is, it is the log-linear distribution
+      defined with the same features you measured, and with the feature
+      weights set so that expected = observed, or equivalently so that the
+      likelihood of the training data is maximized.  (If you are willing
+      to somewhat relax the constraints to "expected &approx; observed" in
+      exchange for making the entropy even higher, you can define a
+      relaxed version of the entropy maximization problem.  In this case,
+      the solution is a log-linear model that maximizes the
+      &ell;<sub>2</sub>-regularized or &ell;<sub>1</sub>-regularized
+      log-likelihood, depending on your setup.)</font></blockquote>
+
+  <p><b>Other names for unconditional log-linear models.</b>  Suppose
+    the conditioning context in p(outcome | context) happens to be
+    empty, so that we are just modeling p(outcome) as in the early
+    lessons of this tutorial. Then instead of a conditional random
+    field, we have the slightly simpler <u>Markov random field
+      (MRF)</u>, also known as an <u>undirected graphical
+      model</u>, <u>exponential model</u>, or <u>Gibbs distribution</u>.</p>
+
+  <blockquote><font size=-1>Many other common probability
+      distributions can be expressed as exponential models (they are
+      said to be in the <u>exponential family</u>).  For example, a
+      Gaussian (normal) distribution over a pair of real
+      variables <i>x</i> =
+      (<i>x</i><sub>1</sub>,<i>x</i><sub>2</sub>) <!-- &isin;
+      &real;<sup>2</sup> --> has the form p(<i>x</i>) = (1/Z)
+      exp(quadratic function of <i>x</i>).  So it is merely a
+      log-linear model with feature vector <i>f(<i>x</i>)</i> =
+      (<i>x</i><sub>1</sub>,
+      <i>x</i><sub>2</sub>, <i>x</i><sub>1</sub><sup>2</sup>, <i>x</i><sub>2</sub><sup>2</sup>,
+      <i>x</i><sub>1</sub><i>x</i><sub>2</sub>).  The feature weights
+      correspond to the coefficients of the quadratic function: they
+      determine the mean, variances, and covariance.</font></blockquote>
+
+  <p><b>Other kinds of probabilistic models.</b> The log-linear
+    formula is not a sacred relic.  You could model p(<i>y</i> | <i>x</i>)
+    with any formula that defines a valid probability distribution, and
+    estimate its parameters from data, perhaps by maximizing
+    likelihood.</p>
+
+  <p>In general, your model should still consider features of
+    (<i>x</i>,<i>y</i>) that might plausibly affect the probability.
+    It's just that you can combine them quite differently.  For example,
+    check out <u>decision trees</u> and <u>decision forests</u>,
+    or <u>neural networks</u>.</p>
+
+  <p><b>Linear decision rules.</b> Often in machine learning, you just
+    want to build a <u>classifier</u> to pick the <i>best</i>
+    prediction <i>y</i> in a given context <i>x</i>.  You get to train
+    your prediction method on some (<i>x</i>,<i>y</i>) pairs.</p>
+
+  <p>One approach is to always predict the <i>y</i> that maximizes
+    p(<i>y</i> | <i>x</i>).  But this is the same as the <i>y</i> that
+    maximizes the linear score &theta;
+    &sdot; <i>f</i>(<i>x</i>,<i>y</i>), if you're using a log-linear
+    model p(<i>y</i> | <i>x</i>) = (1/<i>Z</i>) exp(&theta;
+    &sdot; <i>f</i>(<i>x</i>,<i>y</i>)).</p>
+
+  <p>So why did you even need to convert that simple linear score to a
+    conditional probability?  Only for the purposes of
+    training&mdash;it's because the conditional log-likelihood
+    training objective refers to p(<i>y</i> | <i>x</i>).<p>
+
+  <p>But there are other plausible training objectives that only look
+    at the linear score &theta; &sdot; <i>f</i>(<i>x</i>,<i>y</i>).
+    Most straightforwardly, you might try to choose &theta; to
+    maximize the accuracy of the classifier on training data.  Alas,
+    that objective is generally NP-hard to optimize, and it might
+    overfit.  But <u>support vector machines</u> (SVMs) optimize a related
+    objective that doesn't have those problems and has theoretical
+    guarantees.  The <u>averaged perceptron</u> and <u>boosting</u>
+    are also in this family.</p>
+
+  <p><b>Nonlinear decision rules.</b> Why confine yourself to linear
+    scoring functions?  While <u>neural networks</u> and other
+    arbitrary nonlinear functions can be hard to optimize, a great
+    general technique is to write &theta; &sdot;
+    &Phi;(<i>f</i>(<i>x</i>,<i>y</i>)), where &Phi; is some nonlinear
+    transform of your original feature vector.  Because you still have
+    a linear scoring function on the transformed feature vector, you
+    can still learn and classify as efficiently as before, except that
+    the transformed feature vector might be longer.</p>
+
+  <p>Sometimes even that inefficiency can be eliminated (for certain
+    methods and certain choices of &Phi;).  With the
+    <u>kernel trick</u>, training-time parameter updates and test-time
+    classification both work with an implicit representation of &theta;,
+    without ever explicitly computing the high-dimensional vectors
+    &theta; and &Phi;(...).</p>
+</div>
