@@ -1,11 +1,11 @@
 <div id="p1" class="showable_instructions">
-  <p>To predict different event probabilities for each context, let's
-    add features that <i>conjoin</i> properties of the event with
+  <p>To predict different probabilities within each context, let's
+    add features that <i>conjoin</i> properties of the outcome with
     properties of the context.</p>
 
   <p>Play with the sliders to get a feel for how the model works.  The
     new conjoined features resemble bigram features (as they consider
-    the probability of an event in context).  This model also retains
+    the probability of an outcome in context).  This model also retains
     the original features, which resemble unigram features (as they
     ignore context).</p>
 
@@ -17,15 +17,15 @@
   <p>Run the solver.  How well can you fit the <code>triangle</code>
    and <code>circle</code> data with this feature set?  What weights
    were learned for the <code>square & ...</code> features?  What else
-   determines the probabilities of different events in
+   determines the probabilities of different outcomes in
    the <code>square</code> context?</p>
 
   <p>Remember from <A HREF="#2" target="_blank">lesson 2</A> that
     different weight settings can give the same answer.  How could you adjust
-    the weights found by the solver <i>without changing</i> the event
+    the weights found by the solver <i>without changing</i> the outcome
     probabilities in the <code>triangle</code> and <code>circle</code>
     contexts?  What effect would this adjustment have on conditional
-    log-likelihood?  What effect would it have on the event
+    log-likelihood?  What effect would it have on the outcome
     probabilities in the <code>square</code> context?  Check your
     answers by trying your adjustment!</p>
 
