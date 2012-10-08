@@ -2,15 +2,15 @@
   <p>Taking the "unigram"/"bigram" analogy more seriously, here is a
     "bigram language model" over a <i>sequence</i> of filled shape
     events.  The choice of the next filled shape <i>depends on</i>
-    what its predecessor was.  The predecessor is the context.
-</p>
+    what its predecessor was.  The predecessor is the context.</p>
 
-  <p>We include the usual "unigram" features for the event that we're
-  trying to predict.  We have features for each of the 9 filled shape
-  events, as well as backoff features for the shape and the
-  fill-pattern.  These backoff features can capture generalizations
-  across multiple similar events, such as "circles are common"
-  (analogous to "words ending in <code>-ing</code> are common").</p>
+  <p>We include the usual "unigram" features that consider only the
+  event without its context.  We have features for each of the 9
+  filled shape events, as well as backoff features for the shape and
+  the fill-pattern.  These backoff features can capture
+  generalizations across multiple similar events, such as "circles are
+  common" (analogous to "words ending in <code>-ing</code> are
+  common").</p>
 
   <p>How about the "bigram" features?  We'll back off here by modeling
     just 3 general features that look at the event and the context
