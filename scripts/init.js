@@ -100,7 +100,7 @@ SHOW_GRADIENTS=0;
 DISPLAY_GRADIENT_COMPONENTS=1;
 SOLVE_ITERATION=1;
 SOLVE_TIMEOUT_ID={};
-SOLVE_TIME_DELAY=750; //in milliseconds
+SOLVE_TIME_DELAY=5000; //in milliseconds
 STOPPING_EPS=0.05;
 MAX_SOLVE_ITERATIONS = 200;
 
@@ -288,8 +288,9 @@ function load_lesson(){
     //huge function that loads data
     //and features
     load_textfile();
-    document.title = 'Lesson '+CURRENT_LESSON;
+    document.title = 'Log-Linear Models: Lesson '+CURRENT_LESSON;
     history.pushState({CURRENT_LESSON:CURRENT_LESSON},'','#'+CURRENT_LESSON);
+    $('jump_to_lesson_select').value=0;
 }
 
 function setITimeout( callback, init_time, times ){
@@ -301,11 +302,12 @@ function setITimeout( callback, init_time, times ){
 		    ep++;
 		}
 		var nt = init_time/(counter/Math.sqrt(10));
+		console.log('time delay is '+nt);
 		SOLVE_TIMEOUT_ID = window.setTimeout(internalCallback, nt);
 		callback(counter)();
 	    } else{
-		$('solve_button').onclick();
 		//end solve here
+		$('solve_button').onclick();
 	    }
 	}
     }( times, 0, 0 );
@@ -374,7 +376,8 @@ window.onload = function(){
 	    var v=parseInt(this.value);
 	    if(v>0){
 		CURRENT_LESSON=v;
-		load_lesson(0);
+		this.blur();
+		load_lesson(0);		
 		$('prev_lesson').verify();
 		$('next_lesson').verify();
 	    }
@@ -458,6 +461,7 @@ window.onload = function(){
     	    gs.onchange();
     	    SOLVE_ITERATION=1;
     	    generate_new_observations();
+	    this.blur();
     	};
     }
 
@@ -621,7 +625,9 @@ window.onload = function(){
 		SOLVE_TIMEOUT_ID = setITimeout(function(iter){
 			return function(){
 			    console.log(iter);
-			    solve_puzzle(iter==1?recompute_step_size(SOLVE_STEP,0) : recompute_step_size(SOLVE_STEP),
+			    var mystep = iter==1?recompute_step_size(SOLVE_STEP,0) : recompute_step_size(SOLVE_STEP);
+			    console.log('done with recompsize : '+mystep);
+			    solve_puzzle(mystep,
 					 iter,
 					 SOLVE_STEP);
 			};}, SOLVE_TIME_DELAY/Math.sqrt(10), MAX_SOLVE_ITERATIONS);

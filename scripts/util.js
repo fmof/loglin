@@ -28,6 +28,8 @@ function load_html5_slider(boxid,val){
 		boxid.value *= -1;
 	    }
 	}
+	//make boxid.value be sci notation if appropriate
+	boxid.value = formatSliderWeight(actual_weight);
 	//store THETA value
 	THETA[feat_name]=isFinite(actual_weight)?actual_weight:(actual_weight>0? 100: -100);
 	redraw_all();
@@ -147,8 +149,7 @@ function sample_from_true(context_id, num_times){
 	//first lay-out each type along the unit interval
 	var s = []; var prev=0; var ncounts = a[1];
 	for(var i in a[0]){
-	    s[i]=a[0][i]+prev;
-	    prev=s[i];
+	    s[i]=a[0][i];
 	}
 	prev=0;
 	//smooth it out, and use negation as a flag
@@ -156,6 +157,7 @@ function sample_from_true(context_id, num_times){
 	    if(s[i] == undefined){
 		s[i]=-prev;
 	    } else{
+		s[i] += prev;
 		prev=s[i];
 	    }
 	}
@@ -460,8 +462,12 @@ function recompute_partition_function(theta,ztheta){
     return ztheta;
 }
 
+function formatSliderWeight(w){
+    return Math.abs(w)<0.1 && w!=0 ? w.toExponential(2) : w;
+}
+
 function formatExpected(ecp){
-    var ret= (ecp > 1.0)?Math.round(ecp):ecp.toFixed(2);
+    var ret= (ecp >= 1.0)?Math.round(ecp):ecp.toFixed(2);
     if(ret==0.0) return 0;
     else return ret;
 }
@@ -516,7 +522,7 @@ function reset_manually_from_theta(slider,val){
 function reset_sliders_manually(arr){
     var group = $$('.feature_slider');
     for(var i=0;i<group.length;i++){
-	group[i].value = arr[i][1];
+	group[i].value = formatSliderWeight(arr[i][1]);
 	reset_manually_from_theta(group[i],arr[i][1]);
 	var val = SLIDER_SIGMOID.transform(arr[i][1]);
 	THETA[arr[i][0]]=(parseFloat(arr[i][1]));
@@ -610,7 +616,7 @@ function recompute_step_size(ostep,step_num){
     var factors=[[1,2], [-1,0.5]];
     for(var i=0;i<factors.length;i++){
 	while((di = improves_ll(tll[0],old_ll,0.01*sum(tth)))==factors[i][0]){
-	    console.log('factor='+factors[i]+', di='+di);
+	    console.log('factor='+factors[i]+', di='+di+', oldll='+old_ll+', nll='+tll[0]);
 	    step *= factors[i][1]; 
 	    f(step);
 	    count++;	
@@ -625,17 +631,23 @@ function improves_ll(ll,oll,foo){
 
 //gamma is original gamma
 function solve_puzzle(gamma, step_num, orig_step_size){
+    console.log('checking convergence...');
     if(converged(step_num)){
 	$('solve_button').onclick();
 	return;
     }
+    console.log('\tand not');
     var gamma = scale_gamma_for_solve(gamma,step_num);
+    console.log('have the new gamma: '+gamma);
     //SOLVE_STEP=gamma;
     $('gradient_step').value = gamma.toPrecision(5);
     step_gradient(gamma);
+    console.log('stepped successfully...');
     if(step_num==MAX_SOLVE_ITERATIONS || converged(step_num)){
+	console.log('breaking');
 	$('solve_button').onclick();
     } 
+    console.log('more to go...');
 }
 
 function compute_gradient(){
@@ -1637,6 +1649,7 @@ function drawSVGBoxes(selectObj){
 	//npr = NUM_OBSERVATIONS_C[c]/num_rows<1 ? NUM_OBSERVATIONS_C[c] : Math.ceil(NUM_OBSERVATIONS_C[c]/num_rows);
 	var rowwidth = (npr) * width + (npr*offset);
 	div_context.style.width=rowwidth+'px';
+	div_context.style['float']='left';
 	div_context.className+=' cdrawrow';
 	selectObj.style.width = rowwidth+100+'px';
 	selectObj.style.overflow='hidden';
@@ -1653,7 +1666,7 @@ function drawSVGBoxes(selectObj){
 		divi.appendChild(divj);
 		divj.style.padding = '2px 4px 0px 4px';
 		divj.style.border = '1px solid gray';
-		if(j+1 < npr){
+		if(j+1 < npr || (j==0 && npr==1)){
 		    divj.style.cssFloat='left';
 		}
 		divj.style.width = (width+svg_offset)+'px';
