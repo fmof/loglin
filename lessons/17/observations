@@ -26,4 +26,4 @@ count	position	context	features	visualization
 0	0,0	parents yada yada		shape=circle,fill=striped
 0	0,1	parents yada yada	'parents','yada','yada'	shape=circle,fill=solid
 0	0,0	*my substantial HGH $199.95*		shape=circle,fill=striped
-0	0,1	*my substantial HGH $199.95*	has bold text,mentions money,contains number,'my','substantial','HGH'	shape=circle,fill=solid
+0	0,1	*my substantial HGH $199.95*	has bold text,mentions money,contains number,'my','substantial','HGH','$'	shape=circle,fill=solid
