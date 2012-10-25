@@ -463,6 +463,17 @@ window.onload = function(){
 	    LAST_UPDATED_TOKEN_COUNT=null;
     	    generate_new_observations();
 	    this.blur();
+	    if(has_cheated){
+		$('cheat_button').style.display='block';
+		var uufs=$$('.unused_feature');
+		for(var u=0;u<uufs.length;u++){
+		    uufs[u].style.display='none';
+		}
+    		var llb=$('ll_bars');
+    		var th=parseFloat(llb.getAttribute('height'));
+    		llb.setAttribute('height',(th-1)/2);
+		has_cheated=0;
+	    }
     	};
     }
 
@@ -508,7 +519,7 @@ window.onload = function(){
     	$('cheat_button').onclick=function(){
     	    if(!has_cheated){
     		var llb=$('ll_bars');
-    		var th=llb.getAttribute('height');
+    		var th=parseFloat(llb.getAttribute('height'));
     		llb.setAttribute('height',2*th+1);
     		has_cheated=1;
     		$('cheat_button').style.display='none';
