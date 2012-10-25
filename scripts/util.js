@@ -612,12 +612,13 @@ function recompute_step_size(ostep,step_num){
 	compute_ll(tth,tztable,tll,tr); 
     };
     f(step);
-    var di; var count=0;
+    var di; var count=0; var ptll=0;
     var factors=[[1,2], [-1,0.5]];
     for(var i=0;i<factors.length;i++){
-	while((di = improves_ll(tll[0],old_ll,0.01*sum(tth)))==factors[i][0]){
+	while((di = improves_ll(tll[0],old_ll,0.01*sum(tth)))==factors[i][0] && ptll!=tll[0]){
 	    console.log('factor='+factors[i]+', di='+di+', oldll='+old_ll+', nll='+tll[0]);
 	    step *= factors[i][1]; 
+	    //ptll=tll[0];
 	    f(step);
 	    count++;	
 	}

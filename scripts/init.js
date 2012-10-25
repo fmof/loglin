@@ -402,7 +402,7 @@ window.onload = function(){
 		    var v = $('num_tokens_context_'+c).value;
 		    v= isNumber(v)?parseFloat(v):-1;
 		    //don't do the following when v == NUM_TOKENS_C[c]
-		    if(c==LAST_UPDATED_TOKEN_COUNT)
+		    if(c==LAST_UPDATED_TOKEN_COUNT || LAST_UPDATED_TOKEN_COUNT==null)
 			generate_new_counts_context(c,v);
 		}
 	    }
@@ -460,6 +460,7 @@ window.onload = function(){
     	    gs.value = ORIG_SOLVE_STEP;
     	    gs.onchange();
     	    SOLVE_ITERATION=1;
+	    LAST_UPDATED_TOKEN_COUNT=null;
     	    generate_new_observations();
 	    this.blur();
     	};
