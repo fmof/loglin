@@ -20,7 +20,8 @@ function load_html5_slider(boxid,val){
 	var feature_name = feature_info.getAttribute('feature_name').split(',')[1];
 	var feat_name = INVERSE_FEATURE_LIST[ [CONTEXTS[context],feature_name] ];
 	if(isNaN(tmpval)){
-	    boxid.value = 1.7976931348623157E+10308;
+	    //boxid.value = 1.7976931348623157E+10308;
+	    boxid.value=Number.MAX_VALUE;
 	    if(THETA[feat_name]>0){
 		actual_weight=SLIDER_SIGMOID.inverse(slider_width-handle_width-0.000001) / val;
 	    } else{
@@ -457,6 +458,7 @@ function recompute_partition_function(theta,ztheta){
 	for(var i=0;i<obs_in_c.length;i++){
 	    tz+=get_prob(c,obs_in_c[i],0,theta);
 	}
+	if(!isFinite(tz)) tz=Number.MAX_VALUE;
 	ztheta[c]=tz;
     }
     return ztheta;
@@ -899,6 +901,10 @@ function compute_ll(theta, ztable, ll, reg){
 	reg[0]=sum;
 	ll[0] = ll[0] - sum;
     } 
+
+    if(ll[0]>0){
+	ll[0]=-Number.MAX_VALUE;
+    }
 }
 
 function createSlider(val,isUnused){
@@ -958,6 +964,8 @@ function addFeaturesToList(selectObj, array){
 
 function ll_resizer(){
     return function(l){
+	if(l<0 && !isFinite(l))
+	    return 2;
 	return LL_SIGMOID.transform(l) + 70;
     };
 }
@@ -1431,12 +1439,9 @@ function compute_max_model_prob(counts,mep,mept,mea){
 	} else if(shape=="pentagon"){
 	    mea[c] = mp*25*Math.pow(SVG_HEIGHT/2-1,2)*Math.sqrt(25+10*Math.sqrt(5))/(50+10*Math.sqrt(5));
 	}
-
     }
 }
 
-
-//get's max empirical prob
 function compute_max_prob(counts,mep,mept,mea,norm){
     for(var c=0;c<CONTEXTS.length;c++){
 	if(NUM_TOKENS_C[c]==0){
