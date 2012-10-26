@@ -130,6 +130,10 @@ COUNTS_EQUAL='#484848';
 slider_min= -2* Math.E;
 slider_max= 2*Math.E;
 slider_step = 0.00001;
+slider_width = 155;
+handle_width = 12;
+min_slider_val = Number.MIN_VALUE;
+max_slider_val = slider_width-handle_width- Number.MIN_VALUE;
 
 in_solving=0;
 button_color='';
@@ -141,8 +145,6 @@ gradients_drawn = 0;
 //GRAD_HIGH_C='#AA03FF';
 GRAD_LOW_C='red';
 GRAD_HIGH_C='blue';
-slider_width = 155;
-handle_width = 12;
 //now unused...
 //sigmoid_y_define_ratio = 7.0/8.0;
 //sigmoid_x_define = Math.sqrt(2); 

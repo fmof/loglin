@@ -5,9 +5,9 @@ function load_html5_slider(boxid,val){
     if(!isFinite(tmpval)){
 	if(!isNaN(tmpval)){
 	    if(tmpval>0){
-		tmpval=SLIDER_SIGMOID.inverse(slider_width-handle_width-0.000001);
+		tmpval=SLIDER_SIGMOID.inverse(max_slider_val);
 	    } else{
-		tmpval=SLIDER_SIGMOID.inverse(0.000001);
+		tmpval=SLIDER_SIGMOID.inverse(min_slider_val);
 	    }
 	}
     }
@@ -20,12 +20,11 @@ function load_html5_slider(boxid,val){
 	var feature_name = feature_info.getAttribute('feature_name').split(',')[1];
 	var feat_name = INVERSE_FEATURE_LIST[ [CONTEXTS[context],feature_name] ];
 	if(isNaN(tmpval)){
-	    //boxid.value = 1.7976931348623157E+10308;
 	    boxid.value=Number.MAX_VALUE;
 	    if(THETA[feat_name]>0){
-		actual_weight=SLIDER_SIGMOID.inverse(slider_width-handle_width-0.000001) / val;
+		actual_weight=SLIDER_SIGMOID.inverse(max_slider_val) / val;
 	    } else{
-		actual_weight = SLIDER_SIGMOID.inverse(0.000001) / val;
+		actual_weight = SLIDER_SIGMOID.inverse(min_slider_val) / val;
 		boxid.value *= -1;
 	    }
 	}
@@ -403,8 +402,8 @@ function initializeThetaValue(){
 function addSliderEffects(){
     var group=jQuery(".feature_slider");
     group.rangeinput();
-    var lb = SLIDER_SIGMOID.inverse(0.000001);
-    var ub = SLIDER_SIGMOID.inverse(slider_width-handle_width-0.000001);
+    var lb = SLIDER_SIGMOID.inverse(min_slider_val);
+    var ub = SLIDER_SIGMOID.inverse(max_slider_val);
     if(group=$$(".feature_slider")){
 	for(var i=0;i<group.length;i++){
 	    group[i].setAttribute('readonly','readonly');
@@ -522,7 +521,7 @@ function sign(x){
 function reset_manually_from_theta(slider,val){
     var h = get_handle(slider);
     var x = SLIDER_SIGMOID.transform(parseFloat(val));
-    x=Math.max(0.000001,Math.min(slider_width-handle_width-0.00001,x));
+    x=Math.max(min_slider_val,Math.min(max_slider_val,x));
     h.style['left'] = x+'px';
 }
 
@@ -1251,6 +1250,7 @@ function createPentagonPoints(cx,width,cy,height,count,max_count,scale){
     var points=[];
     var a = 2*Math.sqrt(count/max_count)/Math.sqrt(Math.sqrt(25+10*Math.sqrt(5)));
     var r=.1*a*Math.sqrt(50+10*Math.sqrt(5));
+    r=Math.max(r,1);
     var c1=.25*(Math.sqrt(5)-1)*r;
     var c2=.25*(Math.sqrt(5)+1)*r;
     var s1=.25*Math.sqrt(10+2*Math.sqrt(5))*r;
@@ -1269,7 +1269,7 @@ function createPentagonPoints(cx,width,cy,height,count,max_count,scale){
 
 function createTrianglePoints(cx,width,cy,height,count,max_count,scale){
     var points=[];
-    var r = Math.sqrt(3)/3 * Math.sqrt(4*count/(Math.sqrt(3)*max_count));
+    var r = Math.max(1,Math.sqrt(3)/3 * Math.sqrt(4*count/(Math.sqrt(3)*max_count)));
     points.push([cx,cy - r]);
     points.push([cx - r * Math.sqrt(3)/2, cy + r/2]);
     points.push([cx + r * Math.sqrt(3)/2, cy + r/2]);
