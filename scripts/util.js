@@ -638,13 +638,15 @@ function improves_ll(ll,oll,foo){
 
 //gamma is original gamma
 function solve_puzzle(gamma, step_num, orig_step_size){
-    console.log('checking convergence...');
-    if(converged(step_num)){
-	$('solve_button').onclick();
+    var solve_button = $('solve_button');
+    if(gamma==0 || converged(step_num)){
+	solve_button.onclick();
 	return;
     }
-    console.log('\tand not');
     var gamma = scale_gamma_for_solve(gamma,step_num);
+    if(gamma==0){
+	solve_button.onclick();
+    }
     console.log('have the new gamma: '+gamma);
     //SOLVE_STEP=gamma;
     $('gradient_step').value = gamma.toPrecision(5);
@@ -652,7 +654,7 @@ function solve_puzzle(gamma, step_num, orig_step_size){
     console.log('stepped successfully...');
     if(step_num==MAX_SOLVE_ITERATIONS || converged(step_num)){
 	console.log('breaking');
-	$('solve_button').onclick();
+	solve_button.onclick();
     } 
     console.log('more to go...');
 }

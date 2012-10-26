@@ -626,6 +626,8 @@ window.onload = function(){
 		if(USE_REGULARIZATION){
 		    $('regularization_constant').onchange();
 		}
+		if(SOLVE_STEP==0)
+		    return;
 		in_solving=1;
 		button_color=this.style.backgroundColor;
 		this.style.backgroundColor='red';
