@@ -781,7 +781,14 @@ function draw_gradient(){
 	fn = function(theta,ntheta,true_theta){
 	    //var ntheta = theta + grad;
 	    var grad = ntheta-theta;
+	    console.log(theta+', '+ntheta+', ='+grad);
 	    var st = bound_dom_range(theta); var snt = bound_dom_range(ntheta); 
+	    if(Math.abs(theta)>10 && Math.abs(snt-st)< 1e-2){
+		if(grad<0) 
+		    snt -= 1.5;
+		else
+		    snt += 1.5;
+	    }
 	    if(grad>0){
 		
 	    }
