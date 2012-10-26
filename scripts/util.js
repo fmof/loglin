@@ -783,16 +783,19 @@ function draw_gradient(){
 	    var grad = ntheta-theta;
 	    console.log(theta+', '+ntheta+', ='+grad);
 	    var st = bound_dom_range(theta); var snt = bound_dom_range(ntheta); 
+	    //handle the infinities (hackily...)
 	    if(Math.abs(theta)>10 && Math.abs(snt-st)< 1e-2){
 		if(grad<0) 
-		    snt -= 1.5;
+		    snt -= 5.5;
 		else
-		    snt += 1.5;
+		    snt += 5.5;
 	    }
+	    //though there could be some bad interactions between the midpoint and grad
+	    var sh = 50.5;
 	    if(grad>0){
 		
+	    } else{
 	    }
-	    var sh = 50.5;
 	    var tt = bound_dom_range(true_theta); 
 	    var st1=st; var snt1=snt; var grad_color;
 	    var seen={};
