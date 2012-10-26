@@ -672,3 +672,10 @@ input[type=range].feature_slider{
     -webkit-border-radius: 5px;
     background-image: -webkit-linear-gradient(right, #000000, #333333, #000000);*/
 }
+
+#instruction_area {
+    overflow-y: auto;
+    resize: both;
+    border: 1px solid gray;
+    padding: 2px;
+}

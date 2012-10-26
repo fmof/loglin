@@ -199,6 +199,11 @@ function enumerate_possible_types(context, types_for_context){
 function load_instructions(){
     d3.text(INSTRUCTION_PATH,function(txt){
 	    $('instruction_area').innerHTML=txt;
+	    if(parseInt($('instruction_area').offsetHeight)>350){
+		$('instruction_area').style.height='350px';
+	    } else{
+		$('instruction_area').style.height=parseInt($('instruction_area').offsetHeight)+'px';
+	    }
 	});
 }
 
@@ -777,7 +782,9 @@ function draw_gradient(){
 	    //var ntheta = theta + grad;
 	    var grad = ntheta-theta;
 	    var st = bound_dom_range(theta); var snt = bound_dom_range(ntheta); 
-	   
+	    if(grad>0){
+		
+	    }
 	    var sh = 50.5;
 	    var tt = bound_dom_range(true_theta); 
 	    var st1=st; var snt1=snt; var grad_color;

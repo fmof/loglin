@@ -284,13 +284,12 @@ function load_lesson(){
 	$('new_challenge').style.display='inline';
     }
     load_instructions();
-
     //huge function that loads data
     //and features
     load_textfile();
     document.title = 'Log-Linear Models: Lesson '+CURRENT_LESSON;
     history.pushState({CURRENT_LESSON:CURRENT_LESSON},'','#'+CURRENT_LESSON);
-    $('jump_to_lesson_select').value=0;
+    $('jump_to_lesson_select').value=0;   
 }
 
 function setITimeout( callback, init_time, times ){
