@@ -795,12 +795,10 @@ function draw_gradient(){
 	    var t = get_slider_zero_positions(sh);
 	    //though there could be some bad interactions between the midpoint and grad
 	    if(st>=t[0][0] && st<=t[3][0]){
-		console.log('cap');
 		if(grad>0) st=t[3][0]+0.00001;
 		else if(grad<0) st=t[0][0]-0.00001;
 	    }
 	    if(snt>=t[0][0] && snt<=t[3][0]){
-		console.log('cap2');
 		if(grad<0) snt=t[3][0]+0.0001;
 		else if(grad>0) snt=t[0][0]-0.0001;
 	    }
@@ -825,12 +823,10 @@ function draw_gradient(){
 		grad_color='#4455EE';
 	    }
 	    if(st>=t[0][0] && st<=t[3][0]){
-		console.log('cap');
 		if(grad>0) st=t[3][0]+0.00001;
 		else if(grad<0) st=t[0][0]-0.00001;
 	    }
 	    if(snt>=t[0][0] && snt<=t[3][0]){
-		console.log('cap2');
 		if(grad<0) snt=t[3][0]+0.0001;
 		else if(grad>0) snt=t[0][0]-0.0001;
 	    }
