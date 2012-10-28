@@ -1,6 +1,7 @@
 TRUE_THETA_PATH='';
 OBSERVATION_PATH='';
 INSTRUCTION_PATH='';
+loader_bar_img='imgs/ajax-bar-loader.gif';
 has_cheated=0;
 SLIDER_DIV=1; //amount to scale slider by (for display)
 

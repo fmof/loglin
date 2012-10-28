@@ -195,16 +195,36 @@ function enumerate_possible_types(context, types_for_context){
     return [arr,ncounts];
 }
 
+function show_loader(box,id){
+    var i = document.createElement('img');
+    i.src=loader_bar_img;
+    i.id=id;
+    i.style['display']='block'; i.style['margin-left']='auto'; i.style['margin-right']='auto';
+    box.appendChild(i);
+}
+
+
 function load_instructions(){
-    d3.text(INSTRUCTION_PATH,function(txt){
-	    var ia=$('instruction_area');
-	    ia.innerHTML=txt;
-	    if(parseInt(ia.offsetHeight)>350){
-		ia.style.height='350px';
-	    } else{
-		ia.style.height=parseInt(ia.offsetHeight)+'px';
+    var ia=$('instruction_area');
+    ia.innerHTML='';
+    var iw=$('instruction_wrapper');
+    show_loader(ia,'instruction_loader');
+    jQuery.ajax({
+	    url:INSTRUCTION_PATH,
+		dataType:"html",
+		success : function(txt){
+		ia.innerHTML='';
+		ia.innerHTML=txt;
+		if(parseInt(ia.offsetHeight)>350){
+		    ia.style.height='350px';
+		} else{
+		    ia.style.height=parseInt(ia.offsetHeight)+'px';
+		}
+	    },
+		complete: function(jqXHR, textStatus){
+		jQuery('#instruction_loader').remove();
 	    }
-	});
+		});
 }
 
 function load_textfile(){
@@ -523,6 +543,7 @@ function reset_manually_from_theta(slider,val){
     var h = get_handle(slider);
     var x = SLIDER_SIGMOID.transform(parseFloat(val));
     x=Math.max(min_slider_val,Math.min(max_slider_val,x));
+    if(x< 1e-10) x=1e-5;
     h.style['left'] = x+'px';
 }
 
@@ -747,10 +768,13 @@ function get_slider_zero_positions(sh,known){
 }
 
 function draw_true_theta_on_slider(tt){
-    /*var t=[[tt-1.0001,'#FFFFFF'],[tt-1, col_for_true_theta],
-      [tt+1, col_for_true_theta],[tt+1.0001,'#FFFFFF']];*/
+    var t=[[tt-1.0001,'#FFFFFF'],[tt-1, col_for_true_theta],
+      [tt+1, col_for_true_theta],[tt+1.0001,'#FFFFFF']];
     var sh=50.5;
-    var t = get_slider_zero_positions(sh,1);
+    var th = get_slider_zero_positions(sh,1);
+    for(var i=0;i<th.length;i++){
+	t.push(th[i]);
+    }
     return generate_gradient_style(t);
 }
 
