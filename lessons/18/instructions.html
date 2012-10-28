@@ -132,17 +132,30 @@
     model p(<i>y</i> | <i>x</i>) = (1/<i>Z</i>) exp(&theta;
     &sdot; <i>f</i>(<i>x</i>,<i>y</i>)).</p>
 
-  <p>So why did you even need to convert that simple linear score to a
-    conditional probability?  Only for the purposes of
-    training&mdash;it's because the conditional log-likelihood
-    training objective refers to p(<i>y</i> | <i>x</i>).<p>
+  <p>In <u>regression</u>, you try to choose a &theta; such that
+    &theta; &sdot; <i>f</i>(<i>x</i>) generally does a good job of
+    predicting <i>y</i> from <i>x</i>, where <i>y</i> is a real
+    number.  Our log-linear models are doing <u>classification</u>: 
+    we want to choose a &theta; such that maximizing &theta;
+    &sdot; <i>f</i>(<i>x</i>,<i>y</i>) generally does a good job of
+    predicting <i>y</i> from <i>x</i>, where <i>y</i> can be any kind
+    of object.</p>
 
-  <p>But there are other plausible training objectives that only look
-    at the linear score &theta; &sdot; <i>f</i>(<i>x</i>,<i>y</i>).
-    Most straightforwardly, you might try to choose &theta; to
-    maximize the accuracy of the classifier on training data.  Alas,
-    that objective is generally NP-hard to optimize, and it might
-    overfit.  But <u>support vector machines</u> (SVMs) optimize a related
+  <p>So why, unlike regression, does classification need to convert
+    &theta; &sdot; <i>f</i>(<i>x</i>,<i>y</i>) to a probability (by
+    exponentiating and renormalizing)?  We do it only for the purposes
+    of training&mdash;it's because the conditional log-likelihood
+    training objective refers to p(<i>y</i> | <i>x</i>).  The point of
+    the training objective is to evaluate whether &theta; does a good
+    job.<p>
+
+  <p>But there are other plausible training objectives that look at
+    the linear score &theta; &sdot; <i>f</i>(<i>x</i>,<i>y</i>)
+    without converting it to a probability.  Most straightforwardly,
+    you might try to choose &theta; to maximize the <i>accuracy</i> of
+    the classifier on training data.  Alas, that objective is
+    generally NP-hard to optimize, and it might overfit.
+    But <u>support vector machines</u> (SVMs) optimize a related
     objective that doesn't have those problems and has theoretical
     guarantees.  The <u>averaged perceptron</u> and <u>boosting</u>
     are also in this family.</p>
@@ -150,17 +163,20 @@
   <p><b>Nonlinear decision rules.</b> Why confine yourself to linear
     scoring functions?  While <u>neural networks</u> and other
     arbitrary nonlinear functions can be hard to optimize, a great
-    general technique is to write &theta; &sdot;
+    general technique is to write the score as &theta; &sdot;
     &Phi;(<i>f</i>(<i>x</i>,<i>y</i>)), where &Phi; is some nonlinear
     transform of your original feature vector.  Because you still have
     a linear scoring function on the transformed feature vector, you
     can still learn and classify as efficiently as before, except that
     the transformed feature vector might be longer.</p>
 
-  <p>Sometimes even that inefficiency can be eliminated (for certain
-    methods and certain choices of &Phi;).  With the
+  <p>Sometimes even that inefficiency can be eliminated.  With the
     <u>kernel trick</u>, training-time parameter updates and test-time
-    classification both work with an implicit representation of &theta;,
-    without ever explicitly computing the high-dimensional vectors
-    &theta; and &Phi;(...).</p>
+    classification both work with an implicit representation of
+    &theta;, without ever explicitly computing the high-dimensional
+    vectors &theta; and &Phi;(...).  In particular, if &Phi; is chosen
+    carefully, then nearly all the methods discussed here can be kept
+    efficient, <i>provided that the set of possible outcomes <i>y</i>
+    for each <i>x</i> is small</i>, as in logistic regression.
+</p>
 </div>
