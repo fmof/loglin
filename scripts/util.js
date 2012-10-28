@@ -197,11 +197,12 @@ function enumerate_possible_types(context, types_for_context){
 
 function load_instructions(){
     d3.text(INSTRUCTION_PATH,function(txt){
-	    $('instruction_area').innerHTML=txt;
-	    if(parseInt($('instruction_area').offsetHeight)>350){
-		$('instruction_area').style.height='350px';
+	    var ia=$('instruction_area');
+	    ia.innerHTML=txt;
+	    if(parseInt(ia.offsetHeight)>350){
+		ia.style.height='350px';
 	    } else{
-		$('instruction_area').style.height=parseInt($('instruction_area').offsetHeight)+'px';
+		ia.style.height=parseInt(ia.offsetHeight)+'px';
 	    }
 	});
 }
@@ -782,7 +783,6 @@ function draw_gradient(){
 	fn = function(theta,ntheta,true_theta){
 	    //var ntheta = theta + grad;
 	    var grad = ntheta-theta;
-	    console.log(theta+', '+ntheta+', ='+grad);
 	    var st = bound_dom_range(theta); var snt = bound_dom_range(ntheta); 
 	    //handle the infinities (hackily...)
 	    if(Math.abs(theta)>10 && Math.abs(snt-st)< 1e-2){
@@ -791,11 +791,16 @@ function draw_gradient(){
 		else
 		    snt += 5.5;
 	    }
+	    var sh = 50.5; 
+	    var t = get_slider_zero_positions(sh);
 	    //though there could be some bad interactions between the midpoint and grad
-	    var sh = 50.5;
-	    if(grad>0){
-		
-	    } else{
+	    if(st>=t[0][0] && st<=t[3][0]){
+		if(grad>0) st=t[3][0]+0.00001;
+		else if(grad<0) st=t[0][0]-0.00001;
+	    }
+	    if(snt>=t[0][0] && snt<=t[3][0]){
+		if(grad<0) snt=t[3][0]+0.0001;
+		else if(grad>0) snt=t[0][0]-0.0001;
 	    }
 	    var tt = bound_dom_range(true_theta); 
 	    var st1=st; var snt1=snt; var grad_color;
@@ -816,8 +821,15 @@ function draw_gradient(){
 		st1-=0.000001; 
 		snt1-=0.000001;
 		grad_color='#4455EE';
-	    } 
-	    var t = get_slider_zero_positions(sh);
+	    }
+	    if(st>=t[0][0] && st<=t[3][0]){
+		if(grad>0) st=t[3][0]+0.00001;
+		else if(grad<0) st=t[0][0]-0.00001;
+	    }
+	    if(snt>=t[0][0] && snt<=t[3][0]){
+		if(grad<0) snt=t[3][0]+0.0001;
+		else if(grad>0) snt=t[0][0]-0.0001;
+	    }
 	    t.push([st,'#FFFFFF']);
 	    t.push([st1,grad_color]);
 	    t.push([snt,grad_color]);
@@ -941,42 +953,45 @@ function createSlider(val,isUnused){
 
 function addFeaturesToList(selectObj, array){
     var nf=0;
-    var num_rows = Math.ceil(Math.sqrt(FEATURE_LIST.length)); 
-    var num_cols = Math.ceil(FEATURE_LIST.length / num_rows); 
+    var tfl=[];
+    for(var feature_index=0;feature_index<FEATURE_LIST.length;feature_index++){
+	var td=document.createElement('td');
+	td.className+=' feature_cell';
+	var d=document.createElement('div');
+	var p=document.createElement('p');
+	var split_fl = FEATURE_LIST[feature_index];
+	var cont_id = REVERSE_CONTEXTS[split_fl[0]];
+	if(split_fl[0]==''){
+	    p.innerHTML=split_fl[1];
+	} else{
+	    p.innerHTML=split_fl[1]+', given '+split_fl[0];
+	}
+	p.setAttribute('feature_dimension',i);
+	p.setAttribute('context',cont_id);
+	p.setAttribute('feature_name',FEATURE_LIST[feature_index]);
+	//theta_index is UNIQUE across all features!
+	p.setAttribute('theta_index',feature_index);
+	GRADIENT[feature_index]=0;
+	d.appendChild(p);
+	d.appendChild(createSlider(THETA[feature_index]));
+	td.appendChild(d);
+	tfl.push(td);
+    }
+    var maxwidth=$('feature_slider_area').offsetWidth;
+    //now maximize the number of 
+    var num_cols = Math.floor(maxwidth/205);
+    var num_rows = Math.ceil(FEATURE_LIST.length/num_cols);
+    //var num_rows = Math.ceil(Math.sqrt(FEATURE_LIST.length)); 
+    //var num_cols = Math.ceil(FEATURE_LIST.length / num_rows); 
     var feature_index=0;
-    var num_columns=array.length;
     for(var i=0;i<num_rows;i++){
 	var tr=document.createElement('tr');
 	tr.id='row'+i;
-	for(var j=0;j<num_cols && feature_index<FEATURE_LIST.length;j++){
-	    var td=document.createElement('td');
-	    td.className+=' feature_cell';
-	    var d=document.createElement('div');
-	    var p=document.createElement('p');
-	    var split_fl = FEATURE_LIST[feature_index];
-	    var cont_id = REVERSE_CONTEXTS[split_fl[0]];
-	    console.log('adding feature '+split_fl[1]+', given '+split_fl[0]);
-	    if(split_fl[0]==''){
-		p.innerHTML=split_fl[1];
-	    } else{
-		p.innerHTML=split_fl[1]+', given '+split_fl[0];
-	    }
-	    p.setAttribute('feature_dimension',i);
-	    p.setAttribute('context',cont_id);
-	    p.setAttribute('feature_name',FEATURE_LIST[feature_index]);
-	    //theta_index is UNIQUE across all features!
-	    p.setAttribute('theta_index',feature_index);
-	    GRADIENT[feature_index]=0;
-	    d.appendChild(p);
-	    d.appendChild(createSlider(THETA[feature_index]));
-	    td.appendChild(d);
-	    tr.appendChild(td);
-	    feature_index++;
-	}
 	selectObj.appendChild(tr);
-	if(feature_index>=FEATURE_LIST.length){
-	    break;
+	for(var j=0;j<num_cols && feature_index<tfl.length;j++){
+	    tr.appendChild(tfl[feature_index++]);
 	}
+	if(feature_index>=tfl.length) break;
     }
 }
 
