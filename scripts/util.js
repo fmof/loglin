@@ -215,8 +215,8 @@ function load_instructions(){
 		success : function(txt){
 		ia.innerHTML='';
 		ia.innerHTML=txt;
-		if(parseInt(ia.offsetHeight)>350){
-		    ia.style.height='350px';
+		if(parseInt(ia.offsetHeight)>165){
+		    ia.style.height='165px';
 		} else{
 		    ia.style.height=parseInt(ia.offsetHeight)+'px';
 		}
