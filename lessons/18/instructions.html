@@ -39,6 +39,37 @@
       </ul>
   </ul>
 
+  <p>
+
+  <h2>Efficiency Issues</h2>
+
+  <p>These visual lessons focused on the case where there are only a
+  few possible <i>y</i> values (or only a few for each <i>x</i>).</p>
+
+  <p>But what if <i>y</i> is a large structured object like a
+    sentence, a tree, an image, or a graph?  This setting is called
+    "structured prediction" and obviously arises in domains like
+    natural language processing.  Then there may be exponentially many
+    possible <i>y</i> values, so you can't reasonably loop over all of
+    them.</p>
+
+  <p>The reason you'd need such a loop is to find <i>Z</i>(<i>x</i>),
+    which sums over all possible <i>y</i> values.  <i>Z</i>(<i>x</i>)
+    is needed to compute p(<i>y</i> | <i>x</i>) exactly, or to sample
+    a random <i>y</i> given <i>x</i>.  You also need to sum over all
+    possible <i>y</i> values during training, in order to get the
+    expected counts during training.  (This is actually related, since
+    the expected values turn out to be the partial derivatives of
+    log <i>Z</i>(<i>x</i>).)</p>
+
+  <p>Depending on your features, you may still be able to do the above
+    computations exactly by using dynamic programming.  If not, there
+    are various approximation algorithms available.  One approximation
+    approach is to first solve the problem of sampling from p(<i>y</i>
+    | <i>x</i>): this part can often be approximated with Markov chain
+    Monte Carlo methods such as Gibbs sampling.  Then you can loop
+    over a sample of <i>y</i> values rather than over all of them.</p>
+
   <h2>Further Connections</h2>
 
   <p>Log-linear models are a great way to get started with machine
@@ -97,14 +128,14 @@
       distributions can be expressed as exponential models (they are
       said to be in the <u>exponential family</u>).  For example, a
       Gaussian (normal) distribution over a pair of real
-      variables <i>x</i> =
-      (<i>x</i><sub>1</sub>,<i>x</i><sub>2</sub>) <!-- &isin;
-      &real;<sup>2</sup> --> has the form p(<i>x</i>) = (1/Z)
-      exp(quadratic function of <i>x</i>).  So it is merely a
-      log-linear model with feature vector <i>f(<i>x</i>)</i> =
-      (<i>x</i><sub>1</sub>,
-      <i>x</i><sub>2</sub>, <i>x</i><sub>1</sub><sup>2</sup>, <i>x</i><sub>2</sub><sup>2</sup>,
-      <i>x</i><sub>1</sub><i>x</i><sub>2</sub>).  The feature weights
+      variables <i>y</i> =
+      (<i>y</i><sub>1</sub>,<i>y</i><sub>2</sub>) <!-- &isin;
+      &real;<sup>2</sup> --> has the form p(<i>y</i>) = (1/Z)
+      exp(quadratic function of <i>y</i>).  So it is merely a
+      log-linear model with feature vector <i>f(<i>y</i>)</i> =
+      (<i>y</i><sub>1</sub>,
+      <i>y</i><sub>2</sub>, <i>y</i><sub>1</sub><sup>2</sup>, <i>y</i><sub>2</sub><sup>2</sup>,
+      <i>y</i><sub>1</sub><i>y</i><sub>2</sub>).  The feature weights
       correspond to the coefficients of the quadratic function: they
       determine the mean, variances, and covariance.</font></blockquote>
 
