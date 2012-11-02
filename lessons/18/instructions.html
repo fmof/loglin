@@ -43,12 +43,13 @@
 
   <h2>Efficiency Issues</h2>
 
-  <p>These visual lessons focused on the case where there are only a
-  few possible <i>y</i> values (or only a few for each <i>x</i>).</p>
+  <p>These lessons focused on the case where there are only a few
+    possible <i>y</i> values (or only a few for each <i>x</i>), so we
+    could show all of them visually.</p>
 
   <p>But what if <i>y</i> is a large structured object like a
     sentence, a tree, an image, or a graph?  This setting is called
-    "structured prediction" and obviously arises in domains like
+    <u>structured prediction</u> and obviously arises in domains like
     natural language processing.  Then there may be exponentially many
     possible <i>y</i> values, so you can't reasonably loop over all of
     them.</p>
@@ -63,12 +64,13 @@
     log <i>Z</i>(<i>x</i>).)</p>
 
   <p>Depending on your features, you may still be able to do the above
-    computations exactly by using dynamic programming.  If not, there
-    are various approximation algorithms available.  One approximation
-    approach is to first solve the problem of sampling from p(<i>y</i>
-    | <i>x</i>): this part can often be approximated with Markov chain
-    Monte Carlo methods such as Gibbs sampling.  Then you can loop
-    over a sample of <i>y</i> values rather than over all of them.</p>
+    computations exactly by using <u>dynamic programming</u>.  If not,
+    there are various algorithms for <u>approximate inference</u>.
+    One approximation approach is to first solve the problem of
+    sampling from p(<i>y</i> | <i>x</i>): this part can often be
+    approximated with <u>Markov chain Monte Carlo</u> methods such
+    as <u>Gibbs sampling</u>.  Then you can loop over a sample
+    of <i>y</i> values rather than over all of them.</p>
 
   <h2>Further Connections</h2>
 
