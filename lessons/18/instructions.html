@@ -97,7 +97,7 @@
     involves maximizing entropy.  We may add lessons to the tutorial
     that help you visualize this relationship.</p>
   
-  <blockquote><font size=-1>The basic idea is this.  If you don't know
+  <blockquote><small>The basic idea is this.  If you don't know
       anything about your data, then you might make the "safe" guess
       that all outcomes are equally likely (in each context).
       This <i>uniform</i> distribution has the highest entropy of any
@@ -105,18 +105,20 @@
       <i>do</i> know something from observing training data: you can
       measure the counts of several features.  Then you can insist on
       guessing a distribution whose expected counts = those observed
-      counts.  Of all distributions that satisfy those constraints, the
-      distribution that has <i>maximum entropy</i> turns out to be our
-      best log-linear model.  That is, it is the log-linear distribution
-      defined with the same features you measured, and with the feature
-      weights set so that expected = observed, or equivalently so that the
-      likelihood of the training data is maximized.  (If you are willing
-      to somewhat relax the constraints to "expected &approx; observed" in
-      exchange for making the entropy even higher, you can define a
-      relaxed version of the entropy maximization problem.  In this case,
-      the solution is a log-linear model that maximizes the
+      counts.  Of all distributions that satisfy those constraints,
+      the distribution that has <i>maximum entropy</i> turns out to be
+      our best log-linear model.  That is, it is the log-linear
+      distribution defined with the same features you measured, and
+      with the feature weights set so that expected = observed, or
+      equivalently so that the likelihood of the training data is
+      maximized.  (If you are willing to somewhat relax the
+      constraints to "expected &approx; observed" in exchange for
+      making the entropy even higher, you can define a relaxed version
+      of the entropy maximization problem.  In this case, the solution
+      is a log-linear model that maximizes the
       &ell;<sub>2</sub>-regularized or &ell;<sub>1</sub>-regularized
-      log-likelihood, depending on your setup.)</font></blockquote>
+      log-likelihood, depending on how you relax the
+      constraints.)</small></blockquote>
 
   <p><b>Other names for unconditional log-linear models.</b>  Suppose
     the conditioning context in p(outcome | context) happens to be
