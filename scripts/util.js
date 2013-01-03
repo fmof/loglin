@@ -47,7 +47,7 @@ function redraw_all(){
     if(!svg_loaded){return;}
     recompute_partition_function();
     recompute_expected_counts();    
-    compute_max_model_prob(EXPECTED_COUNTS,MAX_EXP_EMP_PROB,MAX_EXP_EMP_PROB_TYPE,MAX_EXP_EMP_AREA);
+    compute_max_prob(get_prob,MAX_EXP_EMP_PROB,MAX_EXP_EMP_PROB_TYPE,MAX_EXP_EMP_AREA, get_model_partition_function);
     redrawAllExpected();
     compute_ll();
     compute_ll(TRUE_THETA,TRUE_Z_THETA,TRUE_LOG_LIKELIHOOD,TRUE_REGULARIZATION);
@@ -93,7 +93,7 @@ function generate_new_counts_context(context_id,ntimes){
     recompute_partition_function();
     recompute_partition_function(TRUE_THETA,TRUE_Z_THETA);
     sample_from_true(context_id,ntimes);
-    compute_max_prob(COUNTS,MAX_EMP_PROB,MAX_EMP_PROB_TYPE,MAX_EMP_AREA);
+    compute_max_prob(get_count, MAX_EMP_PROB, MAX_EMP_PROB_TYPE, MAX_EMP_AREA, get_num_tokens);
     $('num_tokens_context_'+context_id).value = NUM_TOKENS_C[context_id];
     updateObservedImages();
     svg_loaded=1;
@@ -119,7 +119,7 @@ function generate_new_observations(ntimes){
 	    $('num_tokens_context_'+c).value = NUM_TOKENS_C[c];
 	}
     }
-    compute_max_prob(COUNTS,MAX_EMP_PROB,MAX_EMP_PROB_TYPE,MAX_EMP_AREA);
+    compute_max_prob(get_count,MAX_EMP_PROB,MAX_EMP_PROB_TYPE,MAX_EMP_AREA, get_num_tokens);
     updateObservedImages();
     svg_loaded=1;
     redraw_all();
@@ -300,7 +300,7 @@ function record_data(rows,already_created){
     	$$(".feature_slider").forEach(function(t){t.onchange();});
     }
     recompute_partition_function(THETA,Z_THETA);
-    compute_max_prob(COUNTS,MAX_EMP_PROB,MAX_EMP_PROB_TYPE,MAX_EMP_AREA);
+    compute_max_prob(get_count,MAX_EMP_PROB,MAX_EMP_PROB_TYPE,MAX_EMP_AREA, get_num_tokens);
     //compute the true partition function
     recompute_partition_function(TRUE_THETA,TRUE_Z_THETA);
     //draw the data here!
@@ -312,7 +312,7 @@ function record_data(rows,already_created){
     svg_loaded=1;
     //compute expected counts
     recompute_expected_counts(); 
-    compute_max_model_prob(EXPECTED_COUNTS,MAX_EXP_EMP_PROB,MAX_EXP_EMP_PROB_TYPE,MAX_EXP_EMP_AREA);
+    compute_max_prob(get_prob, MAX_EXP_EMP_PROB, MAX_EXP_EMP_PROB_TYPE, MAX_EXP_EMP_AREA, get_model_partition_function);
     //so that we can draw in the expected images
     redrawAllExpected();
     //and, more importantly, the loglikelihood score bar
@@ -1388,6 +1388,25 @@ function get_empirical_prob(context,id_num){
     return NUM_TOKENS_C[context]==0?0:COUNTS[context][id_num]/NUM_TOKENS_C[context];
 }
 
+//return the empirical count (unnormalized emp. prob.)
+function get_count(context, id_num){
+    return COUNTS[context][id_num];
+}
+
+//return the normalizing constant for the context, under 
+//empirical observations
+function get_num_tokens(context){
+    return NUM_TOKENS_C[context];
+}
+
+//return the normalizing constant for the context, under the current
+//model (assumes partition_function is uptodate)
+function get_model_partition_function(context){
+    return Z_THETA[context];
+}
+
+//return the *unnormalized* probability under the model
+//given by theta (defaults to THETA)
 //id_num is type_id!!!
 function get_prob(context,id_num,log,theta){
     var ret = 0; var print=0;
@@ -1417,46 +1436,7 @@ function get_prob(context,id_num,log,theta){
     return log?ret:Math.exp(ret);
 }
 
-
-function compute_max_model_prob(counts,mep,mept,mea){
-    for(var c=0;c<CONTEXTS.length;c++){
-	var obs_in_c=TYPE_OBSERVATIONS_IN_C[c];
-	var max_prob=0; mep[c]=0;
-	//go through type IDs
-	for(var i=0;i<obs_in_c.length;i++){
-	    var id_num=obs_in_c[i];
-	    var p = get_prob(c,id_num)/Z_THETA[c];
-	    if(p>mep[c]){
-		mep[c]=p;
-		mept[c]=id_num;
-	    }
-	}
-    }
-    //now go through and compute/store the area
-    for(var c=0;c<CONTEXTS.length;c++){
-	if(VISUALS[c]==undefined) continue;
-	var index = mept[c];
-	if(index==undefined){
-	    mea[c]=1;
-	    continue;
-	}
-	var mp = mep[c];
-	//mea[c]=SVG_HEIGHT*SVG_WIDTH*mp;
-	var vis=VISUALS[c][index];
-	var shape=vis['shape'];
-	if(shape=="circle"){
-	    mea[c] = mp*Math.PI*Math.pow(SVG_HEIGHT/2-1,2);
-	} else if(shape=="square"){
-	    mea[c] = SVG_HEIGHT*SVG_WIDTH*mp;
-	} else if(shape=="tri" || shape=="triangle"){
-	    mea[c] = mp*3*Math.sqrt(3)/4*Math.pow(SVG_HEIGHT/2-1,2);
-	} else if(shape=="pentagon"){
-	    mea[c] = mp*25*Math.pow(SVG_HEIGHT/2-1,2)*Math.sqrt(25+10*Math.sqrt(5))/(50+10*Math.sqrt(5));
-	}
-    }
-}
-
-function compute_max_prob(counts,mep,mept,mea,norm){
+function compute_max_prob(unnormalized,mep,mept,mea,norm){
     for(var c=0;c<CONTEXTS.length;c++){
 	if(NUM_TOKENS_C[c]==0){
 	    mep[c]=1;
@@ -1467,7 +1447,7 @@ function compute_max_prob(counts,mep,mept,mea,norm){
 	//go through type IDs
 	for(var i=0;i<obs_in_c.length;i++){
 	    var id_num=obs_in_c[i];
-	    var p = counts[c][id_num]/NUM_TOKENS_C[c];
+	    var p = unnormalized(c,id_num)/norm(c);
 	    if(p>mep[c]){
 		mep[c]=p;
 		mept[c]=id_num;
@@ -1495,9 +1475,16 @@ function compute_max_prob(counts,mep,mept,mea,norm){
 	} else if(shape=="pentagon"){
 	    mea[c] = mp*25*Math.pow(SVG_HEIGHT/2-1,2)*Math.sqrt(25+10*Math.sqrt(5))/(50+10*Math.sqrt(5));
 	}
-
     }
 }
+
+
+function get_constant_function(n){
+    return function(){
+	return n;
+    };
+}
+
 
 function get_expected_count(context,id_num){
     var prob = get_prob(context,id_num)/Z_THETA[context];
