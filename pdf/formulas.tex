@@ -326,21 +326,22 @@ parameters.\footnote{Technically, the {\bf likelihood} of the
   likelihood (\ref{eqn:loglin-likelihood}) or equivalently the
   log-likelihood (\ref{eqn:loglin-log-likelihood}).}
 
+\subsection{How many parameters?}
+
 What are the available parameters?  In section~\ref{sec:mle} we were
 able to choose the probabilities individually, so we could model the
-training data perfectly (a bad idea!).  This time we can only
-manipulate the probabilities indirectly through the $\vtheta$
-parameters of our log-linear model.
+training data perfectly (a bad idea!).  But now we can only manipulate
+the probabilities indirectly through the $\vtheta$ parameters of our
+log-linear model.
 
 If the log-linear model has only a few parameters, that may save us
 from overfitting---we will be unable to fit the training data too
-closely, which forces us to generalize.  You saw this in lesson 3.  On
-the other hand, if the log-linear model has enough features, as in
-lesson 4, then you can again fit the training data perfectly.
-Maximizing (\ref{eqn:loglin-likelihood}) will then get you exactly the
-same bad probabilities as in sction~\ref{sec:mle}.
-
-\subsection{How many parameters?}
+closely, which forces us to generalize.  You saw this in lesson 3 of
+the interactive visualization.  On the other hand, if the log-linear
+model has enough features, as in lesson 4, then you can again fit the
+training data perfectly.  Maximizing (\ref{eqn:loglin-likelihood})
+will then get you exactly the same bad probabilities as in
+section~\ref{sec:mle}.
 
 So perhaps we should simply build a simple log-linear model with few
 parameters.  But wait \ldots do we really want to break our good model
