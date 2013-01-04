@@ -1,0 +1,454 @@
+\documentclass[11pt]{article}
+\usepackage[colorlinks]{hyperref}
+\usepackage{fullpage}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{xspace}
+\newcommand{\defeq}{\;\stackrel{\mbox{\tiny def}}{=}\;}
+\newcommand{\horizrule}{\noindent\rule{\textwidth}{2pt}}
+\newcommand{\vtheta}{\vec{\theta}}
+\newcommand{\ph}{\hat{p}}
+\newcommand{\pdisc}{p_{\rm disc}}
+\newcommand{\Real}{{\mathbb R}}
+\newcommand{\diffk}{\frac{\partial}{\partial \theta_k}}
+
+\begin{document}
+\title{Log-Linear Models}
+\author{Jason Eisner (Johns Hopkins University)}
+\date{}
+\maketitle
+
+\begin{center}
+\framebox{\parbox{4.75in}{This handout is intended to be used with the
+    interactive visualization at \\
+  \hspace*{\fill} \url{http://cs.jhu.edu/~jason/tutorials/loglin/}. \hspace*{\fill}}}
+\end{center}
+
+\section{The Problem {\em [read with lesson 1]}}
+
+Often we make use of conditional probabilities like $p(y \mid x)$, where
+$y$ and $x$ are discrete outcomes:
+\begin{itemize}[noitemsep]
+\item They can be used to predict $y$ directly.
+\item We can build a more complicated model as a product
+  of such probabilities.\footnote{E.g., Bayes' theorem, Bayesian
+    networks, (hidden) Markov models, probabilistic context-free
+    grammars, \ldots}
+\end{itemize}
+But where do we get these probabilities?
+
+\subsection{Notation}
+
+Suppose $X$ denotes a random context and $Y$ is a random event that
+happens in that context.  Let $\ph(Y=y \mid X=x)$ be our estimate of
+the conditional probability that the event will turn out to be $y$ when
+the context happens to be $x$.  We'll abbreviate this as
+$\ph(y\mid x)$.  The little ``hat'' over the $p$ is a reminder that
+this is just an estimate, not the true probability.
+
+\subsection{Simple methods}\label{sec:mle}
+
+A simple idea is to estimate each conditional probability separately,
+using simple count ratios: 
+\begin{equation}
+\ph(y \mid x) \defeq \frac{\textrm{count}(x,y)}{\textrm{count}(x)}
+\end{equation}
+
+Such a ``maximum-likelihood'' estimate is {\em unbiased} (correct on
+average).  But unfortunately, it may have {\em high variance} (it is
+sensitive to the particular dataset from which you obtain the counts).
+It will be unreliable if either count is small:
+\begin{itemize}[noitemsep]
+\item If the denominator $\textrm{count}(x)=2$, then the estimate must be either 0/2, 1/2, or 2/2.  
+\item It's even worse if the denominator is 1 or 0: then what happens?
+\item If the numerator $\textrm{count}(x,y)=0$, then the estimate 
+  be 0, but perhaps $y$ is just unlikely and not impossible.
+\item If the numerator is 1, then the estimate might be too high,
+  since perhaps there are many unlikely events and $y$ is just the one
+  we happened to see.
+\end{itemize}
+
+\noindent
+``Smoothing'' techniques try to reduce the variance of this estimate.
+However, they still estimate each conditional probability more or less
+independently of the others.\footnote{``Backoff smoothing'' does jointly
+  estimate $p(y \mid x_1)$ and $p(y \mid x_2)$ if $x_1$ and $x_2$ are
+  related in a certain way.}
+% so that $\ph(y \mid x_1) \approx \ph(y \mid x_2)$ if the contexts
+% $x_1 \approx x_2$ are similar and have small counts,
+%  but not in a very flexible way.
+
+\section{Log-linear models {\em [read with lesson 1]}}
+
+Log-linear modeling is a very popular and flexible technique.  It has
+the advantage that it works with {\em descriptions} of the events.
+Contextualized events $(x,y)$ with {\em similar} descriptions tend to
+have similar probabilities.
+% That is, if $\vec{f}(x_1,y_1) \approx \vec{f}(x_2,y_2)$, then
+% $\hat{p}(y_1 \mid x_1) \approx \hat{p}(y_2 \mid x_2)$.  
+
+\subsection{Feature functions}
+
+Since you are the one who knows something about your problem, {\em
+  you} get to define the function $\vec{f}$ that extracts those
+descriptions.  If you decide that your model will have $K$ features,
+then $\vec{f}(x,y)$ denotes a vector of $K$ real numbers $(f_1(x,y),
+f_2(x,y), \ldots, f_K(x,y))$ that {\em describe} event $y$ in context
+$x$.  These $K$ numbers are called the {\bf values} or {\bf strengths}
+of the features.
+
+\medskip
+
+For example, suppose $K=5$ and $\vec{f}(x,y)=(1,0,1,0,2) \in \Real^5$.
+That means that you chose to describe the contextualized event $(x,y)$
+as ``having'' features 1, 3, and 5 but not features 2 and 4.
+Furthermore, by defining $f_5(x,y)=2$, you chose to say that $(x,y)$
+has feature 5 especially strongly.  A common figure of speech is that
+feature 5 {\bf fires} especially strongly on $(x,y)$.
+
+(It is somewhat unusual that $f_5(x,y)=2$.  In principle a feature
+value $f_k(x,y)$ can be any positive or negative real number.  But
+most often your feature functions $f_k$ will be boolean functions, so
+that $f_k(x,y)$ is always either 1 or 0, according to whether $(x,y)$
+has feature $k$ or not.)
+
+\subsection{The defining formula}
+
+Our model $\ph$ is now defined by\footnote{We are still using the
+  $\ph$ notation because this is only a model that we are trying to
+  fit to the data.  In most cases, we will never know whether the true
+  probability distribution $p$ has this form.}
+\begin{equation}\label{eqn:loglin}
+  \ph(y \mid x) \defeq \frac{u(x,y)}{Z(x)}
+\end{equation}
+where the interesting part is the {\bf unnormalized probability}
+defined by
+\begin{align}\label{eqn:unnorm}
+  u(x,y) &\defeq \exp \sum_{k=1}^K \left( \theta_k \cdot f_k(x,y) \right)  \\
+         &= \exp \left(\vtheta \cdot \vec{f}(x,y)\right) > 0
+\end{align}
+Here $\vtheta \in \Real^K$ is a vector of feature {\bf weights}, which
+are the parameters of the model.
+
+Equation~(\ref{eqn:loglin}) has to scale these unnormalized
+probabilities, in order to get proper probabilities that sum to 1 (i.e., $\sum_y \ph(y\mid x) = 1$ for each $x$).  
+This is a simple matter of dividing them by a 
+{\bf normalizing constant}, namely
+\begin{equation}
+  Z(x) \defeq \sum_y u(x,y)
+\end{equation}
+
+
+\subsection{Feature weights}
+
+You can easily see that for any choice of $\vtheta$ and any $x$, equation~(\ref{eqn:loglin})
+gives a genuine probability distribution over the events $y$ that
+could occur in context $x$.  You can also see now why the model is
+``log-linear''---for each context $x$, the log-probability is a linear function
+of the feature vector:
+\begin{equation}
+\log \ph(y \mid x) = \vtheta \cdot \vec{f}(x,y) - \log Z(x)
+\end{equation}
+
+% LEAVE THIS FOR THE ONLINE LESSONS
+% This doesn't mean that our model $\ph$ is the {\em correct}
+% distribution!  Does $\ph(y \mid x)$ equal the true probability
+% $p(y \mid x)$?  There is no guarantee that $p$ can be accurately
+% described at all using a log-linear model with these features,
+% let alone with the specific weights $\vtheta$.
+
+$\vtheta$ specifies the linear coefficients and is incredibly
+important: the way you pick it will determine all the probabilities in
+the model, and even the normalizing constants!  Fortunately, you'll
+have a training set of events in their contexts, $((x_1,y_1),
+(x_2,y_2), \ldots (x_N,y_N))$.  Then the $\vtheta$ that maximizes
+\begin{equation}\label{eqn:loglin-likelihood}
+\prod_{i=1}^N \ph(y_i \mid x_i)
+\end{equation}
+does the best possible job of predicting these events in their
+contexts.  More on this later.
+
+\subsection{Unconditioned Models}
+
+The initial lessons in the interactive visualization deal with the
+simple case where there is no information about context.  So we can
+omit $x$.  We now have a simple distribution over possible $y$ values,
+\begin{align}
+  \ph(y) &\defeq \frac{u(y)}{Z} \\
+  u(y) &\defeq \exp \left(\vtheta \cdot \vec{f}(y)\right) > 0 \\
+  Z &\defeq \sum_y u(y)
+\end{align}
+
+\subsection{Remark: Other names for log-linear models}
+
+Log-linear models $\ph(y)$ and conditional log-linear models
+$\ph(y\mid x)$ are so prevalent that they have been rediscovered many
+times!  So you will see lots of names for them.  The following are all
+roughly equivalent: log-linear models, Gibbs distributions, undirected
+graphical models, Markov Random Fields or Conditional Random Fields,
+exponential models, and (regularized) maximum entropy models.  
+Special cases include logistic regression and Boltzmann machines.
+
+In all these cases, you define a probability by multiplying some
+positive numbers together and dividing by a constant $Z$ so that your
+probabilities will sum to 1.
+
+\section{Finding the Parameters {\em [read with lesson 6]}}
+  
+We will try some examples in the interactive visualization where it's
+tricky to adjust $\vtheta$ by hand.  So let's ask, how {\em should}
+one adjust it?
+
+\subsection{An intuition}
+
+It turns out that maximizing equation (\ref{eqn:loglin-likelihood}) is
+not too hard.  Suppose your training set has $N=100$ events of which
+80 are circles (some solid, some striped).  But your current $\vtheta$
+says that circles only happen 0.7 of the time, i.e.,
+$$\ph(\textrm{striped circle}) + \ph(\textrm{solid circle}) = 0.7$$
+so your model predicts that only 70 of the 100 events should be circles.
+
+In that case, you should increase the weight of the ``circle''feature,
+because the {\bf expected count} $70$ is smaller than the {\bf
+  observed count} $80$ ($E < O$) and so you need to make circles more
+likely in your model.  Similarly, if $E > O$ then you should decrease this weight.
+Either way, by gradually adjusting this weight you can make $E=O$, so
+that your model correctly predicts the observed number of circles.
+
+As you've probably noticed, the feature weights do interact.  Once
+you've made $E=O$ for the circle feature, trying to make $E=O$ for the
+striped feature may mess up your first move, so that $E \neq O$ again
+for the circle feature.  However, if you keep gradually adjusting all
+of the features in this way, either simultaneously or one at a time,
+then you will eventually reach a setting where $E=O$ for all features!
+
+\subsection{The justification}
+
+The unique setting where $E=O$ for all features is actually the
+setting of $\vtheta$ that maximizes equation
+(\ref{eqn:loglin-likelihood}), or equivalently, the setting that
+maximizes the logarithm of (\ref{eqn:loglin-likelihood}):\footnote{It
+  just happens that the logarithm is easier to work with
+  mathematically, because of the $\exp$ in (\ref{eqn:unnorm}).  But
+  why is it equivalent to maximize the logarithm?  Because $p_1 > p_2$
+  if and only if $\log p_1 > \log p_2$.  That is, $\log p$ is
+  an increasing function of $p$ (look at the graph of the $\log$ function).%
+  % , which implies that
+  % increasing $p$ will also increase $\log p$.  So if we are not yet at
+  % a maximum of $p$, then we should be able to increase $p$ and
+  % therefore we are still able to increase $\log p$.  Only when $\log
+  % p$ reaches a maximum is $p$ maximized.
+}
+\begin{align}
+  F(\vtheta) & \defeq \log \prod_{i=1}^N \ph(y_i \mid x_i) \\ \label{eqn:loglin-log-likelihood}
+             & = \sum_{i=1}^N \log \ph(y_i \mid x_i) 
+\end{align}
+
+\subsection{Formula for the gradient}
+
+You can see this by computing the partial derivatives of $F(\vtheta)$ 
+with respect to the weights:
+
+\begin{align}
+  \diffk F(\vtheta) 
+  &= \sum_{i=1}^N \diffk \log \ph(y_i \mid x_i)  \\ %   - \left( \theta_k / \sigma^2 \right) 
+  &= \sum_{i=1}^N \diffk \log u(y_i \mid x_i) - \diffk \log Z(x_i) \\
+  & \hspace{1in}\vdots \nonumber \\ 
+  &= \underbrace{\left( \sum_{i=1}^N f_k(x_i,y_i) \right)}_{\textit{observed count $O$ of feature $k$}}
+  - \underbrace{\left( \sum_{i=1}^N \sum_y \ph(y\mid x_i) f_k(x_i,y) \right)}_{\textit{expected count $E$ of feature $k$}} \label{eqn:obsexp}
+\end{align}
+
+At the maximum of $F(\vtheta)$, this derivative must be 0 for each
+$\theta_k$, and therefore $E=O$ for each feature $k$.  
+
+{\bf Clarification:} So far in the online toy, you have only been
+modeling $\ph(y)$.  However, soon you'll try $\ph(y\mid x)$, and we
+handled that case above.  What does ``expected count'' mean in this
+setting?  (\ref{eqn:obsexp}) defined it as $\sum_{i=1}^N \sum_y
+\ph(y\mid x_i) f_k(x_i,y)$.  This measures how many times $f_k$ would
+have fired on average if we had still observed exactly the same
+training contexts $x_1,\ldots x_n$, but if the corresponding training events
+$y_1,\ldots y_n$ were respectively replaced by random draws from the
+conditional distributions $\ph(y \mid x_i)$.
+
+\subsection{Algorithm for maximizing the log-probability}
+
+It can be shown that $F$ is a convex function, so it is like a simple
+hill with only one local maximum.  There are many reasonable ways to
+climb to the top of this hill.  One option is {\bf gradient ascent}, a
+simple function maximization algorithm that increases $\theta_k$ at a
+rate proportional to $\diffk F(\vtheta)=O-E$, for all $k$ in parallel.
+These rates of increase are positive or negative for $E < O$ or $E >
+O$ respectively.  As $\vtheta$ is adjusted, these rates will also
+gradually change, eventually reaching 0 at the top of the hill.
+
+\subsection{Details for the curious}
+
+We got to (\ref{eqn:obsexp}) above by applying basic rules
+of differentiation:
+\begin{align}
+  \diffk \log u(y \mid x) 
+  &= \diffk \left( \sum_{k=1}^K \theta_k \cdot f_k(x,y) \right) \\
+  & = \diffk \left( \theta_k \cdot f_k(x,y) + \textrm{constant not involving $\theta_k$} \right) = f_k(x,y)\\
+%
+  \diffk \log Z(x) &= \frac{1}{Z(x)} \diffk Z(x) 
+  = \frac{1}{Z(x)} \sum_y \diffk u(x,y)  \\
+  &= \frac{1}{Z(x)} \sum_y \diffk \exp (\vtheta \cdot \vec{f}(x,y))\\
+  &= \frac{1}{Z(x)} \sum_y \left( \exp (\vtheta \cdot \vec{f}(x,y)) \right) 
+  \left( \diffk (\vtheta \cdot \vec{f}(x,z)) \right) \\
+  &= \frac{1}{Z(x)} \sum_y u(x,y) \cdot f_k(x,y) \\
+  &= \sum_y \ph(y\mid x) \cdot f_k(x,y)
+\end{align}
+
+\section{Regularizing the parameter estimates {\em [read with lesson 8]}}
+
+Problems sometimes arise when we simply maximize the log-probability.
+Why does this happen?  Can we fix it?
+
+\subsection{Overfitting, underfitting, and the bias/variance tradeoff} 
+
+You saw in lesson 8 that maximizing $F(\vtheta)$ might actually be a
+bad idea.  The resulting estimate of $\vtheta$ makes the {\em
+  training} data very probable, but it might not generalize well to
+{\em test} data.  That is called {\bf overfitting} the training data.
+
+In fact, there is a close connection to the bad unsmoothed estimates
+of section~\ref{sec:mle}, which also overfitted.  Both cases use {\bf
+  maximum-likelihood estimates}---that is, they model the training
+data as well as they can, using the available
+parameters.\footnote{Technically, the {\bf likelihood} of the
+  parameter vector $\vtheta$ is defined by
+  (\ref{eqn:loglin-likelihood}), which says how probable the training
+  data would be if we used {\em that} $\vtheta$.  We have been finding
+  the {\bf maximum-likelihood} estimate of $\vtheta$ by maximizing the
+  likelihood (\ref{eqn:loglin-likelihood}) or equivalently the
+  log-likelihood (\ref{eqn:loglin-log-likelihood}).}
+
+What are the available parameters?  In section~\ref{sec:mle} we were
+able to choose the probabilities individually, so we could model the
+training data perfectly (a bad idea!).  This time we can only
+manipulate the probabilities indirectly through the $\vtheta$
+parameters of our log-linear model.
+
+If the log-linear model has only a few parameters, that may save us
+from overfitting---we will be unable to fit the training data too
+closely, which forces us to generalize.  You saw this in lesson 3.  On
+the other hand, if the log-linear model has enough features, as in
+lesson 4, then you can again fit the training data perfectly.
+Maximizing (\ref{eqn:loglin-likelihood}) will then get you exactly the
+same bad probabilities as in sction~\ref{sec:mle}.
+
+\subsection{How many parameters?}
+
+So perhaps we should simply build a simple log-linear model with few
+parameters.  But wait \ldots do we really want to break our good model
+and get rid of potentially useful features??  Then we might have a
+problem of {\bf underfitting}---not matching the training data closely
+enough.
+
+In general, it's reasonable for the number of parameters to increase
+with the size of the training data.  We see exactly the same issue
+when choosing between bigram and trigram models.  We should be able to
+match true English better with a trigram model (or better yet, a
+50-gram model), but we may not have enough training data to estimate
+trigram probabilities accurately.  In that case we fall back to a
+bigram model, which reduces variance (to avoid overfitting) but
+unfortunately increases bias (leading to underfitting).
+
+\subsection{The regularization idea}
+
+We'd prefer not to make a strict choice between pure bigram and
+pure trigram models.  The training corpus may have plentiful evidence
+about {\em some} trigrams while lacking evidence about others.  This
+line of thinking leads to backoff smoothing---the topic of the next
+assignment.
+
+How does this idea apply to log-linear models?  In general, we'd like
+to include a whole lot of potentially useful features in our model,
+but use only the ones that we can estimate accurately on our
+particular training data.  Statisticians call this idea {\bf
+  regularization}.  In the log-linear setting, a feature with weight 0
+has no effect on the model, and a feature with low weight has little
+effect.  So the regularization principle is ``All weights should stay
+close to 0, except where really needed to model the data.''
+
+So instead of maximizing the log-likelihood 
+(\ref{eqn:loglin-log-likelihood}), let's maximize the
+{\bf regularized log-likelihood}, 
+\begin{equation}\label{eqn:loglin-regularized}
+  F(\vtheta) = \left( \sum_{i=1}^N \log \ph(y_i \mid x_i) \right) - C\cdot R(\vtheta)
+\end{equation}
+where $R(\vtheta)$ is a penalty for weights that get far away from 0.
+A parameter $C \geq 0$, which can be tuned via cross-validation, will control the size of this penalty and
+hence the strength of regularization. 
+
+\subsection{Types of regularization} 
+
+A common choice is called $\ell_2$ (or $L_2$) regularization.  Define
+$R(\vtheta)=C \cdot ||\vtheta||^2 = C \cdot \sum_i \theta_i^2$.  Then
+\begin{equation}
+  \diffk F(\vtheta) = \textrm{observed count of $k$} -
+  \textrm{expected count of $k$} \underbrace{\mbox{}-2C \cdot
+    \theta_k}_{\textit{new term}}
+\end{equation}
+Because of the new term, gradient ascent will tend to push $\theta_k$
+toward 0 (increase it if it s negative, decrease it if it's positive).
+For large values of $C$, the optimal $\theta_k$ will be usually be
+close to 0.  {\em However,} if feature $k$ is sufficiently common in the
+training data, then $\diffk F(\vtheta)$ will be dominated by the
+counts, and the regularization term will have comparatively little
+influence.  In this case, $\theta_k$ will be able to pull farther away
+from 0 in order to model the observations---which is exactly what we
+wanted to happen for well-observed features.  
+
+Another common choice is $\ell_1$ (or $L_1$) regularization.  Here 
+$R(\vtheta) = C \sum_i |\theta_i|$.  Then
+\begin{equation}
+  \diffk F(\vtheta) = \textrm{observed count of $k$} -
+  \textrm{expected count of $k$} \underbrace{\mbox{}-C\cdot \textrm{sign}(\theta_k)}_{\textit{new term}}
+\end{equation}
+This has a similar effect, but with the nice property that the optimal
+$\theta_k$ often equals 0 exactly.  (Can you figure out why?  Hint:
+use the formula above to graph how $F(\vtheta)$ varies with $\theta_k$ when
+$\theta_k$ is close to 0.  What happens when $C$ is large enough?)
+
+Notice that for any $C > 0$, regularization will always prevent
+$\theta_k$ from zooming off to $\infty$ or $-\infty$ (because that
+would make $R(\vtheta)$ infinitely bad).  Happily, this prevents us
+estimating $\ph(y\mid x)=0$ as happened in lesson 8.
+
+\subsection{Remark: A Bayesian interpretation}
+
+One way to interpret this regularization is in terms of Bayes'
+Theorem.  Suppose we want to find the most likely value of $\vtheta$,
+given the training data.  That is, instead of choosing $\vtheta$ to
+maximize $p(\textrm{data} \mid \vtheta)$ (the {\bf maximum likelihood}
+principle), we'll more sensibly choose it to maximize $p(\vtheta \mid
+\textrm{data})$ (the {\bf maximum a posteriori (MAP)} principle).  By
+Bayes' Theorem, $p(\vtheta \mid \textrm{data})$ is proportional to
+\begin{equation}
+\underbrace{p(\textrm{data} \mid \vtheta)}_{\textit{likelihood}} \cdot \underbrace{p(\vtheta)}_{\textit{prior}} 
+\end{equation}
+And maximizing the log of this is precisely the same as maximizing
+(\ref{eqn:loglin-regularized}), provided that we define $p(\vtheta)$
+to be proportional to $\exp -R(\vtheta)$.  In other words, our prior
+distribution says that if $R(\vtheta)$ is large then $\vtheta$ has low
+probability.  From this point of view, $\ell_2$ regularization
+corresponds to a Gaussian prior,\footnote{Since the exp of a quadratic
+  function is a Gaussian function.  This looks like a bell curve in
+  $k$ dimensions, with most of the probability near the
+  origin: \includegraphics[scale=0.4]{gaussian} This choice explicitly defines the prior
+  probability of $\vtheta$ to be proportional to $\exp -\frac{1}{2\sigma^2} \sum_k
+  \theta_k^2$, where $\sigma^2 (= 1/2C)$ is called the {\em variance} of the
+  Gaussian.  Clearly, this is just a convenient assumption about
+  where the true value of $\vtheta$ is most likely to fall.%
+  % (Similarly, add-$\lambda$ smoothing (even with backoff) can be
+  % derived from a certain prior assumption about the true probabilities
+  % $p(z \mid xy)$.  Ask me if you're curious.)
+}  and $\ell_1$
+regularization corresponds to an exponential prior.  Both of these say
+that {\em a priori}, we expect each $\theta_k$ to be close to 0.
+
+\end{document}
