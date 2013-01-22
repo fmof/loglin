@@ -21,6 +21,12 @@ div.header {
 	font-size: 1.4em;
 	font-family: serif;
 }
+
+fieldset {
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}
   
 div#introheader {
 	/*border: 5px solid red;
@@ -678,4 +684,7 @@ input[type=range].feature_slider{
     resize: both;
     border: 1px solid gray;
     padding: 2px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
 }
