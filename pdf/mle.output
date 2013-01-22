@@ -1,0 +1,68 @@
+;;; Output of running
+;;;    (compile-file "mle")
+;;;    (load "mle")
+
+1 samples from distrib (0.49 0.01 0.5) so that true p(0 | 0 or 1) = 0.98
+Based on 1000000 successful runs (of 1997994 tries):
+mean estimate = 0.979908, bias = -9.202957E-5, variance = 0.019688308, mse = 0.019481946
+2 samples from distrib (0.49 0.01 0.5) so that true p(0 | 0 or 1) = 0.98
+Based on 1000000 successful runs (of 1332593 tries):
+mean estimate = 0.9800085, bias = 8.46386E-6, variance = 0.016328633, mse = 0.016162926
+10 samples from distrib (0.49 0.01 0.5) so that true p(0 | 0 or 1) = 0.98
+Based on 1000000 successful runs (of 1001009 tries):
+mean estimate = 0.9802876, bias = 2.875924E-4, variance = 0.0038900375, mse = 0.0044969097
+100 samples from distrib (0.49 0.01 0.5) so that true p(0 | 0 or 1) = 0.98
+Based on 1000000 successful runs (of 1000000 tries):
+mean estimate = 0.9808759, bias = 8.7589025E-4, variance = -0.00349015, mse = 3.9495694E-4
+
+1 samples from distrib (0.08783773 0.4710596 0.44110265) so that true p(0 | 0 or 1) = 0.15716256
+Based on 1000000 successful runs (of 1790037 tries):
+mean estimate = 0.157052, bias = -1.10566616E-4, variance = 0.13238667, mse = 0.13174842
+2 samples from distrib (0.08783773 0.4710596 0.44110265) so that true p(0 | 0 or 1) = 0.15716256
+Based on 1000000 successful runs (of 1240566 tries):
+mean estimate = 0.157139, bias = -2.3558736E-5, variance = 0.106763825, mse = 0.106156364
+10 samples from distrib (0.08783773 0.4710596 0.44110265) so that true p(0 | 0 or 1) = 0.15716256
+Based on 1000000 successful runs (of 1000254 tries):
+mean estimate = 0.1573788, bias = 2.1623075E-4, variance = 0.026218083, mse = 0.02643294
+100 samples from distrib (0.08783773 0.4710596 0.44110265) so that true p(0 | 0 or 1) = 0.15716256
+Based on 1000000 successful runs (of 1000000 tries):
+mean estimate = 0.15720794, bias = 4.5374036E-5, variance = 0.0023977011, mse = 0.0023896089
+
+1 samples from distrib (0.089095235 0.44534966 0.4655551) so that true p(0 | 0 or 1) = 0.16670612
+Based on 1000000 successful runs (of 1870124 tries):
+mean estimate = 0.166869, bias = 1.628846E-4, variance = 0.13902374, mse = 0.14043576
+2 samples from distrib (0.089095235 0.44534966 0.4655551) so that true p(0 | 0 or 1) = 0.16670612
+Based on 1000000 successful runs (of 1277099 tries):
+mean estimate = 0.1662505, bias = -4.556179E-4, variance = 0.11331503, mse = 0.11425483
+10 samples from distrib (0.089095235 0.44534966 0.4655551) so that true p(0 | 0 or 1) = 0.16670612
+Based on 1000000 successful runs (of 1000499 tries):
+mean estimate = 0.16690215, bias = 1.9603968E-4, variance = 0.029143741, mse = 0.029259922
+100 samples from distrib (0.089095235 0.44534966 0.4655551) so that true p(0 | 0 or 1) = 0.16670612
+Based on 1000000 successful runs (of 1000000 tries):
+mean estimate = 0.1667372, bias = 3.1083822E-5, variance = 0.0026175845, mse = 0.0026221585
+
+1 samples from distrib (0.24298084 0.420935 0.3360842) so that true p(0 | 0 or 1) = 0.36598137
+Based on 1000000 successful runs (of 1505264 tries):
+mean estimate = 0.366391, bias = 4.0963292E-4, variance = 0.23214863, mse = 0.23404428
+2 samples from distrib (0.24298084 0.420935 0.3360842) so that true p(0 | 0 or 1) = 0.36598137
+Based on 1000000 successful runs (of 1127199 tries):
+mean estimate = 0.3658565, bias = -1.2487173E-4, variance = 0.17450978, mse = 0.17473243
+10 samples from distrib (0.24298084 0.420935 0.3360842) so that true p(0 | 0 or 1) = 0.36598137
+Based on 1000000 successful runs (of 1000021 tries):
+mean estimate = 0.36588708, bias = -9.429455E-5, variance = 0.037159353, mse = 0.037194688
+100 samples from distrib (0.24298084 0.420935 0.3360842) so that true p(0 | 0 or 1) = 0.36598137
+Based on 1000000 successful runs (of 1000000 tries):
+mean estimate = 0.36603263, bias = 5.1259995E-5, variance = 0.0034768432, mse = 0.003512853
+
+1 samples from distrib (0.83150935 0.16776356 7.27081E-4) so that true p(0 | 0 or 1) = 0.83211434
+Based on 1000000 successful runs (of 1000707 tries):
+mean estimate = 0.831602, bias = -5.123615E-4, variance = 0.1400401, mse = 0.14129645
+2 samples from distrib (0.83150935 0.16776356 7.27081E-4) so that true p(0 | 0 or 1) = 0.83211434
+Based on 1000000 successful runs (of 1000000 tries):
+mean estimate = 0.832412, bias = 2.976656E-4, variance = 0.06977028, mse = 0.06928331
+10 samples from distrib (0.83150935 0.16776356 7.27081E-4) so that true p(0 | 0 or 1) = 0.83211434
+Based on 1000000 successful runs (of 1000000 tries):
+mean estimate = 0.8314242, bias = -6.901622E-4, variance = 0.0145949125, mse = 0.014000269
+100 samples from distrib (0.83150935 0.16776356 7.27081E-4) so that true p(0 | 0 or 1) = 0.83211434
+Based on 1000000 successful runs (of 1000000 tries):
+mean estimate = 0.83213496, bias = 2.0623207E-5, variance = 0.0010122657, mse = 0.0013971471
