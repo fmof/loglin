@@ -2,6 +2,7 @@ TRUE_THETA_PATH='';
 OBSERVATION_PATH='';
 INSTRUCTION_PATH='';
 loader_bar_img='imgs/ajax-bar-loader.gif';
+LOADING_TIME_DELAY = 200;
 has_cheated=0;
 SLIDER_DIV=1; //amount to scale slider by (for display)
 
@@ -286,10 +287,7 @@ function load_lesson(){
     } else{
 	$('new_challenge').style.display='inline';
     }
-    load_instructions();
-    //huge function that loads data
-    //and features
-    load_textfile();
+    loading_object = new do_all_loading();
     document.title = 'Log-Linear Models: Lesson '+CURRENT_LESSON;
     history.pushState({CURRENT_LESSON:CURRENT_LESSON},'','#'+CURRENT_LESSON);
     $('jump_to_lesson_select').value=0;   

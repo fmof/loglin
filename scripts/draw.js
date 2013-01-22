@@ -52,6 +52,7 @@ function redraw_all(){
 }
 
 function show_loader(box,id){
+    console.log('here!');
     var i = document.createElement('img');
     i.src=loader_bar_img;
     i.id=id;
