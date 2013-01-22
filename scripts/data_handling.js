@@ -11,8 +11,8 @@ do_all_loading = function(){
 
     this.start_timer = function(){
 	var data_loader = this;	
-	var ia=$('loading_area');
-	ia.innerHTML='';
+	var ia=jQuery('#loading_area');
+	ia.html('');
 	data_loader.timer_started=1;
 	show_loading_bar = setTimeout(function(){
 	    show_loader(ia, 'instruction_loader');
@@ -22,12 +22,7 @@ do_all_loading = function(){
 
     this.start = function(){
 	var data_loader = this;
-	console.log(data_loader);
-	var ia=$('loading_area');
-	ia.innerHTML='';
-	
 	if(!data_loader.timer_started){
-	    console.log("shouldn't be here");
 	    data_loader.start_timer();
 	}
 	data_loader.load_instructions(jQuery('#instruction_area'));
@@ -41,10 +36,6 @@ do_all_loading = function(){
 	if(this.num_callbacks == this.expected_callbacks){
 	    clearInterval(show_loading_bar);
 	    jQuery('#instruction_loader').remove();
-	    if(!this.show_data) hide_data_portion();
-	    else show_data_portion();
-	    if(!this.show_text) hide_text_portion();
-	    else show_text_portion();
 	}
     }
 
@@ -56,12 +47,9 @@ do_all_loading = function(){
 	    dataType:"html",
 	    success : function(txt){
 		ia.html('');
+		//set_height(ia,'');
 		ia.html(txt);
-		var cssheight = parseInt(ia.css('height'),10);
-		if(cssheight>165){
-		    cssheight=165;
-		} 
-		ia.css('height',cssheight+'px');
+		set_instructions_height(ia);
 	    },
 	    complete: function(){
 		data_loader.callback();
@@ -88,7 +76,7 @@ do_all_loading = function(){
 		} else{
 		    print_loading_error(jqXHR, textStatus, errorThrown);
 		}		
-		hide_text_portion();
+		hide_data_portion();
 	    },
 	    success : function(response){
 		(function(rows){

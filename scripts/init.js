@@ -234,6 +234,11 @@ function reset_data_structures(full){
     MAX_EMP_PROB_TYPE=[];
     MAX_EMP_AREA=[];
 
+    //is there a reason I wasn't nulling out these next three arrays?
+    MAX_EXP_EMP_PROB=[];
+    MAX_EXP_EMP_PROB_TYPE=[];
+    MAX_EXP_EMP_AREA=[];
+
     //feature ID number -> float
     GRADIENT=GRADIENT.map(function(d){return d-d;});
     OBS_FEAT_COUNT=OBS_FEAT_COUNT.map(function(d){return d-d;});
@@ -279,6 +284,7 @@ function load_lesson(){
 	//redisplay some things...
 	$('cheat_button').style.display="none";
 	$('new_counts').disabled='disabled';
+	console.log('not hanging...');
     } else{
 	INITIAL_LOAD=0;
     }
@@ -290,7 +296,6 @@ function load_lesson(){
     } else{
 	$('new_challenge').style.display='inline';
     }
-    console.log(loading_object);
     loading_object.start();
     document.title = 'Log-Linear Models: Lesson '+CURRENT_LESSON;
     history.pushState({CURRENT_LESSON:CURRENT_LESSON},'','#'+CURRENT_LESSON);
