@@ -5,15 +5,34 @@
 do_all_loading = function(){
     this.num_callbacks = 0;
     this.expected_callbacks = 2;
-    this.start = function(){
-	var data_loader = this;
+    this.show_text = 1;
+    this.show_data = 1;
+    this.timer_started = 0;
+
+    this.start_timer = function(){
+	var data_loader = this;	
 	var ia=$('loading_area');
 	ia.innerHTML='';
+	data_loader.timer_started=1;
 	show_loading_bar = setTimeout(function(){
-	   show_loader(ia, 'instruction_loader');
+	    show_loader(ia, 'instruction_loader');
 	}, LOADING_TIME_DELAY);
+	return data_loader;
+    }
+
+    this.start = function(){
+	var data_loader = this;
+	console.log(data_loader);
+	var ia=$('loading_area');
+	ia.innerHTML='';
+	
+	if(!data_loader.timer_started){
+	    console.log("shouldn't be here");
+	    data_loader.start_timer();
+	}
 	data_loader.load_instructions(jQuery('#instruction_area'));
 	data_loader.load_textfile();
+	return data_loader;
     };
 
     //the common callback
@@ -22,6 +41,10 @@ do_all_loading = function(){
 	if(this.num_callbacks == this.expected_callbacks){
 	    clearInterval(show_loading_bar);
 	    jQuery('#instruction_loader').remove();
+	    if(!this.show_data) hide_data_portion();
+	    else show_data_portion();
+	    if(!this.show_text) hide_text_portion();
+	    else show_text_portion();
 	}
     }
 
@@ -52,9 +75,21 @@ do_all_loading = function(){
 	    THETA[l]=0; TRUE_THETA[l]=0;
 	}
 	var data_loader = this;
+	console.log('trying to load ' + TRUE_THETA_PATH);
+	console.log(data_loader);
 	jQuery.ajax({
 	    url:TRUE_THETA_PATH,
 	    dataType:"text",
+	    error : function(jqXHR, textStatus, errorThrown){
+		data_loader.show_data = 0;
+		if(jqXHR.status == 404){
+		    console.error("But don't worry, this 404 is allowed.");
+		    data_loader.callback();
+		} else{
+		    print_loading_error(jqXHR, textStatus, errorThrown);
+		}		
+		hide_text_portion();
+	    },
 	    success : function(response){
 		(function(rows){
 		    //d3.tsv(TRUE_THETA_PATH,function(rows){
@@ -118,13 +153,11 @@ do_all_loading = function(){
 		    record_data(rows,0);
 		    $("zero_weights_button").onclick();
 		})(d3.tsv.parse(response))},
-	    complete : function(){
-		data_loader.callback();
+	    complete : function(jqXHR, textStatus){
+		data_loader.callback(jqXHR);
 	    }
 	});
     }
-
-    this.start();
 };
 
 //rows is array of associative arrays

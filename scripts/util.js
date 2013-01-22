@@ -14,6 +14,8 @@ function sortWithIndeces(toSort) {
     return toSort;
 }
 
+function print_loading_error(jqXHR, textStatus, errorThrown){
+}
 
 function INVERSE_FEATURE_LOOKUP(context,val){
     var ret = INVERSE_FEATURE_LIST[[CONTEXTS[context],val]];

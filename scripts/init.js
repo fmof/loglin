@@ -263,6 +263,9 @@ max_prob=1;
 
 //load current lesson
 function load_lesson(){
+    loading_object = new do_all_loading().start_timer();
+    show_text_portion();
+    show_data_portion();
     $('header_lesson_number').innerHTML=CURRENT_LESSON;
     $('header_lesson_number').setAttribute('lesson',CURRENT_LESSON);
     $('show_how_many_previous_lessons').innerHTML = Math.max(1,CURRENT_LESSON-1);
@@ -287,7 +290,8 @@ function load_lesson(){
     } else{
 	$('new_challenge').style.display='inline';
     }
-    loading_object = new do_all_loading();
+    console.log(loading_object);
+    loading_object.start();
     document.title = 'Log-Linear Models: Lesson '+CURRENT_LESSON;
     history.pushState({CURRENT_LESSON:CURRENT_LESSON},'','#'+CURRENT_LESSON);
     $('jump_to_lesson_select').value=0;   

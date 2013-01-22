@@ -51,18 +51,6 @@ function redraw_all(){
     compute_gradient();   
 }
 
-function show_loader(box,id){
-    console.log('here!');
-    var i = document.createElement('img');
-    i.src=loader_bar_img;
-    i.id=id;
-    i.style['display']='block'; i.style['margin-left']='auto'; i.style['margin-right']='auto';
-    box.appendChild(i);
-}
-
-
-
-
 
 function addSliderEffects(){
     var group=jQuery(".feature_slider");
