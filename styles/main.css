@@ -652,10 +652,21 @@ hr.slider{
     margin-right:auto;
 }
 
+#instruction_loader {
+    display:block;
+    text-align:center;
+    margin-left:auto;
+    margin-right:auto;
+}
+
 #instruction_wrapper{
     width:80%;
     margin-left:auto;
     margin-right:auto;
+}
+
+#loading_area {
+    margin-bottom:15px;
 }
 
 .observed_counts_text{

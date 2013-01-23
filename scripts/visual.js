@@ -35,7 +35,6 @@ function show_loader(box,id){
     var i = document.createElement('img');
     i.src=loader_bar_img;
     i.id=id;
-    i.style['display']='block'; i.style['margin-left']='auto'; i.style['margin-right']='auto';
     box.append(i);
 }
 
