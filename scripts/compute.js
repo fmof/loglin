@@ -23,7 +23,8 @@ function recompute_expected_counts(){
 	//go through type IDs
 	for(var i=0;i<obs_in_c.length;i++){
 	    var id_num = obs_in_c[i];
-	    var p=$('exp_count_text_context_'+c+'_'+id_num); var ecp=get_expected_count(c,id_num);
+	    var p=$('exp_count_text_context_'+c+'_'+id_num); 
+	    var ecp=get_expected_count(c,id_num);
 	    EXPECTED_COUNTS[c][id_num]=ecp;
 	    var obs_count = COUNTS[c][id_num];
 	    var color = determine_color(get_empirical_prob(c,id_num),get_prob(c,id_num)/Z_THETA[c]);
@@ -35,11 +36,19 @@ function recompute_expected_counts(){
     }
 }
 
-
+//returns [feature_index, new_feature_value] pair
+//@param: grad_only : eval to true if new_feature_value should
+//be the gradient step (i.e., not including the original 
+//theta value)
 function get_corrected_step(tindex, solve_step,grad_only){
+    //the next value *if* we followed gradient
+    //proportional to solve_step, not taking into account
+    //differentiability issues (with L1 regularization)
     var propval=THETA[tindex] + solve_step*GRADIENT[tindex];
+    //L1 regularization is proving to be a bit of a pain...
     if(USE_REGULARIZATION && REGULARIZATION_EXPONENT==1){
 	if(THETA[tindex]!=0){
+	    //if moving causes us to go beyond zero
 	    if(sign(THETA[tindex]*propval)<0){
 		return [tindex,grad_only?(-THETA[tindex]):0];
 	    } else{
@@ -80,10 +89,12 @@ function step_gradient(solve_step,dont_complete){
 //gradient-based criteria for convergence
 function converged(step){
     var s=sum(GRADIENT.map(function(d,i){
-		//need this for L1 regularization
-		var x =get_corrected_step(i,step,1)[1];
-		return x*x;
-	    }));
+	//need this for L1 regularization
+	//set the third param to be 1 to only get 
+	//the new gradient step
+	var x =get_corrected_step(i,step,1)[1];
+	return x*x;
+    }));
     return s < STOPPING_EPS;
 }
 
@@ -94,9 +105,10 @@ function scale_gamma_for_solve(gamma0,step_num){
 
 //auto-computes the step size
 //makes the solver more robust; less confusing (hopefully) for users
-function recompute_step_size(ostep,step_num,tol_low=1e-8,tol_high=1e3){
+function recompute_step_size(ostep,step_num,tol_low, tol_high){
+    tol_low = typeof tol_low !== 'undefined' ? tol_low : 1e-8;
+    tol_high = typeof tol_high !== 'undefined' ? tol_high : 1e3;
     if(step_num!=undefined){
-	console.log('checking here...');
 	if(converged(step_num)){
 	    return ostep;
 	}
@@ -110,6 +122,8 @@ function recompute_step_size(ostep,step_num,tol_low=1e-8,tol_high=1e3){
     
     var f = function(s){
 	var nt = step_gradient(s,1);
+	//console.log('new theta values we got back:');
+	//console.log("\t"+nt);
 	tth=[];
 	for(var i=0;i<nt.length;i++){
 	    tth[nt[i][0]] = nt[i][1];
@@ -118,31 +132,31 @@ function recompute_step_size(ostep,step_num,tol_low=1e-8,tol_high=1e3){
 	compute_ll(tth,tztable,tll,tr); 
     };
     f(step);
-    var di; var count=0; var ptll=0;
+    var di; var count=0; 
     var factors=[[1,2], [-1,0.5]];
     console.log('init: oldll='+old_ll+', nll='+tll[0] + ", step="+ step);
     for(var i=0;i<factors.length;i++){
-	while((di = improves_ll(tll[0],old_ll,0.01*sum(tth))) == factors[i][0] 
-	      && ptll!=tll[0]){
-	    console.log('factor='+factors[i]+', di='+di+', oldll='+old_ll+', nll='+tll[0] + ", step="+ step + ", new step ="+ step*factors[i][1]);
+	while((di = improves_ll(tll[0],old_ll,0.01*sum(tth))) == factors[i][0]){
+	    if(count % 10 == 0) {
+		console.log('factor='+factors[i]+', di='+di+', oldll='+old_ll+', nll='+tll[0] + ", step="+ step + ", new step ="+ step*factors[i][1]);
+	    }
 	    if(step < tol_low || step > tol_high) break;
 	    step *= factors[i][1]; 
-	    ptll=tll[0];
 	    f(step);
 	    // console.log("\tas a preview, step="+step+", nll_1 = "+ tll[0]);
 	    // console.log("\t" + step_gradient(0.0000000000001, 1));
 	    // console.log("\t" + step_gradient(step,1));
 	    count++;	
-	    if(count > 100){
+	    if(count > 1000){
+		//should get here, but just in case...
 		clearInterval(SOLVE_TIMEOUT_ID);
-		$('solve_button').click();
+		$('solve_button').onclick();
 		throw "infinite loop";
 		
 	    } else{
 	    }
 	}
 	console.log('last computed nll='+tll[0]);
-	ptll=1;
     }
     console.log('finally: oldll='+old_ll+', nll='+tll[0] + ", step="+ step);
     //if we haven't actually improved, then don't bother moving...
@@ -156,24 +170,27 @@ function improves_ll(ll,oll,foo){
 //gamma is original gamma
 function solve_puzzle(gamma, step_num, orig_step_size){
     var solve_button = $('solve_button');
-    if(gamma==0 || converged(step_num)){
+    //this used to be converged(step_num)... why?
+    var is_converged = converged(1);
+    var gamma = gamma;
+    if(gamma==0 || is_converged){
+	console.log('exiting because either gamma = '+ gamma + ' == 0 or is converged: '+ is_converged);
 	solve_button.onclick();
 	return;
     }
-    var gamma = scale_gamma_for_solve(gamma,step_num);
+    gamma = scale_gamma_for_solve(gamma,step_num);
     if(gamma==0){
 	solve_button.onclick();
     }
-    console.log('have the new gamma: '+gamma);
-    //SOLVE_STEP=gamma;
     $('gradient_step').value = gamma.toPrecision(5);
     step_gradient(gamma);
-    console.log('stepped successfully...');
-    if(step_num==MAX_SOLVE_ITERATIONS || converged(step_num)){
-	console.log('breaking');
+    is_converged = converged(1);
+    if(step_num==MAX_SOLVE_ITERATIONS || is_converged){
+	console.log('exiting because either step_num = '+ step_num + ' == ' + MAX_SOLVE_ITERATIONS + ' or is converged: '+ is_converged);
 	solve_button.onclick();
-    } 
-    console.log('more to go...');
+    } else{
+	console.log('more to go...');
+    }
 }
 
 function compute_gradient(){
