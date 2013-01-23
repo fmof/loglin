@@ -63,8 +63,6 @@ do_all_loading = function(){
 	    THETA[l]=0; TRUE_THETA[l]=0;
 	}
 	var data_loader = this;
-	console.log('trying to load ' + TRUE_THETA_PATH);
-	console.log(data_loader);
 	jQuery.ajax({
 	    url:TRUE_THETA_PATH,
 	    dataType:"text",

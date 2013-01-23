@@ -94,7 +94,7 @@ function scale_gamma_for_solve(gamma0,step_num){
 
 //auto-computes the step size
 //makes the solver more robust; less confusing (hopefully) for users
-function recompute_step_size(ostep,step_num){
+function recompute_step_size(ostep,step_num,tol_low=1e-8,tol_high=1e3){
     if(step_num!=undefined){
 	console.log('checking here...');
 	if(converged(step_num)){
@@ -120,16 +120,33 @@ function recompute_step_size(ostep,step_num){
     f(step);
     var di; var count=0; var ptll=0;
     var factors=[[1,2], [-1,0.5]];
+    console.log('init: oldll='+old_ll+', nll='+tll[0] + ", step="+ step);
     for(var i=0;i<factors.length;i++){
-	while((di = improves_ll(tll[0],old_ll,0.01*sum(tth)))==factors[i][0] && ptll!=tll[0]){
-	    console.log('factor='+factors[i]+', di='+di+', oldll='+old_ll+', nll='+tll[0]);
+	while((di = improves_ll(tll[0],old_ll,0.01*sum(tth))) == factors[i][0] 
+	      && ptll!=tll[0]){
+	    console.log('factor='+factors[i]+', di='+di+', oldll='+old_ll+', nll='+tll[0] + ", step="+ step + ", new step ="+ step*factors[i][1]);
+	    if(step < tol_low || step > tol_high) break;
 	    step *= factors[i][1]; 
-	    //ptll=tll[0];
+	    ptll=tll[0];
 	    f(step);
+	    // console.log("\tas a preview, step="+step+", nll_1 = "+ tll[0]);
+	    // console.log("\t" + step_gradient(0.0000000000001, 1));
+	    // console.log("\t" + step_gradient(step,1));
 	    count++;	
+	    if(count > 100){
+		clearInterval(SOLVE_TIMEOUT_ID);
+		$('solve_button').click();
+		throw "infinite loop";
+		
+	    } else{
+	    }
 	}
+	console.log('last computed nll='+tll[0]);
+	ptll=1;
     }
-    return step;
+    console.log('finally: oldll='+old_ll+', nll='+tll[0] + ", step="+ step);
+    //if we haven't actually improved, then don't bother moving...
+    return old_ll>tll[0] ? 0 : step;
 }
 
 function improves_ll(ll,oll,foo){
