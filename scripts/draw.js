@@ -849,6 +849,7 @@ function drawSVGBoxes(selectObj){
 	    divi.className += ' drawrow';
 	}
     }
+    jQuery('.observation_row_num_context').draggable({ containment:"parent"});
 }
 
 

@@ -48,7 +48,7 @@ do_all_loading = function(){
 	    success : function(txt){
 		ia.html('');
 		//set_height(ia,'');
-		ia.html(txt);
+		ia.html(txt).scrollTop(0);
 		set_instructions_height(ia);
 	    },
 	    complete: function(){
