@@ -629,6 +629,15 @@ hr.slider{
 #next_lesson{
 }
 
+#jump_to_lesson_select{
+    font: inherit;
+    border:none;
+} 
+
+#lesson_title{
+    display:inline;
+}
+
 .feature_range_opts_div{
     overflow:hidden;
     clear:both;

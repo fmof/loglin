@@ -271,8 +271,8 @@ function load_lesson(){
     loading_object = new do_all_loading().start_timer();
     show_text_portion();
     show_data_portion();
-    $('header_lesson_number').innerHTML=CURRENT_LESSON;
-    $('header_lesson_number').setAttribute('lesson',CURRENT_LESSON);
+    // $('header_lesson_number').innerHTML=CURRENT_LESSON;
+    // $('header_lesson_number').setAttribute('lesson',CURRENT_LESSON);
     $('show_how_many_previous_lessons').innerHTML = Math.max(1,CURRENT_LESSON-1);
     $('show_how_many_next_lessons').innerHTML = Math.min(CURRENT_LESSON+1,MAX_LESSONS);
     reset_data_structures(1);
@@ -299,7 +299,7 @@ function load_lesson(){
     loading_object.start();
     document.title = 'Log-Linear Models: Lesson '+CURRENT_LESSON;
     history.pushState({CURRENT_LESSON:CURRENT_LESSON},'','#'+CURRENT_LESSON);
-    $('jump_to_lesson_select').value=0;   
+    jQuery('#jump_to_lesson_select').val(CURRENT_LESSON);   
 }
 
 function setITimeout( callback, init_time, times ){
@@ -366,32 +366,36 @@ window.onload = function(){
     var group;
     $('ll_area').style.width = (DIV_LL_WIDTH+RESERVE_LL_WIDTH)+'px';
     $$('.of_total_lessons').forEach(function(e){e.innerHTML=MAX_LESSONS;});
-    if(parseInt($('header_lesson_number').getAttribute('lesson')) != 0){
-	CURRENT_LESSON=parseInt($('header_lesson_number').getAttribute('lesson'));
-    }
+    // if(parseInt($('header_lesson_number').getAttribute('lesson')) != 0){
+    // 	CURRENT_LESSON=parseInt($('header_lesson_number').getAttribute('lesson'));
+    // }
     if(window.onhashchange()<0)
 	load_lesson();
 
     //add listeners for "jump to lesson" select
-    if($('jump_to_lesson_select')){
-	var s=$('jump_to_lesson_select');
-	for(var i=1;i<=MAX_LESSONS;i++){
-	    var o = document.createElement('option');
-	    o.value=i;
-	    o.innerHTML=i;
-	    s.appendChild(o);
-	}
-	s.onchange=function(){
-	    var v=parseInt(this.value);
-	    if(v>0){
-		CURRENT_LESSON=v;
-		this.blur();
-		load_lesson(0);		
-		$('prev_lesson').verify();
-		$('next_lesson').verify();
-	    }
-	};
+    jQuery('#lesson_title_words').click(function(){
+	jQuery('#jump_to_lesson_select').trigger('mousedown');
+	jQuery('#jump_to_lesson_select').trigger('click');
+    });
+    var s=jQuery('#jump_to_lesson_select');
+    for(var i=1;i<=MAX_LESSONS;i++){
+	var o = document.createElement('option');
+	o.value=i;
+	o.innerHTML=i;
+	s.append(o);
     }
+    s.change(function(){
+	var v=parseInt(this.value);
+	if(v>0){
+	    CURRENT_LESSON=v;
+	    this.blur();
+	    load_lesson(0);		
+	    $('prev_lesson').verify();
+	    $('next_lesson').verify();
+	}
+    });
+    s.val(CURRENT_LESSON);
+    
 
     /*if($('change_num_tokens_form')){
 	$('change_num_tokens_form').style.display='none';
