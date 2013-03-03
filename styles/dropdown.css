@@ -1,0 +1,54 @@
+/* from
+http://www.jankoatwarpspeed.com/reinventing-a-drop-down-with-css-and-jquery/
+*/
+
+.dropdown {
+    display:inline;
+    width:auto;     
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+
+}
+
+.dropdown dd, .dropdown dt, .dropdown ul { 
+    margin:0px; 
+    padding:0px; 
+}
+
+
+.dropdown dd { 
+    position:relative; 
+    display:inline;
+}
+
+.dropdown dt {
+    background:#e4dfcb url(../imgs/arrow.png) no-repeat scroll right center;
+    display:inline; 
+    padding-right:20px; 
+    border:1px solid #d4ca9a; 
+    width:150px;
+}
+
+.dropdown dd ul { 
+    background:#e4dfcb none repeat scroll 0 0; 
+    display:none;
+    list-style:none; 
+    padding:5px 0px; 
+    position:absolute; 
+    left:0px; 
+    top:2px; 
+    width:inherit; 
+    min-width:170px;
+    min-height:250px;
+    height:300px;
+    overflow-y:scroll;
+}
+.dropdown span.value { 
+    display:none;
+}
+
+.dropdown dd ul li { 
+    padding:5px; 
+    display:block;
+}

@@ -355,8 +355,8 @@ window.onhashchange = function(){
 	}
     } else{
 	n=-CURRENT_LESSON;
-	    skip_next_hashchange=1;
-	    window.location.hash='#'+CURRENT_LESSON;
+	skip_next_hashchange=1;
+	window.location.hash='#'+CURRENT_LESSON;
     }
     return n;
 }
@@ -369,32 +369,17 @@ window.onload = function(){
     // if(parseInt($('header_lesson_number').getAttribute('lesson')) != 0){
     // 	CURRENT_LESSON=parseInt($('header_lesson_number').getAttribute('lesson'));
     // }
-    if(window.onhashchange()<0)
+    if(window.onhashchange()<0){
 	load_lesson();
+    }
 
     //add listeners for "jump to lesson" select
     jQuery('#lesson_title_words').click(function(){
 	jQuery('#jump_to_lesson_select').trigger('mousedown');
 	jQuery('#jump_to_lesson_select').trigger('click');
     });
-    var s=jQuery('#jump_to_lesson_select');
-    for(var i=1;i<=MAX_LESSONS;i++){
-	var o = document.createElement('option');
-	o.value=i;
-	o.innerHTML=i;
-	s.append(o);
-    }
-    s.change(function(){
-	var v=parseInt(this.value);
-	if(v>0){
-	    CURRENT_LESSON=v;
-	    this.blur();
-	    load_lesson(0);		
-	    $('prev_lesson').verify();
-	    $('next_lesson').verify();
-	}
-    });
-    s.val(CURRENT_LESSON);
+
+    create_lesson_dropdown();
     
 
     /*if($('change_num_tokens_form')){

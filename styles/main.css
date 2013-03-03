@@ -632,6 +632,9 @@ hr.slider{
 #jump_to_lesson_select{
     font: inherit;
     border:none;
+    /* position:absolute !important; */
+    /* top:-9999px !important; */
+    /* left:-9999px !important; */
 } 
 
 #lesson_title{
