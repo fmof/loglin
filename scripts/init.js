@@ -267,7 +267,7 @@ function reset_data_structures(full){
 max_prob=1;
 
 //load current lesson
-function load_lesson(){
+function load_lesson(noskip_dropdown){
     loading_object = new do_all_loading().start_timer();
     show_text_portion();
     show_data_portion();
@@ -284,7 +284,6 @@ function load_lesson(){
 	//redisplay some things...
 	$('cheat_button').style.display="none";
 	$('new_counts').disabled='disabled';
-	console.log('not hanging...');
     } else{
 	INITIAL_LOAD=0;
     }
@@ -299,7 +298,12 @@ function load_lesson(){
     loading_object.start();
     document.title = 'Log-Linear Models: Lesson '+CURRENT_LESSON;
     history.pushState({CURRENT_LESSON:CURRENT_LESSON},'','#'+CURRENT_LESSON);
-    jQuery('#jump_to_lesson_select').val(CURRENT_LESSON);   
+    var j_jump_to_lesson_select=jQuery('#jump_to_lesson_select');
+    j_jump_to_lesson_select.val(CURRENT_LESSON);
+    if(!noskip_dropdown && !j_jump_to_lesson_select.is(":visible")){
+	safe_dropdown_view_change(jQuery(".dropdown dd ul li#dropdown_lessondrop_" + CURRENT_LESSON));
+    }
+    verify_prev_next();
 }
 
 function setITimeout( callback, init_time, times ){
@@ -322,21 +326,6 @@ function setITimeout( callback, init_time, times ){
     }( times, 0, 0 );
     SOLVE_TIMEOUT_ID=window.setTimeout( internalCallback, init_time/Math.sqrt(10) );
 };
-
-//http://stackoverflow.com/questions/4197591/parsing-url-hash-fragment-identifier-with-javascript
-function getHashParams(hs) {
-    var hashParams = {};
-    var e,
-        a = /\+/g,  // Regex for replacing addition symbol with a space
-        r = /([^&;=]+)=?([^&;]*)/g,
-        d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
-        q = window.location.hash.substring(1);
-
-	while (e = r.exec(q))
-	    hashParams[d(e[1])] = d(e[2]);
-
-	return hashParams;
-}
 
 window.onhashchange = function(){
     if(skip_next_hashchange){
@@ -369,6 +358,36 @@ window.onload = function(){
     // if(parseInt($('header_lesson_number').getAttribute('lesson')) != 0){
     // 	CURRENT_LESSON=parseInt($('header_lesson_number').getAttribute('lesson'));
     // }
+
+    if($('next_lesson') && $('prev_lesson')){
+	$('next_lesson').onclick=function(){
+	    CURRENT_LESSON++;
+	    load_lesson();
+	    this.verify();
+	};
+	$('next_lesson').verify = function(){
+	    if(CURRENT_LESSON==MAX_LESSONS){
+		this.disabled="disabled";
+	    }
+	    if(CURRENT_LESSON<MAX_LESSONS){
+		$('next_lesson').disabled='';
+	    }
+	};
+	$('prev_lesson').onclick=function(){
+	    CURRENT_LESSON--;
+	    $('next_lesson').verify();
+	    load_lesson();
+	};
+	$('prev_lesson').verify = function(){
+	    if(CURRENT_LESSON!=1){
+		this.disabled="";
+	    }
+	    if(CURRENT_LESSON==1){
+		this.disabled='disabled';
+	    }
+	};
+    }
+
     if(window.onhashchange()<0){
 	load_lesson();
     }
@@ -481,37 +500,7 @@ window.onload = function(){
 	    });
     }
 
-    if($('next_lesson') && $('prev_lesson')){
-	$('next_lesson').onclick=function(){
-	    CURRENT_LESSON++;
-	    load_lesson();
-	    this.verify();
-	    $('prev_lesson').verify();
-	};
-	$('next_lesson').verify = function(){
-	    if(CURRENT_LESSON==MAX_LESSONS){
-		this.disabled="disabled";
-	    }
-	    if(CURRENT_LESSON<MAX_LESSONS){
-		$('next_lesson').disabled='';
-	    }
-	};
-	$('prev_lesson').onclick=function(){
-	    CURRENT_LESSON--;
-	    this.verify();
-	    $('next_lesson').verify();
-	    load_lesson();
-	};
-	$('prev_lesson').verify = function(){
-	    if(CURRENT_LESSON!=1){
-		this.disabled="";
-	    }
-	    if(CURRENT_LESSON==1){
-		this.disabled='disabled';
-	    }
-	};
-	$('prev_lesson').verify(); $('next_lesson').verify();
-    }
+    
 
     if($('cheat_button')){
     	$('cheat_button').onclick=function(){
@@ -715,27 +704,5 @@ window.onload = function(){
     	    }
     	};
     }
-
-    // if($$("span.coursedescription")){
-    // 	var descLinks=$$("span.coursedescription");
-    // 	for(var i=0; i<descLinks.length;i++){
-    // 	    descLinks[i].onclick=toggleDiv;
-    // 	}
-    // }
-	
-    // if($$(".expandablel")){
-    // 	var expLinks=$$(".expandablel");
-    // 	for(var i=0; i<expLinks.length;i++){
-    // 	    expLinks[i].onclick=toggleDiv;
-    // 	}
-    // }
-	
-    // if($$(".alltoggle")){
-    // 	var expLinks=$$(".alltoggle");
-    // 	for(var i=0; i<expLinks.length;i++){
-    // 	    expLinks[i].onclick=toggleAllDivs;
-    // 	}
-    // }
-
 }
 

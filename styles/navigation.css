@@ -5,10 +5,6 @@ http://www.jankoatwarpspeed.com/reinventing-a-drop-down-with-css-and-jquery/
 .dropdown {
     display:inline;
     width:auto;     
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
-
 }
 
 .dropdown dd, .dropdown dt, .dropdown ul { 
@@ -27,7 +23,10 @@ http://www.jankoatwarpspeed.com/reinventing-a-drop-down-with-css-and-jquery/
     display:inline; 
     padding-right:20px; 
     border:1px solid #d4ca9a; 
-    width:150px;
+    width:150px;    
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
 }
 
 .dropdown dd ul { 
@@ -43,7 +42,11 @@ http://www.jankoatwarpspeed.com/reinventing-a-drop-down-with-css-and-jquery/
     min-height:250px;
     height:300px;
     overflow-y:scroll;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
 }
+
 .dropdown span.value { 
     display:none;
 }

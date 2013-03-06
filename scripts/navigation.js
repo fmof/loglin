@@ -1,8 +1,23 @@
+//expects a jQuery object
+function safe_dropdown_view_change(obj){
+    var text = obj.html();
+    jQuery(".dropdown dt").html("Lesson " + text);
+    jQuery(".dropdown dd ul").hide();
+    var source = jQuery('#jump_to_lesson_select');
+    source.val(obj.find("span.value").html());
+}
+
+
+function verify_prev_next(){
+    jQuery('.lesson_button_nav').each(function(){
+	this.verify();
+    });
+}
 
 //a very nice solution from
 //http://www.jankoatwarpspeed.com/reinventing-a-drop-down-with-css-and-jquery/
 //obj : a jQuery object
-function createDropDown(obj, def, surrounding){
+function createDropDown(obj, def, surrounding, id){
     var selected = obj.find("option[value="+def+"]");  // get selected <option>
     var options = jQuery("option", obj);  // get all <option> elements
     // create <dl> and <dt> with selected value inside it
@@ -11,15 +26,18 @@ function createDropDown(obj, def, surrounding){
      			     '</span><span class="value">' + selected.val() + 
      			     '</span></dt><dd><ul></ul></dd>');
     // iterate through all the <option> elements and create UL
-    options.each(function(){
+    options.each(function(index, val){
+	//skip the default one
+	if(index==def) return;
 	var jthis=jQuery(this);
-        jQuery("#target dd ul").append('<li>' +
+        jQuery("#target dd ul").append('<li id="dropdown_'+ id + '_'+ jthis.val() +'">' +
 				       '<span class="value_text">'+
 				       jthis.text() + '</span><span class="value">' + 
 				       jthis.val() + '</span></li>');
     });
 
     jQuery('.dropdown dt').click(function(){
+	
 	jQuery('.dropdown dd ul').toggle();
     });
     
@@ -32,27 +50,23 @@ function createDropDown(obj, def, surrounding){
 
     jQuery(".dropdown dd ul li").click(function() {
 	var jthis = jQuery(this);
-    	var text = jthis.html();
-    	jQuery(".dropdown dt").html("Lesson " + text);
-    	jQuery(".dropdown dd ul").hide();
-    	var source = obj;
-    	source.val(jthis.find("span.value").html());
+	safe_dropdown_view_change(jthis);
 	init_lesson_change(obj);
     });
+    var val = obj.val();
+    jQuery(".dropdown dt").html("Lesson " + obj.val() );
 }
 
 
 //and my code:
 function init_lesson_change(obj){
-    var v=parseInt(obj.val());
+    var v=parseInt(obj.val(),10);
     if(v>0){
 	CURRENT_LESSON=v;
 	obj.blur();
-	load_lesson(0);		
-	$('prev_lesson').verify();
-	$('next_lesson').verify();
+	//skip doing drop-down related things
+	load_lesson(1);		
     }
-
 }
 
 //create the initial select object
@@ -67,7 +81,6 @@ function create_lesson_dropdown(){
 	} else{
 	    o.innerHTML=i;
 	}
-	console.log(o);
 	o.value=i;
 	s.append(o);
     }
@@ -75,6 +88,6 @@ function create_lesson_dropdown(){
 	init_lesson_change(s);
     });
     s.val(CURRENT_LESSON);
-    createDropDown(s, 0, jQuery("#lesson_title"));
+    createDropDown(s, 0, jQuery("#lesson_title"), 'lessondrop');
     s.hide();
 }

@@ -69,3 +69,18 @@ function get_slider_zero_positions(sh,known){
 	    [sh+onepx,'#000000'],
 	    [sh+onepx+0.00000001,c]];
 }
+
+//http://stackoverflow.com/questions/4197591/parsing-url-hash-fragment-identifier-with-javascript
+function getHashParams(hs) {
+    var hashParams = {};
+    var e,
+        a = /\+/g,  // Regex for replacing addition symbol with a space
+        r = /([^&;=]+)=?([^&;]*)/g,
+        d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
+        q = window.location.hash.substring(1);
+
+	while (e = r.exec(q))
+	    hashParams[d(e[1])] = d(e[2]);
+
+	return hashParams;
+}

@@ -3,7 +3,7 @@
   <head>
     <title>Log-Linear Models</title>
     <link rel="stylesheet" type="text/css" href="styles/main.css" />
-    <link rel="stylesheet" type="text/css" href="styles/dropdown.css" />
+    <link rel="stylesheet" type="text/css" href="styles/navigation.css" />
     <link rel="stylesheet" type="text/css" href="styles/sliderskin.css" />
 
     <style type="text/css">
@@ -44,7 +44,7 @@
     <!-- /easing -->
 
     <script type="text/javascript" src="scripts/figures.js"></script>
-    <script type="text/javascript" src="scripts/dropdown.js"></script>
+    <script type="text/javascript" src="scripts/navigation.js"></script>
     <script type="text/javascript" src="scripts/init.js"></script>
     <script type="text/javascript" src="scripts/data_handling.js"></script>
     <script type="text/javascript" src="scripts/data_manipulation.js"></script>
@@ -75,7 +75,7 @@
 	  </li>-->
 	  <li>
 	    <span id="show_how_many_previous_lessons"></span>&nbsp;(of&nbsp;<span class="of_total_lessons"></span>) 
-	    <button type="button" id="prev_lesson" disabled="disabled">Previous lesson</button>
+	    <button type="button" class="lesson_button_nav" id="prev_lesson" disabled="disabled">Previous lesson</button>
 	  </li>
 	  <!--<li>
 	    <button type="button" id="change_num_tokens" >Change number of tokens</button>	 
@@ -88,13 +88,12 @@
 	  </li>
 
 	  <h1 id="lesson_title" class="textcenter">
-	    <!--<span id="lesson_title_words">Lesson</span>-->
 	    <select id="jump_to_lesson_select">
 	    </select>
 	  </h1>
 
 	  <li class="lastli">
-	    <button type="button" id="next_lesson" disabled="disabled">Next lesson</button> 
+	    <button type="button" class="lesson_button_nav" id="next_lesson" disabled="disabled">Next lesson</button> 
 	    <span id="show_how_many_next_lessons"></span>&nbsp;(of&nbsp;<span class="of_total_lessons"></span>) 
 	  </li>
 	</ul>
