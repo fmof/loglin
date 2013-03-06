@@ -70,12 +70,34 @@ function createTrianglePoints(cx,width,cy,height,count,max_count,scale){
     // points.push([cx+w, cy+R/2+h]);
 
     //version 3
-    var wprime = SVG_WIDTH-1;
-    var side = 2/Math.sqrt(3) * Math.sqrt(count/max_count);
-    var r = wprime/Math.sqrt(3); var s = wprime*(Math.sqrt(3)/2 - 1/Math.sqrt(3));
-    var yoffset = (SVG_HEIGHT-1- side*Math.sqrt(3)/2)/2;
-    points.push([cx, yoffset]);
-    points.push([cx - side/2, SVG_HEIGHT-yoffset]);
-    points.push([cx + side/2, SVG_HEIGHT-yoffset]); 
+    if(jQuery("#center_triangles").is(":checked")){
+	var wprime = SVG_WIDTH-1;
+	var side = 2/Math.sqrt(3) * Math.sqrt(count/max_count);
+	//r + s = height of triangle
+	var r = side/Math.sqrt(3); var s = side*(Math.sqrt(3)/2 - 1/Math.sqrt(3));
+	//var yoffset = (SVG_HEIGHT-1- side*Math.sqrt(3)/2)/2;
+	var yoffset = SVG_HEIGHT-1-s-cy;
+	
+	console.log("r="+r);
+	console.log("yoff = "+yoffset);
+	points.push([cx, SVG_HEIGHT-1-r-s-yoffset]);
+	points.push([cx - side/2, SVG_HEIGHT-1-yoffset]);
+	points.push([cx + side/2, SVG_HEIGHT-1-yoffset]); 
+	points.forEach(function(d,i,arr){
+	    var npoint = arr[(i+1)%3];
+	    console.log(Math.sqrt(Math.pow(d[0]-npoint[0],2)+Math.pow(d[1]-npoint[1],2)));
+	});
+    } else{
+	var wprime = SVG_WIDTH-1;
+	var side = 2/Math.sqrt(3) * Math.sqrt(count/max_count);
+	var yoffset = (SVG_HEIGHT-1- side*Math.sqrt(3)/2)/2;
+	points.push([cx, yoffset]);
+	points.push([cx - side/2, SVG_HEIGHT-1-yoffset]);
+	points.push([cx + side/2, SVG_HEIGHT-1-yoffset]); 
+	points.forEach(function(d,i,arr){
+	    var npoint = arr[(i+1)%3];
+	    console.log(Math.sqrt(Math.pow(d[0]-npoint[0],2)+Math.pow(d[1]-npoint[1],2)));
+	});
+    }
     return points;
 }

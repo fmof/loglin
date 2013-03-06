@@ -352,6 +352,10 @@ window.onhashchange = function(){
 
 
 window.onload = function(){
+    jQuery("#center_triangles").change(function(){
+	updateObservedImages();
+	redraw_all();
+    });
     var group;
     $('ll_area').style.width = (DIV_LL_WIDTH+RESERVE_LL_WIDTH)+'px';
     $$('.of_total_lessons').forEach(function(e){e.innerHTML=MAX_LESSONS;});
