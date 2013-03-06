@@ -4,6 +4,19 @@ function createStar(){
     return s;
 }
 
+function getMaxAreaByShape(shape){
+    var ret=0.0;
+    if(shape=="circle"){
+	ret = Math.PI*Math.pow(SVG_HEIGHT/2-1,2);
+    } else if(shape=="square"){
+	ret = SVG_HEIGHT*SVG_WIDTH;
+    } else if(shape=="tri" || shape=="triangle"){
+	ret = 3*Math.sqrt(3)/4*Math.pow(SVG_HEIGHT/2-1,2);
+    } else if(shape=="pentagon"){
+	ret = 25*Math.pow(SVG_HEIGHT/2-1,2)*Math.sqrt(25+10*Math.sqrt(5))/(50+10*Math.sqrt(5));
+    }
+    return ret;
+}
 
 function createCircleRadius(count,max_count,scale){
     //when maximal, I want radius to be half of height
@@ -37,8 +50,9 @@ function createPentagonPoints(cx,width,cy,height,count,max_count,scale){
 function createTrianglePoints(cx,width,cy,height,count,max_count,scale){
     var points=[];
     var r = Math.max(1,Math.sqrt(3)/3 * Math.sqrt(4*count/(Math.sqrt(3)*max_count)));
-    points.push([cx,cy - r]);
-    points.push([cx - r * Math.sqrt(3)/2, cy + r/2]);
-    points.push([cx + r * Math.sqrt(3)/2, cy + r/2]);
+    var yoffset = (cy+r/2)/8;
+    points.push([cx,cy - r + yoffset]);
+    points.push([cx - r * Math.sqrt(3)/2, cy + r/2 + yoffset]);
+    points.push([cx + r * Math.sqrt(3)/2, cy + r/2 + yoffset]);
     return points;
 }

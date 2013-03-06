@@ -298,7 +298,10 @@ function get_prob(context,id_num,log,theta){
 }
 
 function compute_max_prob(unnormalized,mep,mept,mea,norm){
+    var minmaxareas=[];
+    //first, find the maximum probability per context
     for(var c=0;c<CONTEXTS.length;c++){
+	minmaxareas[c]=SVG_WIDTH*SVG_HEIGHT;
 	if(NUM_TOKENS_C[c]==0){
 	    mep[c]=1;
 	    continue;
@@ -313,6 +316,9 @@ function compute_max_prob(unnormalized,mep,mept,mea,norm){
 		mep[c]=p;
 		mept[c]=id_num;
 	    }
+	    if(VISUALS[c]!=undefined){
+		minmaxareas[c] = Math.min(minmaxareas[c], getMaxAreaByShape(VISUALS[c][id_num]['shape']));
+	    }
 	}
     }
     //now go through and compute/store the area
@@ -324,18 +330,9 @@ function compute_max_prob(unnormalized,mep,mept,mea,norm){
 	    continue;
 	}
 	var mp = mep[c];
-	//mea[c]=SVG_HEIGHT*SVG_WIDTH*mp;
 	var vis=VISUALS[c][index];
 	var shape=vis['shape'];
-	if(shape=="circle"){
-	    mea[c] = mp*Math.PI*Math.pow(SVG_HEIGHT/2-1,2);
-	} else if(shape=="square"){
-	    mea[c] = SVG_HEIGHT*SVG_WIDTH*mp;
-	} else if(shape=="tri" || shape=="triangle"){
-	    mea[c] = mp*3*Math.sqrt(3)/4*Math.pow(SVG_HEIGHT/2-1,2);
-	} else if(shape=="pentagon"){
-	    mea[c] = mp*25*Math.pow(SVG_HEIGHT/2-1,2)*Math.sqrt(25+10*Math.sqrt(5))/(50+10*Math.sqrt(5));
-	}
+	mea[c]=mp*minmaxareas[c];//getMaxAreaByShape(shape);
     }
 }
 

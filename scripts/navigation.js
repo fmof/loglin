@@ -39,13 +39,47 @@ function createDropDown(obj, def, surrounding, id){
     });
 
     jQuery('.dropdown dt').click(function(){
-	jQuery('.dropdown dd ul').toggle();
+	var ddu=jQuery('.dropdown dd ul');
+	ddu.toggle();
+	// if(ddu.is(":focus")){
+	//     ddu.blur();
+	// } else{
+	//     console.log('getting focus...');
+	//     ddu.focus();
+	//     console.log(ddu.is(":focus"));
+	//     console.log(this.focus());
+	//     console.log(jQuery(":focus"));
+	// }
     });
     
     jQuery(document).bind('click',function(e){
 	var clicked = jQuery(e.target);
 	if(!clicked.parents().hasClass("dropdown")){
 	    jQuery('.dropdown dd ul').hide();
+	}
+    });
+
+    jQuery(".dropdown dd ul li").keydown(function(e){ // 38-up, 40-down
+	console.log(this);
+	if (e.keyCode == 40) { 
+            // if(chosen === "") {
+	    // 	chosen = 0;
+            // } else if((chosen+1) < $('li').length) {
+	    // 	chosen++; 
+            // }
+            // $('li').removeClass('selected');
+            // $('li:eq('+chosen+')').addClass('selected');
+            // return false;
+	}
+	if (e.keyCode == 38) { 
+            // if(chosen === "") {
+	    // 	chosen = 0;
+            // } else if(chosen > 0) {
+	    // 	chosen--;            
+            // }
+            // $('li').removeClass('selected');
+            // $('li:eq('+chosen+')').addClass('selected');
+            // return false;
 	}
     });
 
