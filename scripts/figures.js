@@ -11,7 +11,12 @@ function getMaxAreaByShape(shape){
     } else if(shape=="square"){
 	ret = SVG_HEIGHT*SVG_WIDTH;
     } else if(shape=="tri" || shape=="triangle"){
-	ret = 3*Math.sqrt(3)/4*Math.pow(SVG_HEIGHT/2-1,2);
+	//version 2
+	//ret = Math.sqrt(3)*Math.pow(SVG_WIDTH-1,2)/4.0;
+	//version 1
+	//ret = 3*Math.sqrt(3)/4*Math.pow(SVG_HEIGHT/2-1,2);
+	//version 3
+	ret = Math.sqrt(3)/4 * Math.pow(SVG_WIDTH-1,2);
     } else if(shape=="pentagon"){
 	ret = 25*Math.pow(SVG_HEIGHT/2-1,2)*Math.sqrt(25+10*Math.sqrt(5))/(50+10*Math.sqrt(5));
     }
@@ -49,10 +54,28 @@ function createPentagonPoints(cx,width,cy,height,count,max_count,scale){
 
 function createTrianglePoints(cx,width,cy,height,count,max_count,scale){
     var points=[];
-    var r = Math.max(1,Math.sqrt(3)/3 * Math.sqrt(4*count/(Math.sqrt(3)*max_count)));
-    var yoffset = (cy+r/2)/8;
-    points.push([cx,cy - r + yoffset]);
-    points.push([cx - r * Math.sqrt(3)/2, cy + r/2 + yoffset]);
-    points.push([cx + r * Math.sqrt(3)/2, cy + r/2 + yoffset]);
+    //version 1
+    //var r = Math.max(1,Math.sqrt(3)/3 * Math.sqrt(4*count/(Math.sqrt(3)*max_count)));
+    // var yoffset = (cy+r/2)/8;
+    // points.push([cx,cy - r + yoffset]);
+    // points.push([cx - r * Math.sqrt(3)/2, cy + r/2 + yoffset]);
+    // points.push([cx + r * Math.sqrt(3)/2, cy + r/2 + yoffset]);
+    
+    //version 2
+    // var R = Math.max(1,Math.sqrt(3)/2 * Math.sqrt(count*4/(max_count*Math.sqrt(3))));
+    // var h = (SVG_HEIGHT-1-R)/2;
+    // var w = (SVG_WIDTH-1)/2;
+    // points.push([cx, cy - R/2 + h]);
+    // points.push([cx-w, cy+R/2+h]);
+    // points.push([cx+w, cy+R/2+h]);
+
+    //version 3
+    var wprime = SVG_WIDTH-1;
+    var side = 2/Math.sqrt(3) * Math.sqrt(count/max_count);
+    var r = wprime/Math.sqrt(3); var s = wprime*(Math.sqrt(3)/2 - 1/Math.sqrt(3));
+    var yoffset = (SVG_HEIGHT-1- side*Math.sqrt(3)/2)/2;
+    points.push([cx, yoffset]);
+    points.push([cx - side/2, SVG_HEIGHT-yoffset]);
+    points.push([cx + side/2, SVG_HEIGHT-yoffset]); 
     return points;
 }

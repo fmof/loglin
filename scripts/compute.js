@@ -332,7 +332,8 @@ function compute_max_prob(unnormalized,mep,mept,mea,norm){
 	var mp = mep[c];
 	var vis=VISUALS[c][index];
 	var shape=vis['shape'];
-	mea[c]=mp*minmaxareas[c];//getMaxAreaByShape(shape);
+	mea[c]=mp*minmaxareas[c];
+	//mea[c]=mp*getMaxAreaByShape(shape);
     }
 }
 
