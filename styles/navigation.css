@@ -12,6 +12,9 @@ http://www.jankoatwarpspeed.com/reinventing-a-drop-down-with-css-and-jquery/
     padding:0px; 
 }
 
+.dropdown_selected{
+    background:#C2AF57;
+}
 
 .dropdown dd { 
     position:relative; 
@@ -19,7 +22,7 @@ http://www.jankoatwarpspeed.com/reinventing-a-drop-down-with-css-and-jquery/
 }
 
 .dropdown dt {
-    background:#e4dfcb url(../imgs/arrow.png) no-repeat scroll right center;
+    background:#E0DFD8 url(../imgs/arrow.png) no-repeat scroll right center;
     display:inline; 
     padding-right:20px; 
     border:1px solid #d4ca9a; 
@@ -30,7 +33,7 @@ http://www.jankoatwarpspeed.com/reinventing-a-drop-down-with-css-and-jquery/
 }
 
 .dropdown dd ul { 
-    background:#e4dfcb none repeat scroll 0 0; 
+    background:#E0DFD8 none repeat scroll 0 0; 
     display:none;
     list-style:none; 
     padding:5px 0px; 

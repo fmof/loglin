@@ -1,10 +1,12 @@
 //expects a jQuery object
 function safe_dropdown_view_change(obj){
     var text = obj.html();
+    jQuery(".dropdown_selected").removeClass("dropdown_selected");
     jQuery(".dropdown dt").html("Lesson " + text);
     jQuery(".dropdown dd ul").hide();
     var source = jQuery('#jump_to_lesson_select');
     source.val(obj.find("span.value").html());
+    obj.addClass("dropdown_selected");
 }
 
 
@@ -37,7 +39,6 @@ function createDropDown(obj, def, surrounding, id){
     });
 
     jQuery('.dropdown dt').click(function(){
-	
 	jQuery('.dropdown dd ul').toggle();
     });
     
@@ -48,6 +49,11 @@ function createDropDown(obj, def, surrounding, id){
 	}
     });
 
+    jQuery(".dropdown dd ul li").hover(function() {
+	jQuery(this).addClass("dropdown_selected");
+    }, function(){
+	jQuery(this).removeClass("dropdown_selected");
+    });
     jQuery(".dropdown dd ul li").click(function() {
 	var jthis = jQuery(this);
 	safe_dropdown_view_change(jthis);
