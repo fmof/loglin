@@ -7,6 +7,10 @@ http://www.jankoatwarpspeed.com/reinventing-a-drop-down-with-css-and-jquery/
     width:auto;     
 }
 
+.dropdown dl{
+    position:relative;
+}
+
 .dropdown dd, .dropdown dt, .dropdown ul { 
     margin:0px; 
     padding:0px; 
@@ -19,6 +23,9 @@ http://www.jankoatwarpspeed.com/reinventing-a-drop-down-with-css-and-jquery/
 .dropdown dd { 
     position:relative; 
     display:inline;
+
+    left:-150px;
+    top:30px;
 }
 
 .dropdown dt {
