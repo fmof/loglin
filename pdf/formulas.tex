@@ -2,6 +2,7 @@
 \usepackage[colorlinks]{hyperref}
 \usepackage{fullpage}
 \usepackage{enumitem}
+\usepackage{algpseudocode}
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amsfonts}
@@ -57,24 +58,29 @@ using simple count ratios:
 \end{equation}
 
 Such a ``maximum-likelihood'' estimate is {\em unbiased} (correct on
-average).  But unfortunately, it may have {\em high variance} (it is
-sensitive to the particular dataset from which you obtain the counts).
-It will be unreliable if either count is small:
+average, when estimated from a {\em random} dataset).  But unfortunately, it
+may have {\em high variance} (it is sensitive to the {\em particular}
+dataset from which you obtain the counts).  It will be unreliable if
+either count is small:
 \begin{itemize}[noitemsep]
-\item If the denominator $\textrm{count}(x)=2$, then the estimate must be either 0/2, 1/2, or 2/2.  
-\item It's even worse if the denominator is 1 or 0: then what happens?
-\item If the numerator $\textrm{count}(x,y)=0$, then the estimate 
-  be 0, but perhaps $y$ is just unlikely and not impossible.
+\item Suppose the denominator $\textrm{count}(x)$ is 2, then the estimate
+  will be either 0, 0.5, or 1.  These estimates are quite different,
+  and which one you get depends on your particular dataset.  
+\item It's even worse if the denominator is 1 or 0.  What happens in
+  each case?
+\item If the numerator $\textrm{count}(x,y)$ is 0, meaning that $y$
+  was not {\em observed} in context $x$, then the estimate will
+  be 0, indicating that $y$ is {\em impossible} in context $x$.  
 \item If the numerator is 1, then the estimate might be too high,
-  since perhaps there are many unlikely events and $y$ is just the one
+  since perhaps $y$ is just one of many unlikely events---it's the one
   we happened to see.
 \end{itemize}
 
 \noindent
 ``Smoothing'' techniques try to reduce the variance of this estimate.
 However, they still estimate each conditional probability more or less
-independently of the others.\footnote{``Backoff smoothing'' does jointly
-  estimate $p(y \mid x_1)$ and $p(y \mid x_2)$ if $x_1$ and $x_2$ are
+independently of the others.\footnote{Though ``backoff smoothing'' does jointly
+  estimate $p(y \mid x_1)$ and $p(y \mid x_2)$ if $x_1, x_2$ are
   related in a certain way.}
 % so that $\ph(y \mid x_1) \approx \ph(y \mid x_2)$ if the contexts
 % $x_1 \approx x_2$ are similar and have small counts,
@@ -82,17 +88,18 @@ independently of the others.\footnote{``Backoff smoothing'' does jointly
 
 \section{Log-linear models {\em [read with lesson 1]}}
 
-Log-linear modeling is a very popular and flexible technique.  It has
-the advantage that it works with {\em descriptions} of the events.
-Contextualized events $(x,y)$ with {\em similar} descriptions tend to
-have similar probabilities.
+Log-linear modeling is a very popular and flexible technique for
+addressing this problem.  It has the advantage that it considers {\em
+  descriptions} of the events.  Contextualized events $(x,y)$ with
+{\em similar} descriptions tend to have similar probabilities---a form
+of generalization.
 % That is, if $\vec{f}(x_1,y_1) \approx \vec{f}(x_2,y_2)$, then
 % $\hat{p}(y_1 \mid x_1) \approx \hat{p}(y_2 \mid x_2)$.  
 
-\subsection{Feature functions}
+\subsection{Feature functions}\label{sec:featfuncs}
 
 Since you are the one who knows something about your problem, {\em
-  you} get to define the function $\vec{f}$ that extracts those
+  you} get to define the function $\vec{f}$ that extracts these
 descriptions.  If you decide that your model will have $K$ features,
 then $\vec{f}(x,y)$ denotes a vector of $K$ real numbers $(f_1(x,y),
 f_2(x,y), \ldots, f_K(x,y))$ that {\em describe} event $y$ in context
@@ -101,25 +108,52 @@ of the features.
 
 \medskip
 
-For example, suppose $K=5$ and $\vec{f}(x,y)=(1,0,1,0,2) \in \Real^5$.
-That means that you chose to describe the contextualized event $(x,y)$
-as ``having'' features 1, 3, and 5 but not features 2 and 4.
-Furthermore, by defining $f_5(x,y)=2$, you chose to say that $(x,y)$
-has feature 5 especially strongly.  A common figure of speech is that
-feature 5 {\bf fires} especially strongly on $(x,y)$.
+You might use the following set of 5 features ($K=5$) to describe
+colored shapes against backgrounds.  The third column gives the
+feature values for a striped circle $y$ that contrasts strongly with
+its background $x$:
 
-(It is somewhat unusual that $f_5(x,y)=2$.  In principle a feature
+\smallskip
+\begin{tabular}{|c|l|c|} \hline
+feature number & feature meaning   & feature value on this example \\ \hline
+1              & $y$ is circular   &    1 \\
+2              & $y$ is square     &    0 \\
+3              & $y$ is striped    &    1 \\
+4              & $y$ is a striped square & 0 \\
+5              & $y$ contrasts with background $x$ & 2 \\ \hline
+\end{tabular}
+\smallskip
+
+\noindent Thus, your description of this particular $(x,y)$ is given by
+$\vec{f}(x,y)=(1,0,1,0,2) \in \Real^5$.  A common figure of speech is
+that features 1, 3, and 5 {\bf fire} on this contextualized event
+$(x,y)$, and that feature 5 fires twice (or fires with strength 2).
+
+% That means that you chose to describe the contextualized event $(x,y)$
+% as ``having'' features 1, 3, and 5 but not features 2 and 4.  
+% 
+% Furthermore, by defining $f_5(x,y)=2.0$, you chose to say that $(x,y)$
+% has feature 5 especially strongly.  A common figure of speech is that
+% feature 5 {\bf fires} especially strongly on $(x,y)$.
+
+\medskip
+
+It is slightly unusual that $f_5(x,y)=2.0$.  In principle a feature
 value $f_k(x,y)$ can be any positive or negative real number.  But
 most often your feature functions $f_k$ will be boolean functions, so
 that $f_k(x,y)$ is always either 1 or 0, according to whether $(x,y)$
-has feature $k$ or not.)
+has feature $k$ or not.
 
 \subsection{The defining formula}
 
-Our model $\ph$ is now defined by\footnote{We are still using the
+The log-linear probability model $\ph$ computes a contextualized
+event's probability from its features.\footnote{We are still using the
   $\ph$ notation because this is only a model that we are trying to
   fit to the data.  In most cases, we will never know whether the true
-  probability distribution $p$ has this form.}
+  probability distribution $p$ has this form.}  For example, given a
+light background $x$, how likely is the shape $y$ to be a dark striped circle?
+
+Specifically, the log-linear model defines
 \begin{equation}\label{eqn:loglin}
   \ph(y \mid x) \defeq \frac{u(x,y)}{Z(x)}
 \end{equation}
@@ -130,25 +164,26 @@ defined by
          &= \exp \left(\vtheta \cdot \vec{f}(x,y)\right) > 0
 \end{align}
 Here $\vtheta \in \Real^K$ is a vector of feature {\bf weights}, which
-are the parameters of the model.
+are the adjustable parameters of the model.  You will control these
+with sliders in the interactive visualization.
 
-Equation~(\ref{eqn:loglin}) has to scale these unnormalized
-probabilities, in order to get proper probabilities that sum to 1 (i.e., $\sum_y \ph(y\mid x) = 1$ for each $x$).  
-This is a simple matter of dividing them by a 
-{\bf normalizing constant}, namely
+The unnormalized probabilities $u(x,y)$ are always positive (because of the $\exp$).
+Equation~(\ref{eqn:loglin}) has to scale them, in order to get proper
+probabilities that sum to 1 (i.e., $\sum_y \ph(y\mid x) = 1$ for each
+$x$).  This is a simple matter of dividing them by a {\bf normalizing
+  constant}, namely
 \begin{equation}
   Z(x) \defeq \sum_y u(x,y)
 \end{equation}
 
-
 \subsection{Feature weights}
 
-You can easily see that for any choice of $\vtheta$ and any $x$, equation~(\ref{eqn:loglin})
-gives a genuine probability distribution over the events $y$ that
-could occur in context $x$.  You can also see now why the model is
-``log-linear''---for each context $x$, the log-probability is a linear function
-of the feature vector:
-\begin{equation}
+You can easily see that for any choice of $\vtheta$ and any $x$,
+equation~(\ref{eqn:loglin}) gives a genuine probability distribution
+over the events $y$ that could occur in context $x$.  You can also see
+now why the model is ``log-linear''---for each context $x$, the
+log-probability is a linear function of the feature vector:
+\begin{equation}\label{eqn:logversion}
 \log \ph(y \mid x) = \vtheta \cdot \vec{f}(x,y) - \log Z(x)
 \end{equation}
 
@@ -159,11 +194,18 @@ of the feature vector:
 % described at all using a log-linear model with these features,
 % let alone with the specific weights $\vtheta$.
 
-$\vtheta$ specifies the linear coefficients and is incredibly
-important: the way you pick it will determine all the probabilities in
-the model, and even the normalizing constants!  Fortunately, you'll
-have a training set of events in their contexts, $((x_1,y_1),
-(x_2,y_2), \ldots (x_N,y_N))$.  Then the $\vtheta$ that maximizes
+In our earlier example, setting the parameter $\theta_5 > 0$ makes
+contrasting colors more common: the resulting $\ph(y \mid x)$ says
+that dark shapes $y$ are probable when the background $x$ is light,
+and vice-versa.  Alternatively, setting $\theta_5 < 0$ makes
+contrasting colors less common.
+
+In general, the linear coefficients $\vtheta$ in \eqref{eqn:logversion} are incredibly
+important: the way you pick them will determine all the probabilities
+in the model, and even the normalizing constants!  Fortunately, to
+help you set $\vtheta$, you'll have a training set of events in their
+contexts, $((x_1,y_1), (x_2,y_2), \ldots (x_N,y_N))$.  Then the
+$\vtheta$ that maximizes
 \begin{equation}\label{eqn:loglin-likelihood}
 \prod_{i=1}^N \ph(y_i \mid x_i)
 \end{equation}
@@ -180,6 +222,51 @@ omit $x$.  We now have a simple distribution over possible $y$ values,
   u(y) &\defeq \exp \left(\vtheta \cdot \vec{f}(y)\right) > 0 \\
   Z &\defeq \sum_y u(y)
 \end{align}
+
+\subsection{Remark: Named Features and Efficient Dot Products}
+
+In the notation above, we assigned numbers $1,2,\ldots,K$ to the
+features.  This lets you represent both the parameter vector $\vtheta$
+(as well as each feature vector $\vec{f}(x,y)$) by an {\em array} of
+$K$ real numbers.
+
+However, it is often more convenient to refer to the features by names
+instead of numbers.  The names can be strings or other objects that
+describe the feature.  For example, in the table from
+section~\ref{sec:featfuncs}, the first feature function might be
+called $f_{\sf circle}$ instead of $f_1$, with corresponding weight
+$\theta_{\textsf{circle}}$ instead of $\theta_1$.  Then the weight vector
+$\vtheta$ can be implemented as a hash table instead of an array: it
+maps the name $k$ to the weight $\theta_k$.
+
+The dot product $\vtheta \cdot \vec{f}(x,y)$ is now defined by
+$\sum_k \theta_k \cdot f_k(x,y)$ where $k$ ranges over the set of
+feature names.  
+In computing this sum, it is fine to skip features $k$ where $f_k(x,y)
+= 0$.  In many cases, this is a big speedup because only a few of the
+$K$ features will fire on a given contextualized event $(x,y)$.  For
+example, $f_k(x,y)$ will be 1 for only one of the shapes $k \in \{{\sf
+  circle}, {\sf square}, \ldots\}$, and 0 for all other shapes.  So the 
+sum includes just one of the weights $\theta_{\textsf{circle}},
+\theta_{\textsf{square}}, \ldots$.
+
+In our example from section~\ref{sec:featfuncs}, $\vtheta \cdot \vec{f}(x,y)$ could be efficiently
+computed as
+\begin{algorithmic}
+\State $s \gets 0$\Comment{initialize sum}
+\State $s \gets s + \theta_{\textrm{shape}(y)}$\Comment{add weight of
+  the single binary shape feature that fires on $y$: e.g.,
+  $\theta_{\textsf{circle}}$}
+\If{$y$ is striped}
+  \State $s \gets s + \theta_{\textsf{striped}}$
+  \If{$y$ is square}
+    \State $s \gets s + \theta_{\textsf{striped square}}$
+  \EndIf
+\EndIf
+\State $s \gets s + \theta_{\textsf{contrast}} \cdot
+\textrm{contrast}(\textrm{color}(x),\textrm{color}(y))$\Comment{$f_{\textsf{contrast}}$
+  is not a binary feature}
+\end{algorithmic}
 
 \subsection{Remark: Other names for log-linear models}
 
