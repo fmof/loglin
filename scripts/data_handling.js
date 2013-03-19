@@ -36,6 +36,11 @@ do_all_loading = function(){
 	if(this.num_callbacks == this.expected_callbacks){
 	    clearInterval(show_loading_bar);
 	    jQuery('#instruction_loader').remove();
+	    if(this.show_data==0){
+		jQuery('#instruction_area').css('height','').css('border','none');		
+	    } else{
+		jQuery('#instruction_area').css('border', '1px solid gray');
+	    }
 	}
     }
 
