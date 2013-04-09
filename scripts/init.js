@@ -62,13 +62,6 @@ DIM=[];
 REVDIM=[];
 //stores max number of values per feature dimension
 CURR_FOR_DIM=[];
-//feature dimension number --> human readable dimension name
-KEYS_TO_CARE_ABOUT=[]; //"shape","color","fill"];
-//reverse of above, and how we (currently) define *everything*
-REVERSE_KEYS={'shape':0,'color':1, 'fill':2};
-for(var key in REVERSE_KEYS){
-    KEYS_TO_CARE_ABOUT[REVERSE_KEYS[key]]=key;
-}
 
 
 /*DISPLAY PARAMETERS*/
