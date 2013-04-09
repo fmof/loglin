@@ -1,6 +1,7 @@
 TRUE_THETA_PATH='';
 OBSERVATION_PATH='';
 INSTRUCTION_PATH='';
+GLOBAL_SETTINGS_FILE='lessons/settings.json';
 loader_bar_img='imgs/ajax-bar-loader.gif';
 LOADING_TIME_DELAY = 200;
 has_cheated=0;
@@ -8,6 +9,7 @@ SLIDER_DIV=1; //amount to scale slider by (for display)
 
 CURRENT_LESSON=1;
 MAX_LESSONS=18;
+DIR_MAPPER={};
 
 TYPE_INDEX=[]; //type-string -> type-id, e.g., "circle,solid" -> 12
 TYPE_MAP={}; //reverse of above
@@ -271,6 +273,7 @@ function load_lesson(noskip_dropdown){
     loading_object = new do_all_loading().start_timer();
     show_text_portion();
     show_data_portion();
+    console.log("loading " + CURRENT_LESSON + ' => ' + DIR_MAPPER[CURRENT_LESSON]);
     // $('header_lesson_number').innerHTML=CURRENT_LESSON;
     // $('header_lesson_number').setAttribute('lesson',CURRENT_LESSON);
     $('show_how_many_previous_lessons').innerHTML = Math.max(1,CURRENT_LESSON-1);
@@ -287,9 +290,9 @@ function load_lesson(noskip_dropdown){
     } else{
 	INITIAL_LOAD=0;
     }
-    TRUE_THETA_PATH = 'lessons/'+CURRENT_LESSON+'/theta';
-    OBSERVATION_PATH = 'lessons/'+CURRENT_LESSON+'/observations';    
-    INSTRUCTION_PATH = 'lessons/'+CURRENT_LESSON+'/instructions.html';
+    TRUE_THETA_PATH = 'lessons/'+DIR_MAPPER[CURRENT_LESSON]+'/theta';
+    OBSERVATION_PATH = 'lessons/'+DIR_MAPPER[CURRENT_LESSON]+'/observations';    
+    INSTRUCTION_PATH = 'lessons/'+DIR_MAPPER[CURRENT_LESSON]+'/instructions.html';
     if(CURRENT_LESSON == 3 || CURRENT_LESSON==7){
 	$('new_challenge').style.display='none';
     } else{
@@ -352,6 +355,27 @@ window.onhashchange = function(){
 
 
 window.onload = function(){
+    jQuery.ajax({
+	url:GLOBAL_SETTINGS_FILE,
+	datatype:"json",
+	success : function(txt){
+	    var ord = txt["lesson_order"];
+	    for(var i=0;i<ord.length;i++){
+		DIR_MAPPER[i+1]=ord[i];
+	    }
+	},
+	error : function(){
+	    for(var i=1;i<=MAX_LESSONS;i++){
+		DIR_MAPPER[i]=i;
+	    }
+	},
+	complete : function(){
+	    init();
+	}
+    });
+}
+
+function init(){
     var group;
     $('ll_area').style.width = (DIV_LL_WIDTH+RESERVE_LL_WIDTH)+'px';
     $$('.of_total_lessons').forEach(function(e){e.innerHTML=MAX_LESSONS;});
