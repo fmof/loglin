@@ -7,7 +7,10 @@ function createShapeDictionary(){
 				   .attr('r', createCircleRadius(shape_params.count,
 								 shape_params.max_count,
 								 shape_params.scale));
-			   } 
+			   },
+			   max_area : function(){
+			       return Math.PI*Math.pow(SVG_HEIGHT/2-1,2);
+			   }
 			  };
     
     
@@ -20,19 +23,51 @@ function createShapeDictionary(){
 				   .attr("y",(shape_params.height-rhei)/2)
 				   .attr("width",rwid)
 				   .attr("height",rhei);
-			   } 
+			   },
+			   max_area : function(){
+			       return SVG_HEIGHT*SVG_WIDTH;
+			   }
 			  };
     shapedict["triangle"] = {"human":"triangle", "svg":"polygon",
 			     draw: function(shape_obj, shape_params){
 				 shape_obj.attr('points',createTrianglePoints(shape_params.width/2,shape_params.width,shape_params.height/2,shape_params.height,shape_params.count, shape_params.max_count, shape_params.scale).map(function(d){return d.join(",");}).join(" "));
-			     } 
+			     } ,
+			     max_area : function(){
+				 //version 2
+				 //ret = Math.sqrt(3)*Math.pow(SVG_WIDTH-1,2)/4.0;
+				 //version 1
+				 //ret = 3*Math.sqrt(3)/4*Math.pow(SVG_HEIGHT/2-1,2);
+				 //version 3
+				 return Math.sqrt(3)/4 * Math.pow(SVG_WIDTH-1,2);
+			     }
 			    };
     shapedict["pentagon"] = {"human":"pentagon", "svg":"polygon",
 			     draw: function(shape_obj, shape_params){
 				 shape_obj.attr('points',createPentagonPoints(shape_params.width/2, shape_params.width, shape_params.height/2, shape_params.height, shape_params.count, shape_params.max_count, shape_params.scale).map(function(d){return d.join(",");}).join(" "));
-			     } 
+			     },
+			     max_area : function(){
+				 return 25*Math.pow(SVG_HEIGHT/2-1,2)*Math.sqrt(25+10*Math.sqrt(5))/(50+10*Math.sqrt(5));
+			     }
 			    };
-    shapedict["image"] = {"human":"image", "svg":"img"};
+    shapedict["image"] = {"human":"image", "svg":"g",
+			  draw: function(shape_obj, shape_params){
+			      if(shape_params.first_draw){
+				  shape_obj = shape_obj.append("image");
+			      }
+			      var rwid, rhei;
+			      rwid = Math.sqrt(shape_params.count/shape_params.max_count);
+			      rhei=rwid;
+			      shape_obj.selectAll('image')
+				  .attr("xlink:href", shape_params.value.replace(/^\"|\"$/g, ""))
+				  .attr("x",(shape_params.width-rwid)/2)
+				  .attr("y",(shape_params.height-rhei)/2)
+				  .attr("width",rwid)
+				  .attr("height",rhei);
+			  },
+			  max_area : function(){
+			       return SVG_HEIGHT*SVG_WIDTH;
+			  }
+			 };
     shapedict["text"] = {"human":"text", "svg":"text"};
     return shapedict;
 }
@@ -44,22 +79,7 @@ function createStar(){
 }
 
 function getMaxAreaByShape(shape){
-    var ret=0.0;
-    if(shape=="circle"){
-	ret = Math.PI*Math.pow(SVG_HEIGHT/2-1,2);
-    } else if(shape=="square"){
-	ret = SVG_HEIGHT*SVG_WIDTH;
-    } else if(shape=="tri" || shape=="triangle"){
-	//version 2
-	//ret = Math.sqrt(3)*Math.pow(SVG_WIDTH-1,2)/4.0;
-	//version 1
-	//ret = 3*Math.sqrt(3)/4*Math.pow(SVG_HEIGHT/2-1,2);
-	//version 3
-	ret = Math.sqrt(3)/4 * Math.pow(SVG_WIDTH-1,2);
-    } else if(shape=="pentagon"){
-	ret = 25*Math.pow(SVG_HEIGHT/2-1,2)*Math.sqrt(25+10*Math.sqrt(5))/(50+10*Math.sqrt(5));
-    }
-    return ret;
+    return SHAPE_DICTIONARY[shape].max_area();
 }
 
 function createCircleRadius(count,max_count,scale){

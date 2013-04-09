@@ -562,7 +562,7 @@ function prettifyShape(shape, id_name, color, fill, set_sw_opacity, opacity){
 }
 
 
-function updateD3Shape(container, id_num, id_name, width,height,shape,color,fill,count,max_count){
+function updateD3Shape(container, id_num, id_name, width,height,visuals,color,count,max_count){
     var s;
     var scale=Math.min(width/2,height/2);
     s=container.selectAll('#'+id_name).data([count]);
@@ -572,15 +572,17 @@ function updateD3Shape(container, id_num, id_name, width,height,shape,color,fill
 	height : height,
 	count : count,
 	max_count : max_count,
-	scale : scale};
-    SHAPE_DICTIONARY[shape].draw(s, shape_params);
+	scale : scale,
+	value : visuals['value']
+    };
+    SHAPE_DICTIONARY[visuals['shape']].draw(s, shape_params);
     //and colors
-    prettifyShape(s, id_name, color, fill);
+    prettifyShape(s, id_name, color, visuals['fill']);
     return s;
 }
 
-function createD3Shape(container, id_num, id_name, width,height,shape,color,fill,count,max_count,opacity){
-    if(fill=='striped'){
+function createD3Shape(container, id_num, id_name, width,height, visuals, color, count,max_count,opacity){
+    if(visuals['fill']=='striped'){
 	var cloned=$('stripe_def').cloneNode(true);
 	cloned.setAttribute('id','stripe_def_'+id_name);
 	cloned.childNodes[1].setAttribute('id','stripe_'+id_name);
@@ -590,15 +592,18 @@ function createD3Shape(container, id_num, id_name, width,height,shape,color,fill
     }
     var s;
     var scale=Math.min(width/2,height/2);
-    s=container.selectAll('#'+id_name).data([count]).enter().append(SHAPE_DICTIONARY[shape]["svg"]);
+    s=container.selectAll('#'+id_name).data([count]).enter().append(SHAPE_DICTIONARY[visuals['shape']]["svg"]);
     var shape_params={
 	width : width,
 	height : height,
 	count : count,
 	max_count : max_count,
-	scale : scale};
-    SHAPE_DICTIONARY[shape].draw(s, shape_params);
-    prettifyShape(s, id_name, color, fill, true, opacity);
+	scale : scale,
+	first_draw : true,
+	value : visuals['value']
+    };
+    SHAPE_DICTIONARY[visuals['shape']].draw(s, shape_params);
+    prettifyShape(s, id_name, color, visuals['fill'], true, opacity);
     return s;
 }
 
@@ -633,12 +638,11 @@ function drawExpectedData(context, i, container){
     }
     var ntc=NUM_TOKENS_C[context]==0?1:NUM_TOKENS_C[context];
     if(! $("exp_count_pic_"+context+'_'+i)){
-	var exp_count_pic = createD3Shape(container,i,'exp_count_pic_'+context+'_'+i,SVG_WIDTH,SVG_HEIGHT,shapen,color,fill,get_prob(context,i)/Z_THETA[context],MAX_EXP_EMP_PROB[context]/MAX_EXP_EMP_AREA[context],EXPECTED_TRANSPARENCY);
+	var exp_count_pic = createD3Shape(container,i,'exp_count_pic_'+context+'_'+i,SVG_WIDTH,SVG_HEIGHT, vis, color, get_prob(context,i)/Z_THETA[context],MAX_EXP_EMP_PROB[context]/MAX_EXP_EMP_AREA[context],EXPECTED_TRANSPARENCY);
 	exp_count_pic.attr('id','exp_count_pic_'+context+'_'+i);
     } else{
 	//otherwise, update it..
-	//	console.log(get_prob(context,i)+", "+Z_THETA[context]+', '+MAX_EXP_EMP_PROB[context]+', '+MAX_EXP_EMP_AREA[context]);
-	updateD3Shape(container,i,'exp_count_pic_'+context+'_'+i,SVG_WIDTH,SVG_HEIGHT,shapen,color,fill,get_prob(context,i)/Z_THETA[context], MAX_EXP_EMP_PROB[context]/MAX_EXP_EMP_AREA[context]);
+	updateD3Shape(container,i,'exp_count_pic_'+context+'_'+i,SVG_WIDTH,SVG_HEIGHT, vis, color, get_prob(context,i)/Z_THETA[context], MAX_EXP_EMP_PROB[context]/MAX_EXP_EMP_AREA[context]);
     }
 }
 
@@ -651,7 +655,11 @@ function updateObservedImages(){
 	var c = s[3] ; //get context -- X
 	var j = s[4] ; //get type_id -- Y
 	var count = COUNTS[c][j];
-	var s=updateD3Shape(d3.select('#observed_point_context_'+c+'_'+j),j,'obs_count_pic_'+c+'_'+j,SVG_WIDTH,SVG_HEIGHT,VISUALS[c][j]['shape'],'#B8B8B8','hollow',get_empirical_prob(c,j),MAX_EMP_PROB[c]/MAX_EMP_AREA[c]);
+	var x = VISUALS[c][j];
+	var tfi = x['fill'];
+	x['fill'] = 'hollow';
+	var s=updateD3Shape(d3.select('#observed_point_context_'+c+'_'+j),j,'obs_count_pic_'+c+'_'+j,SVG_WIDTH,SVG_HEIGHT, VISUALS[c][j], '#B8B8B8', get_empirical_prob(c,j),MAX_EMP_PROB[c]/MAX_EMP_AREA[c]);
+	x['fill']=tfi;
 	s.attr('stroke-opacity',1).attr('stroke-width',3);
 	$('obs_count_text_'+c+'_'+j).innerHTML=formatExpected(count);
     }
@@ -814,7 +822,10 @@ function drawSVGBoxes(selectObj){
 			max_count=COUNTS[c][other];
 		    }
 		}
-		var shape = createD3Shape(svg, type_id, 'obs_count_pic_'+c+'_'+type_id, width,height,shapen,'#B8B8B8','hollow',get_empirical_prob(c,type_id),MAX_EMP_PROB[c]/MAX_EMP_AREA[c],1);
+		var tfi = vis['fill'];
+		vis['fill']='hollow';
+		var shape = createD3Shape(svg, type_id, 'obs_count_pic_'+c+'_'+type_id, width,height, vis, '#B8B8B8',get_empirical_prob(c,type_id),MAX_EMP_PROB[c]/MAX_EMP_AREA[c],1);
+		vis['fill']=tfi;
 		shape.attr('stroke-opacity',.7).attr('stroke-width',3);
 		shape.attr('id','obs_count_pic_'+c+'_'+type_id);
 	    } //end for over columns
