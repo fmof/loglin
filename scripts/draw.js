@@ -549,27 +549,17 @@ function updateLLBar(){
 function updateD3Shape(container, id_num, id_name, width,height,shape,color,fill,count,max_count){
     var s;
     var scale=Math.min(width/2,height/2);
-    if(shape=="circle"){
-	s=container.selectAll('#'+id_name).data([count]);
-	s.attr('cx',width/2)
-	    .attr('cy',height/2)
-	    .attr('r', createCircleRadius(count,max_count,scale))
-    } else if(shape=="square"){
-	s=container.selectAll('#'+id_name).data([count]);
-	var rwid, rhei;
-	rwid = Math.sqrt(count/max_count);
-	rhei=rwid;
-	s.attr('x',(width-rwid)/2)
-	    .attr("y",(height-rhei)/2)
-	    .attr("width",rwid)
-	    .attr("height",rhei);
-    } else if(shape=="tri" || shape=="triangle"){
-	s=container.selectAll('#'+id_name).data([count]);
-	s.attr('points',createTrianglePoints(width/2,width,height/2,height,count,max_count,scale).map(function(d){return d.join(",");}).join(" "));
-    }  else if(shape=="pentagon"){
-	s=container.selectAll('#'+id_name).data([count]);
-	s.attr('points',createPentagonPoints(width/2,width,height/2,height,count,max_count,scale).map(function(d){return d.join(",");}).join(" "));
-    }
+    s=container.selectAll('#'+id_name).data([count]);
+    //reset sizes
+
+    var shape_params={
+	width : width,
+	height : height,
+	count : count,
+	max_count : max_count,
+	scale : scale};
+    SHAPE_DICTIONARY[shape].draw(s, shape_params);
+    //and colors
     s.attr('stroke',color);
     if(fill=='solid'){
 	s.attr('fill',color);
@@ -593,27 +583,15 @@ function createD3Shape(container, id_num, id_name, width,height,shape,color,fill
     }
     var s;
     var scale=Math.min(width/2,height/2);
-    if(shape=="circle"){
-	s=container.selectAll('#'+id_name).data([count]).enter().append("circle");
-	s.attr('cx',width/2)
-	    .attr('cy',height/2)
-	    .attr('r', createCircleRadius(count,max_count,scale));
-    } else if(shape=="square"){
-	s=container.selectAll('#'+id_name).data([count]).enter().append("rect");
-	var rwid, rhei;
-	rwid = Math.sqrt(count/max_count);
-	rhei=rwid;
-	s.attr('x',(width-rwid)/2)
-	    .attr("y",(height-rhei)/2)
-	    .attr("width",rwid)
-	    .attr("height",rhei);
-    } else if(shape=="tri" || shape=="triangle"){
-	s=container.selectAll('#'+id_name).data([count]).enter().append("polygon");
-	s.attr('points',createTrianglePoints(width/2,width,height/2,height,count,max_count,scale).map(function(d){return d.join(",");}).join(" "));
-    } else if(shape=="pentagon"){
-	s=container.selectAll('#'+id_name).data([count]).enter().append("polygon");
-	s.attr('points',createPentagonPoints(width/2,width,height/2,height,count,max_count,scale).map(function(d){return d.join(",");}).join(" "));
-    }
+    s=container.selectAll('#'+id_name).data([count]).enter().append(SHAPE_DICTIONARY[shape]["svg"]);
+    var shape_params={
+	width : width,
+	height : height,
+	count : count,
+	max_count : max_count,
+	scale : scale};
+    SHAPE_DICTIONARY[shape].draw(s, shape_params);
+    
     s.attr('stroke',color);
     s.attr('stroke-width',EXPECTED_STROKE_WIDTH);
     s.attr('opacity',opacity || EXPECTED_TRANSPARENCY);

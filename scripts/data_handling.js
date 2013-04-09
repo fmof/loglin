@@ -200,6 +200,7 @@ function record_data(rows,already_created){
 function record_observation(record){
     var features = record['features'];
     var split_features =features.split(',');
+    console.log(split_features);
     var type_index;
     if(TYPE_MAP[features]==undefined){
 	TYPE_INDEX.push(split_features);

@@ -1,3 +1,42 @@
+function createShapeDictionary(){
+    var shapedict={};
+    shapedict["circle"] = {"human":"circle", "svg":"circle",
+			   draw: function(shape_obj, shape_params){
+			       shape_obj.attr('cx',shape_params.width/2)
+				   .attr('cy',shape_params.height/2)
+				   .attr('r', createCircleRadius(shape_params.count,
+								 shape_params.max_count,
+								 shape_params.scale));
+			   } 
+			  };
+    
+    
+    shapedict["square"] = {"human":"square", "svg":"rect",
+			   draw: function(shape_obj, shape_params){
+			       var rwid, rhei;
+			       rwid = Math.sqrt(shape_params.count/shape_params.max_count);
+			       rhei=rwid;
+			       shape_obj.attr('x',(shape_params.width-rwid)/2)
+				   .attr("y",(shape_params.height-rhei)/2)
+				   .attr("width",rwid)
+				   .attr("height",rhei);
+			   } 
+			  };
+    shapedict["triangle"] = {"human":"triangle", "svg":"polygon",
+			     draw: function(shape_obj, shape_params){
+				 shape_obj.attr('points',createTrianglePoints(shape_params.width/2,shape_params.width,shape_params.height/2,shape_params.height,shape_params.count, shape_params.max_count, shape_params.scale).map(function(d){return d.join(",");}).join(" "));
+			     } 
+			    };
+    shapedict["pentagon"] = {"human":"pentagon", "svg":"polygon",
+			     draw: function(shape_obj, shape_params){
+				 shape_obj.attr('points',createPentagonPoints(shape_params.width/2, shape_params.width, shape_params.height/2, shape_params.height, shape_params.count, shape_params.max_count, shape_params.scale).map(function(d){return d.join(",");}).join(" "));
+			     } 
+			    };
+    shapedict["image"] = {"human":"image", "svg":"img"};
+    shapedict["text"] = {"human":"text", "svg":"text"};
+    return shapedict;
+}
+
 function createStar(){
     var s = document.createElement('polygon');
     s.setAttribute("points","100,10 40,180 190,60 10,60 160,180");

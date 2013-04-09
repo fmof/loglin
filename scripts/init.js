@@ -7,6 +7,8 @@ LOADING_TIME_DELAY = 200;
 has_cheated=0;
 SLIDER_DIV=1; //amount to scale slider by (for display)
 
+SHAPE_DICTIONARY=createShapeDictionary();
+
 CURRENT_LESSON=1;
 MAX_LESSONS=18;
 DIR_MAPPER={};
@@ -363,6 +365,7 @@ window.onload = function(){
 	    for(var i=0;i<ord.length;i++){
 		DIR_MAPPER[i+1]=ord[i];
 	    }
+	    MAX_LESSONS=ord.length;
 	},
 	error : function(){
 	    for(var i=1;i<=MAX_LESSONS;i++){
