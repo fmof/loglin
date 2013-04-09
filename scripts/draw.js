@@ -544,6 +544,22 @@ function updateLLBar(){
     updateLLRegBars(svg,TRUE_LOG_LIKELIHOOD,tll,'true_reg_bar',regdata,resizer);
 }
 
+function prettifyShape(shape, id_name, color, fill, set_sw_opacity, opacity){
+    shape.attr('stroke',color);
+    if(set_sw_opacity){	
+	shape.attr('stroke-width',EXPECTED_STROKE_WIDTH);
+	shape.attr('opacity',opacity || EXPECTED_TRANSPARENCY);
+    }
+    if(fill=='solid'){
+	shape.attr('fill',color);
+    } else if(fill=='hollow'){
+	shape.attr('fill','white');
+    } else if(fill=='striped'){
+	$('stripe_path_'+id_name).style['stroke']=color;
+	shape.attr('style','fill: url(#stripe_'+ id_name +'); stroke: '+color+'; opacity:'+EXPECTED_TRANSPARENCY+';');
+    }
+    shape.attr('stroke',color);
+}
 
 
 function updateD3Shape(container, id_num, id_name, width,height,shape,color,fill,count,max_count){
@@ -551,7 +567,6 @@ function updateD3Shape(container, id_num, id_name, width,height,shape,color,fill
     var scale=Math.min(width/2,height/2);
     s=container.selectAll('#'+id_name).data([count]);
     //reset sizes
-
     var shape_params={
 	width : width,
 	height : height,
@@ -560,15 +575,7 @@ function updateD3Shape(container, id_num, id_name, width,height,shape,color,fill
 	scale : scale};
     SHAPE_DICTIONARY[shape].draw(s, shape_params);
     //and colors
-    s.attr('stroke',color);
-    if(fill=='solid'){
-	s.attr('fill',color);
-    } else if(fill=='hollow'){
-	s.attr('fill','white');
-    } else if(fill=='striped'){
-	$('stripe_path_'+id_name).style['stroke']=color;
-	s.attr('style','fill: url(#stripe_'+ id_name +'); stroke: '+color+'; opacity:'+EXPECTED_TRANSPARENCY+';');
-    }
+    prettifyShape(s, id_name, color, fill);
     return s;
 }
 
@@ -591,22 +598,9 @@ function createD3Shape(container, id_num, id_name, width,height,shape,color,fill
 	max_count : max_count,
 	scale : scale};
     SHAPE_DICTIONARY[shape].draw(s, shape_params);
-    
-    s.attr('stroke',color);
-    s.attr('stroke-width',EXPECTED_STROKE_WIDTH);
-    s.attr('opacity',opacity || EXPECTED_TRANSPARENCY);
-    if(fill=='solid'){
-	s.attr('fill',color);
-    } else if(fill=='hollow'){
-	s.attr('fill','white');
-    } else if(fill=='striped'){
-	s.attr('style','fill: url(#stripe_'+ id_name +'); stroke: '+color+'; opacity:'+EXPECTED_TRANSPARENCY+';');
-    }
-
+    prettifyShape(s, id_name, color, fill, true, opacity);
     return s;
 }
-
-
 
 
 function redrawAllExpected(){
