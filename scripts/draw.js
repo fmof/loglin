@@ -371,45 +371,47 @@ function addLLBar(){
 
     //add the text LAST!!!
     var lllegend=svg.selectAll("#ll_legend").data([0]).enter().append("text");
-     lllegend.text('Current LL: ')
-	 .attr('x',0)
+    lllegend.text('Current LL: ')
+	.attr('x',0)
 	.attr('y',function(d,i){
-		return (2*i+1)*20 - 7;
-	    })
+	    return (2*i+1)*20 - 7;
+	})
 	.attr('stroke','gray')
 	.attr('fill',function(d){
-		return "gray";
-	    });
-     lllegend.attr('id','ll_legend');
-     var tlllegend=svg.selectAll("#true_ll_legend").data(['True LL: ']).enter().append("text");
-     tlllegend.text(function(d){
-	     return d;
-	 })
-	 .attr('x',0)
-	 .attr('y',function(d,i){
-		 return (2*i+2)*20 - 7;
-	     })
-	 .attr('stroke',TRUE_MODEL_COLOR)
-	 .attr('fill',function(d){
-		 return TRUE_MODEL_COLOR;
-	     })
-	 .attr('id','true_ll_legend');
+	    return "gray";
+	});
+    lllegend.attr('id','ll_legend');
+    var tlllegend=svg.selectAll("#true_ll_legend").data(['True LL: ']).enter().append("text");
+    tlllegend.text(function(d){
+	return d;
+    })
+	.attr('x',0)
+	.attr('y',function(d,i){
+	    return (2*i+2)*20 - 7;
+	})
+	.attr('stroke',TRUE_MODEL_COLOR)
+	.attr('fill',function(d){
+	    return TRUE_MODEL_COLOR;
+	})
+	.attr('id','true_ll_legend');
     
-     var lltext=svg.selectAll(".ll_text").data(LOG_LIKELIHOOD).enter().append("text");
-     lltext.text(function(d){
-	     return d.toFixed(3);
-	 })
-	 .attr('x',function(d){
-	     return resizer(d)+80;
-	 })
+    var lltext=svg.selectAll(".ll_text").data(LOG_LIKELIHOOD).enter().append("text");
+    lltext.text(function(d){
+	return d.toFixed(3);
+    })
+	.attr('x',function(d){
+	    return resizer(d)+80;
+	})
 	.attr('y',function(d,i){
-		return (2*i+1)*20 - 7;
-	    })
+	    return (2*i+1)*20 - 7;
+	})
 	.attr('stroke','gray')
 	.attr('fill',function(d){
-		return "gray";
-	    });
-     lltext.attr('class','ll_text');
+	    return "gray";
+	});
+    lltext.attr('class','ll_text');
+    //console.log(lltext.style('font-size'));
+    //console.log(lltext[0][0].getBBox());
     var tlltext=svg.selectAll(".true_ll_text").data(TRUE_LOG_LIKELIHOOD).enter().append("text");
     tlltext.text(function(d){
 	    return d.toFixed(3);
