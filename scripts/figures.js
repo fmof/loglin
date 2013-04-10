@@ -68,7 +68,18 @@ function createShapeDictionary(){
 			       return SVG_HEIGHT*SVG_WIDTH;
 			  }
 			 };
-    shapedict["text"] = {"human":"text", "svg":"text"};
+    shapedict["text"] = {"human":"text", "svg":"text",
+			 draw : function(shape_obj, shape_params){
+			     console.log(shape_params.value);
+			     shape_obj.text(shape_params.value)
+				 .attr('x',0)
+				 .attr('y',0)
+				 .attr('text-anchor', 'middle');
+			 },
+			 max_area : function(){
+			     return SVG_HEIGHT*SVG_WIDTH;
+			 }
+			};
     return shapedict;
 }
 
