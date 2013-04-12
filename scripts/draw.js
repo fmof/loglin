@@ -108,6 +108,7 @@ function formatSliderWeight(w){
 }
 
 function formatExpected(ecp){
+    if(!isFinite(ecp)) return (sign(ecp)==1?"+":"-") + "&infin;";
     var ret= (ecp >= 1.0)?Math.round(ecp):ecp.toFixed(2);
     if(ret==0.0) return 0;
     else return ret;
@@ -433,7 +434,7 @@ function addLLRegBars(svg,ll,unregged,cname,regdata,yfn,resizer){
 	    return resizer(ll[i])+70;
 	})
 	.attr('width',function(d,i){
-		return resizer(unregged[i]) - resizer(ll[i]);
+		return Math.abs(resizer(unregged[i]) - resizer(ll[i]));
 	    })
 	.attr('height',15)
 	.attr('y',yfn)
@@ -445,7 +446,7 @@ function addLLRegBars(svg,ll,unregged,cname,regdata,yfn,resizer){
 	    return resizer(ll[i])+70;
 	})
 	.attr('width',function(d,i){
-		return resizer(unregged[i]) - resizer(ll[i]);
+		return Math.abs(resizer(unregged[i]) - resizer(ll[i]));
 	    })
 	.attr('height',15)
 	.attr('y',yfn)
@@ -459,18 +460,22 @@ function addLLRegBars(svg,ll,unregged,cname,regdata,yfn,resizer){
 //unregged : LL + reg
 function updateLLRegBars(svg,ll,unregged,cname,regdata,resizer){
     var regrects=svg.selectAll('.'+cname+'_overlay').data(regdata);
+    console.log(unregged);
+    console.log(resizer(unregged[0]));
+    console.log(ll);
+    console.log(resizer(ll[0]));
     regrects.attr('x',function(d,i){
 	    return resizer(ll[i])+70;
 	})
 	.attr('width',function(d,i){
-		return resizer(unregged[i]) - resizer(ll[i]);
+		return Math.abs(resizer(unregged[i]) - resizer(ll[i]));
 	    });
     regrects=svg.selectAll('.'+cname).data(regdata);
     regrects.attr('x',function(d,i){
 	    return resizer(ll[i])+70;
 	})
 	.attr('width',function(d,i){
-		return resizer(unregged[i]) - resizer(ll[i]);
+		return Math.abs(resizer(unregged[i]) - resizer(ll[i]));
 	    });
 }
 
@@ -569,8 +574,8 @@ function updateD3Shape(container, id_num, id_name, width,height,visuals,color,co
     var shape_params={
 	width : width,
 	height : height,
-	count : count,
-	max_count : max_count,
+	count : isFinite(max_count) ? count: 0,
+	max_count : isFinite(max_count) ? max_count : 1,
 	scale : scale,
 	value : visuals['value']
     };
@@ -595,8 +600,8 @@ function createD3Shape(container, id_num, id_name, width,height, visuals, color,
     var shape_params={
 	width : width,
 	height : height,
-	count : count,
-	max_count : max_count,
+	count : isFinite(max_count) ? count: 0,
+	max_count : isFinite(max_count) ? max_count : 1,
 	scale : scale,
 	first_draw : true,
 	value : visuals['value']
