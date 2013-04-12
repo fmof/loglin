@@ -483,8 +483,8 @@ function updateLLBar(){
     var svg = d3.select("#ll_bars");
     //we need to "unregularize" the data in order to draw the bars (and show
     //how much regularization affects LL)
-    var ll = LOG_LIKELIHOOD.map(function(d,i){return d+REGULARIZATION[i];});
-    var tll=TRUE_LOG_LIKELIHOOD.map(function(d,i){return d+TRUE_REGULARIZATION[i];});
+    var ll = LOG_LIKELIHOOD.map(function(d,i){return d+ sign(REGULARIZATION_SIGMA2)*REGULARIZATION[i];});
+    var tll=TRUE_LOG_LIKELIHOOD.map(function(d,i){return d+ sign(REGULARIZATION_SIGMA2)*TRUE_REGULARIZATION[i];});
     max = function(x,y){return Math.max(x,y);};
     var max_u_ll = ll.reduce(max,-10000000);
     var max_t_ll = tll.reduce(max, -10000000);
@@ -503,7 +503,7 @@ function updateLLBar(){
 	.attr('y',function(d,i){
 		return 2*i*20;
 	    });
-    var lltext=svg.selectAll(".ll_text").data(LOG_LIKELIHOOD);
+    var lltext=svg.selectAll(".ll_text").data(sign(REGULARIZATION_SIGMA2)>0?LOG_LIKELIHOOD:ll);
     lltext.text(function(d){
 	    return d.toFixed(3);
 	})
@@ -701,14 +701,16 @@ function drawSVGBoxes(selectObj){
 	tr.appendChild(td_tok);
 	//handle number of tokens in context
 	var div_token_input=document.createElement('div');
-	div_token_input.className+=' floatleft';
+	div_token_input.className+=' floatleft num_tokens_context_div';
 	var ntoksp = document.createElement('span');
 	ntoksp.innerHTML = '<i>N</i><sub>'+ CONTEXTS[c] +'</sub> = ';
 	var ntok=document.createElement('input');
 	ntok.setAttribute('id','num_tokens_context_'+c);
+	ntok.className += ' num_tokens_context_input';
 	ntok.setAttribute('context_id',c);
 	ntok.setAttribute('value',NUM_TOKENS_C[c]);
 	ntok.setAttribute('size',6);
+	ntok.setAttribute('title','Multiplicatively scale the number of observations in this context to this number');
 	ntok.onchange = function(){
 	    var v = this.value; var cc = parseInt(this.getAttribute('context_id'));
 	    if(isNumber(v) && NUM_TOKENS_C[cc]!=0){
@@ -837,6 +839,7 @@ function drawSVGBoxes(selectObj){
 	}
     }
     jQuery('.observation_row_num_context').draggable({ containment:"parent"});
+    jQuery('.num_tokens_context_div').tooltip();
 }
 
 
