@@ -321,10 +321,7 @@ function addLLBar(){
     var overall_max = Math.max(max_u_ll,max_t_ll);
     var overall_min = Math.min(min_u_ll,min_t_ll);
     worst_ll = Math.min(worst_ll,overall_min);
-    var resizer = ll_resizer();//worst_ll,overall_max);
-    if(max_t_ll >= max_u_ll){
-    } else{
-    }
+    var resizer = ll_resizer();
     var llrects=svg.selectAll(".ll_bar").data(ll).enter().append("rect");
     llrects.attr('x',70)
 	.attr('width',function(d,i){

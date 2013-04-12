@@ -376,7 +376,7 @@ function compute_ll(theta, ztable, ll, reg){
 	ll[0] = ll[0] - sum;
     } 
 
-    if(ll[0]>0){
+    if(ll[0]>0 || isNaN(ll[0])){
 	ll[0]=-Number.MAX_VALUE;
     }
 }

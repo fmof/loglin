@@ -3,8 +3,9 @@ function rescale_context_counts(context_id, old_val,n_val){
     //go through TYPE_OBSERVATIONS_IN_C[context_id]
     for(var i=0;i<TYPE_OBSERVATIONS_IN_C[context_id].length;i++){
 	var tid = TYPE_OBSERVATIONS_IN_C[context_id][i];
-	if(old_val!=0)
+	if(old_val!=0){
 	    COUNTS[context_id][tid] *= n_val/old_val;
+	}
     }
     updateObservedImages();
     redraw_all();

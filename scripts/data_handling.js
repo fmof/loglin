@@ -106,11 +106,14 @@ do_all_loading = function(){
 			    context_id = REVERSE_CONTEXTS[record['context']];
 			}
 			//add record['feature'] to theta list
-			console.log('adding ['+record['context']+', '+record['feature']+']');
+			//console.log('adding ['+record['context']+', '+record['feature']+']');
 			FEATURE_LIST.push([record['context'],record['feature']]);
 			var feature_number = FEATURE_LIST.length -1;
 			INVERSE_FEATURE_LIST[[record['context'],record['feature']]]=feature_number;
 			TRUE_THETA[feature_number]=parseFloat(record['value']);
+			if(isNaN(TRUE_THETA[feature_number])){
+			    TRUE_THETA[feature_number] = 0.0;
+			}
 			THETA[feature_number]=initializeThetaValue();
 			GRADIENT[feature_number]=0;
 			OBS_FEAT_COUNT[feature_number]=0;

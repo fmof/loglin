@@ -439,6 +439,7 @@ function init(){
 		    var v = $('num_tokens_context_'+c).value;
 		    v= isNumber(v)?parseFloat(v):-1;
 		    //don't do the following when v == NUM_TOKENS_C[c]
+		    console.log("v = "+v);
 		    if(c==LAST_UPDATED_TOKEN_COUNT || LAST_UPDATED_TOKEN_COUNT==null)
 			generate_new_counts_context(c,v);
 		}
