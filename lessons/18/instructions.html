@@ -59,9 +59,9 @@
     is needed to compute p(<i>y</i> | <i>x</i>) exactly, or to sample
     a random <i>y</i> given <i>x</i>.  You also need to sum over all
     possible <i>y</i> values during training, in order to get the
-    expected counts during training.  (This is actually related, since
-    the expected values turn out to be the partial derivatives of
-    log <i>Z</i>(<i>x</i>).)</p>
+    expected counts during training.  (This is actually related to the
+    previous point, since the expected counts turn out to be the 
+    partial derivatives of log <i>Z</i>(<i>x</i>).)</p>
 
   <p>Depending on your features, you may still be able to do the above
     computations exactly by using <u>dynamic programming</u>.  If not,
