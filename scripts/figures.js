@@ -70,11 +70,29 @@ function createShapeDictionary(){
 			 };
     shapedict["text"] = {"human":"text", "svg":"text",
 			 draw : function(shape_obj, shape_params){
-			     console.log(shape_params.value);
-			     shape_obj.text(shape_params.value)
-				 .attr('x',0)
-				 .attr('y',0)
-				 .attr('text-anchor', 'middle');
+			     var spl_nl = shape_params.value.split("\\n");
+			     var base_y = 50;
+			     shape_obj.style('visibility','hidden');
+			     shape_obj.attr('x',0).attr('y',base_y)
+				 .style('font-weight',100);
+				 //.style('font-family','monospace');
+				 //.attr('text-anchor', 'middle');
+			     var objtoopon = shape_params.first_draw ? shape_obj : shape_obj.selectAll('tspan');
+			     console.log(objtoopon.style('font'));
+			     objtoopon.style('font-size','16px')
+				 .style('stroke-width','.5');
+			     spl_nl.each(function(t,i){
+				 (shape_params.first_draw ? objtoopon.append('tspan') : objtoopon)
+				     .text(t)
+				     .attr('x',0)
+				     .attr('y',base_y + i*15)
+				     .style('font-weight','lighter');
+				 
+			     });
+			     console.log(shape_obj[0][0].getBBox());
+			     console.log(shape_obj.style('visibility'));
+			     shape_obj.style('visbility',true);
+			     console.log(shape_obj.style('visibility'));
 			 },
 			 max_area : function(){
 			     return SVG_HEIGHT*SVG_WIDTH;
