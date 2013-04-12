@@ -226,7 +226,7 @@ omit $x$.  We now have a simple distribution over possible $y$ values,
 \subsection{Remark: Named Features and Efficient Dot Products}
 
 In the notation above, we assigned numbers $1,2,\ldots,K$ to the
-features.  This lets you represent both the parameter vector $\vtheta$
+features.  This lets you represent the parameter vector $\vtheta$
 (as well as each feature vector $\vec{f}(x,y)$) by an {\em array} of
 $K$ real numbers.
 
@@ -237,7 +237,8 @@ section~\ref{sec:featfuncs}, the first feature function might be
 called $f_{\sf circle}$ instead of $f_1$, with corresponding weight
 $\theta_{\textsf{circle}}$ instead of $\theta_1$.  Then the weight vector
 $\vtheta$ can be implemented as a hash table instead of an array: it
-maps the name $k$ to the weight $\theta_k$.
+still maps the index $k$ to the weight $\theta_k$, but now $k$ is a
+name instead of a number.
 
 The dot product $\vtheta \cdot \vec{f}(x,y)$ is now defined by
 $\sum_k \theta_k \cdot f_k(x,y)$ where $k$ ranges over the set of
@@ -263,9 +264,9 @@ computed as
     \State $s \gets s + \theta_{\textsf{striped square}}$
   \EndIf
 \EndIf
-\State $s \gets s + \theta_{\textsf{contrast}} \cdot
-\textrm{contrast}(\textrm{color}(x),\textrm{color}(y))$\Comment{$f_{\textsf{contrast}}$
-  is not a binary feature}
+\State $s \gets s + \theta_{\textsf{contrast}} \cdot f_{\textsf{contrast}}(x,y)
+$\Comment{where $f_{\textsf{contrast}}(x,y) \equiv ||\textrm{color}(x)-\textrm{color}(y)||$
+  is not binary}
 \end{algorithmic}
 
 \subsection{Remark: Other names for log-linear models}
