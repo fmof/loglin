@@ -2,6 +2,17 @@
    DATA HANDLING
 **/
 
+function createKnownUserActions(){
+    var obj = {
+	"tooltips" : {
+	    do_action : function(jqobj){
+		jqobj.tooltip();
+	    }
+	}
+    };
+    return obj;
+}
+
 do_all_loading = function(){
     this.num_callbacks = 0;
     this.expected_callbacks = 2;
@@ -25,8 +36,7 @@ do_all_loading = function(){
 	if(!data_loader.timer_started){
 	    data_loader.start_timer();
 	}
-	data_loader.load_instructions(jQuery('#instruction_area'));
-	data_loader.load_textfile();
+	data_loader.load_settings(data_loader);
 	return data_loader;
     };
 
@@ -41,9 +51,31 @@ do_all_loading = function(){
 	    } else{
 		jQuery('#instruction_area').css('border', '1px solid gray');
 	    }
+	    apply_settings();
 	}
-    }
+    };
 
+    this.load_settings = function(obj){
+	jQuery.ajax({
+	    url:LESSON_SETTINGS_PATH,
+	    dataType:"json",
+	    success : function(settings){
+		LESSON_SETTINGS=settings;
+	    },
+	    error : function(jqXHR, textStatus, errorThrown){
+		if(jqXHR.status == 404){
+		    console.error("But don't worry, this 404 is allowed.");
+		    LESSON_SETTINGS={};
+		} else{
+		    print_loading_error(jqXHR, textStatus, errorThrown);
+		}
+	    },
+	    complete : function(){
+		obj.load_instructions(jQuery('#instruction_area'));
+		obj.load_textfile();
+	    }
+	});
+    };
 
     this.load_instructions = function (ia){
 	var data_loader = this;
@@ -52,7 +84,6 @@ do_all_loading = function(){
 	    dataType:"html",
 	    success : function(txt){
 		ia.html('');
-		//set_height(ia,'');
 		ia.html(txt).scrollTop(0);
 		set_instructions_height(ia);
 	    },

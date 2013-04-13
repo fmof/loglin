@@ -1,7 +1,13 @@
 TRUE_THETA_PATH='';
 OBSERVATION_PATH='';
 INSTRUCTION_PATH='';
+LESSON_SETTINGS_PATH='';
 GLOBAL_SETTINGS_FILE='lessons/settings.json';
+GLOBAL_SETTINGS={};
+LESSON_SETTINGS={};
+
+KNOWN_USER_ACTIONS={};
+
 loader_bar_img='imgs/ajax-bar-loader.gif';
 LOADING_TIME_DELAY = 200;
 has_cheated=0;
@@ -144,10 +150,6 @@ gradients_drawn = 0;
 //GRAD_HIGH_C='#AA03FF';
 GRAD_LOW_C='red';
 GRAD_HIGH_C='blue';
-//now unused...
-//sigmoid_y_define_ratio = 7.0/8.0;
-//sigmoid_x_define = Math.sqrt(2); 
-//SIGMOID_CONSTANT = 1/sigmoid_x_define * Math.log(sigmoid_y_define_ratio/(1-sigmoid_y_define_ratio));
 
 INITIAL_LOAD=1;
 skip_next_hashchange=0;
@@ -285,9 +287,11 @@ function load_lesson(noskip_dropdown){
     } else{
 	INITIAL_LOAD=0;
     }
-    TRUE_THETA_PATH = 'lessons/'+DIR_MAPPER[CURRENT_LESSON]+'/theta';
-    OBSERVATION_PATH = 'lessons/'+DIR_MAPPER[CURRENT_LESSON]+'/observations';    
-    INSTRUCTION_PATH = 'lessons/'+DIR_MAPPER[CURRENT_LESSON]+'/instructions.html';
+    var dmcl = DIR_MAPPER[CURRENT_LESSON];
+    LESSON_SETTINGS_PATH = 'lessons/'+dmcl+'/settings.json';
+    TRUE_THETA_PATH = 'lessons/'+dmcl+'/theta';
+    OBSERVATION_PATH = 'lessons/'+dmcl+'/observations';    
+    INSTRUCTION_PATH = 'lessons/'+dmcl+'/instructions.html';
     if(CURRENT_LESSON == 3 || CURRENT_LESSON==7){
 	$('new_challenge').style.display='none';
     } else{
@@ -303,6 +307,37 @@ function load_lesson(noskip_dropdown){
     }
     verify_prev_next();
 }
+
+function apply_settings(){
+    //first apply global settings
+    var set = [GLOBAL_SETTINGS, LESSON_SETTINGS];
+    var keyset = {};
+    for(var si=0;si<set.length;si++){
+	var currset = set[si];
+	for(var key in currset){
+	    if(key=="lesson_order"){
+		continue;
+	    }
+	    var tks = keyset[key];
+	    if(!tks){ 
+		tks=[];
+	    } 
+	    tks=[key,si];
+	    keyset[key] = tks;
+	}
+    }
+    for(var key in keyset){
+	var val = keyset[key];
+	var currset = set[val[1]];
+	var cs_k_l = currset[key]["list"];
+	for(var k in cs_k_l){
+	    var jqobj = jQuery(k);
+	    jqobj.attr(currset[key]["attr"]+"", ""+cs_k_l[k]);
+	    KNOWN_USER_ACTIONS[key].do_action(jqobj);
+	}
+    }
+}
+
 
 function setITimeout( callback, init_time, times ){
     var internalCallback = function( t, ep, counter ){
@@ -350,17 +385,29 @@ window.onhashchange = function(){
 
 
 window.onload = function(){
+    KNOWN_USER_ACTIONS = createKnownUserActions();
     jQuery.ajax({
 	url:GLOBAL_SETTINGS_FILE,
 	datatype:"json",
-	success : function(txt){
-	    var ord = txt["lesson_order"];
+	success : function(settings){
+	    var ord = settings["lesson_order"];
 	    for(var i=0;i<ord.length;i++){
 		DIR_MAPPER[i+1]=ord[i];
 	    }
 	    MAX_LESSONS=ord.length;
+	    GLOBAL_SETTINGS=settings;
 	},
-	error : function(){
+	error : function(jqXHR, textStatus, errorThrown){
+	    if(jqXHR.status == 404){
+		console.error("But don't worry, this 404 is allowed.");
+		LESSON_SETTINGS={};
+	    } else{
+		console.log(jqXHR);
+		console.log(textStatus);
+		console.log(errorThrown);
+		console.log('--------------');
+		print_loading_error(jqXHR, textStatus, errorThrown);
+	    }
 	    for(var i=1;i<=MAX_LESSONS;i++){
 		DIR_MAPPER[i]=i;
 	    }

@@ -1,0 +1,8 @@
+{
+    "tooltips" : {
+	"attr" : "title", 
+	"list": {
+	    ".num_tokens_context_div" : "Lesson 1 specific: Multiplicatively scale the number of observations in this context to this number"
+	}
+    }
+}

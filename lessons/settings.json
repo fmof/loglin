@@ -1,6 +1,5 @@
 {
-    "lesson_order" :
-    [
+    "lesson_order" : [
 	1,
 	2,
 	3,
@@ -19,5 +18,11 @@
 	16,
 	17,
 	18
-    ]
+    ],
+    "tooltips" : {
+	"attr" : "title", 
+	"list": {
+	    ".num_tokens_context_div" : "Multiplicatively scale the number of observations in this context to this number"
+	}
+    }
 }

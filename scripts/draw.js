@@ -710,7 +710,6 @@ function drawSVGBoxes(selectObj){
 	ntok.setAttribute('context_id',c);
 	ntok.setAttribute('value',NUM_TOKENS_C[c]);
 	ntok.setAttribute('size',6);
-	ntok.setAttribute('title','Multiplicatively scale the number of observations in this context to this number');
 	ntok.onchange = function(){
 	    var v = this.value; var cc = parseInt(this.getAttribute('context_id'));
 	    if(isNumber(v) && NUM_TOKENS_C[cc]!=0){
@@ -839,7 +838,6 @@ function drawSVGBoxes(selectObj){
 	}
     }
     jQuery('.observation_row_num_context').draggable({ containment:"parent"});
-    jQuery('.num_tokens_context_div').tooltip();
 }
 
 
