@@ -4,9 +4,44 @@
 
 function createKnownUserActions(){
     var obj = {
+	do_action : function(currset, key, jqobj){
+	    var mykey = currset[key];
+	    this[key].do_action(jqobj);
+	    if("reverse" in mykey && mykey["reverse"]){
+		var x = [key, jqobj];
+		this._REVERSE_LIST.push(x);
+	    }
+	},
+	_REVERSE_LIST : Array(),
+	revert_settings : function(){
+	    for(var i =0;i<this._REVERSE_LIST.length;i++){
+		this[this._REVERSE_LIST[i][0]].do_inverse(this._REVERSE_LIST[i][1]);
+	    }
+	    this._REVERSE_LIST.clear();
+	},
 	"tooltips" : {
 	    do_action : function(jqobj){
 		jqobj.tooltip();
+	    }
+	},
+	"hide" : {
+	    do_action : function(jqobj){
+		jqobj.hide();
+	    },
+	    do_inverse : function(jqobj){
+		jqobj.show();
+	    }
+	},
+	"show" : {
+	    do_action : function(jqobj){
+	    },
+	    do_inverse : function(jqobj){
+		jqobj.hide();
+	    }
+	},
+	"lesson_subtitle": {
+	    do_action : function(jqobj){
+		
 	    }
 	}
     };
@@ -61,12 +96,18 @@ do_all_loading = function(){
 	    dataType:"json",
 	    success : function(settings){
 		LESSON_SETTINGS=settings;
+		console.log("my lesson settings ");
+		console.log(LESSON_SETTINGS);
 	    },
 	    error : function(jqXHR, textStatus, errorThrown){
 		if(jqXHR.status == 404){
 		    console.error("But don't worry, this 404 is allowed.");
 		    LESSON_SETTINGS={};
 		} else{
+		    console.log(jqXHR);
+		    console.log(textStatus);
+		    console.log(errorThrown);
+		    console.log("--------------");
 		    print_loading_error(jqXHR, textStatus, errorThrown);
 		}
 	    },
@@ -234,7 +275,6 @@ function record_data(rows,already_created){
 function record_observation(record){
     var features = record['features'];
     var split_features =features.split(',');
-    console.log(split_features);
     var type_index;
     if(TYPE_MAP[features]==undefined){
 	TYPE_INDEX.push(split_features);

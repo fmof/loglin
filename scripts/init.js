@@ -292,11 +292,11 @@ function load_lesson(noskip_dropdown){
     TRUE_THETA_PATH = 'lessons/'+dmcl+'/theta';
     OBSERVATION_PATH = 'lessons/'+dmcl+'/observations';    
     INSTRUCTION_PATH = 'lessons/'+dmcl+'/instructions.html';
-    if(CURRENT_LESSON == 3 || CURRENT_LESSON==7){
+    /*if(CURRENT_LESSON==7){
 	$('new_challenge').style.display='none';
     } else{
 	$('new_challenge').style.display='inline';
-    }
+    }*/
     loading_object.start();
     document.title = 'Log-Linear Models: Lesson '+CURRENT_LESSON;
     history.pushState({CURRENT_LESSON:CURRENT_LESSON},'','#'+CURRENT_LESSON);
@@ -309,13 +309,13 @@ function load_lesson(noskip_dropdown){
 }
 
 function apply_settings(){
-    //first apply global settings
+    KNOWN_USER_ACTIONS.revert_settings();
     var set = [GLOBAL_SETTINGS, LESSON_SETTINGS];
     var keyset = {};
     for(var si=0;si<set.length;si++){
 	var currset = set[si];
 	for(var key in currset){
-	    if(key=="lesson_order"){
+	    if(!(key in KNOWN_USER_ACTIONS)){
 		continue;
 	    }
 	    var tks = keyset[key];
@@ -332,8 +332,10 @@ function apply_settings(){
 	var cs_k_l = currset[key]["list"];
 	for(var k in cs_k_l){
 	    var jqobj = jQuery(k);
-	    jqobj.attr(currset[key]["attr"]+"", ""+cs_k_l[k]);
-	    KNOWN_USER_ACTIONS[key].do_action(jqobj);
+	    if("attr" in currset[key]){
+		jqobj.attr(currset[key]["attr"]+"", ""+cs_k_l[k]);
+	    }
+	    KNOWN_USER_ACTIONS.do_action(currset, key,jqobj);
 	}
     }
 }
