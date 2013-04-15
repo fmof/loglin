@@ -271,8 +271,6 @@ function load_lesson(noskip_dropdown){
     show_text_portion();
     show_data_portion();
     console.log("loading " + CURRENT_LESSON + ' => ' + DIR_MAPPER[CURRENT_LESSON]);
-    // $('header_lesson_number').innerHTML=CURRENT_LESSON;
-    // $('header_lesson_number').setAttribute('lesson',CURRENT_LESSON);
     $('show_how_many_previous_lessons').innerHTML = Math.max(1,CURRENT_LESSON-1);
     $('show_how_many_next_lessons').innerHTML = Math.min(CURRENT_LESSON+1,MAX_LESSONS);
     reset_data_structures(1);
@@ -287,18 +285,16 @@ function load_lesson(noskip_dropdown){
     } else{
 	INITIAL_LOAD=0;
     }
+
     var dmcl = DIR_MAPPER[CURRENT_LESSON];
     LESSON_SETTINGS_PATH = 'lessons/'+dmcl+'/settings.json';
     TRUE_THETA_PATH = 'lessons/'+dmcl+'/theta';
     OBSERVATION_PATH = 'lessons/'+dmcl+'/observations';    
     INSTRUCTION_PATH = 'lessons/'+dmcl+'/instructions.html';
-    /*if(CURRENT_LESSON==7){
-	$('new_challenge').style.display='none';
-    } else{
-	$('new_challenge').style.display='inline';
-    }*/
+
     loading_object.start();
     document.title = 'Log-Linear Models: Lesson '+CURRENT_LESSON;
+
     history.pushState({CURRENT_LESSON:CURRENT_LESSON},'','#'+CURRENT_LESSON);
     var j_jump_to_lesson_select=jQuery('#jump_to_lesson_select');
     j_jump_to_lesson_select.val(CURRENT_LESSON);
