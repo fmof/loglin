@@ -535,30 +535,28 @@ function init(){
 
     
 
-    if($('new_challenge')){
-    	$('new_challenge').onclick = function(){
-	    $('step_button').disabled='disabled';
-	    $('solve_button').disabled='disabled';
-    	    var gs=$('gradient_step');
-    	    gs.value = ORIG_SOLVE_STEP;
-    	    gs.onchange();
-    	    SOLVE_ITERATION=1;
-	    LAST_UPDATED_TOKEN_COUNT=null;
-    	    generate_new_observations();
-	    this.blur();
-	    if(has_cheated){
-		$('cheat_button').style.display='block';
-		var uufs=$$('.unused_feature');
-		for(var u=0;u<uufs.length;u++){
-		    uufs[u].style.display='none';
-		}
-    		var llb=$('ll_bars');
-    		var th=parseFloat(llb.getAttribute('height'));
-    		llb.setAttribute('height',(th-1)/2);
-		has_cheated=0;
-	    }
-    	};
-    }
+    jQuery('#new_challenge').click(function(){
+	jQuery('#step_button').attr('disabled','disabled');
+	jQuery('#solve_button').attr("disabled",'disabled');
+    	var gs=jQuery('#gradient_step');
+    	gs.val(ORIG_SOLVE_STEP);
+    	gs.change();
+    	SOLVE_ITERATION=1;
+	LAST_UPDATED_TOKEN_COUNT=null;
+    	generate_new_observations();
+	this.blur();
+	if(has_cheated){
+	    $('cheat_button').style.display='block';
+	    jQuery.each(jQuery('.unused_feature'), function(x){
+		x.style.display='none';
+	    });
+    	    var llb=jQuery('#ll_bars');
+    	    var th=parseFloat(llb.attr('height'));
+    	    llb.attr('height',(th-1)/2);
+	    has_cheated=0;
+	}
+    });
+
 
     if($$('.expected_counts_text')){
 	$$('.expected_counts_text').forEach(function(e){
@@ -594,17 +592,15 @@ function init(){
     	}
     }
 
-    if($("zero_weights_button")){
-    	$("zero_weights_button").onclick = function(){  
-    	    var group = $$('.feature_slider');
-    	    var arr = group.map(function(d,i){
-    		    var tindex = group[i].parentNode.parentNode.childNodes[0].getAttribute('theta_index');
-    		    return [tindex,0];
-    		});
-    	    reset_sliders_manually(arr);
-    	    redraw_all();
-    	};
-    }
+    jQuery("#zero_weights_button").click(function(){  
+    	var group = $$('.feature_slider');
+    	var arr = group.map(function(d,i){
+    	    var tindex = group[i].parentNode.parentNode.childNodes[0].getAttribute('theta_index');
+    	    return [tindex,0];
+    	});
+    	reset_sliders_manually(arr);
+    	redraw_all();
+    });
 
     if(group=$$("input.regularization_radio")){
     	for(var i=0;i<group.length;i++){

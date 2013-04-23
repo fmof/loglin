@@ -4,18 +4,13 @@ function load_html5_slider(boxid,val){
     var tmpval = boxid.value; var actual_weight;
     if(!isFinite(tmpval)){
 	if(!isNaN(tmpval)){
-	    if(tmpval>0){
-		tmpval=SLIDER_SIGMOID.inverse(max_slider_val);
-	    } else{
-		tmpval=SLIDER_SIGMOID.inverse(min_slider_val);
-	    }
-	}
+	    tmpval = SLIDER_SIGMOID.inverse(tmpval>0 ? max_slider_val : min_slider_val);	}
     }
     var actual_weight = tmpval / val;
     var feature_info = boxid.parentNode.parentNode.childNodes[0];
     feature_info.setAttribute('dirty',1);
     if(svg_loaded){
-	//get feature index by boxid.parentVal.childNodes[0
+	//get feature index by boxid.parentVal.childNodes[0]
 	var context =  parseInt(feature_info.getAttribute('context'));
 	var feature_name = feature_info.getAttribute('feature_name').split(',')[1];
 	var feat_name = INVERSE_FEATURE_LIST[ [CONTEXTS[context],feature_name] ];
@@ -57,51 +52,56 @@ function addSliderEffects(){
     group.rangeinput();
     var lb = SLIDER_SIGMOID.inverse(min_slider_val);
     var ub = SLIDER_SIGMOID.inverse(max_slider_val);
-    if(group=$$(".feature_slider")){
-	for(var i=0;i<group.length;i++){
-	    group[i].setAttribute('readonly','readonly');
-	    var theta_index = group[i].parentNode.parentNode.childNodes[0].getAttribute('theta_index');
-	    var handle_tmpfn=function(){
-		//handle 
-		//this.parentNode.parentNode.childNodes[1].value= inverse_sigmoid(parseFloat(this.style['left']+handle_width/2));
-		var t = parseFloat(this.style['left']+handle_width/2);
-		t=Math.min(slider_width-handle_width,Math.max(0,t));
-		this.parentNode.parentNode.childNodes[1].value= SLIDER_SIGMOID.inverse(t);
-		load_html5_slider(this.parentNode.parentNode.childNodes[1],SLIDER_DIV);
-	    };
-	    var tmpfn=function(e){
-		if(0 && e){
-		    if(e.type=="change"){
-			if(1 && isNumber(this.value) && parseFloat(this.value)){
-			    console.log('capturing this...');
-			    console.log(this.value+', '+SLIDER_SIGMOID.transform(parseFloat(this.value)));
-			    reset_manually_from_theta(this,this.value);
-			    THETA[theta_index]=this.value;
-			    redraw_all();
-			}
-			else{
-			    console.log('this');
-			    this.value = SLIDER_SIGMOID.inverse(parseFloat(this.parentNode.childNodes[0].childNodes[1].style['left'] + handle_width/2));
-			}
+    //if(group=$$(".feature_slider")){
+    console.log(group);
+    jQuery(".feature_slider").each(function(){
+	var jthis=jQuery(this);
+	console.log(jthis.parent().parent().children()[0].getAttribute('theta_index'));
+	jthis.attr('readonly','readonly');
+	var theta_index = jthis.parent().parent().children()[0].getAttribute('theta_index');
+	var handle_tmpfn=function(){
+	    //handle 
+	    var t = parseFloat(this.style['left']+handle_width/2);
+	    t=Math.min(slider_width-handle_width,Math.max(0,t));
+	    this.parentNode.parentNode.childNodes[1].value= SLIDER_SIGMOID.inverse(t);
+	    load_html5_slider(this.parentNode.parentNode.childNodes[1],SLIDER_DIV);
+	};
+	var tmpfn=function(e){
+	    if(0 && e){
+		if(e.type=="change"){
+		    if(1 && isNumber(this.value) && parseFloat(this.value)){
+			console.log('capturing this...');
+			console.log(this.value+', '+SLIDER_SIGMOID.transform(parseFloat(this.value)));
+			reset_manually_from_theta(this,this.value);
+			THETA[theta_index]=this.value;
+			redraw_all();
 		    }
-		} else{
-		    this.value = SLIDER_SIGMOID.inverse(parseFloat(this.parentNode.childNodes[0].childNodes[1].style['left'] + handle_width/2));
-		    load_html5_slider(this,SLIDER_DIV);
-		    }	
-	    };
-	    group[i].onchange = tmpfn;
-	    group[i].parentNode.childNodes[0].childNodes[1].ondrag=handle_tmpfn;
-	    group[i].onchange();
+		    else{
+			console.log('this');
+			this.value = SLIDER_SIGMOID.inverse(parseFloat(this.parentNode.childNodes[0].childNodes[1].style['left'] + handle_width/2));
+		    }
+		}
+	    } else{
+		this.value = SLIDER_SIGMOID.inverse(parseFloat(this.parentNode.childNodes[0].childNodes[1].style['left'] + handle_width/2));
+		load_html5_slider(this,SLIDER_DIV);
+	    }
+	};
+	//save the "previous" blur event...
+	var prevblur = jQuery._data(jthis[0]).events.blur[0].handler;
+	//but remove it... this means I can set my own if I want, but I don't have to
+	jthis.unbind('blur');
+	jthis.change(tmpfn);
+	jthis.parent().children().first().children()[1].ondrag=handle_tmpfn;
+	jthis.change();
 
-	    /*if(USED_FEATURES[theta_index]==undefined){//is unused/unavailable
-		group[i].parentNode.parentNode.style.display='none';
-		group[i].parentNode.parentNode.className += ' unused_feature';
-		group[i].disabled='disabled';
-		}*/
-	}
-    }
+	/*if(USED_FEATURES[theta_index]==undefined){//is unused/unavailable
+	  group[i].parentNode.parentNode.style.display='none';
+	  group[i].parentNode.parentNode.className += ' unused_feature';
+	  group[i].disabled='disabled';
+	  }*/
+    });
+    //}
 }
-
 
 function formatSliderWeight(w){
     return Math.abs(w)<0.1 && w!=0 ? w.toExponential(2) : w;

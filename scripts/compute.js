@@ -76,10 +76,10 @@ function get_corrected_step(tindex, solve_step,grad_only, mult_fact){
 function step_gradient(solve_step,dont_complete){
     var solve_step=solve_step || SOLVE_STEP;
     var all_zero=0;
-    var group = $$('.feature_slider');
-    var arr = group.map(function(d,i){
-	var tindex = parseInt(group[i].parentNode.parentNode.childNodes[0].getAttribute('theta_index'));
-	return get_corrected_step(tindex, solve_step, false, sign(jQuery('#gradient_step').val()));
+    var gs_sign = sign(jQuery('#gradient_step').val());
+    var arr = jQuery('.feature_slider').map(function(x){
+	var tindex = parseInt(this.parentNode.parentNode.childNodes[0].getAttribute('theta_index'));
+	return [get_corrected_step(tindex, solve_step, false, gs_sign)];
     });
     if(!dont_complete){
 	reset_sliders_manually(arr);

@@ -217,7 +217,7 @@ do_all_loading = function(){
 	    success : function(response){
 		(function(rows){
 		    record_data(rows,0);
-		    $("zero_weights_button").onclick();
+		    jQuery("#zero_weights_button").click();
 		})(d3.tsv.parse(response))},
 	    complete : function(jqXHR, textStatus){
 		data_loader.callback(jqXHR);
