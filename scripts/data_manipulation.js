@@ -132,6 +132,7 @@ function update_token_count(){
 
 function reset_manually_from_theta(slider,val){
     var h = get_handle(slider);
+    slider.parentNode.parentNode.setAttribute('title',val);
     var x = SLIDER_SIGMOID.transform(parseFloat(val));
     x=Math.max(min_slider_val,Math.min(max_slider_val,x));
     if(x< 1e-10) x=1e-5;
@@ -143,7 +144,7 @@ function reset_sliders_manually(arr){
     for(var i=0;i<group.length;i++){
 	group[i].value = formatSliderWeight(arr[i][1]);
 	reset_manually_from_theta(group[i],arr[i][1]);
-	var val = SLIDER_SIGMOID.transform(arr[i][1]);
-	THETA[arr[i][0]]=(parseFloat(arr[i][1]));
+	//var val = SLIDER_SIGMOID.transform(arr[i][1]);
+	THETA[arr[i][0]]=parseFloat(arr[i][1]);
     }
 }

@@ -27,9 +27,12 @@ function load_html5_slider(boxid,val){
 	boxid.value = formatSliderWeight(actual_weight);
 	//store THETA value
 	THETA[feat_name]=isFinite(actual_weight)?actual_weight:(actual_weight>0? 100: -100);
+	boxid.parentNode.parentNode.setAttribute('title',''+boxid.value);
 	redraw_all();
     } else{
 	feature_info.className+=' feature_name_box';
+	boxid.parentNode.parentNode.className += ' feature_box';
+	boxid.parentNode.parentNode.setAttribute('title',0);
     }
 }
 
@@ -61,6 +64,7 @@ function addSliderEffects(){
 	var theta_index = jthis.parent().parent().children()[0].getAttribute('theta_index');
 	var handle_tmpfn=function(){
 	    //handle 
+	    console.log("EHEHREHE");
 	    var t = parseFloat(this.style['left']+handle_width/2);
 	    t=Math.min(slider_width-handle_width,Math.max(0,t));
 	    this.parentNode.parentNode.childNodes[1].value= SLIDER_SIGMOID.inverse(t);

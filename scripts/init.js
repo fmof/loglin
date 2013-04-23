@@ -308,6 +308,7 @@ function apply_settings(){
     KNOWN_USER_ACTIONS.revert_settings();
     var set = [GLOBAL_SETTINGS, LESSON_SETTINGS];
     var keyset = {};
+    var listset = {};
     for(var si=0;si<set.length;si++){
 	var currset = set[si];
 	for(var key in currset){
@@ -317,15 +318,21 @@ function apply_settings(){
 	    var tks = keyset[key];
 	    if(!tks){ 
 		tks=[];
-	    } 
+	    }
+	    if(!listset[key]){
+		listset[key]={};
+	    }
 	    tks=[key,si];
 	    keyset[key] = tks;
+	    for(var k in currset[key].list){
+		listset[key][""+k] = currset[key]['list'][k];
+	    }
 	}
     }
     for(var key in keyset){
 	var val = keyset[key];
 	var currset = set[val[1]];
-	var cs_k_l = currset[key]["list"];
+	var cs_k_l = listset[key]; 
 	for(var k in cs_k_l){
 	    var jqobj = jQuery(k);
 	    if("attr" in currset[key]){
