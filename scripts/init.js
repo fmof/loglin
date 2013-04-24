@@ -38,7 +38,7 @@ REVERSE_POSITIONS={};
 //context_id -> associative array
 DATA_BY_CONTEXT=[];
 
-LAST_UPDATED_TOKEN_COUNT=null;
+LAST_UPDATED_TOKEN_COUNT={}; //null;
 
 USED_CONTEXTS={};
 USED_FEATURES={};
@@ -260,7 +260,7 @@ function reset_data_structures(full){
     EXPECTED_STROKE_WIDTH=3;
 
     gradients_drawn = 0;
-    LAST_UPDATED_TOKEN_COUNT=null;
+    LAST_UPDATED_TOKEN_COUNT= {}; //null;
 }
 
 max_prob=1;
@@ -483,22 +483,24 @@ function init(){
 	};
 	}*/
 
-    if($('new_counts')){
-    	$('new_counts').onclick=function(){
-	    //disable a bunch of buttons...
-	    for(var c=0;c<CONTEXTS.length;c++){
-		if(USED_CONTEXTS[c]){
-		    var v = $('num_tokens_context_'+c).value;
-		    v= isNumber(v)?parseFloat(v):-1;
-		    //don't do the following when v == NUM_TOKENS_C[c]
-		    console.log("v = "+v);
-		    if(c==LAST_UPDATED_TOKEN_COUNT || LAST_UPDATED_TOKEN_COUNT==null)
-			generate_new_counts_context(c,v);
-		}
+    jQuery('#new_counts').click(function(){
+	//disable a bunch of buttons...
+	for(var c=0;c<CONTEXTS.length;c++){
+	    if(USED_CONTEXTS[c]){
+		var v = $('num_tokens_context_'+c).value;
+		v= isNumber(v)?parseFloat(v):-1;
+		//don't do the following when v == NUM_TOKENS_C[c]
+		console.log("v = "+v);
+		if(LAST_UPDATED_TOKEN_COUNT[c] || 
+		   LAST_UPDATED_TOKEN_COUNT == {})
+		    generate_new_counts_context(c,v);
 	    }
-	};
-	$('new_counts').disabled='disabled';
-    }
+	}
+	jQuery('.num_tokens_context_input').css('background-color','');
+	jQuery(this).css('background-color','');
+    });
+    $('new_counts').disabled='disabled';
+
 
     if($('change_num_tokens')){
 	//jQuery('#change_num_tokens').bt("you can change the number of <em>tokens</em> observed.");
@@ -549,7 +551,7 @@ function init(){
     	gs.val(ORIG_SOLVE_STEP);
     	gs.change();
     	SOLVE_ITERATION=1;
-	LAST_UPDATED_TOKEN_COUNT=null;
+	LAST_UPDATED_TOKEN_COUNT={};//null;
     	generate_new_observations();
 	this.blur();
 	if(has_cheated){

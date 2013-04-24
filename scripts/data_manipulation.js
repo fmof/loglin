@@ -31,6 +31,7 @@ function generate_new_observations(ntimes){
     for(var l=0;l<FEATURE_LIST.length;l++){
 	TRUE_THETA[l] = n.sample();
     }
+    console.log(TRUE_THETA);
     //let's keep our current weights
     recompute_partition_function();
     //and because we have a true model now, compute the actual partition function
@@ -50,6 +51,9 @@ function generate_new_observations(ntimes){
     $('step_button').disabled='';
     $('solve_button').disabled='';
     $("new_counts").disabled='';
+    if(LAST_UPDATED_TOKEN_COUNT!={}){
+	jQuery('#new_counts').css('background-color','#F6F5A2');
+    }
 }
 
 
@@ -68,6 +72,7 @@ function sample_from_true(context_id, num_times){
 	NUM_TOKENS-=NUM_TOKENS_C[c];
 	NUM_TOKENS_C[c]=0;
 	var a=enumerate_possible_types(c,VISUALS[c]);
+	console.log(a);
 	var num_times = num_times || oldntokc[c] || 50;	
 	//first lay-out each type along the unit interval
 	var s = []; var prev=0; var ncounts = a[1];
@@ -84,6 +89,7 @@ function sample_from_true(context_id, num_times){
 		prev=s[i];
 	    }
 	}
+	console.log(s);
 	for(var i = 0;i<num_times;i++){
 	    var n=Math.random();
 	    var j=0;

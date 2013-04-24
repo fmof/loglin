@@ -96,8 +96,6 @@ do_all_loading = function(){
 	    dataType:"json",
 	    success : function(settings){
 		LESSON_SETTINGS=settings;
-		console.log("my lesson settings ");
-		console.log(LESSON_SETTINGS);
 	    },
 	    error : function(jqXHR, textStatus, errorThrown){
 		if(jqXHR.status == 404){

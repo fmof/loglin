@@ -56,15 +56,12 @@ function addSliderEffects(){
     var lb = SLIDER_SIGMOID.inverse(min_slider_val);
     var ub = SLIDER_SIGMOID.inverse(max_slider_val);
     //if(group=$$(".feature_slider")){
-    console.log(group);
     jQuery(".feature_slider").each(function(){
 	var jthis=jQuery(this);
-	console.log(jthis.parent().parent().children()[0].getAttribute('theta_index'));
 	jthis.attr('readonly','readonly');
 	var theta_index = jthis.parent().parent().children()[0].getAttribute('theta_index');
 	var handle_tmpfn=function(){
 	    //handle 
-	    console.log("EHEHREHE");
 	    var t = parseFloat(this.style['left']+handle_width/2);
 	    t=Math.min(slider_width-handle_width,Math.max(0,t));
 	    this.parentNode.parentNode.childNodes[1].value= SLIDER_SIGMOID.inverse(t);
@@ -464,10 +461,11 @@ function addLLRegBars(svg,ll,unregged,cname,regdata,yfn,resizer){
 //unregged : LL + reg
 function updateLLRegBars(svg,ll,unregged,cname,regdata,resizer){
     var regrects=svg.selectAll('.'+cname+'_overlay').data(regdata);
-    console.log(unregged);
-    console.log(resizer(unregged[0]));
-    console.log(ll);
-    console.log(resizer(ll[0]));
+    console.log("uncomment here when ready");
+    //console.log(unregged);
+    //console.log(resizer(unregged[0]));
+    //console.log(ll);
+    //console.log(resizer(ll[0]));
     regrects.attr('x',function(d,i){
 	    return resizer(ll[i])+70;
 	})
@@ -723,11 +721,15 @@ function drawSVGBoxes(selectObj){
 		NUM_TOKENS_C[cc]=v;
 		rescale_context_counts(cc,ov,v);
 		//and allow things to be updated
-		if(LAST_UPDATED_TOKEN_COUNT){
-		    $('num_tokens_context_'+LAST_UPDATED_TOKEN_COUNT).style['background-color']='';
-		}
-		LAST_UPDATED_TOKEN_COUNT=cc;
+		// if(LAST_UPDATED_TOKEN_COUNT==null){
+		//     $('num_tokens_context_'+LAST_UPDATED_TOKEN_COUNT).style['background-color']='';
+		// }
+		LAST_UPDATED_TOKEN_COUNT[cc]=1;
 		this.style['background-color']='#F6F5A2';
+		var ncount_button = jQuery('#new_counts');
+		if(! ncount_button.is(":disabled")){
+		    ncount_button.css('background-color','#F6F5A2');
+		}
 	    } else{
 		this.value=NUM_TOKENS_C[cc];
 	    }
