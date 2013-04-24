@@ -51,7 +51,7 @@ function generate_new_observations(ntimes){
     $('step_button').disabled='';
     $('solve_button').disabled='';
     $("new_counts").disabled='';
-    if(LAST_UPDATED_TOKEN_COUNT!={}){
+    if(!is_empty(LAST_UPDATED_TOKEN_COUNT)){
 	jQuery('#new_counts').css('background-color','#F6F5A2');
     }
 }
