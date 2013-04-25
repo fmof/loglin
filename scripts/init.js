@@ -336,7 +336,9 @@ function apply_settings(){
 	for(var k in cs_k_l){
 	    var jqobj = jQuery(k);
 	    if("attr" in currset[key]){
-		jqobj.attr(currset[key]["attr"]+"", ""+cs_k_l[k]);
+		if(is_empty(jqobj.attr(currset[key]["attr"]))){
+		    jqobj.attr(currset[key]["attr"]+"", ""+cs_k_l[k]);
+		}
 	    }
 	    KNOWN_USER_ACTIONS.do_action(currset, key,jqobj);
 	}

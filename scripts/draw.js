@@ -43,6 +43,7 @@ function redraw_all(){
     recompute_expected_counts();    
     compute_max_prob(get_prob,MAX_EXP_EMP_PROB,MAX_EXP_EMP_PROB_TYPE,MAX_EXP_EMP_AREA, get_model_partition_function);
     redrawAllExpected();
+    updateSVGTitles();
     compute_ll();
     compute_ll(TRUE_THETA,TRUE_Z_THETA,TRUE_LOG_LIKELIHOOD,TRUE_REGULARIZATION);
     updateLLBar();
@@ -626,6 +627,24 @@ function redrawAllExpected(){
 	    drawExpectedData(c,id_num, d3.select('#observed_point_context_'+c+'_'+id_num));
 	}
     }
+}
+
+function updateSVGTitles(){
+    jQuery('.observed_count').each(function(){
+	var jthis=jQuery(this);
+	var spid=this.id.split("_");
+	// if("uiTooltip" in jthis.data()){
+	//     jQuery(this).tooltip({content: 'Empirical Probability: ' + 0.5 +"<br/>"+
+	// 			  'Model Probability: ' + 0.5});
+	// } else{
+	var context = spid[3], typeid=spid[4];
+	var emp_prob = get_empirical_prob(context, typeid);
+	var model_prob = get_prob(context,typeid)/Z_THETA[context];
+	jQuery(this).attr('title','Empirical Probability: ' + emp_prob +"<br/>"+
+			  'Model Probability: ' + model_prob);
+	//}
+			  
+    });
 }
 
 //container needs to be acquired via a d3.select operation!!

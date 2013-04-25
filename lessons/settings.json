@@ -23,7 +23,8 @@
 	"attr" : "title", 
 	"list": {
 	    ".num_tokens_context_div" : "Multiplicatively scale the number of observations in this context to this number",
-	    ".feature_box" : ""
+	    ".feature_box" : "",
+	    ".observed_count" : ""
 	}
     }
 }
