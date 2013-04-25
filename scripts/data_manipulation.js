@@ -150,7 +150,6 @@ function reset_sliders_manually(arr){
     for(var i=0;i<group.length;i++){
 	group[i].value = formatSliderWeight(arr[i][1]);
 	reset_manually_from_theta(group[i],arr[i][1]);
-	//var val = SLIDER_SIGMOID.transform(arr[i][1]);
 	THETA[arr[i][0]]=parseFloat(arr[i][1]);
     }
 }

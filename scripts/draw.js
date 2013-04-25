@@ -1,7 +1,7 @@
 function load_html5_slider(boxid,val){
     val = val || slider_step;
     //return function(batch){
-    var tmpval = boxid.value; var actual_weight;
+    var tmpval = boxid.value;
     if(!isFinite(tmpval)){
 	if(!isNaN(tmpval)){
 	    tmpval = SLIDER_SIGMOID.inverse(tmpval>0 ? max_slider_val : min_slider_val);	}
@@ -27,7 +27,7 @@ function load_html5_slider(boxid,val){
 	boxid.value = formatSliderWeight(actual_weight);
 	//store THETA value
 	THETA[feat_name]=isFinite(actual_weight)?actual_weight:(actual_weight>0? 100: -100);
-	boxid.parentNode.parentNode.setAttribute('title',''+boxid.value);
+	jQuery(boxid.parentNode.parentNode).data("ui-tooltip-title", boxid.value);
 	redraw_all();
     } else{
 	feature_info.className+=' feature_name_box';
@@ -51,8 +51,8 @@ function redraw_all(){
 
 
 function addSliderEffects(){
-    var group=jQuery(".feature_slider");
-    group.rangeinput();
+    console.log(jQuery(".feature_slider"));
+    jQuery(".feature_slider").rangeinput();
     var lb = SLIDER_SIGMOID.inverse(min_slider_val);
     var ub = SLIDER_SIGMOID.inverse(max_slider_val);
     //if(group=$$(".feature_slider")){
@@ -94,6 +94,9 @@ function addSliderEffects(){
 	jthis.change(tmpfn);
 	jthis.parent().children().first().children()[1].ondrag=handle_tmpfn;
 	jthis.change();
+	jthis.parent().parent().mouseleave(function(){
+	    this.setAttribute('title',this.childNodes[1].childNodes[1].value);
+	});
 
 	/*if(USED_FEATURES[theta_index]==undefined){//is unused/unavailable
 	  group[i].parentNode.parentNode.style.display='none';
@@ -843,7 +846,7 @@ function drawSVGBoxes(selectObj){
 	    divi.className += ' drawrow';
 	}
     }
-    jQuery('.observation_row_num_context').draggable({ containment:"parent"});
+    //jQuery('.observation_row_num_context').draggable({ containment:"parent"});
 }
 
 
