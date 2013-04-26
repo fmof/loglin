@@ -286,7 +286,7 @@ function load_lesson(noskip_dropdown){
     loading_object.start();
     document.title = 'Log-Linear Models: Lesson '+CURRENT_LESSON;
     console.log(HISTORY);
-    HISTORY.pushState({CURRENT_LESSON:CURRENT_LESSON},'','#'+CURRENT_LESSON);
+    HISTORY.pushState({CURRENT_LESSON:CURRENT_LESSON},null,'?lesson='+CURRENT_LESSON);
     var j_jump_to_lesson_select=jQuery('#jump_to_lesson_select');
     j_jump_to_lesson_select.val(CURRENT_LESSON);
     if(!noskip_dropdown && !j_jump_to_lesson_select.is(":visible")){
@@ -336,6 +336,28 @@ function apply_settings(){
     }
 }
 
+function verify_state(){
+    if(skip_next_hashchange){
+    	skip_next_hashchange=0;
+    	return 0;
+    }
+    var n = parseInt(HISTORY.getState().data.CURRENT_LESSON,10);
+    if(isNumber(n) && isFinite(n)){
+    	if(n>=1 && n<=MAX_LESSONS){
+    	    CURRENT_LESSON=n;
+	    load_lesson();
+    	} else{
+    	    n=-CURRENT_LESSON;
+    	    skip_next_hashchange=1;   
+    	    window.location.hash='?lesson='+CURRENT_LESSON;
+    	}
+    } else{
+    	n=-CURRENT_LESSON;
+    	skip_next_hashchange=1;
+	HISTORY.pushState({CURRENT_LESSON: CURRENT_LESSON}, null, '?lesson='+ CURRENT_LESSON);
+    }
+    return n;
+}
 
 function setITimeout( callback, init_time, times ){
     var internalCallback = function( t, ep, counter ){
@@ -346,7 +368,6 @@ function setITimeout( callback, init_time, times ){
 		    ep++;
 		}
 		var nt = init_time/(counter/Math.sqrt(10));
-		console.log('time delay is '+nt);
 		SOLVE_TIMEOUT_ID = window.setTimeout(internalCallback, nt);
 		callback(counter)();
 	    } else{
@@ -360,41 +381,29 @@ function setITimeout( callback, init_time, times ){
 
 window.onload = function(){
     KNOWN_USER_ACTIONS = createKnownUserActions();
-    
+    console.log("RELOADING>....");
     //initial History.js
-    HISTORY = window.History; // Note: We are using a capital H instead of a lower h
+    HISTORY = window.History; 
     if(HISTORY.enabled) {
-	// Bind to StateChange Event
-	HISTORY.Adapter.bind(window,'statechange',function(){ // Note: We are using statechange instead of popstate
-            var State = HISTORY.getState(); // Note: We are using History.getState() instead of event.state
+	HISTORY.Adapter.bind(window,'statechange',function(){ 
+	    console.log("am in here...");
+            var State = HISTORY.getState();
             HISTORY.log(State.data, State.title, State.url);
 	});
 
+	HISTORY.Adapter.bind(window,'anchorchange',function(){
+	    console.log("GOT IT HERE>....");
+	    console.log(HISTORY.getState());
+	});
+	
     }
-    console.log("my HISTORY");
-    console.log(HISTORY);
-
-    window.onhashchange = function(){
-    	if(skip_next_hashchange){
-    	    skip_next_hashchange=0;
-    	    return 0;
-    	}
-    	var n = parseInt(window.location.hash.substring(1));
-    	if(isNumber(n) && isFinite(n)){
-    	    if(n>=1 && n<=MAX_LESSONS){
-    		CURRENT_LESSON=n;
-    		load_lesson();
-    	    } else{
-    		n=-CURRENT_LESSON;
-    		skip_next_hashchange=1;
-    		window.location.hash='#'+CURRENT_LESSON;
-    	    }
-    	} else{
-    	    n=-CURRENT_LESSON;
-    	    skip_next_hashchange=1;
-    	    window.location.hash='#'+CURRENT_LESSON;
-    	}
-    	return n;
+    var currstate = HISTORY.getState();
+    if(window.location.href.indexOf("?lesson")>=0){
+	var n = parseInt(window.location.href.replace(/^.+\?lesson=(\d+)/,"$1"),10);
+	if(n>=1 && n <= MAX_LESSONS)
+	    HISTORY.pushState({CURRENT_LESSON: n}, null, '?lesson='+ n);
+	else
+	    HISTORY.pushState({CURRENT_LESSON: CURRENT_LESSON}, null, '?lesson='+CURRENT_LESSON);
     }
 
     jQuery.ajax({
@@ -424,7 +433,6 @@ window.onload = function(){
 	    }
 	},
 	complete : function(){
-	    console.log("Going to init....");
 	    init();
 	}
     });
@@ -467,9 +475,8 @@ function init(){
 	};
     }
 
-    if(window.onhashchange()<0){
-     	load_lesson();
-    }
+    if(verify_state() < 0)
+	load_lesson();
 
     //add listeners for "jump to lesson" select
     jQuery('#lesson_title_words').click(function(){
@@ -510,7 +517,6 @@ function init(){
 
 
     if($('change_num_tokens')){
-	//jQuery('#change_num_tokens').bt("you can change the number of <em>tokens</em> observed.");
 	$('change_num_tokens').onclick=function(){
 	    var form=$('change_num_tokens_form');
 	    form.style.display="block";
