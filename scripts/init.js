@@ -285,7 +285,6 @@ function load_lesson(noskip_dropdown){
 
     loading_object.start();
     document.title = 'Log-Linear Models: Lesson '+CURRENT_LESSON;
-    console.log(HISTORY);
     HISTORY.pushState({CURRENT_LESSON:CURRENT_LESSON},'','#'+CURRENT_LESSON);
     var j_jump_to_lesson_select=jQuery('#jump_to_lesson_select');
     j_jump_to_lesson_select.val(CURRENT_LESSON);
@@ -361,18 +360,7 @@ function setITimeout( callback, init_time, times ){
 window.onload = function(){
     KNOWN_USER_ACTIONS = createKnownUserActions();
     
-    //initial History.js
-    HISTORY = window.History; // Note: We are using a capital H instead of a lower h
-    if(HISTORY.enabled) {
-	// Bind to StateChange Event
-	HISTORY.Adapter.bind(window,'statechange',function(){ // Note: We are using statechange instead of popstate
-            var State = HISTORY.getState(); // Note: We are using History.getState() instead of event.state
-            HISTORY.log(State.data, State.title, State.url);
-	});
-
-    }
-    console.log("my HISTORY");
-    console.log(HISTORY);
+    HISTORY = history;
 
     window.onhashchange = function(){
     	if(skip_next_hashchange){

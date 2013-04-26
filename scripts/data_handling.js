@@ -364,14 +364,14 @@ function record_observation(record){
 
 function createSlider(val,isUnused){
     var d=document.createElement('div');
-    var input=document.createElement('input');
-    input.type="range"; 
-    input.className += ' feature_slider';
-    input.setAttribute('min',slider_min); 
-    input.setAttribute('max',slider_max);
-    input.setAttribute('step',slider_step);
-    input.setAttribute('value',val);
-    d.appendChild(input);
+    jQuery('<input/>', {
+	type : "range",
+	min: slider_min,
+	max: slider_max,
+	step: slider_step,
+	value : val
+    }).addClass("feature_slider")
+    .appendTo(jQuery(d));
     d.className += ' html5slider';
     return d;
 }
