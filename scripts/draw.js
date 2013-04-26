@@ -119,22 +119,20 @@ function formatExpected(ecp){
     else return ret;
 }
 
-function determine_color(p_emp,p_mod){
+function determine_color(p_emp,p_mod, context){
     if(p_emp == 0){ return COUNTS_EQUAL;}
     if(p_mod ==0){ return COUNTS_TOO_LOW;}
     var arg = p_emp * Math.log(p_emp/p_mod);
-    if(Math.abs(arg)<.01)
+    var thresh = 0.01;
+    if(context != undefined){
+	if(NUM_TOKENS_C[context] > 100)
+	    thresh = Math.pow(10,-Math.log(NUM_TOKENS_C[context])/Math.log(10));
+    }
+    if(Math.abs(arg)<thresh)
 	return COUNTS_EQUAL;
     if(arg>0)
 	return COUNTS_TOO_LOW;
     return COUNTS_TOO_HIGH;
-    /*
-    if(Math.abs(obs-exp)<0.01){
-	return COUNTS_EQUAL;
-    } else{
-	if(obs>exp) return COUNTS_TOO_LOW;
-	else return COUNTS_TOO_HIGH;
-	}*/
 }
 
 
@@ -656,7 +654,7 @@ function drawExpectedData(context, i, container){
     var shapen = vis['shape'];
     var obs_count = COUNTS[context][i];
     var exp_count = EXPECTED_COUNTS[context][i];	    
-    var color = determine_color(get_empirical_prob(context,i),get_prob(context,i)/Z_THETA[context]);
+    var color = determine_color(get_empirical_prob(context,i),get_prob(context,i)/Z_THETA[context], context);
     //var color=determine_color(obs_count,exp_count);
     //scale by the max observed count...
     var max_count=-1;

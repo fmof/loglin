@@ -27,7 +27,7 @@ function recompute_expected_counts(){
 	    var ecp=get_expected_count(c,id_num);
 	    EXPECTED_COUNTS[c][id_num]=ecp;
 	    var obs_count = COUNTS[c][id_num];
-	    var color = determine_color(get_empirical_prob(c,id_num),get_prob(c,id_num)/Z_THETA[c]);
+	    var color = determine_color(get_empirical_prob(c,id_num),get_prob(c,id_num)/Z_THETA[c], c);
 	    p.innerHTML =  formatExpected(ecp);
 	    p.style.color=color;
 	    p.setAttribute('dirty',0);
