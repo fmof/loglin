@@ -1,1 +1,7 @@
 *~
+*.synctex.gz
+*.log
+*.aux
+*.blg
+*.bbl
+paper/tnlp.pdf
