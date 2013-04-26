@@ -633,16 +633,17 @@ function updateSVGTitles(){
     jQuery('.observed_count').each(function(){
 	var jthis=jQuery(this);
 	var spid=this.id.split("_");
-	// if("uiTooltip" in jthis.data()){
-	//     jQuery(this).tooltip({content: 'Empirical Probability: ' + 0.5 +"<br/>"+
-	// 			  'Model Probability: ' + 0.5});
-	// } else{
 	var context = spid[3], typeid=spid[4];
 	var emp_prob = get_empirical_prob(context, typeid);
 	var model_prob = get_prob(context,typeid)/Z_THETA[context];
-	jQuery(this).attr('title','Empirical Probability: ' + emp_prob +"<br/>"+
-			  'Model Probability: ' + model_prob);
-	//}
+	
+	if("uiTooltip" in jthis.data()){
+	    jQuery(this).tooltip({content: 'Empirical Probability: ' + emp_prob +"<br/>"+
+				  'Model Probability: ' + model_prob});
+	} else{
+	    jQuery(this).attr('title','Empirical Probability: ' + emp_prob +"<br/>"+
+			      'Model Probability: ' + model_prob);
+	}
 			  
     });
 }
