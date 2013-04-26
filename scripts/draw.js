@@ -27,7 +27,13 @@ function load_html5_slider(boxid,val){
 	boxid.value = formatSliderWeight(actual_weight);
 	//store THETA value
 	THETA[feat_name]=isFinite(actual_weight)?actual_weight:(actual_weight>0? 100: -100);
-	jQuery(boxid.parentNode.parentNode).data("ui-tooltip-title", boxid.value);
+	var jdiv = jQuery(boxid.parentNode.parentNode);
+	if("uiTooltip" in jdiv.data()){
+	    jdiv.tooltip({content: boxid.value});
+	} else{
+	    jdiv.attr("title", boxid.value);
+	    jdiv.data("ui-tooltip-title", boxid.value);
+	}
 	redraw_all();
     } else{
 	feature_info.className+=' feature_name_box';
@@ -636,8 +642,8 @@ function updateSVGTitles(){
 	var jthis=jQuery(this);
 	var spid=this.id.split("_");
 	var context = spid[3], typeid=spid[4];
-	var emp_prob = get_empirical_prob(context, typeid);
-	var model_prob = get_prob(context,typeid)/Z_THETA[context];
+	var emp_prob = get_empirical_prob(context, typeid).toPrecision(4);
+	var model_prob = (get_prob(context,typeid)/Z_THETA[context]).toPrecision(4);
 	
 	if("uiTooltip" in jthis.data()){
 	    jQuery(this).tooltip({content: 'Empirical Probability: ' + emp_prob +"<br/>"+
@@ -682,9 +688,9 @@ function updateObservedImages(){
     var mcpc = [];
     for(var i=0;i<g.length;i++){
 	//#observed_point_context_X_Y
-	var s=g[i].id.split('_');
-	var c = s[3] ; //get context -- X
-	var j = s[4] ; //get type_id -- Y
+	var gi=g[i].id.split('_');
+	var c = gi[3] ; //get context -- X
+	var j = gi[4] ; //get type_id -- Y
 	var count = COUNTS[c][j];
 	var x = VISUALS[c][j];
 	var tfi = x['fill'];
@@ -692,7 +698,7 @@ function updateObservedImages(){
 	var s=updateD3Shape(d3.select('#observed_point_context_'+c+'_'+j),j,'obs_count_pic_'+c+'_'+j,SVG_WIDTH,SVG_HEIGHT, VISUALS[c][j], '#B8B8B8', get_empirical_prob(c,j),MAX_EMP_PROB[c]/MAX_EMP_AREA[c]);
 	x['fill']=tfi;
 	s.attr('stroke-opacity',1).attr('stroke-width',3);
-	$('obs_count_text_'+c+'_'+j).innerHTML=formatExpected(count);
+	jQuery('#obs_count_text_'+c+'_'+j).html(formatExpected(count));
     }
     make_LL_SIGMOID();
 }

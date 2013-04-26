@@ -8,6 +8,8 @@ LESSON_SETTINGS={};
 
 KNOWN_USER_ACTIONS={};
 
+HISTORY={};
+
 loader_bar_img='imgs/ajax-bar-loader.gif';
 LOADING_TIME_DELAY = 200;
 has_cheated=0;
@@ -283,8 +285,8 @@ function load_lesson(noskip_dropdown){
 
     loading_object.start();
     document.title = 'Log-Linear Models: Lesson '+CURRENT_LESSON;
-
-    history.pushState({CURRENT_LESSON:CURRENT_LESSON},'','#'+CURRENT_LESSON);
+    console.log(HISTORY);
+    HISTORY.pushState({CURRENT_LESSON:CURRENT_LESSON},'','#'+CURRENT_LESSON);
     var j_jump_to_lesson_select=jQuery('#jump_to_lesson_select');
     j_jump_to_lesson_select.val(CURRENT_LESSON);
     if(!noskip_dropdown && !j_jump_to_lesson_select.is(":visible")){
@@ -356,32 +358,45 @@ function setITimeout( callback, init_time, times ){
     SOLVE_TIMEOUT_ID=window.setTimeout( internalCallback, init_time/Math.sqrt(10) );
 };
 
-window.onhashchange = function(){
-    if(skip_next_hashchange){
-	skip_next_hashchange=0;
-	return 0;
-    }
-    var n = parseInt(window.location.hash.substring(1));
-    if(isNumber(n) && isFinite(n)){
-	if(n>=1 && n<=MAX_LESSONS){
-	    CURRENT_LESSON=n;
-	    load_lesson();
-	} else{
-	    n=-CURRENT_LESSON;
-	    skip_next_hashchange=1;
-	    window.location.hash='#'+CURRENT_LESSON;
-	}
-    } else{
-	n=-CURRENT_LESSON;
-	skip_next_hashchange=1;
-	window.location.hash='#'+CURRENT_LESSON;
-    }
-    return n;
-}
-
-
 window.onload = function(){
     KNOWN_USER_ACTIONS = createKnownUserActions();
+    
+    //initial History.js
+    HISTORY = window.History; // Note: We are using a capital H instead of a lower h
+    if(HISTORY.enabled) {
+	// Bind to StateChange Event
+	HISTORY.Adapter.bind(window,'statechange',function(){ // Note: We are using statechange instead of popstate
+            var State = HISTORY.getState(); // Note: We are using History.getState() instead of event.state
+            HISTORY.log(State.data, State.title, State.url);
+	});
+
+    }
+    console.log("my HISTORY");
+    console.log(HISTORY);
+
+    window.onhashchange = function(){
+    	if(skip_next_hashchange){
+    	    skip_next_hashchange=0;
+    	    return 0;
+    	}
+    	var n = parseInt(window.location.hash.substring(1));
+    	if(isNumber(n) && isFinite(n)){
+    	    if(n>=1 && n<=MAX_LESSONS){
+    		CURRENT_LESSON=n;
+    		load_lesson();
+    	    } else{
+    		n=-CURRENT_LESSON;
+    		skip_next_hashchange=1;
+    		window.location.hash='#'+CURRENT_LESSON;
+    	    }
+    	} else{
+    	    n=-CURRENT_LESSON;
+    	    skip_next_hashchange=1;
+    	    window.location.hash='#'+CURRENT_LESSON;
+    	}
+    	return n;
+    }
+
     jQuery.ajax({
 	url:GLOBAL_SETTINGS_FILE,
 	datatype:"json",
@@ -409,6 +424,7 @@ window.onload = function(){
 	    }
 	},
 	complete : function(){
+	    console.log("Going to init....");
 	    init();
 	}
     });
@@ -452,7 +468,7 @@ function init(){
     }
 
     if(window.onhashchange()<0){
-	load_lesson();
+     	load_lesson();
     }
 
     //add listeners for "jump to lesson" select
