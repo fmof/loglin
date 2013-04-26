@@ -378,6 +378,7 @@ function addLLBar(){
 	    return (2*i+1)*20 - 7;
 	})
 	.attr('stroke','gray')
+	.attr('stroke-width', .5)
 	.attr('fill',function(d){
 	    return "gray";
 	});
@@ -391,6 +392,7 @@ function addLLBar(){
 	    return (2*i+2)*20 - 7;
 	})
 	.attr('stroke',TRUE_MODEL_COLOR)
+	.attr('stroke-width', .5)
 	.attr('fill',function(d){
 	    return TRUE_MODEL_COLOR;
 	})
@@ -407,6 +409,7 @@ function addLLBar(){
 	    return (2*i+1)*20 - 7;
 	})
 	.attr('stroke','gray')
+	.attr('stroke-width', .5)
 	.attr('fill',function(d){
 	    return "gray";
 	});
@@ -424,6 +427,7 @@ function addLLBar(){
 		return (2*i+2)*20 - 7;
 	    })
 	.attr('stroke',TRUE_MODEL_COLOR)
+	.attr('stroke-width', .5)
 	.attr('fill',function(d){
 		return TRUE_MODEL_COLOR;
 	    })
@@ -690,8 +694,7 @@ function updateObservedImages(){
 	s.attr('stroke-opacity',1).attr('stroke-width',3);
 	$('obs_count_text_'+c+'_'+j).innerHTML=formatExpected(count);
     }
-    //var fill=rev[2]; var shapen = rev[0];
-    //var count = SORT_COUNT_INDICES[MAP_COUNT_INDICES[i]][0];
+    make_LL_SIGMOID();
 }
 
 

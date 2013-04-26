@@ -146,8 +146,6 @@ button_color='';
 col_for_true_theta=TRUE_MODEL_COLOR;
 
 gradients_drawn = 0;
-//GRAD_LOW_C='#334455';
-//GRAD_HIGH_C='#AA03FF';
 GRAD_LOW_C='red';
 GRAD_HIGH_C='blue';
 
@@ -176,15 +174,6 @@ function get_sigmoid(amp,hmove, xdef, ratio){
 
 var SLIDER_SIGMOID = get_sigmoid(slider_width-handle_width, 0, Math.sqrt(2), 7.0/8.0);
 var LL_SIGMOID;
-
-/*
-function sigmoid_transform(x){
-    return (slider_width-handle_width)/(1+Math.pow(Math.E,-SIGMOID_CONSTANT*(x)));
-}
-function inverse_sigmoid(x){
-    var ret= -1/SIGMOID_CONSTANT * Math.log((slider_width-handle_width)/(x) - 1);
-    return ret;
-    }*/
 
 function reset_paths(){
     TRUE_THETA_PATH='';

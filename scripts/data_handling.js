@@ -271,16 +271,21 @@ function record_data(rows,already_created){
     
     if(!already_created){
 	//calculate LL(0)
-	var zerotheta = THETA.map(function(d){return 0;});
-	var zerotab=new Array(zerotheta.length);
-	var zeroll=[0]; var zeroreg=[0];
-	recompute_partition_function(zerotheta,zerotab);
-	compute_ll(zerotheta,zerotab,zeroll,zeroreg);
-	LL_SIGMOID = get_sigmoid(DIV_LL_WIDTH, zeroll[0], 0.0, .99- 70.0/DIV_LL_WIDTH);
+	//compute the partition function, and LL, under a uniform distr.
+	make_LL_SIGMOID();
      	addLLBar();
     } else{
     	updateLLBar();
     }
+}
+
+function make_LL_SIGMOID(){
+    var zerotheta = THETA.map(function(d){return 0;});
+    var zerotab=new Array(zerotheta.length);
+    var zeroll=[0]; var zeroreg=[0];
+    recompute_partition_function(zerotheta,zerotab);
+    compute_ll(zerotheta,zerotab,zeroll,zeroreg);
+    LL_SIGMOID = get_sigmoid(DIV_LL_WIDTH, zeroll[0], 0.0, .99- 70.0/DIV_LL_WIDTH);
 }
 
 function record_observation(record){
