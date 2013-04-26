@@ -653,6 +653,7 @@ function init(){
 	    //$('change_num_tokens').disabled="";
 	    $('gradient_step').value = orig_step_size.toPrecision(5);
 	    $('gradient_step').onchange();
+	    jQuery(this).blur();
 	};
 	$('stop_solving_div').style.display='none';
     }
@@ -698,7 +699,7 @@ function init(){
 					 iter,
 					 SOLVE_STEP);
 			};}, SOLVE_TIME_DELAY/Math.sqrt(10), MAX_SOLVE_ITERATIONS);
-				     
+		jQuery(this).blur();
 	    }
     	};
     }
