@@ -27,12 +27,14 @@ function load_html5_slider(boxid,val){
 	boxid.value = formatSliderWeight(actual_weight);
 	//store THETA value
 	THETA[feat_name]=isFinite(actual_weight)?actual_weight:(actual_weight>0? 100: -100);
-	var jdiv = jQuery(boxid.parentNode.parentNode);
+	var jdiv = jQuery(boxid);
+	var boxval = parseFloat(boxid.value);
 	if("uiTooltip" in jdiv.data()){
-	    jdiv.tooltip({content: boxid.value});
+	    jdiv.tooltip({content: boxval.toFixed(10),
+			 tooltipClass: "feature_slider_tooltip"});
 	} else{
-	    jdiv.attr("title", boxid.value);
-	    jdiv.data("ui-tooltip-title", boxid.value);
+	    jdiv.attr("title", boxval.toFixed(10));
+	    jdiv.data("ui-tooltip-title", boxval.toFixed(10));
 	}
 	redraw_all();
     } else{

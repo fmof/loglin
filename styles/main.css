@@ -719,13 +719,23 @@ input[type=range].feature_slider{
     border: 2px solid white;
 }
 .ui-tooltip {
-    width: 250px;
+    max-width: 250px;
     padding: 10px 20px;
     color: white;
     border-radius: 20px;
     font: normal 14px "Helvetica Neue", Sans-Serif;
     box-shadow: 0 0 7px black;
 }
+
+.feature_slider_tooltip {
+    width: 100px;
+    padding: 10px 20px;
+    color: white;
+    border-radius: 20px;
+    font: normal 14px "Helvetica Neue", Sans-Serif;
+    box-shadow: 0 0 7px black;
+}
+
 .arrow {
     width: 70px;
     height: 16px;
