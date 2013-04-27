@@ -169,6 +169,30 @@ function generate_gradient_style(npcs){
     return ret;
 }
 
+//coi = color of interest
+function sort_slider_color_points(arr, coi){
+    arr=arr.sortBy(function(d){return d[0];});
+    var first=0; var def_color='#FFFFFF'; var tt_seen=0;
+    var prev_col='#FFFFFF'; var prev_col1='#FFFFFF';
+    for(var i=0;i<arr.length;i++){
+	if(arr[i][1]==''){
+	    arr[i][1]=prev_col;
+	} else{
+	    if(arr[i][1]==coi){
+		tt_seen = tt_seen + (tt_seen>0 ? -1:1);
+	    }
+	    if(prev_col!=arr[i][1]){
+		prev_col1=prev_col;
+		prev_col=arr[i][1];
+	    } else{
+		prev_col=prev_col1;
+	    }
+	}
+    }
+    arr[arr.length-1][1]='#FFFFFF';
+    return arr;
+}
+
 function draw_true_theta_on_slider(tt){
     var t=[[tt-1.0001,'#FFFFFF'],[tt-1, col_for_true_theta],
       [tt+1, col_for_true_theta],[tt+1.0001,'#FFFFFF']];
@@ -177,7 +201,7 @@ function draw_true_theta_on_slider(tt){
     for(var i=0;i<th.length;i++){
 	t.push(th[i]);
     }
-    return generate_gradient_style(t);
+    return generate_gradient_style(sort_slider_color_points(t, col_for_true_theta));
 }
 
 function clear_gradient_color(){
@@ -189,15 +213,12 @@ function clear_gradient_color(){
 
 function draw_gradient(){
     if(!SHOW_GRADIENTS){
-	var slds = $$(".slider");
-	if(slds){
-	    for(var i=0;i<slds.length;i++){	
-		var g = slds[i].parentNode.parentNode.childNodes[0];
+	jQuery('.slider').each(function(){
+		var g = this.parentNode.parentNode.childNodes[0];
 		var theta_id = parseInt(g.getAttribute('theta_index'));
 		var sattribute=has_cheated?draw_true_theta_on_slider(bound_dom_range(TRUE_THETA[theta_id])):clear_gradient_color();
-		slds[i].setAttribute('style',sattribute);
-	    }
-	}
+		this.setAttribute('style',sattribute);
+	});
 	gradients_drawn = 0;
 	return;
     }
@@ -266,25 +287,7 @@ function draw_gradient(){
 		t.push([tt+1, col_for_true_theta]);
 		t.push([tt+1.000001,'']);
 	    }
-	    t=t.sortBy(function(d){return d[0];});
-	    var first=0; var def_color='#FFFFFF'; var grad_seen=0;
-	    var prev_col='#FFFFFF'; var prev_col1='#FFFFFF';
-	    for(var i=0;i<t.length;i++){
-		if(t[i][1]==''){
-		    t[i][1]=prev_col;
-		} else{
-		    if(t[i][1]==grad_color){
-			grad_seen = grad_seen + (grad_seen>0 ? -1:1);
-		    }
-		    if(prev_col!=t[i][1]){
-			prev_col1=prev_col;
-			prev_col=t[i][1];
-		    } else{
-			prev_col=prev_col1;
-		    }
-		}
-	    }
-	    t[t.length-1][1]='#FFFFFF';
+	    t=sort_slider_color_points(t, grad_color);
 	    return t;
 	};
 	break;

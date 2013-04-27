@@ -540,6 +540,7 @@ function init(){
     
 
     jQuery('#new_challenge').click(function(){
+	var old_hc=has_cheated;
 	jQuery('#step_button').attr('disabled','disabled');
 	jQuery('#solve_button').attr("disabled",'disabled');
     	var gs=jQuery('#gradient_step');
@@ -549,7 +550,7 @@ function init(){
 	LAST_UPDATED_TOKEN_COUNT={};//null;
     	generate_new_observations();
 	this.blur();
-	if(has_cheated){
+	if(old_hc){
 	    $('cheat_button').style.display='block';
 	    jQuery.each(jQuery('.unused_feature'), function(x){
 		x.style.display='none';

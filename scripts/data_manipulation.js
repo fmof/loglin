@@ -44,6 +44,7 @@ function generate_new_observations(ntimes){
 	}
     }
     compute_max_prob(get_count,MAX_EMP_PROB,MAX_EMP_PROB_TYPE,MAX_EMP_AREA, get_num_tokens);
+    has_cheated=0;
     updateObservedImages();
     svg_loaded=1;
     redraw_all();
