@@ -28,13 +28,14 @@ function load_html5_slider(boxid,val){
 	//store THETA value
 	THETA[feat_name]=isFinite(actual_weight)?actual_weight:(actual_weight>0? 100: -100);
 	var jdiv = jQuery(boxid);
-	var boxval = parseFloat(boxid.value);
+	var boxval = parseFloat(boxid.value).toFixed(10);
+	jQuery(boxid.parentNode.parentNode).attr("title", boxval);
 	if("uiTooltip" in jdiv.data()){
-	    jdiv.tooltip({content: boxval.toFixed(10),
+	    jdiv.tooltip({content: boxval,
 			 tooltipClass: "feature_slider_tooltip"});
 	} else{
-	    jdiv.attr("title", boxval.toFixed(10));
-	    jdiv.data("ui-tooltip-title", boxval.toFixed(10));
+	    jdiv.attr("title", boxval);
+	    jdiv.data("ui-tooltip-title", boxval);
 	}
 	redraw_all();
     } else{
