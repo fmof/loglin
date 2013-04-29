@@ -23,8 +23,8 @@ function createKnownUserActions(){
 	    do_action : function(jqobj){
 		jqobj.tooltip({content: jqobj.attr("title"),
 			       position: {
-				   //my: "center bottom-20",
-				   //at: "center top",
+				   my: "center bottom-20",
+				   at: "center top",
 				   using: function( position, feedback ) {
 				       jQuery(this).css(position);
 				       jQuery("<div>")
