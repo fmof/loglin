@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012/W32TeX) (format=pdflatex 2012.11.7)  29 APR 2013 00:28
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012/W32TeX) (format=pdflatex 2012.11.7)  29 APR 2013 00:51
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -415,9 +415,6 @@ Missing character: There is no ú in font ptmr7t!
 Missing character: There is no ‚ in font ptmr7t!
 Missing character: There is no Ä in font ptmr7t!
 Missing character: There is no ù in font ptmr7t!
-Missing character: There is no ‚ in font ptmr7t!
-Missing character: There is no Ä in font ptmr7t!
-Missing character: There is no ô in font ptmr7t!
  [1{c:/texlive/2012/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
 
@@ -426,39 +423,60 @@ Missing character: There is no ô in font ptmr7t!
 Missing character: There is no ‚ in font ptmr7t!
 Missing character: There is no Ä in font ptmr7t!
 Missing character: There is no ô in font ptmr7t!
- [2] (./tnlp2013.bbl
+
+<images/lesson1-grad-moved-nonewcounts-ell2-c4.PNG, id=18, 952.30782pt x 621.07
+031pt>
+File: images/lesson1-grad-moved-nonewcounts-ell2-c4.PNG Graphic file (type png)
+
+ <use images/lesson1-grad-moved-nonewcounts-ell2-c4.PNG>
+Package pdftex.def Info: images/lesson1-grad-moved-nonewcounts-ell2-c4.PNG used
+ on input line 137.
+(pdftex.def)             Requested size: 476.15274pt x 310.5344pt.
+
+Overfull \hbox (20.90866pt too wide) in paragraph at lines 137--138
+[][] 
+ []
+
+
+Underfull \hbox (badness 1418) in paragraph at lines 154--155
+[][][]\OT1/ptm/m/n/10.95 why[] [][][]this[] [][][]vi[]-[]sual[] [][][]po[]-[]si
+[]-[]tion[]-[]ing[] [][][]is[] [][][]ped[]-[]a[]-
+ []
+
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ô in font ptmr7t!
+[2] (./tnlp2013.bbl
 Underfull \hbox (badness 1112) in paragraph at lines 4--11
 []\OT1/ptm/m/n/10 Jason Eis-ner.  2002.  An in-ter-ac-tive spread-sheet
  []
 
-) [3
-
-] (./tnlp2013.aux) ) 
+) [3 <./images/lesson1-grad-moved-nonewcounts-ell2-c4.PNG>] (./tnlp2013.aux) ) 
 Here is how much of TeX's memory you used:
- 4616 strings out of 493488
- 63520 string characters out of 3144727
- 149952 words of memory out of 3000000
- 7795 multiletter control sequences out of 15000+200000
- 24593 words of font info for 62 fonts, out of 3000000 for 9000
+ 4627 strings out of 493488
+ 63839 string characters out of 3144727
+ 150960 words of memory out of 3000000
+ 7802 multiletter control sequences out of 15000+200000
+ 25108 words of font info for 64 fonts, out of 3000000 for 9000
  957 hyphenation exceptions out of 8191
- 41i,11n,35p,455b,305s stack positions out of 5000i,500n,10000p,200000b,50000s
-{c:/texlive/2012/texmf-dist/fonts/enc/dvips/base/8r.enc}<c:
-/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><c:/texlive/
-2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><c:/texlive/2012/texm
-f-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb><c:/texlive/2012/texmf-dist/fon
-ts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2012/texmf-dist/fonts/type1/p
-ublic/amsfonts/cm/cmr8.pfb><c:/texlive/2012/texmf-dist/fonts/type1/public/amsfo
-nts/cm/cmsy10.pfb><c:/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cm
-sy6.pfb><c:/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb><c
-:/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb><c:/te
-xlive/2012/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb><c:/texlive/2012/texmf
--dist/fonts/type1/urw/times/utmb8a.pfb><c:/texlive/2012/texmf-dist/fonts/type1/
-urw/times/utmr8a.pfb><c:/texlive/2012/texmf-dist/fonts/type1/urw/times/utmri8a.
-pfb>
-Output written on tnlp2013.pdf (3 pages, 135128 bytes).
+ 41i,11n,35p,427b,441s stack positions out of 5000i,500n,10000p,200000b,50000s
+{
+c:/texlive/2012/texmf-dist/fonts/enc/dvips/base/8r.enc}<c:/texlive/2012/texmf-d
+ist/fonts/type1/public/amsfonts/cm/cmex10.pfb><c:/texlive/2012/texmf-dist/fonts
+/type1/public/amsfonts/cm/cmmi10.pfb><c:/texlive/2012/texmf-dist/fonts/type1/pu
+blic/amsfonts/cm/cmmi8.pfb><c:/texlive/2012/texmf-dist/fonts/type1/public/amsfo
+nts/cm/cmr10.pfb><c:/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmr
+8.pfb><c:/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><c:
+/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb><c:/texlive/2
+012/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb><c:/texlive/2012/texmf-
+dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb><c:/texlive/2012/texmf-dist
+/fonts/type1/urw/courier/ucrr8a.pfb><c:/texlive/2012/texmf-dist/fonts/type1/urw
+/times/utmb8a.pfb><c:/texlive/2012/texmf-dist/fonts/type1/urw/times/utmr8a.pfb>
+<c:/texlive/2012/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on tnlp2013.pdf (3 pages, 176152 bytes).
 PDF statistics:
- 67 PDF objects out of 1000 (max. 8388607)
- 48 compressed objects within 1 object stream
+ 70 PDF objects out of 1000 (max. 8388607)
+ 49 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 6 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -85,16 +85,16 @@ F\left(\vec{\theta}\right) = \sum_{i=1}^N \log{\hat{p}_{\vec{\theta}}\left(y_i\ 
 \end{equation}
 Here, $C \ge 0$ is the regularization penalty for the regularizer $R(\vec{\theta})$. We will generally refer to the \textbf{full model} as that of \eqref{eqn:conditional_loglin} with objective \eqref{eqn:reg_ll}.
 
-However, because the full model may present too many subtleties to be grasped all at once, we also consider ``simplified'' global models $\hat{p}_{\vec{theta}}\left(y\right)$. These context-nescient models allow students to \NoteFF{finish this thought} . 
+However, because the full model may present too many subtleties to be grasped all at once, we also consider ``simplified'' global models $\hat{p}_{\vec{theta}}\left(y\right)$. These context-nescient models allow students to focus initially on understanding some of the core underlying concepts of exponential models, such as feature interations and weight tradeoffs, before progressing to conditioned models.
 
-Using $\tilde{p}$ to represent the empirical distribution, the gradient of \eqref{eqn:reg_ll} is, in general,
+\NoteFF{move to a later section} Using $\tilde{p}$ to represent the empirical distribution, the gradient of \eqref{eqn:reg_ll} is, in general,
 \begin{equation}
 \nabla_{\vec{\theta}} F = 
 \mathbb{E}_{\tilde{p}}\left[\vec{f}(x,y)\right] 
 - \mathbb{E}_{\hat{p}}\left[\vec{f}(x,y)\right]
 - C \nabla_{\vec{\theta}}R(\vec{\theta}).
 \end{equation}
-\NoteFF{move to a later section} We consider models where $R(\vec{\theta}) = \vec{0}$ (no regularization), $R(\vec{\theta}) = \|\vec\theta\|_1$, and $R(\vec{\theta}) = \|\vec{\theta}\|_2^2$: we special-case the optimizer to handle the non-differentiable $\ell_1$ regularization, thus providing a friendly educational environment in which the student may explore the differences between $\ell_1$ and $\ell_2$ regularization.
+We consider models where $R(\vec{\theta}) = \vec{0}$ (no regularization), $R(\vec{\theta}) = \|\vec\theta\|_1$, and $R(\vec{\theta}) = \|\vec{\theta}\|_2^2$: we special-case the optimizer to handle the non-differentiable $\ell_1$ regularization, thus providing a friendly educational environment in which the student may explore the differences between $\ell_1$ and $\ell_2$ regularization.
 
 \section{Our Notes}
 \NoteFF{These are simply copied from the Google doc titled ``600.465: Maxent Notes.'' This section could be retitled general pedagogical aims, or something of the sort.}
@@ -131,6 +131,14 @@ Using $\tilde{p}$ to represent the empirical distribution, the gradient of \eqre
 
 \NoteFF{It's also important to talk about convexity of the objective.} That is, we'll always find a unique $\vec{\theta^*}$ that solves \eqref{eqn:reg_ll}.
 
+\section{Virtual Manipulative Overview}
+See Figure \ref{fig:lesson1} for a screenshot.
+\begin{figure*}[t]
+\includegraphics[scale=.5]{images/lesson1-grad-moved-nonewcounts-ell2-c4.PNG}
+\caption{Screenshot of the first lesson from the virtual manipulative.}
+\label{fig:lesson1}
+\end{figure*}
+
 \section{Usability}
 \begin{description}
 \item[``New Counts'' button] The other use is to help the user experiment with datasets of different sizes, by changing N to scale the counts and then clicking "New counts."
@@ -143,7 +151,7 @@ Using $\tilde{p}$ to represent the empirical distribution, the gradient of \eqre
 \begin{itemize}
 \item a set of contexts (if missing, will be assumed to contain only one context)
 \item a set of features; some of these may be marked as hidden
-\item for each context, a set of events and visual positions for them (required)
+\item for each context, a set of events and visual positions for them \NoteFF{explain why this visual positioning is pedagogically important, i.e., aligning \texttt{circles} vs. \texttt{triangles}, and \texttt{solid} vs. \texttt{striped} can make feature contrasts stand out more}
 \end{itemize}
 
 \item[Optional]
