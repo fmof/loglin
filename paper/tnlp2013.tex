@@ -3,6 +3,10 @@
 \usepackage{times}
 \usepackage{latexsym}
 \usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{enumitem}
+\usepackage{verbatim}
 \usepackage{mathtools}
 
 \usepackage{graphicx}
@@ -50,7 +54,7 @@
 \maketitle
 
 \begin{abstract}
-Abstract here.
+We present a virtual manipulative for regularized conditional log-linear models. 
 \end{abstract}
 
 \section{Introduction}\label{sec:intro}
@@ -59,16 +63,38 @@ open-source;
 data input format makes it extensible;
 individual lessons can be tailored (e.g., hide/show buttons, different tool-tips for lessons)
 
-\section{Model}
-Our aim is to teach an intuitive understanding conditional log-linear models. Given $N$ data points $\{( x_i, y_i)\}_{i=1}^N$, we are interested in estimating distributions 
+Why do we focus on shapes, rather than words? \NoteFF{maybe we can argue via virtual manipulatives}
+
+\NoteFF{what is the history of virtual manipulatives in teaching CS? NLP?} the HMM spreadsheet \cite{eisner-2002-tnlp}
+
+\section{Regularized Conditional Log-Linear Models}
+Our aim is to provide an intuitive understanding of regularized conditional log-linear models. Given $K$ features $f_k$ representing $N$ data points $\{( x_i, y_i)\}_{i=1}^N$, we are interested in estimating distributions 
 \begin{equation}
-\hat{p}(y\ \mid\ x) = \frac{u(x, y)}{\sum_{y'} u(x,y')},
+\hat{p}_{\vec{\theta}}\left(y\ \mid\ x\right) = \frac{u(x, y)}{\sum_{y'} u(x,y')},
+\label{eqn:conditional_loglin}
 \end{equation}
-where $u(x,y)$ represents an unnormalized probability
+where $u(x,y)$ represents the unnormalized probability
 \begin{eqnarray}
 u(x,y) & = & \exp{\left(\vec{\theta}\cdot \vec{f}(x,y)\right)}\\
 & = & \exp{\left(\sum_{k=1}^K \theta_k f_k(x,y)\right)}.
 \end{eqnarray}
+As our model $\hat{p}_{\vec{\theta}}$ is fully described by the feature weights $\vec{\theta}$, we find the weights that maximize the regularized conditional log-likelihood \eqref{eqn:reg_ll}:
+\begin{equation}
+F\left(\vec{\theta}\right) = \sum_{i=1}^N \log{\hat{p}_{\vec{\theta}}\left(y_i\ \mid\ x_i\right)} - C \cdot R\left(\vec{\theta}\right).
+\label{eqn:reg_ll}
+\end{equation}
+Here, $C \ge 0$ is the regularization penalty for the regularizer $R(\vec{\theta})$. We will generally refer to the \textbf{full model} as that of \eqref{eqn:conditional_loglin} with objective \eqref{eqn:reg_ll}.
+
+However, because the full model may present too many subtleties to be grasped all at once, we also consider ``simplified'' global models $\hat{p}_{\vec{theta}}\left(y\right)$. These context-nescient models allow students to \NoteFF{finish this thought} . 
+
+Using $\tilde{p}$ to represent the empirical distribution, the gradient of \eqref{eqn:reg_ll} is, in general,
+\begin{equation}
+\nabla_{\vec{\theta}} F = 
+\mathbb{E}_{\tilde{p}}\left[\vec{f}(x,y)\right] 
+- \mathbb{E}_{\hat{p}}\left[\vec{f}(x,y)\right]
+- C \nabla_{\vec{\theta}}R(\vec{\theta}).
+\end{equation}
+\NoteFF{move to a later section} We consider models where $R(\vec{\theta}) = \vec{0}$ (no regularization), $R(\vec{\theta}) = \|\vec\theta\|_1$, and $R(\vec{\theta}) = \|\vec{\theta}\|_2^2$: we special-case the optimizer to handle the non-differentiable $\ell_1$ regularization, thus providing a friendly educational environment in which the student may explore the differences between $\ell_1$ and $\ell_2$ regularization.
 
 \section{Our Notes}
 \NoteFF{These are simply copied from the Google doc titled ``600.465: Maxent Notes.'' This section could be retitled general pedagogical aims, or something of the sort.}
@@ -94,19 +120,53 @@ u(x,y) & = & \exp{\left(\vec{\theta}\cdot \vec{f}(x,y)\right)}\\
 \end{itemize}
 \item LL is maximized when you match the empirical (except for overfitting?)
 \item Frequent conditions more influential
-\item Some distributions can’t be matched --- but you get generalization
-\item The initial setting where all weights = 0 gives the uniform distribution (in each condition).
+\item Some distributions can't be matched --- but you get generalization
+\item The initial setting where all weights = 0 gives the uniform distribution.
 \begin{itemize}
 \item Some further understanding of the entropy view?  (See below.)
 \end{itemize}
 \end{itemize}
+
+\NoteFF{Make sure to address this:} We should note that we are \textit{not} concerned with computational issues here, e.g., that of tractably computing the per-context normalization factor. While efficiently computing the normalization factor is a crucial component to practical log-linear models, our primary concern is to provide an intuitive understand. \NoteFF{work on the wording here...}
+
+\NoteFF{It's also important to talk about convexity of the objective.} That is, we'll always find a unique $\vec{\theta^*}$ that solves \eqref{eqn:reg_ll}.
 
 \section{Usability}
 \begin{description}
 \item[``New Counts'' button] The other use is to help the user experiment with datasets of different sizes, by changing N to scale the counts and then clicking "New counts."
 \end{description}
 
-%%%\bibliography{mybib}
+\subsection{Data description}
+\begin{description}
+\item[Required]
+
+\begin{itemize}
+\item a set of contexts (if missing, will be assumed to contain only one context)
+\item a set of features; some of these may be marked as hidden
+\item for each context, a set of events and visual positions for them (required)
+\end{itemize}
+
+\item[Optional]
+
+\begin{itemize}
+\item weights for some or all features (if missing, will be imputed from the prior N(0,I) and the supplied count vectors)
+If no counts are supplied, then imputation is equivalent to simple sampling from N(0,I).
+More generally, imputation requires MH sampling of the feature weights (and it’s wise to initialize the sampler to a MAP estimate found by the solver).  We may not implement this case immediately, in which case the weights may stay unknown.  In that case we have to gray out a couple of buttons and treat contexts without count vectors as if they had no observations.
+\end{itemize}
+
+\item[Not done] \NoteFF{sadly, these didn't get tended to}
+\begin{itemize}
+\item visual positions for all visible and hidden features (if missing, will be filled in heuristically)
+
+for each context, a total count $N_x$ (if missing, will be imputed from an integerized gamma prior and the supplied event counts and the weights)
+In practice, we can forbid the lesson-maker from supplying only some of the event counts in a given context.  In that case, either the whole count vector is given and $N_x$ is just the sum, or none of the count vector is given and $N_x$ is sampled from the gamma.
+for each (context, event) pair, a count (any missing counts for this context will be imputed)
+In practice, we can forbid the lesson-maker from supplying only some of the event counts in a given context.  In that case, if any of this count vector is missing, then the whole thing is missing, and we can impute it simply by sampling $N_x$ events from the distribution defined by the model weights.
+\end{itemize}
+\end{description}
+
+
+\bibliography{tnlp}
 \bibliographystyle{acl}
 
 \end{document}
