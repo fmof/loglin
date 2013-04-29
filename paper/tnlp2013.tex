@@ -26,7 +26,7 @@
 \setlength\titlebox{6.5cm}    % Expanding the titlebox
 
 
-\title{Learning Log-Linear Models through ...}
+\title{A Virtual Manipulative for Learning Log-Linear Models}
 
 
 \author{
@@ -54,6 +54,57 @@ Abstract here.
 \end{abstract}
 
 \section{Introduction}\label{sec:intro}
+except for reading of data files, purely client-side $\Rightarrow$ very easy to set-up;
+open-source;
+data input format makes it extensible;
+individual lessons can be tailored (e.g., hide/show buttons, different tool-tips for lessons)
+
+\section{Model}
+Our aim is to teach an intuitive understanding conditional log-linear models. Given $N$ data points $\{( x_i, y_i)\}_{i=1}^N$, we are interested in estimating distributions 
+\begin{equation}
+\hat{p}(y\ \mid\ x) = \frac{u(x, y)}{\sum_{y'} u(x,y')},
+\end{equation}
+where $u(x,y)$ represents an unnormalized probability
+\begin{eqnarray}
+u(x,y) & = & \exp{\left(\vec{\theta}\cdot \vec{f}(x,y)\right)}\\
+& = & \exp{\left(\sum_{k=1}^K \theta_k f_k(x,y)\right)}.
+\end{eqnarray}
+
+\section{Our Notes}
+\NoteFF{These are simply copied from the Google doc titled ``600.465: Maxent Notes.'' This section could be retitled general pedagogical aims, or something of the sort.}
+\begin{itemize}
+\item If the “striped” feature is predicted to occur less often than it actually does, you should raise its weight.
+\item It’s possible to overfit the training data.  Regularization compensates for that and can in fact make you underfit.
+\begin{itemize}
+\item In particular, weights may zoom off to +infinity or -infinity if a feature is always or never present on the *observed* examples (may need to cook special datasets for this)
+\end{itemize}
+\item Interactions:
+\begin{itemize} 
+\item Raising one weight may reduce or reverse the need to raise other weights.  This can be seen by watching the gradient as we slide the slider.
+\item Can share features across conditions and this helps regularizer even if likelihood is the same
+\item Features that only fire on conditions have no effect on conditional distribution
+\item Feature conjunctions: fewer vs. more features
+\item Feature that everything/nothing has --- weights go to $\pm \infty$
+\item Opposing features, e.g., solid vs striped, where there are only 2 options (or, red vs. blue)
+\end{itemize}
+\item Likelihood always goes up if you follow gradient
+\begin{itemize}
+\item gradient = observed - expected count (- regularizer)
+\item This is evident in the LL-bar at the top
+\end{itemize}
+\item LL is maximized when you match the empirical (except for overfitting?)
+\item Frequent conditions more influential
+\item Some distributions can’t be matched --- but you get generalization
+\item The initial setting where all weights = 0 gives the uniform distribution (in each condition).
+\begin{itemize}
+\item Some further understanding of the entropy view?  (See below.)
+\end{itemize}
+\end{itemize}
+
+\section{Usability}
+\begin{description}
+\item[``New Counts'' button] The other use is to help the user experiment with datasets of different sizes, by changing N to scale the counts and then clicking "New counts."
+\end{description}
 
 %%%\bibliography{mybib}
 \bibliographystyle{acl}
