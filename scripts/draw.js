@@ -28,7 +28,7 @@ function load_html5_slider(boxid,val){
 	//store THETA value
 	THETA[feat_name]=isFinite(actual_weight)?actual_weight:(actual_weight>0? 100: -100);
 	var jdiv = jQuery(boxid);
-	var boxval = parseFloat(boxid.value).toFixed(10);
+	var boxval = parseFloat(actual_weight).toFixed(8);
 	jQuery(boxid.parentNode.parentNode).attr("title", boxval);
 	if("uiTooltip" in jdiv.data()){
 	    jdiv.tooltip({content: boxval,
@@ -118,7 +118,7 @@ function addSliderEffects(){
 }
 
 function formatSliderWeight(w){
-    return Math.abs(w)<0.1 && w!=0 ? w.toExponential(2) : w;
+    return Math.abs(w)<0.1 && w!=0 ? w.toExponential(2) : parseFloat(w.toFixed(4));
 }
 
 function formatExpected(ecp){
