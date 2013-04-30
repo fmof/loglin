@@ -23,7 +23,6 @@
 	"attr" : "title", 
 	"list": {
 	    ".num_tokens_context_div" : "Multiplicatively scale the number of observations in this context to this number",
-	    ".feature_slider" : "0",
 	    ".observed_count" : "",
 	    "#solve_button" : "Find best weights (sliders) given the observed counts (gray outlines). Regularization alters the definition of \"best.\"",
 	    "#new_challenge" : "Pick some new secret weights and use them to generate a new training dataset.  You can then try to estimate the weights given the dataset.",
