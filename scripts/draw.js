@@ -29,19 +29,18 @@ function load_html5_slider(boxid,val){
 	THETA[feat_name]=isFinite(actual_weight)?actual_weight:(actual_weight>0? 100: -100);
 	var jdiv = jQuery(boxid);
 	var boxval = parseFloat(actual_weight).toFixed(8);
-	jQuery(boxid.parentNode.parentNode).attr("title", boxval);
-	if("uiTooltip" in jdiv.data()){
-	    jdiv.tooltip({content: boxval,
-			 tooltipClass: "feature_slider_tooltip"});
+
+	if(jdiv.data("qtip")){
+	    jdiv.qtip({content: {
+		text: boxval
+	    }});
 	} else{
 	    jdiv.attr("title", boxval);
-	    jdiv.data("ui-tooltip-title", boxval);
 	}
 	redraw_all();
     } else{
 	feature_info.className+=' feature_name_box';
 	boxid.parentNode.parentNode.className += ' feature_box';
-	boxid.parentNode.parentNode.setAttribute('title',0);
     }
 }
 
@@ -61,52 +60,45 @@ function redraw_all(){
 
 
 function addSliderEffects(){
-    console.log(jQuery(".feature_slider"));
     jQuery(".feature_slider").rangeinput();
     var lb = SLIDER_SIGMOID.inverse(min_slider_val);
     var ub = SLIDER_SIGMOID.inverse(max_slider_val);
-    //if(group=$$(".feature_slider")){
     jQuery(".feature_slider").each(function(){
 	var jthis=jQuery(this);
 	jthis.attr('readonly','readonly');
 	var theta_index = jthis.parent().parent().children()[0].getAttribute('theta_index');
-	var handle_tmpfn=function(){
+	var handle_trigger=function(){
 	    //handle 
-	    var t = parseFloat(this.style['left']+handle_width/2);
+	    var t = parseFloat(this.getAttribute("moving_to"))+handle_width/2;
 	    t=Math.min(slider_width-handle_width,Math.max(0,t));
 	    this.parentNode.parentNode.childNodes[1].value= SLIDER_SIGMOID.inverse(t);
 	    load_html5_slider(this.parentNode.parentNode.childNodes[1],SLIDER_DIV);
 	};
 	var tmpfn=function(e){
-	    if(0 && e){
-		if(e.type=="change"){
-		    if(1 && isNumber(this.value) && parseFloat(this.value)){
-			console.log('capturing this...');
-			console.log(this.value+', '+SLIDER_SIGMOID.transform(parseFloat(this.value)));
-			reset_manually_from_theta(this,this.value);
-			THETA[theta_index]=this.value;
-			redraw_all();
-		    }
-		    else{
-			console.log('this');
-			this.value = SLIDER_SIGMOID.inverse(parseFloat(this.parentNode.childNodes[0].childNodes[1].style['left'] + handle_width/2));
-		    }
-		}
-	    } else{
-		this.value = SLIDER_SIGMOID.inverse(parseFloat(this.parentNode.childNodes[0].childNodes[1].style['left'] + handle_width/2));
-		load_html5_slider(this,SLIDER_DIV);
-	    }
+	    this.value = formatSliderWeight(SLIDER_SIGMOID.inverse(parseFloat(this.parentNode.childNodes[0].childNodes[1].getAttribute("moving_to")) + handle_width/2));
+	    load_html5_slider(this,SLIDER_DIV);
 	};
+
 	//save the "previous" blur event...
 	var prevblur = jQuery._data(jthis[0]).events.blur[0].handler;
-	//but remove it... this means I can set my own if I want, but I don't have to
+	//so we can remove it
 	jthis.unbind('blur');
+	jthis.unbind('change');
 	jthis.change(tmpfn);
-	jthis.parent().children().first().children()[1].ondrag=handle_tmpfn;
-	jthis.change();
-	jthis.parent().parent().mouseleave(function(){
-	    this.setAttribute('title',this.childNodes[1].childNodes[1].value);
-	});
+	jthis.parent().children().first().children()[1].ondrag=handle_trigger;
+
+	//jthis.change(tmpfn);
+	//jthis.change();
+	
+	// if(jthis.data("qtip")){
+	//     // jthis.qtip({content : {
+	//     // 	text : 0 } });
+	// } else{
+	//     jthis.attr("title",0);
+	// }
+	// jthis.parent().parent().mouseleave(function(){
+	//     this.setAttribute('title',this.childNodes[1].childNodes[1].value);
+	// });
 
 	/*if(USED_FEATURES[theta_index]==undefined){//is unused/unavailable
 	  group[i].parentNode.parentNode.style.display='none';
@@ -114,7 +106,44 @@ function addSliderEffects(){
 	  group[i].disabled='disabled';
 	  }*/
     });
-    //}
+
+    
+    var originalAnimate = jQuery.fn.animate;
+    jQuery.fn.animate = function(a,b,c,d){
+	if(this.hasClass('handle')){
+	    this.attr("moving_to", a.left);
+	    console.log("successfully getting animate!");
+	}
+	return originalAnimate.call(this, a,b,c,d);
+    };
+
+    var originalVal = jQuery.fn.val;
+    //there's a weird click event happening, so try to override it
+    jQuery('.slider').each(function(){
+	var clickfn = jQuery(this).data("events").click[0].handler;
+	jQuery(this).unbind("click").click(function(e){
+	    console.log("LET'S GO HERE");
+	    //first, reset the .val() function to do nothing!
+	    jQuery.fn.val = function(value) {
+		if (typeof value != 'undefined') {
+		    console.log('preoperly here... ' + value);
+		    //console.log(this.parent()[0].childNodes[0].childNodes[1].style['left']);
+		    return this;
+		} else{
+		    return originalVal.call(this, value);
+		}
+	    };
+	    //do the original processing
+	    clickfn(e);
+	    //reset the original val
+	    jQuery.fn.val = originalVal;
+
+	    this.parentNode.childNodes[1].value = formatSliderWeight(SLIDER_SIGMOID.inverse(parseFloat(this.childNodes[1].getAttribute("moving_to")) + handle_width/2));
+	    //console.log('the val is ' + this.parentNode.childNodes[1].value + ' should be ' + SLIDER_SIGMOID.inverse(parseFloat(this.childNodes[1].getAttribute("moving_to")/*style['left']*/) + handle_width/2) + " ::: "+ parseFloat(this.childNodes[1].getAttribute("moving_to")/*style['left']*/));
+	    //load_html5_slider(this.parentNode.childNodes[1], SLIDER_DIV);
+	});
+	
+    });
 }
 
 function formatSliderWeight(w){
@@ -651,9 +680,12 @@ function updateSVGTitles(){
 	var emp_prob = get_empirical_prob(context, typeid).toPrecision(4);
 	var model_prob = (get_prob(context,typeid)/Z_THETA[context]).toPrecision(4);
 	
-	if("uiTooltip" in jthis.data()){
-	    jQuery(this).tooltip({content: 'Empirical Probability: ' + emp_prob +"<br/>"+
-				  'Model Probability: ' + model_prob});
+	//if(1 || "uiTooltip" in jthis.data()){
+	if(jthis.data("qtip")){
+	    jQuery(this).qtip({content:
+			       'Empirical Probability: ' + emp_prob +"<br/>"+
+			       'Model Probability: ' + model_prob
+			      });
 	} else{
 	    jQuery(this).attr('title','Empirical Probability: ' + emp_prob +"<br/>"+
 			      'Model Probability: ' + model_prob);

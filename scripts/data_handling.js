@@ -21,20 +21,14 @@ function createKnownUserActions(){
 	},
 	"tooltips" : {
 	    do_action : function(jqobj){
-		jqobj.tooltip({content: jqobj.attr("title"),
-			       position: {
-				   my: "center bottom-20",
-				   at: "center top",
-				   using: function( position, feedback ) {
-				       jQuery(this).css(position);
-				       jQuery("<div>")
-					   .addClass( "arrow" )
-					   .addClass( feedback.vertical )
-					   .addClass( feedback.horizontal )
-					   .appendTo( this );
-				   }
-			       }
-			      });
+		jqobj.qtip({
+		    content: {
+			text : jqobj.attr("title")
+		    },
+		    style : {
+			classes : "ui-tooltip"
+		    }
+		});
 	    }
 	},
 	"hide" : {
@@ -402,6 +396,8 @@ function addFeaturesToList(selectObj, array){
 	td.appendChild(d);
 	tfl.push(td);
     }
+    console.log($('feature_slider_area'));
+    console.log($('feature_slider_area').offsetWidth);
     var maxwidth=$('feature_slider_area').offsetWidth;
     //now maximize the number of 
     var num_cols = Math.floor(maxwidth/205);
