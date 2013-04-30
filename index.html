@@ -136,10 +136,6 @@
 
       <div id="slider_area" class="">
 	<div id="model_option_area" class="left">
-	  <!--<form>-->
-	    <!--<input type="checkbox" id="delay_normalization" name="delay_normalization" />
-	    <label for="delay_normalization">Delay Normalization</label>
-	    <br />-->
 	    <input type="checkbox" id="show_gradient" name="show_gradient" />
 	    <label for="show_gradient">Show gradient </label>
 	    <br />
@@ -175,7 +171,6 @@
 		</div>
 	      </fieldset>
 	    </div>
-	  <!--</form>-->
 	  <br />
 	  <form>
 	    <div>
@@ -188,14 +183,17 @@
 	  </form>
 	</div>
 	<div id="feature_slider_area" class="tablecenter">
-	  <table id="feature_table" class="left" cellpadding="10px">
-	  </table>
-	  <br />
-	  <form style="clear:both;">
-	    <div>
-	      <button type="button" id="zero_weights_button">Zero weights</button>
-	    </div>
-	  </form>
+	  <fieldset id="feature_slider_fieldset">
+	    <legend>Feature Weights</legend>
+	    <table id="feature_table" class="left" cellpadding="10px">
+	    </table>
+	    <br />
+	    <form style="clear:both;">
+	      <div>
+		<button type="button" id="zero_weights_button">Zero weights</button>
+	      </div>
+	    </form>
+	  </fieldset>
 	</div>
       </div>
 
