@@ -181,6 +181,10 @@ div.header ul{
 	margin-bottom:5px;
 }
 
+div#data_options_area ul{
+    list-style-type:none;
+}
+
 
 #nav ul.hlist.ulcenter{
     text-align:center;
@@ -605,11 +609,26 @@ hr.slider{
 }
 #model_option_area{
 }
+
 #feature_slider_area{
-    border-left:3px solid gray;
-    padding-left:5px;
+    /*border-left:3px solid gray;*/
+    /*padding-left:5px;*/
     overflow:hidden;
+    width: 75%;
+    margin-left:auto;
+    margin-right:auto;
 }
+
+#feature_slider_fieldset{
+    /*border-left:3px solid gray;*/
+    /*padding-left:5px;*/
+    overflow:hidden;
+    width: 100%;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+
 .feature_name_box{
     margin:0;
     
@@ -638,7 +657,7 @@ hr.slider{
 } 
 
 #lesson_title{
-    /*display:inline;*/
+    display:inline;
 }
 
 .feature_range_opts_div{
@@ -719,13 +738,41 @@ input[type=range].feature_slider{
     border: 2px solid white;
 }
 .ui-tooltip {
-    width: 250px;
+    max-width: 250px;
     padding: 10px 20px;
     color: white;
     border-radius: 20px;
     font: normal 14px "Helvetica Neue", Sans-Serif;
     box-shadow: 0 0 7px black;
 }
+
+.ui-tooltip, .qtip{
+    background: black;
+    border: 2px solid white;
+    position: absolute;
+    left: -28000px;
+    top: -28000px;
+    display: none;
+
+    min-width: 50px;
+    max-width: 250px;
+    padding: 10px 20px;
+    color: white;
+    border-radius: 20px;
+    font: normal 14px "Helvetica Neue", Sans-Serif;
+    box-shadow: 0 0 7px black;
+
+}
+
+.feature_slider_tooltip {
+    width: 100px;
+    padding: 10px 20px;
+    color: white;
+    border-radius: 20px;
+    font: normal 14px "Helvetica Neue", Sans-Serif;
+    box-shadow: 0 0 7px black;
+}
+
 .arrow {
     width: 70px;
     height: 16px;
@@ -760,3 +807,19 @@ input[type=range].feature_slider{
     bottom: -20px;
     top: auto;
 }
+
+/**********************************************/
+
+#data_options_area{
+    width:20%;
+    float:left;
+}
+
+ul #data_options_area{
+    
+}
+
+/* #shapes_area { */
+/*     width: 80%; */
+/*     float: left; */
+/* } */

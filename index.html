@@ -2,6 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <title>Log-Linear Models</title>
+    <!-- Load this stylesheet first... -->
+    <link rel="stylesheet" type="text/css" href="styles/jquery.qtip.css" />
+    <!-- So I can overwrite any tooltip styles I want to later on -->
     <link rel="stylesheet" type="text/css" href="styles/main.css" />
     <link rel="stylesheet" type="text/css" href="styles/navigation.css" />
     <link rel="stylesheet" type="text/css" href="styles/sliderskin.css" />
@@ -23,23 +26,14 @@
       }
     </style>
 
-    <!-- original jquery tools
-	 <script type="text/javascript" src="http://cdn.jquerytools.org/1.2.7/full/jquery.tools.min.js"></script>
-	 -->    
-    <script type="text/javascript" src="scripts/jquery-1.7.2.min.js"></script>
-    <script type="text/javascript" src="scripts/jquery.tools.min.js"></script>
-    <script type="text/javascript" src="scripts/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="scripts/prototype.js"></script>    
+    <script type="text/javascript" src="scripts/lib/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="scripts/lib/jquery.tools.min.js"></script>
+    <script type="text/javascript" src="scripts/lib/jquery.qtip.min.js"></script>
+    <!--<script type="text/javascript" src="scripts/jquery-ui.min.js"></script>-->
+    <script type="text/javascript" src="scripts/lib/prototype.js"></script>    
     <script type="text/javascript">
       jQuery.noConflict();
     </script>
-
-    <!-- STUFF YOU NEED FOR BEAUTYTIPS 
-    <script src="scripts/bt/jquery.hoverIntent.minified.js" type="text/javascript" charset="utf-8"></script>
-    <script src="scripts/bt/jquery.bgiframe.min.js" type="text/javascript" charset="utf-8"></script>
-    <!--[if IE]><script src="../other_libs/excanvas_r3/excanvas.js" type="text/javascript" charset="utf-8"></script><![endif] - ->
-    <script src="scripts/bt/jquery.bt.min.js" type="text/javascript" charset="utf-8"></script>
-    <!--/STUFF -->
 
     <script type="text/javascript" src="scripts/figures.js"></script>
     <script type="text/javascript" src="scripts/navigation.js"></script>
@@ -54,30 +48,30 @@
     <!-- original d3
 	 <script src="http://d3js.org/d3.v2.js"></script>
 	 -->
-    <script src="scripts/d3.js"></script>
+    <script src="scripts/lib/d3.js"></script>
   </head>
 
   <body>
     <div class="body">
       <div id="button_navigation_area">
 	<ul class="hlist ulcenter">
-	  <!--<li>
-	    Number of tokens: <input type="text" id="user_num_tokens" />
-	  </li>-->
 	  <li>
 	    <span id="show_how_many_previous_lessons"></span>&nbsp;(of&nbsp;<span class="of_total_lessons"></span>) 
 	    <button type="button" class="lesson_button_nav" id="prev_lesson" disabled="disabled">Previous lesson</button>
 	  </li>
-	  <!--<li>
-	    <button type="button" id="change_num_tokens" >Change number of tokens</button>	 
-	  </li>-->
-	  <li>
-	      <button type="button" id="new_challenge">New random challenge</button>
-	  </li>
+	  <!-- <li> -->
+	  <!--     <button type="button" id="new_challenge">New random challenge</button> -->
+	  <!-- </li> -->
 
-	  <li>
-	      <button type="button" id="new_counts" disabled="disabled">New counts</button>
-	  </li>
+	        <h1 id="lesson_title" class="textcenter">
+	<select id="jump_to_lesson_select">
+	</select>
+      </h1>
+
+
+	  <!-- <li> -->
+	  <!--     <button type="button" id="new_counts" disabled="disabled">New counts</button> -->
+	  <!-- </li> -->
 
 	  <li class="lastli">
 	    <button type="button" class="lesson_button_nav" id="next_lesson" disabled="disabled">Next lesson</button> 
@@ -86,30 +80,6 @@
 	</ul>
       </div>
       <br /> 
-
-      <!--
-      <br />
-      <div id="change_num_tokens_form">
-	<form>
-	</form>			
-	<button type="button" id="done_changing_counts_button">Done changing counts</button>
-      </div>-->
-
-
-      <!-- <h1 id="lesson_title" class="textcenter">Lesson  -->
-      <!-- 	<select id="jump_to_lesson_select"> -->
-      <!-- 	</select> -->
-      <!-- 	<\!--<span id="header_lesson_number" lesson="0"></span>-\-> -->
-      <!-- 	<\!-- <select> -\-> -->
-      <!-- 	<\!--   <option>1</option> -\-> -->
-      <!-- 	<\!-- </select> -\-> -->
-      <!-- </h1> -->
-
-	  <h1 id="lesson_title" class="textcenter">
-	    <select id="jump_to_lesson_select">
-	    </select>
-	  </h1>
-
 
       <div id="loading_area">
       </div>
@@ -134,23 +104,38 @@
 
       <br />      
 
-      <div id="shapes_area" class="">
-	<fieldset>
-	  <legend>Type Counts: <span class="observed_counts_text">Observed</span> and 
-	    <span class="expected_counts_text">Expected</span></legend>
-	  <div id="draw_area" class="center">
-	  </div>
-	</fieldset>
-	<br />
+      <div id="data_area">
+
+	<div id="data_options_area">
+	  <fieldset>
+	    <legend>Data Options</legend>
+	    <ul class="ulcenter">
+	      <li>
+		<button type="button" id="new_challenge">New random challenge</button>
+	      </li>
+
+	      <li>
+		<button type="button" id="new_counts" disabled="disabled">New counts</button>
+	      </li>
+	    </ul>
+	  </fieldset>
+	</div>
+
+
+	<div id="shapes_area" class="">
+	  <fieldset>
+	    <legend>Type Counts: <span class="observed_counts_text">Observed</span> and 
+	      <span class="expected_counts_text">Expected</span></legend>
+	    <div id="draw_area" class="center">
+	    </div>
+	  </fieldset>
+	  <br />
+	</div>
       </div>
 
 
       <div id="slider_area" class="">
 	<div id="model_option_area" class="left">
-	  <!--<form>-->
-	    <!--<input type="checkbox" id="delay_normalization" name="delay_normalization" />
-	    <label for="delay_normalization">Delay Normalization</label>
-	    <br />-->
 	    <input type="checkbox" id="show_gradient" name="show_gradient" />
 	    <label for="show_gradient">Show gradient </label>
 	    <br />
@@ -186,7 +171,6 @@
 		</div>
 	      </fieldset>
 	    </div>
-	  <!--</form>-->
 	  <br />
 	  <form>
 	    <div>
@@ -199,14 +183,17 @@
 	  </form>
 	</div>
 	<div id="feature_slider_area" class="tablecenter">
-	  <table id="feature_table" class="left" cellpadding="10px">
-	  </table>
-	  <br />
-	  <form style="clear:both;">
-	    <div>
-	      <button type="button" id="zero_weights_button">Zero weights</button>
-	    </div>
-	  </form>
+	  <fieldset id="feature_slider_fieldset">
+	    <legend>Feature Weights</legend>
+	    <table id="feature_table" class="left" cellpadding="10px">
+	    </table>
+	    <br />
+	    <form style="clear:both;">
+	      <div>
+		<button type="button" id="zero_weights_button">Zero weights</button>
+	      </div>
+	    </form>
+	  </fieldset>
 	</div>
       </div>
 

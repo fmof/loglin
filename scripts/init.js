@@ -8,6 +8,8 @@ LESSON_SETTINGS={};
 
 KNOWN_USER_ACTIONS={};
 
+HISTORY={};
+
 loader_bar_img='imgs/ajax-bar-loader.gif';
 LOADING_TIME_DELAY = 200;
 has_cheated=0;
@@ -146,8 +148,6 @@ button_color='';
 col_for_true_theta=TRUE_MODEL_COLOR;
 
 gradients_drawn = 0;
-//GRAD_LOW_C='#334455';
-//GRAD_HIGH_C='#AA03FF';
 GRAD_LOW_C='red';
 GRAD_HIGH_C='blue';
 
@@ -176,15 +176,6 @@ function get_sigmoid(amp,hmove, xdef, ratio){
 
 var SLIDER_SIGMOID = get_sigmoid(slider_width-handle_width, 0, Math.sqrt(2), 7.0/8.0);
 var LL_SIGMOID;
-
-/*
-function sigmoid_transform(x){
-    return (slider_width-handle_width)/(1+Math.pow(Math.E,-SIGMOID_CONSTANT*(x)));
-}
-function inverse_sigmoid(x){
-    var ret= -1/SIGMOID_CONSTANT * Math.log((slider_width-handle_width)/(x) - 1);
-    return ret;
-    }*/
 
 function reset_paths(){
     TRUE_THETA_PATH='';
@@ -294,8 +285,7 @@ function load_lesson(noskip_dropdown){
 
     loading_object.start();
     document.title = 'Log-Linear Models: Lesson '+CURRENT_LESSON;
-
-    history.pushState({CURRENT_LESSON:CURRENT_LESSON},'','#'+CURRENT_LESSON);
+    HISTORY.pushState({CURRENT_LESSON:CURRENT_LESSON},'','#'+CURRENT_LESSON);
     var j_jump_to_lesson_select=jQuery('#jump_to_lesson_select');
     j_jump_to_lesson_select.val(CURRENT_LESSON);
     if(!noskip_dropdown && !j_jump_to_lesson_select.is(":visible")){
@@ -338,6 +328,8 @@ function apply_settings(){
 	    if("attr" in currset[key]){
 		if(is_empty(jqobj.attr(currset[key]["attr"]))){
 		    jqobj.attr(currset[key]["attr"]+"", ""+cs_k_l[k]);
+		} else{
+		    console.log(k +" -> " + jqobj.attr(currset[key]["attr"])+ " is empty? " + is_empty(jqobj.attr(currset[key]["attr"])));
 		}
 	    }
 	    KNOWN_USER_ACTIONS.do_action(currset, key,jqobj);
@@ -367,32 +359,34 @@ function setITimeout( callback, init_time, times ){
     SOLVE_TIMEOUT_ID=window.setTimeout( internalCallback, init_time/Math.sqrt(10) );
 };
 
-window.onhashchange = function(){
-    if(skip_next_hashchange){
-	skip_next_hashchange=0;
-	return 0;
-    }
-    var n = parseInt(window.location.hash.substring(1));
-    if(isNumber(n) && isFinite(n)){
-	if(n>=1 && n<=MAX_LESSONS){
-	    CURRENT_LESSON=n;
-	    load_lesson();
-	} else{
-	    n=-CURRENT_LESSON;
-	    skip_next_hashchange=1;
-	    window.location.hash='#'+CURRENT_LESSON;
-	}
-    } else{
-	n=-CURRENT_LESSON;
-	skip_next_hashchange=1;
-	window.location.hash='#'+CURRENT_LESSON;
-    }
-    return n;
-}
-
-
 window.onload = function(){
     KNOWN_USER_ACTIONS = createKnownUserActions();
+    
+    HISTORY = history;
+
+    window.onhashchange = function(){
+    	if(skip_next_hashchange){
+    	    skip_next_hashchange=0;
+    	    return 0;
+    	}
+    	var n = parseInt(window.location.hash.substring(1));
+    	if(isNumber(n) && isFinite(n)){
+    	    if(n>=1 && n<=MAX_LESSONS){
+    		CURRENT_LESSON=n;
+    		load_lesson();
+    	    } else{
+    		n=-CURRENT_LESSON;
+    		skip_next_hashchange=1;
+    		window.location.hash='#'+CURRENT_LESSON;
+    	    }
+    	} else{
+    	    n=-CURRENT_LESSON;
+    	    skip_next_hashchange=1;
+    	    window.location.hash='#'+CURRENT_LESSON;
+    	}
+    	return n;
+    }
+
     jQuery.ajax({
 	url:GLOBAL_SETTINGS_FILE,
 	datatype:"json",
@@ -420,6 +414,7 @@ window.onload = function(){
 	    }
 	},
 	complete : function(){
+	    console.log("Going to init....");
 	    init();
 	}
     });
@@ -463,7 +458,7 @@ function init(){
     }
 
     if(window.onhashchange()<0){
-	load_lesson();
+     	load_lesson();
     }
 
     //add listeners for "jump to lesson" select
@@ -547,6 +542,7 @@ function init(){
     
 
     jQuery('#new_challenge').click(function(){
+	var old_hc=has_cheated;
 	jQuery('#step_button').attr('disabled','disabled');
 	jQuery('#solve_button').attr("disabled",'disabled');
     	var gs=jQuery('#gradient_step');
@@ -556,7 +552,7 @@ function init(){
 	LAST_UPDATED_TOKEN_COUNT={};//null;
     	generate_new_observations();
 	this.blur();
-	if(has_cheated){
+	if(old_hc){
 	    $('cheat_button').style.display='block';
 	    jQuery.each(jQuery('.unused_feature'), function(x){
 		x.style.display='none';
@@ -660,6 +656,7 @@ function init(){
 	    //$('change_num_tokens').disabled="";
 	    $('gradient_step').value = orig_step_size.toPrecision(5);
 	    $('gradient_step').onchange();
+	    jQuery(this).blur();
 	};
 	$('stop_solving_div').style.display='none';
     }
@@ -705,7 +702,7 @@ function init(){
 					 iter,
 					 SOLVE_STEP);
 			};}, SOLVE_TIME_DELAY/Math.sqrt(10), MAX_SOLVE_ITERATIONS);
-				     
+		jQuery(this).blur();
 	    }
     	};
     }

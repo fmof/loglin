@@ -21,20 +21,14 @@ function createKnownUserActions(){
 	},
 	"tooltips" : {
 	    do_action : function(jqobj){
-		jqobj.tooltip({content: jqobj.attr("title"),
-			       position: {
-				   //my: "center bottom-20",
-				   //at: "center top",
-				   using: function( position, feedback ) {
-				       jQuery(this).css(position);
-				       jQuery("<div>")
-					   .addClass( "arrow" )
-					   .addClass( feedback.vertical )
-					   .addClass( feedback.horizontal )
-					   .appendTo( this );
-				   }
-			       }
-			      });
+		jqobj.qtip({
+		    content: {
+			text : jqobj.attr("title")
+		    },
+		    style : {
+			classes : "ui-tooltip"
+		    }
+		});
 	    }
 	},
 	"hide" : {
@@ -271,16 +265,21 @@ function record_data(rows,already_created){
     
     if(!already_created){
 	//calculate LL(0)
-	var zerotheta = THETA.map(function(d){return 0;});
-	var zerotab=new Array(zerotheta.length);
-	var zeroll=[0]; var zeroreg=[0];
-	recompute_partition_function(zerotheta,zerotab);
-	compute_ll(zerotheta,zerotab,zeroll,zeroreg);
-	LL_SIGMOID = get_sigmoid(DIV_LL_WIDTH, zeroll[0], 0.0, .99- 70.0/DIV_LL_WIDTH);
+	//compute the partition function, and LL, under a uniform distr.
+	make_LL_SIGMOID();
      	addLLBar();
     } else{
     	updateLLBar();
     }
+}
+
+function make_LL_SIGMOID(){
+    var zerotheta = THETA.map(function(d){return 0;});
+    var zerotab=new Array(zerotheta.length);
+    var zeroll=[0]; var zeroreg=[0];
+    recompute_partition_function(zerotheta,zerotab);
+    compute_ll(zerotheta,zerotab,zeroll,zeroreg);
+    LL_SIGMOID = get_sigmoid(DIV_LL_WIDTH, zeroll[0], 0.0, .99- 70.0/DIV_LL_WIDTH);
 }
 
 function record_observation(record){
@@ -359,14 +358,14 @@ function record_observation(record){
 
 function createSlider(val,isUnused){
     var d=document.createElement('div');
-    var input=document.createElement('input');
-    input.type="range"; 
-    input.className += ' feature_slider';
-    input.setAttribute('min',slider_min); 
-    input.setAttribute('max',slider_max);
-    input.setAttribute('step',slider_step);
-    input.setAttribute('value',val);
-    d.appendChild(input);
+    jQuery('<input/>', {
+	type : "range",
+	min: slider_min,
+	max: slider_max,
+	step: slider_step,
+	value : val
+    }).addClass("feature_slider")
+    .appendTo(jQuery(d));
     d.className += ' html5slider';
     return d;
 }
@@ -397,6 +396,8 @@ function addFeaturesToList(selectObj, array){
 	td.appendChild(d);
 	tfl.push(td);
     }
+    console.log($('feature_slider_area'));
+    console.log($('feature_slider_area').offsetWidth);
     var maxwidth=$('feature_slider_area').offsetWidth;
     //now maximize the number of 
     var num_cols = Math.floor(maxwidth/205);

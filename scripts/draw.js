@@ -27,12 +27,20 @@ function load_html5_slider(boxid,val){
 	boxid.value = formatSliderWeight(actual_weight);
 	//store THETA value
 	THETA[feat_name]=isFinite(actual_weight)?actual_weight:(actual_weight>0? 100: -100);
-	jQuery(boxid.parentNode.parentNode).data("ui-tooltip-title", boxid.value);
+	var jdiv = jQuery(boxid);
+	var boxval = parseFloat(actual_weight).toFixed(8);
+
+	if(jdiv.data("qtip")){
+	    jdiv.qtip({content: {
+		text: boxval
+	    }});
+	} else{
+	    jdiv.attr("title", boxval);
+	}
 	redraw_all();
     } else{
 	feature_info.className+=' feature_name_box';
 	boxid.parentNode.parentNode.className += ' feature_box';
-	boxid.parentNode.parentNode.setAttribute('title',0);
     }
 }
 
@@ -52,52 +60,45 @@ function redraw_all(){
 
 
 function addSliderEffects(){
-    console.log(jQuery(".feature_slider"));
     jQuery(".feature_slider").rangeinput();
     var lb = SLIDER_SIGMOID.inverse(min_slider_val);
     var ub = SLIDER_SIGMOID.inverse(max_slider_val);
-    //if(group=$$(".feature_slider")){
     jQuery(".feature_slider").each(function(){
 	var jthis=jQuery(this);
 	jthis.attr('readonly','readonly');
 	var theta_index = jthis.parent().parent().children()[0].getAttribute('theta_index');
-	var handle_tmpfn=function(){
+	var handle_trigger=function(){
 	    //handle 
-	    var t = parseFloat(this.style['left']+handle_width/2);
+	    var t = parseFloat(this.getAttribute("moving_to"))+handle_width/2;
 	    t=Math.min(slider_width-handle_width,Math.max(0,t));
 	    this.parentNode.parentNode.childNodes[1].value= SLIDER_SIGMOID.inverse(t);
 	    load_html5_slider(this.parentNode.parentNode.childNodes[1],SLIDER_DIV);
 	};
 	var tmpfn=function(e){
-	    if(0 && e){
-		if(e.type=="change"){
-		    if(1 && isNumber(this.value) && parseFloat(this.value)){
-			console.log('capturing this...');
-			console.log(this.value+', '+SLIDER_SIGMOID.transform(parseFloat(this.value)));
-			reset_manually_from_theta(this,this.value);
-			THETA[theta_index]=this.value;
-			redraw_all();
-		    }
-		    else{
-			console.log('this');
-			this.value = SLIDER_SIGMOID.inverse(parseFloat(this.parentNode.childNodes[0].childNodes[1].style['left'] + handle_width/2));
-		    }
-		}
-	    } else{
-		this.value = SLIDER_SIGMOID.inverse(parseFloat(this.parentNode.childNodes[0].childNodes[1].style['left'] + handle_width/2));
-		load_html5_slider(this,SLIDER_DIV);
-	    }
+	    this.value = formatSliderWeight(SLIDER_SIGMOID.inverse(parseFloat(this.parentNode.childNodes[0].childNodes[1].getAttribute("moving_to")) + handle_width/2));
+	    load_html5_slider(this,SLIDER_DIV);
 	};
+
 	//save the "previous" blur event...
 	var prevblur = jQuery._data(jthis[0]).events.blur[0].handler;
-	//but remove it... this means I can set my own if I want, but I don't have to
+	//so we can remove it
 	jthis.unbind('blur');
+	jthis.unbind('change');
 	jthis.change(tmpfn);
-	jthis.parent().children().first().children()[1].ondrag=handle_tmpfn;
-	jthis.change();
-	jthis.parent().parent().mouseleave(function(){
-	    this.setAttribute('title',this.childNodes[1].childNodes[1].value);
-	});
+	jthis.parent().children().first().children()[1].ondrag=handle_trigger;
+
+	//jthis.change(tmpfn);
+	//jthis.change();
+	
+	// if(jthis.data("qtip")){
+	//     // jthis.qtip({content : {
+	//     // 	text : 0 } });
+	// } else{
+	//     jthis.attr("title",0);
+	// }
+	// jthis.parent().parent().mouseleave(function(){
+	//     this.setAttribute('title',this.childNodes[1].childNodes[1].value);
+	// });
 
 	/*if(USED_FEATURES[theta_index]==undefined){//is unused/unavailable
 	  group[i].parentNode.parentNode.style.display='none';
@@ -105,11 +106,48 @@ function addSliderEffects(){
 	  group[i].disabled='disabled';
 	  }*/
     });
-    //}
+
+    
+    var originalAnimate = jQuery.fn.animate;
+    jQuery.fn.animate = function(a,b,c,d){
+	if(this.hasClass('handle')){
+	    this.attr("moving_to", a.left);
+	    console.log("successfully getting animate!");
+	}
+	return originalAnimate.call(this, a,b,c,d);
+    };
+
+    var originalVal = jQuery.fn.val;
+    //there's a weird click event happening, so try to override it
+    jQuery('.slider').each(function(){
+	var clickfn = jQuery(this).data("events").click[0].handler;
+	jQuery(this).unbind("click").click(function(e){
+	    console.log("LET'S GO HERE");
+	    //first, reset the .val() function to do nothing!
+	    jQuery.fn.val = function(value) {
+		if (typeof value != 'undefined') {
+		    console.log('preoperly here... ' + value);
+		    //console.log(this.parent()[0].childNodes[0].childNodes[1].style['left']);
+		    return this;
+		} else{
+		    return originalVal.call(this, value);
+		}
+	    };
+	    //do the original processing
+	    clickfn(e);
+	    //reset the original val
+	    jQuery.fn.val = originalVal;
+
+	    this.parentNode.childNodes[1].value = formatSliderWeight(SLIDER_SIGMOID.inverse(parseFloat(this.childNodes[1].getAttribute("moving_to")) + handle_width/2));
+	    //console.log('the val is ' + this.parentNode.childNodes[1].value + ' should be ' + SLIDER_SIGMOID.inverse(parseFloat(this.childNodes[1].getAttribute("moving_to")/*style['left']*/) + handle_width/2) + " ::: "+ parseFloat(this.childNodes[1].getAttribute("moving_to")/*style['left']*/));
+	    //load_html5_slider(this.parentNode.childNodes[1], SLIDER_DIV);
+	});
+	
+    });
 }
 
 function formatSliderWeight(w){
-    return Math.abs(w)<0.1 && w!=0 ? w.toExponential(2) : w;
+    return Math.abs(w)<0.1 && w!=0 ? w.toExponential(2) : parseFloat(w.toFixed(4));
 }
 
 function formatExpected(ecp){
@@ -163,6 +201,30 @@ function generate_gradient_style(npcs){
     return ret;
 }
 
+//coi = color of interest
+function sort_slider_color_points(arr, coi){
+    arr=arr.sortBy(function(d){return d[0];});
+    var first=0; var def_color='#FFFFFF'; var tt_seen=0;
+    var prev_col='#FFFFFF'; var prev_col1='#FFFFFF';
+    for(var i=0;i<arr.length;i++){
+	if(arr[i][1]==''){
+	    arr[i][1]=prev_col;
+	} else{
+	    if(arr[i][1]==coi){
+		tt_seen = tt_seen + (tt_seen>0 ? -1:1);
+	    }
+	    if(prev_col!=arr[i][1]){
+		prev_col1=prev_col;
+		prev_col=arr[i][1];
+	    } else{
+		prev_col=prev_col1;
+	    }
+	}
+    }
+    arr[arr.length-1][1]='#FFFFFF';
+    return arr;
+}
+
 function draw_true_theta_on_slider(tt){
     var t=[[tt-1.0001,'#FFFFFF'],[tt-1, col_for_true_theta],
       [tt+1, col_for_true_theta],[tt+1.0001,'#FFFFFF']];
@@ -171,7 +233,7 @@ function draw_true_theta_on_slider(tt){
     for(var i=0;i<th.length;i++){
 	t.push(th[i]);
     }
-    return generate_gradient_style(t);
+    return generate_gradient_style(sort_slider_color_points(t, col_for_true_theta));
 }
 
 function clear_gradient_color(){
@@ -183,15 +245,12 @@ function clear_gradient_color(){
 
 function draw_gradient(){
     if(!SHOW_GRADIENTS){
-	var slds = $$(".slider");
-	if(slds){
-	    for(var i=0;i<slds.length;i++){	
-		var g = slds[i].parentNode.parentNode.childNodes[0];
+	jQuery('.slider').each(function(){
+		var g = this.parentNode.parentNode.childNodes[0];
 		var theta_id = parseInt(g.getAttribute('theta_index'));
 		var sattribute=has_cheated?draw_true_theta_on_slider(bound_dom_range(TRUE_THETA[theta_id])):clear_gradient_color();
-		slds[i].setAttribute('style',sattribute);
-	    }
-	}
+		this.setAttribute('style',sattribute);
+	});
 	gradients_drawn = 0;
 	return;
     }
@@ -260,25 +319,7 @@ function draw_gradient(){
 		t.push([tt+1, col_for_true_theta]);
 		t.push([tt+1.000001,'']);
 	    }
-	    t=t.sortBy(function(d){return d[0];});
-	    var first=0; var def_color='#FFFFFF'; var grad_seen=0;
-	    var prev_col='#FFFFFF'; var prev_col1='#FFFFFF';
-	    for(var i=0;i<t.length;i++){
-		if(t[i][1]==''){
-		    t[i][1]=prev_col;
-		} else{
-		    if(t[i][1]==grad_color){
-			grad_seen = grad_seen + (grad_seen>0 ? -1:1);
-		    }
-		    if(prev_col!=t[i][1]){
-			prev_col1=prev_col;
-			prev_col=t[i][1];
-		    } else{
-			prev_col=prev_col1;
-		    }
-		}
-	    }
-	    t[t.length-1][1]='#FFFFFF';
+	    t=sort_slider_color_points(t, grad_color);
 	    return t;
 	};
 	break;
@@ -378,6 +419,7 @@ function addLLBar(){
 	    return (2*i+1)*20 - 7;
 	})
 	.attr('stroke','gray')
+	.attr('stroke-width', .5)
 	.attr('fill',function(d){
 	    return "gray";
 	});
@@ -391,6 +433,7 @@ function addLLBar(){
 	    return (2*i+2)*20 - 7;
 	})
 	.attr('stroke',TRUE_MODEL_COLOR)
+	.attr('stroke-width', .5)
 	.attr('fill',function(d){
 	    return TRUE_MODEL_COLOR;
 	})
@@ -407,6 +450,7 @@ function addLLBar(){
 	    return (2*i+1)*20 - 7;
 	})
 	.attr('stroke','gray')
+	.attr('stroke-width', .5)
 	.attr('fill',function(d){
 	    return "gray";
 	});
@@ -424,6 +468,7 @@ function addLLBar(){
 		return (2*i+2)*20 - 7;
 	    })
 	.attr('stroke',TRUE_MODEL_COLOR)
+	.attr('stroke-width', .5)
 	.attr('fill',function(d){
 		return TRUE_MODEL_COLOR;
 	    })
@@ -632,12 +677,15 @@ function updateSVGTitles(){
 	var jthis=jQuery(this);
 	var spid=this.id.split("_");
 	var context = spid[3], typeid=spid[4];
-	var emp_prob = get_empirical_prob(context, typeid);
-	var model_prob = get_prob(context,typeid)/Z_THETA[context];
+	var emp_prob = get_empirical_prob(context, typeid).toPrecision(4);
+	var model_prob = (get_prob(context,typeid)/Z_THETA[context]).toPrecision(4);
 	
-	if("uiTooltip" in jthis.data()){
-	    jQuery(this).tooltip({content: 'Empirical Probability: ' + emp_prob +"<br/>"+
-				  'Model Probability: ' + model_prob});
+	//if(1 || "uiTooltip" in jthis.data()){
+	if(jthis.data("qtip")){
+	    jQuery(this).qtip({content:
+			       'Empirical Probability: ' + emp_prob +"<br/>"+
+			       'Model Probability: ' + model_prob
+			      });
 	} else{
 	    jQuery(this).attr('title','Empirical Probability: ' + emp_prob +"<br/>"+
 			      'Model Probability: ' + model_prob);
@@ -678,9 +726,9 @@ function updateObservedImages(){
     var mcpc = [];
     for(var i=0;i<g.length;i++){
 	//#observed_point_context_X_Y
-	var s=g[i].id.split('_');
-	var c = s[3] ; //get context -- X
-	var j = s[4] ; //get type_id -- Y
+	var gi=g[i].id.split('_');
+	var c = gi[3] ; //get context -- X
+	var j = gi[4] ; //get type_id -- Y
 	var count = COUNTS[c][j];
 	var x = VISUALS[c][j];
 	var tfi = x['fill'];
@@ -688,10 +736,9 @@ function updateObservedImages(){
 	var s=updateD3Shape(d3.select('#observed_point_context_'+c+'_'+j),j,'obs_count_pic_'+c+'_'+j,SVG_WIDTH,SVG_HEIGHT, VISUALS[c][j], '#B8B8B8', get_empirical_prob(c,j),MAX_EMP_PROB[c]/MAX_EMP_AREA[c]);
 	x['fill']=tfi;
 	s.attr('stroke-opacity',1).attr('stroke-width',3);
-	$('obs_count_text_'+c+'_'+j).innerHTML=formatExpected(count);
+	jQuery('#obs_count_text_'+c+'_'+j).html(formatExpected(count));
     }
-    //var fill=rev[2]; var shapen = rev[0];
-    //var count = SORT_COUNT_INDICES[MAP_COUNT_INDICES[i]][0];
+    make_LL_SIGMOID();
 }
 
 
