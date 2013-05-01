@@ -4,7 +4,8 @@ function load_html5_slider(boxid,val){
     var tmpval = boxid.value;
     if(!isFinite(tmpval)){
 	if(!isNaN(tmpval)){
-	    tmpval = SLIDER_SIGMOID.inverse(tmpval>0 ? max_slider_val : min_slider_val);	}
+	    tmpval = SLIDER_SIGMOID.inverse(tmpval>0 ? max_slider_val : min_slider_val);
+	}
     }
     var actual_weight = tmpval / val;
     var feature_info = boxid.parentNode.parentNode.childNodes[0];
@@ -75,7 +76,19 @@ function addSliderEffects(){
 	    load_html5_slider(this.parentNode.parentNode.childNodes[1],SLIDER_DIV);
 	};
 	var tmpfn=function(e){
-	    this.value = formatSliderWeight(SLIDER_SIGMOID.inverse(parseFloat(this.parentNode.childNodes[0].childNodes[1].getAttribute("moving_to")) + handle_width/2));
+	    if(jQuery(this).is("[ueditted]")){
+		var pv=parseFloat(jQuery(this).attr("prev_val"));
+		if(!isNumber(jQuery(this).val())){
+		    this.value = pv;
+		    return;
+		}
+		var cv = parseFloat(jQuery(this).val());		
+		if(Math.abs(cv-pv) < 1e-4) return;
+		jQuery(this.parentNode.childNodes[0].childNodes[1]).animate({left: SLIDER_SIGMOID.transform(cv)}, 100);
+		
+	    } else{
+		this.value = formatSliderWeight(SLIDER_SIGMOID.inverse(parseFloat(this.parentNode.childNodes[0].childNodes[1].getAttribute("moving_to")) + handle_width/2));
+	    }
 	    load_html5_slider(this,SLIDER_DIV);
 	};
 
@@ -87,18 +100,19 @@ function addSliderEffects(){
 	jthis.change(tmpfn);
 	jthis.parent().children().first().children()[1].ondrag=handle_trigger;
 
-	//jthis.change(tmpfn);
-	//jthis.change();
+	jthis.click(function(){
+	    if(in_solving) return;
+	    jQuery(this).removeAttr("readonly")
+		.attr("prev_val",jQuery(this).val())
+		.attr("ueditted","true");
+	});
+	jthis.blur(function(){
+	    jQuery(this).attr("readonly","readonly")
+		.removeAttr("ueditted");
+	});
 	
-	// if(jthis.data("qtip")){
-	//     // jthis.qtip({content : {
-	//     // 	text : 0 } });
-	// } else{
-	//     jthis.attr("title",0);
-	// }
-	// jthis.parent().parent().mouseleave(function(){
-	//     this.setAttribute('title',this.childNodes[1].childNodes[1].value);
-	// });
+	var prevkeydown = jthis.data("events").keydown[0].handler;
+	jthis.unbind("keydown");
 
 	/*if(USED_FEATURES[theta_index]==undefined){//is unused/unavailable
 	  group[i].parentNode.parentNode.style.display='none';
@@ -112,7 +126,6 @@ function addSliderEffects(){
     jQuery.fn.animate = function(a,b,c,d){
 	if(this.hasClass('handle')){
 	    this.attr("moving_to", a.left);
-	    console.log("successfully getting animate!");
 	}
 	return originalAnimate.call(this, a,b,c,d);
     };
@@ -122,12 +135,9 @@ function addSliderEffects(){
     jQuery('.slider').each(function(){
 	var clickfn = jQuery(this).data("events").click[0].handler;
 	jQuery(this).unbind("click").click(function(e){
-	    console.log("LET'S GO HERE");
 	    //first, reset the .val() function to do nothing!
 	    jQuery.fn.val = function(value) {
 		if (typeof value != 'undefined') {
-		    console.log('preoperly here... ' + value);
-		    //console.log(this.parent()[0].childNodes[0].childNodes[1].style['left']);
 		    return this;
 		} else{
 		    return originalVal.call(this, value);
@@ -139,8 +149,6 @@ function addSliderEffects(){
 	    jQuery.fn.val = originalVal;
 
 	    this.parentNode.childNodes[1].value = formatSliderWeight(SLIDER_SIGMOID.inverse(parseFloat(this.childNodes[1].getAttribute("moving_to")) + handle_width/2));
-	    //console.log('the val is ' + this.parentNode.childNodes[1].value + ' should be ' + SLIDER_SIGMOID.inverse(parseFloat(this.childNodes[1].getAttribute("moving_to")/*style['left']*/) + handle_width/2) + " ::: "+ parseFloat(this.childNodes[1].getAttribute("moving_to")/*style['left']*/));
-	    //load_html5_slider(this.parentNode.childNodes[1], SLIDER_DIV);
 	});
 	
     });
