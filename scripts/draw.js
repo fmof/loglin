@@ -515,25 +515,20 @@ function addLLRegBars(svg,ll,unregged,cname,regdata,yfn,resizer){
 //ll : regularized LL
 //unregged : LL + reg
 function updateLLRegBars(svg,ll,unregged,cname,regdata,resizer){
-    var regrects=svg.selectAll('.'+cname+'_overlay').data(regdata);
-    console.log("uncomment here when ready");
-    //console.log(unregged);
-    //console.log(resizer(unregged[0]));
-    //console.log(ll);
-    //console.log(resizer(ll[0]));
-    regrects.attr('x',function(d,i){
+    console.log(unregged);
+    console.log(resizer(unregged[0]));
+    console.log(ll);
+    console.log(resizer(ll[0]));
+    console.log(regdata);
+    ['.'+cname+'_overlay', '.'+cname].each(function(id){
+	svg.selectAll(id).data(regdata).attr('x',function(d,i){
+	    console.log(d+"\t"+ ll[i] + "\t" + (resizer(ll[i])+70));
 	    return resizer(ll[i])+70;
 	})
-	.attr('width',function(d,i){
+	    .attr('width',function(d,i){
 		return Math.abs(resizer(unregged[i]) - resizer(ll[i]));
 	    });
-    regrects=svg.selectAll('.'+cname).data(regdata);
-    regrects.attr('x',function(d,i){
-	    return resizer(ll[i])+70;
-	})
-	.attr('width',function(d,i){
-		return Math.abs(resizer(unregged[i]) - resizer(ll[i]));
-	    });
+    });
 }
 
 function updateLLBar(){
@@ -542,12 +537,10 @@ function updateLLBar(){
     //how much regularization affects LL)
     var ll = LOG_LIKELIHOOD.map(function(d,i){return d+ sign(REGULARIZATION_SIGMA2)*REGULARIZATION[i];});
     var tll=TRUE_LOG_LIKELIHOOD.map(function(d,i){return d+ sign(REGULARIZATION_SIGMA2)*TRUE_REGULARIZATION[i];});
-    max = function(x,y){return Math.max(x,y);};
-    var max_u_ll = ll.reduce(max,-10000000);
-    var max_t_ll = tll.reduce(max, -10000000);
-    min = function(x,y){return Math.min(x,y);};    
-    var min_u_ll = ll.reduce(min, 0);  
-    var min_t_ll = tll.reduce(min, 0);
+    var max_u_ll = ll.reduce(Math.max,-10000000);
+    var max_t_ll = tll.reduce(Math.max, -10000000);
+    var min_u_ll = ll.reduce(Math.min, 0);  
+    var min_t_ll = tll.reduce(Math.min, 0);
     var overall_max = Math.max(max_u_ll,max_t_ll); 
     var overall_min = Math.min(min_u_ll,min_t_ll);
     worst_ll = Math.min(worst_ll,overall_min);
