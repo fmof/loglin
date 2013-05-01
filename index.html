@@ -108,7 +108,7 @@
 
 	<div id="data_options_area">
 	  <fieldset>
-	    <legend>Data Options</legend>
+	    <legend>Model Options</legend>
 	    <ul class="ulcenter">
 	      <li>
 		<button type="button" id="new_challenge">New random challenge</button>
@@ -119,6 +119,25 @@
 	      </li>
 	    </ul>
 	  </fieldset>
+
+	  <br />
+	  <div>
+	  <fieldset>
+	    <legend>Regularization</legend>
+	    <input type="radio" class="regularization_radio" name="use_regularization" checked="yes" value="0" id="no_reg_button"/>
+	    <label for="no_reg_button">None</label>
+	    <br/>
+	    <input type="radio" class="regularization_radio use_reg" id="ell1_reg_button" name="use_regularization" value="1"/>
+	    <label for="ell1_reg_button">&ell;<sub>1</sub></label>
+	    <br/>
+	    <input type="radio" class="regularization_radio use_reg" name="use_regularization" value="2" id="ell2_reg_button"/>
+	    <label for="ell2_reg_button">&ell;<sub>2</sub></label>
+	    <div id="sigma2area" style="display:none;">
+	      <br />
+	      <i>C</i> = <input type="text" name="regularization_constant" id="regularization_constant" value="1.0" size="5"/>
+	    </div>
+	  </fieldset>
+	  </div>
 	</div>
 
 
@@ -151,24 +170,6 @@
 		<input type="radio" id="show_all_grad"  class="component_radio" name="show_components" value="3"/>
 		<label for="show_all_grad">All components </label>
 		<br/>
-	      </fieldset>
-	    </div>
-	    <br />
-	    <div>
-	      <fieldset>
-		<legend>Regularization</legend>
-		<input type="radio" class="regularization_radio" name="use_regularization" checked="yes" value="0" id="no_reg_button"/>
-		<label for="no_reg_button">None</label>
-		<br/>
-		<input type="radio" class="regularization_radio use_reg" id="ell1_reg_button" name="use_regularization" value="1"/>
-		<label for="ell1_reg_button">&ell;<sub>1</sub></label>
-		<br/>
-		<input type="radio" class="regularization_radio use_reg" name="use_regularization" value="2" id="ell2_reg_button"/>
-		<label for="ell2_reg_button">&ell;<sub>2</sub></label>
-		<div id="sigma2area" style="display:none;">
-		  <br />
-		  <i>C</i> = <input type="text" name="regularization_constant" id="regularization_constant" value="1.0" size="5"/>
-		</div>
 	      </fieldset>
 	    </div>
 	  <br />
