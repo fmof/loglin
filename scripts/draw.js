@@ -4,7 +4,8 @@ function load_html5_slider(boxid,val){
     var tmpval = boxid.value;
     if(!isFinite(tmpval)){
 	if(!isNaN(tmpval)){
-	    tmpval = SLIDER_SIGMOID.inverse(tmpval>0 ? max_slider_val : min_slider_val);	}
+	    tmpval = SLIDER_SIGMOID.inverse(tmpval>0 ? max_slider_val : min_slider_val);
+	}
     }
     var actual_weight = tmpval / val;
     var feature_info = boxid.parentNode.parentNode.childNodes[0];
@@ -28,20 +29,19 @@ function load_html5_slider(boxid,val){
 	//store THETA value
 	THETA[feat_name]=isFinite(actual_weight)?actual_weight:(actual_weight>0? 100: -100);
 	var jdiv = jQuery(boxid);
-	var boxval = parseFloat(boxid.value).toFixed(10);
-	jQuery(boxid.parentNode.parentNode).attr("title", boxval);
-	if("uiTooltip" in jdiv.data()){
-	    jdiv.tooltip({content: boxval,
-			 tooltipClass: "feature_slider_tooltip"});
+	var boxval = parseFloat(actual_weight).toFixed(8);
+
+	if(jdiv.data("qtip")){
+	    jdiv.qtip({content: {
+		text: boxval
+	    }});
 	} else{
 	    jdiv.attr("title", boxval);
-	    jdiv.data("ui-tooltip-title", boxval);
 	}
 	redraw_all();
     } else{
 	feature_info.className+=' feature_name_box';
 	boxid.parentNode.parentNode.className += ' feature_box';
-	boxid.parentNode.parentNode.setAttribute('title',0);
     }
 }
 
@@ -61,52 +61,58 @@ function redraw_all(){
 
 
 function addSliderEffects(){
-    console.log(jQuery(".feature_slider"));
     jQuery(".feature_slider").rangeinput();
     var lb = SLIDER_SIGMOID.inverse(min_slider_val);
     var ub = SLIDER_SIGMOID.inverse(max_slider_val);
-    //if(group=$$(".feature_slider")){
     jQuery(".feature_slider").each(function(){
 	var jthis=jQuery(this);
 	jthis.attr('readonly','readonly');
 	var theta_index = jthis.parent().parent().children()[0].getAttribute('theta_index');
-	var handle_tmpfn=function(){
+	var handle_trigger=function(){
 	    //handle 
-	    var t = parseFloat(this.style['left']+handle_width/2);
+	    var t = parseFloat(this.getAttribute("moving_to"))+handle_width/2;
 	    t=Math.min(slider_width-handle_width,Math.max(0,t));
 	    this.parentNode.parentNode.childNodes[1].value= SLIDER_SIGMOID.inverse(t);
 	    load_html5_slider(this.parentNode.parentNode.childNodes[1],SLIDER_DIV);
 	};
 	var tmpfn=function(e){
-	    if(0 && e){
-		if(e.type=="change"){
-		    if(1 && isNumber(this.value) && parseFloat(this.value)){
-			console.log('capturing this...');
-			console.log(this.value+', '+SLIDER_SIGMOID.transform(parseFloat(this.value)));
-			reset_manually_from_theta(this,this.value);
-			THETA[theta_index]=this.value;
-			redraw_all();
-		    }
-		    else{
-			console.log('this');
-			this.value = SLIDER_SIGMOID.inverse(parseFloat(this.parentNode.childNodes[0].childNodes[1].style['left'] + handle_width/2));
-		    }
+	    if(jQuery(this).is("[ueditted]")){
+		var pv=parseFloat(jQuery(this).attr("prev_val"));
+		if(!isNumber(jQuery(this).val())){
+		    this.value = pv;
+		    return;
 		}
+		var cv = parseFloat(jQuery(this).val());		
+		if(Math.abs(cv-pv) < 1e-4) return;
+		jQuery(this.parentNode.childNodes[0].childNodes[1]).animate({left: SLIDER_SIGMOID.transform(cv)}, 100);
+		
 	    } else{
-		this.value = SLIDER_SIGMOID.inverse(parseFloat(this.parentNode.childNodes[0].childNodes[1].style['left'] + handle_width/2));
-		load_html5_slider(this,SLIDER_DIV);
+		this.value = formatSliderWeight(SLIDER_SIGMOID.inverse(parseFloat(this.parentNode.childNodes[0].childNodes[1].getAttribute("moving_to")) + handle_width/2));
 	    }
+	    load_html5_slider(this,SLIDER_DIV);
 	};
+
 	//save the "previous" blur event...
 	var prevblur = jQuery._data(jthis[0]).events.blur[0].handler;
-	//but remove it... this means I can set my own if I want, but I don't have to
+	//so we can remove it
 	jthis.unbind('blur');
+	jthis.unbind('change');
 	jthis.change(tmpfn);
-	jthis.parent().children().first().children()[1].ondrag=handle_tmpfn;
-	jthis.change();
-	jthis.parent().parent().mouseleave(function(){
-	    this.setAttribute('title',this.childNodes[1].childNodes[1].value);
+	jthis.parent().children().first().children()[1].ondrag=handle_trigger;
+
+	jthis.click(function(){
+	    if(in_solving) return;
+	    jQuery(this).removeAttr("readonly")
+		.attr("prev_val",jQuery(this).val())
+		.attr("ueditted","true");
 	});
+	jthis.blur(function(){
+	    jQuery(this).attr("readonly","readonly")
+		.removeAttr("ueditted");
+	});
+	
+	var prevkeydown = jthis.data("events").keydown[0].handler;
+	jthis.unbind("keydown");
 
 	/*if(USED_FEATURES[theta_index]==undefined){//is unused/unavailable
 	  group[i].parentNode.parentNode.style.display='none';
@@ -114,11 +120,42 @@ function addSliderEffects(){
 	  group[i].disabled='disabled';
 	  }*/
     });
-    //}
+
+    
+    var originalAnimate = jQuery.fn.animate;
+    jQuery.fn.animate = function(a,b,c,d){
+	if(this.hasClass('handle')){
+	    this.attr("moving_to", a.left);
+	}
+	return originalAnimate.call(this, a,b,c,d);
+    };
+
+    var originalVal = jQuery.fn.val;
+    //there's a weird click event happening, so try to override it
+    jQuery('.slider').each(function(){
+	var clickfn = jQuery(this).data("events").click[0].handler;
+	jQuery(this).unbind("click").click(function(e){
+	    //first, reset the .val() function to do nothing!
+	    jQuery.fn.val = function(value) {
+		if (typeof value != 'undefined') {
+		    return this;
+		} else{
+		    return originalVal.call(this, value);
+		}
+	    };
+	    //do the original processing
+	    clickfn(e);
+	    //reset the original val
+	    jQuery.fn.val = originalVal;
+
+	    this.parentNode.childNodes[1].value = formatSliderWeight(SLIDER_SIGMOID.inverse(parseFloat(this.childNodes[1].getAttribute("moving_to")) + handle_width/2));
+	});
+	
+    });
 }
 
 function formatSliderWeight(w){
-    return Math.abs(w)<0.1 && w!=0 ? w.toExponential(2) : w;
+    return Math.abs(w)<0.1 && w!=0 ? w.toExponential(2) : parseFloat(w.toFixed(4));
 }
 
 function formatExpected(ecp){
@@ -478,25 +515,20 @@ function addLLRegBars(svg,ll,unregged,cname,regdata,yfn,resizer){
 //ll : regularized LL
 //unregged : LL + reg
 function updateLLRegBars(svg,ll,unregged,cname,regdata,resizer){
-    var regrects=svg.selectAll('.'+cname+'_overlay').data(regdata);
-    console.log("uncomment here when ready");
-    //console.log(unregged);
-    //console.log(resizer(unregged[0]));
-    //console.log(ll);
-    //console.log(resizer(ll[0]));
-    regrects.attr('x',function(d,i){
+    console.log(unregged);
+    console.log(resizer(unregged[0]));
+    console.log(ll);
+    console.log(resizer(ll[0]));
+    console.log(regdata);
+    ['.'+cname+'_overlay', '.'+cname].each(function(id){
+	svg.selectAll(id).data(regdata).attr('x',function(d,i){
+	    console.log(d+"\t"+ ll[i] + "\t" + (resizer(ll[i])+70));
 	    return resizer(ll[i])+70;
 	})
-	.attr('width',function(d,i){
+	    .attr('width',function(d,i){
 		return Math.abs(resizer(unregged[i]) - resizer(ll[i]));
 	    });
-    regrects=svg.selectAll('.'+cname).data(regdata);
-    regrects.attr('x',function(d,i){
-	    return resizer(ll[i])+70;
-	})
-	.attr('width',function(d,i){
-		return Math.abs(resizer(unregged[i]) - resizer(ll[i]));
-	    });
+    });
 }
 
 function updateLLBar(){
@@ -505,12 +537,10 @@ function updateLLBar(){
     //how much regularization affects LL)
     var ll = LOG_LIKELIHOOD.map(function(d,i){return d+ sign(REGULARIZATION_SIGMA2)*REGULARIZATION[i];});
     var tll=TRUE_LOG_LIKELIHOOD.map(function(d,i){return d+ sign(REGULARIZATION_SIGMA2)*TRUE_REGULARIZATION[i];});
-    max = function(x,y){return Math.max(x,y);};
-    var max_u_ll = ll.reduce(max,-10000000);
-    var max_t_ll = tll.reduce(max, -10000000);
-    min = function(x,y){return Math.min(x,y);};    
-    var min_u_ll = ll.reduce(min, 0);  
-    var min_t_ll = tll.reduce(min, 0);
+    var max_u_ll = ll.reduce(Math.max,-10000000);
+    var max_t_ll = tll.reduce(Math.max, -10000000);
+    var min_u_ll = ll.reduce(Math.min, 0);  
+    var min_t_ll = tll.reduce(Math.min, 0);
     var overall_max = Math.max(max_u_ll,max_t_ll); 
     var overall_min = Math.min(min_u_ll,min_t_ll);
     worst_ll = Math.min(worst_ll,overall_min);
@@ -651,9 +681,12 @@ function updateSVGTitles(){
 	var emp_prob = get_empirical_prob(context, typeid).toPrecision(4);
 	var model_prob = (get_prob(context,typeid)/Z_THETA[context]).toPrecision(4);
 	
-	if("uiTooltip" in jthis.data()){
-	    jQuery(this).tooltip({content: 'Empirical Probability: ' + emp_prob +"<br/>"+
-				  'Model Probability: ' + model_prob});
+	//if(1 || "uiTooltip" in jthis.data()){
+	if(jthis.data("qtip")){
+	    jQuery(this).qtip({content:
+			       'Empirical Probability: ' + emp_prob +"<br/>"+
+			       'Model Probability: ' + model_prob
+			      });
 	} else{
 	    jQuery(this).attr('title','Empirical Probability: ' + emp_prob +"<br/>"+
 			      'Model Probability: ' + model_prob);

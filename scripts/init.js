@@ -328,7 +328,7 @@ function apply_settings(){
 	    if("attr" in currset[key]){
 		if(is_empty(jqobj.attr(currset[key]["attr"]))){
 		    jqobj.attr(currset[key]["attr"]+"", ""+cs_k_l[k]);
-		}
+		} 
 	    }
 	    KNOWN_USER_ACTIONS.do_action(currset, key,jqobj);
 	}

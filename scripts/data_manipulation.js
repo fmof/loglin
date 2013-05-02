@@ -127,11 +127,8 @@ function update_token_count(){
 	var nval=parseInt(this.value);
 	NUM_TOKENS-= old_val;
 	NUM_TOKENS += nval;
-	console.log(NUM_TOKENS_C[c]+', '+old_val+', '+nval);
 	NUM_TOKENS_C[c] = NUM_TOKENS_C[c] - old_val;
-	console.log(NUM_TOKENS_C);
 	NUM_TOKENS_C[c] = NUM_TOKENS_C[c] + nval;
-	console.log(NUM_TOKENS_C);
     } else{
 	this.value=old_val;
     }
@@ -139,7 +136,11 @@ function update_token_count(){
 
 function reset_manually_from_theta(slider,val){
     var h = get_handle(slider);
-    slider.parentNode.parentNode.setAttribute('title',val);
+    // if(jQuery(slider).data("qtip")){
+    // 	jQuery(slider).qtip({content: val});
+    // } else{
+    // 	slider.parentNode.parentNode.setAttribute('title',val);
+    // }
     var x = SLIDER_SIGMOID.transform(parseFloat(val));
     x=Math.max(min_slider_val,Math.min(max_slider_val,x));
     if(x< 1e-10) x=1e-5;
