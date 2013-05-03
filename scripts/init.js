@@ -659,51 +659,50 @@ function init(){
 	$('stop_solving_div').style.display='none';
     }
 
-    if($('solve_button')){
-    	$('solve_button').onclick = function(){
-    	    SOLVE_ITERATION=0;
-	    if(in_solving){
-		clearInterval(SOLVE_TIMEOUT_ID);
-		in_solving=0;
-		this.style.backgroundColor=button_color;
-		//orig_solve_step
-		$('gradient_step').value=SOLVE_STEP.toPrecision(5);
-		this.innerHTML="Solve";
-		//$('stop_solving_div').style.display='none';
-		$('step_button').disabled='';
-		$('next_lesson').disabled="";
-		$('prev_lesson').disabled="";
-		$('next_lesson').verify(); $('prev_lesson').verify();
-		//$('change_num_tokens').disabled="";
-		$('gradient_step').onchange();
-	    } else{
-		if(USE_REGULARIZATION){
-		    $('regularization_constant').onchange();
-		}
-		if(SOLVE_STEP==0)
-		    return;
-		in_solving=1;
-		button_color=this.style.backgroundColor;
-		this.style.backgroundColor='red';
-		this.innerHTML="Stop";
-		$('step_button').disabled='disabled';
-		$('next_lesson').disabled="disabled";
-		$('prev_lesson').disabled="disabled";
-		$('gradient_step').value=scale_gamma_for_solve(SOLVE_STEP,1).toPrecision(5);
-		solved++;
-		SOLVE_TIMEOUT_ID = setITimeout(function(iter){
-			return function(){
-			    console.log(iter);
-			    var mystep = iter==1?recompute_step_size(SOLVE_STEP,0) : recompute_step_size(SOLVE_STEP);
-			    console.log('done with recompsize : '+mystep);
-			    solve_puzzle(mystep,
-					 iter,
-					 SOLVE_STEP);
-			};}, SOLVE_TIME_DELAY/Math.sqrt(10), MAX_SOLVE_ITERATIONS);
-		jQuery(this).blur();
+    jQuery('#solve_button').click(function(){
+    	SOLVE_ITERATION=0;
+	if(in_solving){
+	    clearInterval(SOLVE_TIMEOUT_ID);
+	    in_solving=0;
+	    this.style.backgroundColor=button_color;
+	    //orig_solve_step
+	    $('gradient_step').value=SOLVE_STEP.toPrecision(5);
+	    this.innerHTML="Solve";
+	    //$('stop_solving_div').style.display='none';
+	    $('step_button').disabled='';
+	    $('next_lesson').disabled="";
+	    $('prev_lesson').disabled="";
+	    $('next_lesson').verify(); $('prev_lesson').verify();
+	    //$('change_num_tokens').disabled="";
+	    $('gradient_step').onchange();
+	} else{
+	    if(USE_REGULARIZATION){
+		$('regularization_constant').onchange();
 	    }
-    	};
-    }
+	    if(SOLVE_STEP==0)
+		return;
+	    in_solving=1;
+	    button_color=this.style.backgroundColor;
+	    this.style.backgroundColor='red';
+	    this.innerHTML="Stop";
+	    $('step_button').disabled='disabled';
+	    $('next_lesson').disabled="disabled";
+	    $('prev_lesson').disabled="disabled";
+	    $('gradient_step').value=scale_gamma_for_solve(SOLVE_STEP,1).toPrecision(5);
+	    solved++;
+	    SOLVE_TIMEOUT_ID = setITimeout(function(iter){
+		return function(){
+		    console.log(iter);
+		    var mystep = iter==1?recompute_step_size(SOLVE_STEP,0) : recompute_step_size(SOLVE_STEP);
+		    console.log('done with recompsize : '+mystep);
+		    solve_puzzle(mystep,
+				 iter,
+				 SOLVE_STEP);
+		};}, SOLVE_TIME_DELAY/Math.sqrt(10), MAX_SOLVE_ITERATIONS);
+	    jQuery(this).blur();
+	}
+    });
+
 
     if(group=$$('.component_radio')){
     	for(var i=0;i<group.length;i++){

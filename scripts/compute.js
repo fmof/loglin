@@ -23,15 +23,13 @@ function recompute_expected_counts(){
 	//go through type IDs
 	for(var i=0;i<obs_in_c.length;i++){
 	    var id_num = obs_in_c[i];
-	    var p=$('exp_count_text_context_'+c+'_'+id_num); 
 	    var ecp=get_expected_count(c,id_num);
 	    EXPECTED_COUNTS[c][id_num]=ecp;
 	    var obs_count = COUNTS[c][id_num];
 	    var color = determine_color(get_empirical_prob(c,id_num),get_prob(c,id_num)/Z_THETA[c], c);
-	    p.innerHTML =  formatExpected(ecp);
-	    p.style.color=color;
-	    p.setAttribute('dirty',0);
-	    p.setAttribute('value',ecp);
+	    jQuery('#exp_count_text_context_'+c+'_'+id_num).html(formatExpected(ecp))
+		.css("color",color)
+		.attr("dirty",0).val(ecp);
 	}
     }
 }
@@ -149,7 +147,7 @@ function recompute_step_size(ostep,step_num,tol_low, tol_high){
 	    if(count > 1000){
 		//should get here, but just in case...
 		clearInterval(SOLVE_TIMEOUT_ID);
-		$('solve_button').onclick();
+		jQuery('#solve_button').click();
 		throw "infinite loop";
 	    }
 	}
