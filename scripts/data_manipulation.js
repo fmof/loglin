@@ -17,13 +17,13 @@ function generate_new_counts_context(context_id,ntimes){
     recompute_partition_function(TRUE_THETA,TRUE_Z_THETA);
     sample_from_true(context_id,ntimes);
     compute_max_prob(get_count, MAX_EMP_PROB, MAX_EMP_PROB_TYPE, MAX_EMP_AREA, get_num_tokens);
-    $('num_tokens_context_'+context_id).value = NUM_TOKENS_C[context_id];
+    jQuery('#num_tokens_context_'+context_id).val(NUM_TOKENS_C[context_id]);
     updateObservedImages();
     svg_loaded=1;
     redraw_all();    
     //update buttons
-    $('step_button').disabled='';
-    $('solve_button').disabled='';
+    jQuery('#step_button').removeAttr("disabled");
+    jQuery('#solve_button').removeAttr("disabled");
 }
 
 function generate_new_observations(ntimes){
@@ -40,7 +40,7 @@ function generate_new_observations(ntimes){
     for(var c=0;c<CONTEXTS.length;c++){
 	if(USED_CONTEXTS[c]){
 	    sample_from_true(c,ntimes);
-	    $('num_tokens_context_'+c).value = NUM_TOKENS_C[c];
+	    jQuery('#num_tokens_context_'+c).val(NUM_TOKENS_C[c]);
 	}
     }
     compute_max_prob(get_count,MAX_EMP_PROB,MAX_EMP_PROB_TYPE,MAX_EMP_AREA, get_num_tokens);
@@ -48,10 +48,8 @@ function generate_new_observations(ntimes){
     updateObservedImages();
     svg_loaded=1;
     redraw_all();
-    $('cheat_button').style.display='block';
-    $('step_button').disabled='';
-    $('solve_button').disabled='';
-    $("new_counts").disabled='';
+    jQuery('#cheat_button').css('display','block');
+    jQuery('#step_button,#solve_button,#new_counts').removeAttr("disabled");
     if(!is_empty(LAST_UPDATED_TOKEN_COUNT)){
 	jQuery('#new_counts').css('background-color','#F6F5A2');
     }
@@ -148,10 +146,9 @@ function reset_manually_from_theta(slider,val){
 }
 
 function reset_sliders_manually(arr){
-    var group = $$('.feature_slider');
-    for(var i=0;i<group.length;i++){
-	group[i].value = formatSliderWeight(arr[i][1]);
-	reset_manually_from_theta(group[i],arr[i][1]);
+    jQuery('.feature_slider').each(function(i){
+	this.value = formatSliderWeight(arr[i][1]);
+	reset_manually_from_theta(this,arr[i][1]);
 	THETA[arr[i][0]]=parseFloat(arr[i][1]);
-    }
+    });
 }

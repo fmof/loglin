@@ -237,10 +237,10 @@ function record_data(rows,already_created){
 	record_observation(record);
     });
     if(!already_created){
-    	addFeaturesToList($("feature_table"),FEATURE_LIST);
+    	addFeaturesToList(jQuery("#feature_table"),FEATURE_LIST);
     	addSliderEffects();
     } else{
-    	$$(".feature_slider").forEach(function(t){t.onchange();});
+    	jQuery(".feature_slider").each(function(i){jQuery(this).change();});
     }
     recompute_partition_function(THETA,Z_THETA);
     compute_max_prob(get_count,MAX_EMP_PROB,MAX_EMP_PROB_TYPE,MAX_EMP_AREA, get_num_tokens);
@@ -248,7 +248,7 @@ function record_data(rows,already_created){
     recompute_partition_function(TRUE_THETA,TRUE_Z_THETA);
     //draw the data here!
     if(!already_created){
-    	drawSVGBoxes($("draw_area"));
+    	drawSVGBoxes(jQuery("#draw_area"));
     } else{
     	updateObservedImages();
     }
@@ -396,9 +396,7 @@ function addFeaturesToList(selectObj, array){
 	td.appendChild(d);
 	tfl.push(td);
     }
-    console.log($('feature_slider_area'));
-    console.log($('feature_slider_area').offsetWidth);
-    var maxwidth=$('feature_slider_area').offsetWidth;
+    var maxwidth=jQuery('#feature_slider_area')[0].offsetWidth;
     //now maximize the number of 
     var num_cols = Math.floor(maxwidth/205);
     var num_rows = Math.ceil(FEATURE_LIST.length/num_cols);
@@ -408,7 +406,7 @@ function addFeaturesToList(selectObj, array){
     for(var i=0;i<num_rows;i++){
 	var tr=document.createElement('tr');
 	tr.id='row'+i;
-	selectObj.appendChild(tr);
+	selectObj.append(jQuery(tr));
 	for(var j=0;j<num_cols && feature_index<tfl.length;j++){
 	    tr.appendChild(tfl[feature_index++]);
 	}

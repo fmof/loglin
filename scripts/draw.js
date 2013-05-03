@@ -338,24 +338,22 @@ function draw_gradient(){
     default:
 	break;
     }
-    var group=$$(".slider");
     //scale gradient
     var abs_max_val = SOLVE_STEP;
     var scaled_grad = GRADIENT.map(function(g,i){ 
 	    var x=get_corrected_step(i,SOLVE_STEP)[1];
 	    return x;
-	});
-    //return x/Math.pow(10,Math.floor(abs_max_val)+1); });
-    for(var i=0;i<group.length;i++){
+    });
+    jQuery('.slider').each(function(i){
 	//to get percents 
-	var g = group[i].parentNode.parentNode.childNodes[0];
-	var handle = group[i].childNodes[1];
+	var g = this.parentNode.parentNode.childNodes[0];
+	var handle = this.childNodes[1];
 	var hand_left =parseFloat(handle.style.left);
 	//get the THETA id
 	var theta_id = parseInt(g.getAttribute('theta_index'));
 	var npcs = fn(THETA[theta_id],scaled_grad[theta_id],TRUE_THETA[theta_id]);
-	group[i].setAttribute('style',generate_gradient_style(npcs));
-    }
+	this.setAttribute('style',generate_gradient_style(npcs));
+    });
 }
 
 
@@ -609,7 +607,7 @@ function prettifyShape(shape, id_name, color, fill, set_sw_opacity, opacity){
     } else if(fill=='hollow'){
 	shape.attr('fill','white');
     } else if(fill=='striped'){
-	$('stripe_path_'+id_name).style['stroke']=color;
+	jQuery('#stripe_path_'+id_name).css('stroke',color);
 	shape.attr('style','fill: url(#stripe_'+ id_name +'); stroke: '+color+'; opacity:'+EXPECTED_TRANSPARENCY+';');
     }
     shape.attr('stroke',color);
@@ -637,12 +635,12 @@ function updateD3Shape(container, id_num, id_name, width,height,visuals,color,co
 
 function createD3Shape(container, id_num, id_name, width,height, visuals, color, count,max_count,opacity){
     if(visuals['fill']=='striped'){
-	var cloned=$('stripe_def').cloneNode(true);
-	cloned.setAttribute('id','stripe_def_'+id_name);
-	cloned.childNodes[1].setAttribute('id','stripe_'+id_name);
-	cloned.childNodes[1].childNodes[1].setAttribute('id','stripe_path_'+id_name);
-	cloned.childNodes[1].childNodes[1].style['stroke']=color;
-	container[0][0].appendChild(cloned);
+	var cloned=jQuery('#stripe_def').clone()
+	    .attr('id','stripe_def_'+id_name);
+	cloned.children().eq(0).attr('id','stripe_'+id_name);
+	cloned.children().eq(0).children().eq(0).attr('id','stripe_path_'+id_name)
+	    .css('stroke',color);
+	container[0][0].appendChild(cloned[0]);
     }
     var s;
     var scale=Math.min(width/2,height/2);
@@ -713,7 +711,7 @@ function drawExpectedData(context, i, container){
 	}
     }
     var ntc=NUM_TOKENS_C[context]==0?1:NUM_TOKENS_C[context];
-    if(! $("exp_count_pic_"+context+'_'+i)){
+    if(! jQuery("#exp_count_pic_"+context+'_'+i).length){
 	var exp_count_pic = createD3Shape(container,i,'exp_count_pic_'+context+'_'+i,SVG_WIDTH,SVG_HEIGHT, vis, color, get_prob(context,i)/Z_THETA[context],MAX_EXP_EMP_PROB[context]/MAX_EXP_EMP_AREA[context],EXPECTED_TRANSPARENCY);
 	exp_count_pic.attr('id','exp_count_pic_'+context+'_'+i);
     } else{
@@ -723,11 +721,10 @@ function drawExpectedData(context, i, container){
 }
 
 function updateObservedImages(){
-    var g=$$('.observed_count');
     var mcpc = [];
-    for(var i=0;i<g.length;i++){
+    jQuery('.observed_count').each(function(i){
 	//#observed_point_context_X_Y
-	var gi=g[i].id.split('_');
+	var gi=this.id.split('_');
 	var c = gi[3] ; //get context -- X
 	var j = gi[4] ; //get type_id -- Y
 	var count = COUNTS[c][j];
@@ -738,7 +735,7 @@ function updateObservedImages(){
 	x['fill']=tfi;
 	s.attr('stroke-opacity',1).attr('stroke-width',3);
 	jQuery('#obs_count_text_'+c+'_'+j).html(formatExpected(count));
-    }
+    });
     make_LL_SIGMOID();
 }
 
@@ -759,7 +756,7 @@ function drawSVGBoxes(selectObj){
 	tr.appendChild(th);
 	tab.appendChild(tr);
     }
-    selectObj.appendChild(tab);
+    selectObj.append(jQuery(tab));
     for(var c=0;c<CONTEXTS.length;c++){
 	if(USED_CONTEXTS[c]!=1){
 	    console.log('context c='+c);
@@ -834,8 +831,8 @@ function drawSVGBoxes(selectObj){
 	div_context.style.width=rowwidth+'px';
 	div_context.style['float']='left';
 	div_context.className+=' cdrawrow';
-	selectObj.style.width = rowwidth+100+'px';
-	selectObj.style.overflow='hidden';
+	selectObj.css("width",rowwidth+100);
+	selectObj.css("overflow",'hidden');
 	for(var i=0;i<num_rows;i++){
 	    var divi=document.createElement('div');
 	    divi.style.width='inherit';
