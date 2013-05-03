@@ -182,10 +182,10 @@ function determine_color(p_emp,p_mod, context){
 }
 
 
-
+/*
 function setComponentDisplay(){
     DISPLAY_GRADIENT_COMPONENTS=parseInt(this.value);
-}
+}*/
 
 function fold_colors_percents(pcs){
     var ret=[];
@@ -518,7 +518,7 @@ function updateLLRegBars(svg,ll,unregged,cname,regdata,resizer){
     console.log(ll);
     console.log(resizer(ll[0]));
     console.log(regdata);
-    ['.'+cname+'_overlay', '.'+cname].each(function(id){
+    ['.'+cname+'_overlay', '.'+cname].forEach(function(id){
 	svg.selectAll(id).data(regdata).attr('x',function(d,i){
 	    console.log(d+"\t"+ ll[i] + "\t" + (resizer(ll[i])+70));
 	    return resizer(ll[i])+70;

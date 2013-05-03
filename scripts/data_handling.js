@@ -17,7 +17,7 @@ function createKnownUserActions(){
 	    for(var i =0;i<this._REVERSE_LIST.length;i++){
 		this[this._REVERSE_LIST[i][0]].do_inverse(this._REVERSE_LIST[i][1]);
 	    }
-	    this._REVERSE_LIST.clear();
+	    this._REVERSE_LIST = [];
 	},
 	"tooltips" : {
 	    do_action : function(jqobj){

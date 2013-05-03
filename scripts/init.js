@@ -262,8 +262,8 @@ function load_lesson(noskip_dropdown){
     show_text_portion();
     show_data_portion();
     console.log("loading " + CURRENT_LESSON + ' => ' + DIR_MAPPER[CURRENT_LESSON]);
-    $('show_how_many_previous_lessons').innerHTML = Math.max(1,CURRENT_LESSON-1);
-    $('show_how_many_next_lessons').innerHTML = Math.min(CURRENT_LESSON+1,MAX_LESSONS);
+    jQuery('#show_how_many_previous_lessons').html(Math.max(1,CURRENT_LESSON-1));
+    jQuery('#show_how_many_next_lessons').html(Math.min(CURRENT_LESSON+1,MAX_LESSONS));
     reset_data_structures(1);
     if(!INITIAL_LOAD){
 	//remove a bunch of nodes...
@@ -271,8 +271,8 @@ function load_lesson(noskip_dropdown){
 	jQuery('#ll_area').empty();
 	jQuery('#feature_table').empty();
 	//redisplay some things...
-	$('cheat_button').style.display="none";
-	$('new_counts').disabled='disabled';
+	jQuery('#cheat_button').css('display',"none");
+	jQuery('#new_counts').attr("disabled","disabled");
     } else{
 	INITIAL_LOAD=0;
     }
@@ -350,7 +350,7 @@ function setITimeout( callback, init_time, times ){
 		callback(counter)();
 	    } else{
 		//end solve here
-		$('solve_button').onclick();
+		jQuery('#solve_button').click();
 	    }
 	}
     }( times, 0, 0 );
@@ -420,40 +420,34 @@ window.onload = function(){
 
 function init(){
     var group;
-    $('ll_area').style.width = (DIV_LL_WIDTH+RESERVE_LL_WIDTH)+'px';
-    $$('.of_total_lessons').forEach(function(e){e.innerHTML=MAX_LESSONS;});
-    // if(parseInt($('header_lesson_number').getAttribute('lesson')) != 0){
-    // 	CURRENT_LESSON=parseInt($('header_lesson_number').getAttribute('lesson'));
-    // }
+    jQuery('#ll_area').css("width", DIV_LL_WIDTH+RESERVE_LL_WIDTH);
+    jQuery('.of_total_lessons').each(function(i){jQuery(this).html(MAX_LESSONS);});
 
-    if($('next_lesson') && $('prev_lesson')){
-	$('next_lesson').onclick=function(){
-	    CURRENT_LESSON++;
-	    load_lesson();
-	    this.verify();
-	};
-	$('next_lesson').verify = function(){
+    jQuery('#next_lesson').click(function(){
+	CURRENT_LESSON++;
+	load_lesson();
+	jQuery(this).trigger('verify');
+    })
+	.bind('verify',function(){
 	    if(CURRENT_LESSON==MAX_LESSONS){
 		this.disabled="disabled";
 	    }
 	    if(CURRENT_LESSON<MAX_LESSONS){
-		$('next_lesson').disabled='';
+		jQuery('#next_lesson').removeAttr("disabled");
 	    }
-	};
-	$('prev_lesson').onclick=function(){
-	    CURRENT_LESSON--;
-	    $('next_lesson').verify();
-	    load_lesson();
-	};
-	$('prev_lesson').verify = function(){
-	    if(CURRENT_LESSON!=1){
-		this.disabled="";
-	    }
-	    if(CURRENT_LESSON==1){
-		this.disabled='disabled';
-	    }
-	};
-    }
+	});
+    jQuery('#prev_lesson').click(function(){
+	CURRENT_LESSON--;
+	jQuery('#next_lesson').trigger('verify');
+	load_lesson();
+    }).bind('verify',function(){
+	if(CURRENT_LESSON!=1){
+	    this.disabled="";
+	}
+	if(CURRENT_LESSON==1){
+	    this.disabled='disabled';
+	}
+    });
 
     if(window.onhashchange()<0){
      	load_lesson();
@@ -482,7 +476,7 @@ function init(){
 	//disable a bunch of buttons...
 	for(var c=0;c<CONTEXTS.length;c++){
 	    if(USED_CONTEXTS[c]){
-		var v = $('num_tokens_context_'+c).value;
+		var v = jQuery('#num_tokens_context_'+c).val();
 		v= isNumber(v)?parseFloat(v):-1;
 		//don't do the following when v == NUM_TOKENS_C[c]
 		console.log("v = "+v);
@@ -494,50 +488,44 @@ function init(){
 	jQuery('.num_tokens_context_input').css('background-color','');
 	jQuery(this).css('background-color','');
     });
-    $('new_counts').disabled='disabled';
+    jQuery('#new_counts').attr("disabled",'disabled');
 
-
-    if($('change_num_tokens')){
-	//jQuery('#change_num_tokens').bt("you can change the number of <em>tokens</em> observed.");
-	$('change_num_tokens').onclick=function(){
-	    var form=$('change_num_tokens_form');
-	    form.style.display="block";
-	    form=form.childNodes[1];
-	    $('slider_area').style.display='none';
-	    this.disabled="disabled";
-	    if(user_input_tokens_added){
-		
+    //I'm pretty sure this is dead code, but let me test it some...
+    jQuery('#change_num_tokens').click(function(){
+	//should it be eq(0)?
+	var form=jQuery('#change_num_tokens_form').css('display','block').children().eq(1);
+	jQuery('#slider_area').css('display','none');
+	this.disabled="disabled";
+	if(user_input_tokens_added){
+	    
+	} else{
+	    if(CONTEXTS.length==1){
+		var i = document.createElement('input');
+		i.type='text'; i.name='input_tokens_context_0'; i.id=i.name;
+		i.value=NUM_TOKENS_C[0]; i.setAttribute('context',0);
+		var d=document.createElement('div');
+		d.innerHTML='Tokens: ';
+		d.appendChild(i);
+		form.append(jQuery(d));
+		i.onchange = update_token_count;
 	    } else{
-		if(CONTEXTS.length==1){
+		for(var c=0;c<CONTEXTS.length;c++){
+		    //input type="text" name = "" id="" value="" size=""
 		    var i = document.createElement('input');
-		    i.type='text'; i.name='input_tokens_context_0'; i.id=i.name;
-		    i.value=NUM_TOKENS_C[0]; i.setAttribute('context',0);
+		    i.type='text'; i.name='input_tokens_context_'+c; i.id=i.name;
+		    i.setAttribute('context',c);
+		    i.value=NUM_TOKENS_C[c];
 		    var d=document.createElement('div');
-		    d.innerHTML='Tokens: ';
+		    d.innerHTML='Tokens in Context '+c+': ';
 		    d.appendChild(i);
-		    form.appendChild(d);
-		    i.onchange = update_token_count;
-		} else{
-		    for(var c=0;c<CONTEXTS.length;c++){
-			//input type="text" name = "" id="" value="" size=""
-			var i = document.createElement('input');
-			i.type='text'; i.name='input_tokens_context_'+c; i.id=i.name;
-			i.setAttribute('context',c);
-			i.value=NUM_TOKENS_C[c];
-			var d=document.createElement('div');
-			d.innerHTML='Tokens in Context '+c+': ';
-			d.appendChild(i);
-			form.appendChild(d);
-			i.onchange=update_token_count;
-		    }
+		    form.append(jQuery(d));
+		    i.onchange=update_token_count;
 		}
-		user_input_tokens_added=1;
 	    }
-	    $('done_changing_counts_button').style.display='block';
-	};
-    }
-
-    
+	    user_input_tokens_added=1;
+	}
+	jQuery('#done_changing_counts_button').css('display','block');
+    });
 
     jQuery('#new_challenge').click(function(){
 	var old_hc=has_cheated;
@@ -551,9 +539,9 @@ function init(){
     	generate_new_observations();
 	this.blur();
 	if(old_hc){
-	    $('cheat_button').style.display='block';
-	    jQuery.each(jQuery('.unused_feature'), function(x){
-		x.style.display='none';
+	    jQuery('#cheat_button').css('display','block');
+	    jQuery('.unused_feature').each(function(i){
+		this.style.display='none';
 	    });
     	    var llb=jQuery('#ll_bars');
     	    var th=parseFloat(llb.attr('height'));
@@ -562,102 +550,82 @@ function init(){
 	}
     });
 
-
-    if($$('.expected_counts_text')){
-	$$('.expected_counts_text').forEach(function(e){
-		e.style.color = EXPECTED_COUNT_COLOR;
-	    });
-    }
-
+    jQuery('.expected_counts_text').each(function(i){
+	this.style.color = EXPECTED_COUNT_COLOR;
+    });
     
-
-    if($('cheat_button')){
-    	$('cheat_button').onclick=function(){
-    	    if(!has_cheated){
-    		var llb=$('ll_bars');
-    		var th=parseFloat(llb.getAttribute('height'));
-    		llb.setAttribute('height',2*th+1);
-    		has_cheated=1;
-    		$('cheat_button').style.display='none';
-		draw_gradient();
-		var uufs=$$('.unused_feature');
-		for(var u=0;u<uufs.length;u++){
-		    uufs[u].style.display='block';
-		}
-    	    }
-    	};
-	$('cheat_button').style.display='none';
-    }
-
-    if($('delay_normalization')){
-    	$('delay_normalization').onclick = function(){
-    	    alert('Frank should make this work!');
-    	    this.disabled = this.disabled=="disabled"?"":"disabled";
-    	    this.checked=false
+    jQuery('#cheat_button').click(function(){
+    	if(!has_cheated){
+    	    var llb=jQuery('#ll_bars');
+    	    var th=parseFloat(llb.attr('height'));
+    	    llb.attr('height',2*th+1);
+    	    has_cheated=1;
+    	    jQuery('#cheat_button').css('display','none');
+	    draw_gradient();
+	    jQuery('.unused_feature').each(function(i){
+		this.style.display='block';
+	    });
     	}
-    }
+    }).css('display','none');
+
+    jQuery('#delay_normalization').click(function(){
+    	//this.disabled = this.disabled=="disabled"?"":"disabled";
+    	//this.checked=false
+    });
 
     jQuery("#zero_weights_button").click(function(){  
-    	var group = $$('.feature_slider');
-    	var arr = group.map(function(d,i){
-    	    var tindex = group[i].parentNode.parentNode.childNodes[0].getAttribute('theta_index');
-    	    return [tindex,0];
+    	var arr = jQuery('.feature_slider').map(function(i){
+    	    var tindex = this.parentNode.parentNode.childNodes[0].getAttribute('theta_index');
+    	    return [[tindex,0]];
     	});
     	reset_sliders_manually(arr);
     	redraw_all();
     });
 
-    if(group=$$("input.regularization_radio")){
-    	for(var i=0;i<group.length;i++){
-    	    if(group[i].value != "0"){
-    		group[i].onclick=function(){
-    		    $('sigma2area').style.display='block';
-    		    REGULARIZATION_EXPONENT=parseFloat(this.value);
-    		    USE_REGULARIZATION=1;
-    		    if(svg_loaded){
-    			redraw_all();
-    		    }
-    		};		    
-    	    } else{
-    		group[i].onclick=function(){
-    		    $('sigma2area').style.display="none";
-    		    USE_REGULARIZATION=0;
-    		    for(var i=0;i<REGULARIZATION.length;i++){
-    			REGULARIZATION[i]=TRUE_REGULARIZATION[i]=0;
-    		    }
-    		    if(svg_loaded){
-    			redraw_all();
-    		    }
-    		};
-    	    }
-	    if(group[i].checked){
-		group[i].onclick();
-	    }
+    jQuery('input.regularization_radio').each(function(i){
+    	if(this.value != "0"){
+    	    jQuery(this).click(function(){
+    		jQuery('#sigma2area').css('display','block');
+    		REGULARIZATION_EXPONENT=parseFloat(this.value);
+    		USE_REGULARIZATION=1;
+    		if(svg_loaded){
+    		    redraw_all();
+    		}
+    	    });		    
+    	} else{
+    	    jQuery(this).click(function(i){
+    		jQuery('#sigma2area').css('display','none');
+    		USE_REGULARIZATION=0;
+    		for(var i=0;i<REGULARIZATION.length;i++){
+    		    REGULARIZATION[i]=TRUE_REGULARIZATION[i]=0;
+    		}
+    		if(svg_loaded){
+    		    redraw_all();
+    		}
+    	    });
     	}
-    }	
+	if(this.checked){
+	    jQuery(this).click();
+	}
+    });
 
-    if($('step_button')){
-    	$('step_button').onclick = function(){
-    	    step_gradient();
-    	};
-    }
+    jQuery('#step_button').click(function(){
+    	step_gradient();
+    });
 
-    if($('stop_solving')){
-	$('stop_solving').onclick = function(){
-	    clearInterval(SOLVE_TIMEOUT_ID);
-	    $('stop_solving_div').style.display='none';
-	    $('solve_button').disabled="";
-	    $('step_button').disabled='';
-	    $('next_lesson').disabled="";
-	    $('prev_lesson').disabled="";
-	    $('next_lesson').verify(); $('prev_lesson').verify();
-	    //$('change_num_tokens').disabled="";
-	    $('gradient_step').value = orig_step_size.toPrecision(5);
-	    $('gradient_step').onchange();
-	    jQuery(this).blur();
-	};
-	$('stop_solving_div').style.display='none';
-    }
+
+    jQuery('#stop_solving').click(function(){
+	clearInterval(SOLVE_TIMEOUT_ID);
+	jQuery('#stop_solving_div').css('display','none');
+	jQuery('#solve_button,#step_button').removeAttr('disabled');
+	jQuery('#next_lesson,#prev_lesson').removeAttr("disabled")
+	    .trigger('verify');
+	//$('change_num_tokens').disabled="";
+	jQuery('#gradient_step').val(orig_step_size.toPrecision(5))
+	    .change();
+	jQuery(this).blur();
+    });
+    jQuery('#stop_solving_div').css('display','none');
 
     jQuery('#solve_button').click(function(){
     	SOLVE_ITERATION=0;
@@ -666,18 +634,15 @@ function init(){
 	    in_solving=0;
 	    this.style.backgroundColor=button_color;
 	    //orig_solve_step
-	    $('gradient_step').value=SOLVE_STEP.toPrecision(5);
+	    jQuery('#gradient_step').val(SOLVE_STEP.toPrecision(5));
 	    this.innerHTML="Solve";
-	    //$('stop_solving_div').style.display='none';
-	    $('step_button').disabled='';
-	    $('next_lesson').disabled="";
-	    $('prev_lesson').disabled="";
-	    $('next_lesson').verify(); $('prev_lesson').verify();
+	    jQuery('#step_button,#next_lesson,#prev_lesson').removeAttr("disabled");
+	    jQuery('#next_lesson,#prev_lesson').trigger('verify');
 	    //$('change_num_tokens').disabled="";
-	    $('gradient_step').onchange();
+	    jQuery('#gradient_step').change();
 	} else{
 	    if(USE_REGULARIZATION){
-		$('regularization_constant').onchange();
+		jQuery('#regularization_constant').change();
 	    }
 	    if(SOLVE_STEP==0)
 		return;
@@ -685,10 +650,8 @@ function init(){
 	    button_color=this.style.backgroundColor;
 	    this.style.backgroundColor='red';
 	    this.innerHTML="Stop";
-	    $('step_button').disabled='disabled';
-	    $('next_lesson').disabled="disabled";
-	    $('prev_lesson').disabled="disabled";
-	    $('gradient_step').value=scale_gamma_for_solve(SOLVE_STEP,1).toPrecision(5);
+	    jQuery('#step_button,#next_lesson,#prev_lesson').attr("disabled","disabled");
+	    jQuery('#gradient_step').val(scale_gamma_for_solve(SOLVE_STEP,1).toPrecision(5));
 	    solved++;
 	    SOLVE_TIMEOUT_ID = setITimeout(function(iter){
 		return function(){
@@ -703,60 +666,45 @@ function init(){
 	}
     });
 
-
-    if(group=$$('.component_radio')){
-    	for(var i=0;i<group.length;i++){
-    	    group[i].onclick = setComponentDisplay;
-    	}
-    }
-    if($('show_gradient')){
-    	$('show_gradient').onclick = function(){
-    	    //$('gradient_fieldset_div').style.display= this.checked ? 'block' : 'none';
-    	    SHOW_GRADIENTS=this.checked;
+    jQuery('#show_gradient').click(function(){
+    	SHOW_GRADIENTS=this.checked;
+	if(!in_solving){
     	    if(SHOW_GRADIENTS){
-    		if(group=$$('.component_radio')){
-		    var t;
-		    for(var i=0;i<group.length;i++){
-			if(group[i].checked){
-			    t=group[i];
-			    break;
-			}
-		    }
-		    if(t!=undefined || t!=null){
-			t.onclick();
-		    }
-		}
     		recompute_partition_function();
     		compute_gradient();
     	    } else{
     		recompute_partition_function();
     		compute_gradient();
     	    }
-    	};
-	if($('show_gradient').checked){
-	    $('show_gradient').onclick();
 	}
-    }
+    });
+    jQuery('#show_gradient:checked').click();
 
 
-
-    if($('gradient_step')){
-    	$('gradient_step').value = SOLVE_STEP;
-    	$('gradient_step').onchange = function(){
-    	    if(isNumber(this.value)){
+    jQuery('#gradient_step')
+	.focus(function(){
+	    jQuery(this).attr("previous",this.value-0);
+	})
+	.change(function(){
+    	    if(isNumber(this.value)){	
+		this.setAttribute("previous", this.value-0);
     		SOLVE_STEP=(this.value - 0);		
     	    } else{
-    		//ZZZ !!!
-    		alert('not a proper number. yell at creator for making this an alert');
+    		this.value = getAttribute("previous");
     		//display error
     	    }
-    	};
-    }
-
-    if($('regularization_constant')){
-    	$('regularization_constant').onchange = function(){
+	})
+	.val(SOLVE_STEP);
+    
+    
+    jQuery('#regularization_constant')
+	.focus(function(){
+	    jQuery(this).attr("previous",this.value-0);
+	})
+	.change(function(){
     	    if(isNumber(this.value)){
     		REGULARIZATION_SIGMA2=(this.value - 0);		
+		this.setAttribute("previous", this.value-0);
     		if(svg_loaded){
     		    redraw_all();
 		} else{
@@ -765,11 +713,9 @@ function init(){
     		    draw_gradient();
     		}
     	    } else{
-    		//ZZZ !!!
-    		
+    		this.value = getAttribute("previous");    		
     		//display error
     	    }
-    	};
-    }
+	});
 }
 

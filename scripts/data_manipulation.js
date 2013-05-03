@@ -134,11 +134,6 @@ function update_token_count(){
 
 function reset_manually_from_theta(slider,val){
     var h = get_handle(slider);
-    // if(jQuery(slider).data("qtip")){
-    // 	jQuery(slider).qtip({content: val});
-    // } else{
-    // 	slider.parentNode.parentNode.setAttribute('title',val);
-    // }
     var x = SLIDER_SIGMOID.transform(parseFloat(val));
     x=Math.max(min_slider_val,Math.min(max_slider_val,x));
     if(x< 1e-10) x=1e-5;
