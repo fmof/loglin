@@ -211,7 +211,7 @@ function generate_gradient_style(npcs){
 
 //coi = color of interest
 function sort_slider_color_points(arr, coi){
-    arr=arr.sortBy(function(d){return d[0];});
+    arr=arr.sort(function(x,y){return x[0]-y[0];});
     var first=0; var def_color='#FFFFFF'; var tt_seen=0;
     var prev_col='#FFFFFF'; var prev_col1='#FFFFFF';
     for(var i=0;i<arr.length;i++){
