@@ -154,7 +154,6 @@ function addSliderEffects(){
     });
     
     jQuery('[theta_index]').mouseover(function(){
-	//console.log(jQuery(
     }).mouseout(function(){
     });
 
@@ -519,14 +518,8 @@ function addLLRegBars(svg,ll,unregged,cname,regdata,yfn,resizer){
 //ll : regularized LL
 //unregged : LL + reg
 function updateLLRegBars(svg,ll,unregged,cname,regdata,resizer){
-    console.log(unregged);
-    console.log(resizer(unregged[0]));
-    console.log(ll);
-    console.log(resizer(ll[0]));
-    console.log(regdata);
     ['.'+cname+'_overlay', '.'+cname].forEach(function(id){
 	svg.selectAll(id).data(regdata).attr('x',function(d,i){
-	    console.log(d+"\t"+ ll[i] + "\t" + (resizer(ll[i])+70));
 	    return resizer(ll[i])+70;
 	})
 	    .attr('width',function(d,i){
@@ -753,25 +746,46 @@ function drawSVGBoxes(selectObj){
     var width=SVG_WIDTH; var height=SVG_HEIGHT;
     var svg_offset=8; var offset=2*svg_offset + 3;
     var num_axes=0;
-    var tab = document.createElement('table');
+    var tab = document.createElement('div'); //ul //table
+    tab.id= 'observations_list';
     var tr;
     if(CONTEXTS.length>1 || CONTEXTS[0]!=''){
-	tr= document.createElement('tr');
-	var th=document.createElement('th');
+	tr= document.createElement('div'); //tr
+	var th=document.createElement('div'); //th
 	th.innerHTML='Context';
 	tr.appendChild(th);
 	tab.appendChild(tr);
     }
     selectObj.append(jQuery(tab));
+
+    var highest_row_cols=[-1,-1];
+    for(var c=0;c<CONTEXTS.length;c++){
+	for(var position_pair in POSITION_BY_CONTEXT[c]){
+	    var pp = position_pair.split(',').map(function(d){return parseInt(d);});
+	    for(var i=0;i<pp.length;i++){
+		highest_row_cols[i]= (pp[i]>highest_row_cols[i])?pp[i]:highest_row_cols[i];
+	    }
+	}
+    }
+    var num_cols = highest_row_cols[1]+1;
+    var npr=num_cols;
+
+    var context_list=[];
+    var num_contexts=0;
     for(var c=0;c<CONTEXTS.length;c++){
 	if(USED_CONTEXTS[c]!=1){
-	    //console.log('context c='+c);
 	    continue;
 	}
-	tr=document.createElement('tr');
+	num_contexts+=1;
+	tr=document.createElement('div');//li //tr
 	tr.className += ' observation_row_num_context';
 	tab.appendChild(tr);
-	var td_tok = document.createElement('td');
+	//context_list.push(tr);
+	var td_tok = document.createElement('div'); //td
+	jQuery(td_tok).css({'display':'table-cell',
+			    'text-align':'center',
+			    'vertical-align':'middle'
+			   })
 	tr.appendChild(td_tok);
 	//handle number of tokens in context
 	var div_token_input=document.createElement('div');
@@ -809,13 +823,15 @@ function drawSVGBoxes(selectObj){
 	
 	var vis_in_c=VISUALS[c];
 	var axes={}; var place_in_axis={};
-	var td_context=document.createElement('td');
+	var td_context=document.createElement('div'); //td
 	var div_context=document.createElement('div');
 	td_context.appendChild(div_context);
 	tr.appendChild(td_context);
+	td_context.style.display = 'table-cell';
 	div_context.id='context_draw_area_'+c;
 
-	var highest_row_cols=[-1,-1];
+	//set the number of items per row (npr)
+	highest_row_cols=[-1,-1];
 	for(var position_pair in POSITION_BY_CONTEXT[c]){
 	    var pp = position_pair.split(',').map(function(d){return parseInt(d);});
 	    for(var i=0;i<pp.length;i++){
@@ -823,20 +839,18 @@ function drawSVGBoxes(selectObj){
 	    }
 	}
 	var num_rows = highest_row_cols[0]+1;
-	var num_cols = highest_row_cols[1]+1;
-	var npr=num_cols;
-	//var npr=NUM_PER_ROW;
-	//set the number of items per row (npr)
-	//npr = NUM_OBSERVATIONS_C[c]/num_rows<1 ? NUM_OBSERVATIONS_C[c] : Math.ceil(NUM_OBSERVATIONS_C[c]/num_rows);
+	
 	var rowwidth = (npr) * width + (npr*offset);
-	div_context.style.width=rowwidth+'px';
+	div_context.style.width=(rowwidth+0)+'px';
 	div_context.style['float']='left';
 	div_context.className+=' cdrawrow';
-	selectObj.css("width",rowwidth+100);
+	//set the width of each to be the max width + the num_tokens width
+	tr.style.width=(rowwidth+100)+'px';
+	//selectObj.css("width",rowwidth+100);
 	selectObj.css("overflow",'hidden');
 	for(var i=0;i<num_rows;i++){
 	    var divi=document.createElement('div');
-	    divi.style.width='inherit';
+	    divi.style.width=rowwidth+'px';
 	    div_context.appendChild(divi);
 	    for(var j=0;j<npr; j++){
 		//get type id
@@ -851,10 +865,10 @@ function drawSVGBoxes(selectObj){
 		    divj.style.cssFloat='left';
 		}
 		divj.style.width = (width+svg_offset)+'px';
-		
 		//but then we may not have actually observed anything for this type id
 		//that is, we may not have observed the full joint
 		if(type_id==undefined){
+		    divj.style.border='';
 		    continue;
 		} 
 		var features_for_type_id = TYPE_INDEX[type_id];
@@ -878,7 +892,6 @@ function drawSVGBoxes(selectObj){
 		exp_count_p.id = 'exp_count_text_context_'+c+'_'+type_id;
 		exp_count_p.className += ' count_text expected_count_text';
 		var color = determine_color(get_empirical_prob(c,type_id),get_prob(c,type_id)/Z_THETA[c]);
-		//var color=determine_color(obs_count,ecp);
 		var vis = VISUALS[c][type_id];
 		var fill=vis['fill'];
 		exp_count_p.style.color=color;
@@ -910,7 +923,19 @@ function drawSVGBoxes(selectObj){
 	    divi.className += ' drawrow';
 	}
     }
-    //jQuery('.observation_row_num_context').draggable({ containment:"parent"});
+    jQuery('.observation_row_num_context').css({
+	'display':'inline',
+	'float':'left'});
+    var max_context_width = jQuery('.observation_row_num_context')
+	.get().map(function(x){return parseInt(jQuery(x).css('width'),10);})
+	.reduce(function(a,b){return Math.max(a,b);},-1000);
+    //dynamically set the number of contexts available
+    if(num_contexts==1){
+	selectObj.css('width',rowwidth+100);
+    } else{
+	selectObj.css('width',Math.floor(parseFloat(jQuery('#draw_area_fieldset').css('width'))/max_context_width)* (rowwidth+100));
+    }
+    //now get the width of selectObj: in order to center it
 }
 
 

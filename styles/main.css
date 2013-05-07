@@ -185,6 +185,11 @@ div#data_options_area ul{
     list-style-type:none;
 }
 
+#observations_list{
+    list-style-type:none;
+    padding:0px;
+}
+
 
 #nav ul.hlist.ulcenter{
     text-align:center;
@@ -625,8 +630,6 @@ hr.slider{
 }
 
 #feature_slider_fieldset{
-    /*border-left:3px solid gray;*/
-    /*padding-left:5px;*/
     padding-left:5px;
     padding-right:5px;
     overflow:hidden;
@@ -717,8 +720,9 @@ hr.slider{
  }   
     
 
-tr.observation_row_num_context > td{
+.observation_row_num_context /*> td*/{
     padding-bottom:15px;
+    overflow:hidden;
 }
 
 input[type=range].feature_slider{
