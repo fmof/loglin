@@ -152,6 +152,12 @@ function addSliderEffects(){
 	});
 	
     });
+    
+    jQuery('[theta_index]').mouseover(function(){
+	//console.log(jQuery(
+    }).mouseout(function(){
+    });
+
 }
 
 function formatSliderWeight(w){
@@ -759,7 +765,7 @@ function drawSVGBoxes(selectObj){
     selectObj.append(jQuery(tab));
     for(var c=0;c<CONTEXTS.length;c++){
 	if(USED_CONTEXTS[c]!=1){
-	    console.log('context c='+c);
+	    //console.log('context c='+c);
 	    continue;
 	}
 	tr=document.createElement('tr');
@@ -786,10 +792,6 @@ function drawSVGBoxes(selectObj){
 		NUM_TOKENS = NUM_TOKENS - ov + v;
 		NUM_TOKENS_C[cc]=v;
 		rescale_context_counts(cc,ov,v);
-		//and allow things to be updated
-		// if(LAST_UPDATED_TOKEN_COUNT==null){
-		//     $('num_tokens_context_'+LAST_UPDATED_TOKEN_COUNT).style['background-color']='';
-		// }
 		LAST_UPDATED_TOKEN_COUNT[cc]=1;
 		this.style['background-color']='#F6F5A2';
 		var ncount_button = jQuery('#new_counts');
@@ -812,7 +814,6 @@ function drawSVGBoxes(selectObj){
 	td_context.appendChild(div_context);
 	tr.appendChild(td_context);
 	div_context.id='context_draw_area_'+c;
-	//selectObj.appendChild(div_context);
 
 	var highest_row_cols=[-1,-1];
 	for(var position_pair in POSITION_BY_CONTEXT[c]){

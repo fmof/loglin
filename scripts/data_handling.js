@@ -160,7 +160,6 @@ do_all_loading = function(){
 	    },
 	    success : function(response){
 		(function(rows){
-		    //d3.tsv(TRUE_THETA_PATH,function(rows){
 		    rows.forEach(function(record){ 
 			var good=true;
 			for(var t in record){
@@ -179,11 +178,11 @@ do_all_loading = function(){
 			    DATA_BY_CONTEXT[context_id]={};
 			    TYPE_OBSERVATIONS_IN_C[context_id]=[];
 			    POSITION_BY_CONTEXT[context_id]={};
+			    THETA_POSITION_BY_CONTEXT[context_id]={};
 			} else{
 			    context_id = REVERSE_CONTEXTS[record['context']];
 			}
 			//add record['feature'] to theta list
-			//console.log('adding ['+record['context']+', '+record['feature']+']');
 			FEATURE_LIST.push([record['context'],record['feature']]);
 			var feature_number = FEATURE_LIST.length -1;
 			INVERSE_FEATURE_LIST[[record['context'],record['feature']]]=feature_number;
@@ -206,6 +205,15 @@ do_all_loading = function(){
 			} else{
 			    THETA_STRENGTH[feature_number] = 1;
 			}
+
+			//now deal with positions
+			if(record['position']==undefined){
+			    FEATURE_POS_UNDEFINED=true;
+			}
+			var temp_pos = FEATURE_POS_UNDEFINED ? [0,feature_number] : (d3.csv.parseRows(record['position'])[0]).map(function(d){return parseInt(d);});
+			THETA_POSITION_BY_CONTEXT[context_id][temp_pos] = feature_number;
+			MAX_THETA_ROWS = temp_pos[0]>=MAX_THETA_ROWS?temp_pos[0]+1:MAX_THETA_ROWS;
+			MAX_THETA_COLS = temp_pos[1]>=MAX_THETA_COLS?temp_pos[1]+1:MAX_THETA_COLS;
 		    });
 		    //now load the actual data
 		    data_loader.request_data_load();
@@ -302,8 +310,9 @@ function record_observation(record){
 	REVERSE_CONTEXTS[record['context']]=context_id;
 	DATA_BY_CONTEXT[context_id]={};
 	POSITION_BY_CONTEXT[context_id]={};
+	THETA_POSITION_BY_CONTEXT[context_id]={};
 	TYPE_OBSERVATIONS_IN_C[context_id]=[];
-	console.log('seeing new context '+record['context']);
+	//console.log('seeing new context '+record['context']);
     } else{
 	context_id = REVERSE_CONTEXTS[record['context']];
     }
@@ -338,8 +347,6 @@ function record_observation(record){
     //now deal with positions
     var temp_pos=(d3.csv.parseRows(record['position'])[0]).map(function(d){return parseInt(d);});
     POSITION_BY_CONTEXT[context_id][temp_pos] = type_index;
-    //REVERSE_POSITIONS[temp_pos] = features.split(',');
-    //    POSITIONS.push(temp_pos);
     MAX_ROWS = temp_pos[0]>=MAX_ROWS?temp_pos[0]+1:MAX_ROWS;
     MAX_COLS = temp_pos[1]>=MAX_COLS?temp_pos[1]+1:MAX_COLS;
     var temp_vis = VISUALS[context_id];
@@ -397,11 +404,25 @@ function addFeaturesToList(selectObj, array){
 	tfl.push(td);
     }
     var maxwidth=jQuery('#feature_slider_area')[0].offsetWidth;
-    //now maximize the number of 
-    var num_cols = Math.floor(maxwidth/205);
-    var num_rows = Math.ceil(FEATURE_LIST.length/num_cols);
-    //var num_rows = Math.ceil(Math.sqrt(FEATURE_LIST.length)); 
-    //var num_cols = Math.ceil(FEATURE_LIST.length / num_rows); 
+    var highest_row_cols=[-1,-1];
+    for(var c in THETA_POSITION_BY_CONTEXT){
+	for(var position_pair in THETA_POSITION_BY_CONTEXT[c]){
+	    var pp = position_pair.split(',').map(function(d){return parseInt(d);});
+	    for(var i=0;i<pp.length;i++){
+		highest_row_cols[i]= (pp[i]>highest_row_cols[i])?pp[i]:highest_row_cols[i];
+	    }
+	}
+    }
+    var num_rows = 0; var num_cols = 0;
+    if(FEATURE_POS_UNDEFINED || highest_row_cols[0]==-1 || highest_row_cols[1]==-1 ||
+      highest_row_cols[0] > MAX_THETA_ROWS ||
+      highest_row_cols[1] > MAX_THETA_COLS){
+	num_rows = Math.ceil(Math.sqrt(FEATURE_LIST.length)); 
+	num_cols = Math.ceil(FEATURE_LIST.length / num_rows); 
+    } else{
+	num_rows = highest_row_cols[0]+1;
+	num_cols = highest_row_cols[1]+1;
+    }
     var feature_index=0;
     for(var i=0;i<num_rows;i++){
 	var tr=document.createElement('tr');

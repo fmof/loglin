@@ -47,7 +47,7 @@
     <!-- original d3
 	 <script src="http://d3js.org/d3.v2.js"></script>
 	 -->
-    <script src="scripts/lib/d3.js"></script>
+    <script type="text/javascript" src="scripts/lib/d3.js"></script>
   </head>
 
   <body>
@@ -62,11 +62,12 @@
 	  <!--     <button type="button" id="new_challenge">New random challenge</button> -->
 	  <!-- </li> -->
 
-	        <h1 id="lesson_title" class="textcenter">
-	<select id="jump_to_lesson_select">
-	</select>
-      </h1>
-
+	  <li>
+	    <h1 id="lesson_title" class="textcenter">
+	      <select id="jump_to_lesson_select">
+	      </select>
+	    </h1>
+	  </li>
 
 	  <!-- <li> -->
 	  <!--     <button type="button" id="new_counts" disabled="disabled">New counts</button> -->
@@ -82,7 +83,7 @@
 
       <div id="loading_area">
       </div>
-	
+      
       <div id="instruction_wrapper">
 	<div id="instruction_area">
 	  
@@ -107,38 +108,42 @@
 
 	<div id="data_options_area">
 	  <fieldset>
-	    <legend>Model Options</legend>
-	    <ul class="ulcenter">
-	      <li>
-		<button type="button" id="new_challenge">New random challenge</button>
-	      </li>
+	    <legend>Data &amp; Model Options</legend>
+	    <dl>
+	      <dt>Change the data</dt>
+	      <dd>
+		<ul>
+		  <li>
+		    <button type="button" id="new_challenge">New random challenge</button>
+		  </li>
 
-	      <li>
-		<button type="button" id="new_counts" disabled="disabled">New counts</button>
-	      </li>
-	    </ul>
+		  <li>
+		    <button type="button" id="new_counts" disabled="disabled">New counts</button>
+		  </li>
+		</ul>
+	      </dd>
+	      <dt>Regularization</dt>
+	      <dd>
+		<div id="regularization_options">
+		  <input type="radio" class="regularization_radio" name="use_regularization" checked="checked" value="0" id="no_reg_button"/>
+		  <label for="no_reg_button">None</label>
+		  <br/>
+		  <input type="radio" class="regularization_radio use_reg" id="ell1_reg_button" name="use_regularization" value="1"/>
+		  <label for="ell1_reg_button">&#8467;<sub>1</sub></label>
+		  <br/>
+		  <input type="radio" class="regularization_radio use_reg" name="use_regularization" value="2" id="ell2_reg_button"/>
+		  <label for="ell2_reg_button">&#8467;<sub>2</sub></label>
+		  <div id="sigma2area" style="display:none;">
+		    <br />
+		    <i>C</i> = <input type="text" name="regularization_constant" id="regularization_constant" value="1.0" size="5"/>
+		  </div>
+		</div>
+	      </dd>
+	    </dl>
 	  </fieldset>
-
-	  <br />
-	  <div>
-	  <fieldset>
-	    <legend>Regularization</legend>
-	    <input type="radio" class="regularization_radio" name="use_regularization" checked="yes" value="0" id="no_reg_button"/>
-	    <label for="no_reg_button">None</label>
-	    <br/>
-	    <input type="radio" class="regularization_radio use_reg" id="ell1_reg_button" name="use_regularization" value="1"/>
-	    <label for="ell1_reg_button">&ell;<sub>1</sub></label>
-	    <br/>
-	    <input type="radio" class="regularization_radio use_reg" name="use_regularization" value="2" id="ell2_reg_button"/>
-	    <label for="ell2_reg_button">&ell;<sub>2</sub></label>
-	    <div id="sigma2area" style="display:none;">
-	      <br />
-	      <i>C</i> = <input type="text" name="regularization_constant" id="regularization_constant" value="1.0" size="5"/>
-	    </div>
-	  </fieldset>
-	  </div>
 	</div>
-
+	
+	
 
 	<div id="shapes_area" class="">
 	  <fieldset>
@@ -154,45 +159,56 @@
 
       <div id="slider_area" class="">
 	<div id="model_option_area" class="left">
+	  <fieldset>
+	    <legend>Hints</legend>
+<!--	    <input type="checkbox" id="highlight_features" name="highlight_features" />
+	    <label for="highlight_features">Highlight features &amp; objects</label>
+	    <br />-->
 	    <input type="checkbox" id="show_gradient" name="show_gradient" />
 	    <label for="show_gradient">Show gradient </label>
 	    <!--<br />
-	    <div id="gradient_fieldset_div" class="novis">
-	      <fieldset id="gradient_fieldset">
-		<legend>Gradient components</legend>
-		<input type="radio" id="show_net_grad"  class="component_radio" name="show_components" checked="yes" value="1"/>
-		<label for="show_net_grad">Net gradient </label>
-		<br/>
-		<input type="radio" id="show_pos_neg_grad" class="component_radio" name="show_components" value="2"/>
-		<label for="show_pos_neg_grad">Pos/Neg </label>
-		<br/>
-		<input type="radio" id="show_all_grad"  class="component_radio" name="show_components" value="3"/>
-		<label for="show_all_grad">All components </label>
-		<br/>
-	      </fieldset>
-	    </div>-->
-	  <br />
-	  <form>
+		<div id="gradient_fieldset_div" class="novis">
+		  <fieldset id="gradient_fieldset">
+		    <legend>Gradient components</legend>
+		    <input type="radio" id="show_net_grad"  class="component_radio" name="show_components" checked="yes" value="1"/>
+		    <label for="show_net_grad">Net gradient </label>
+		    <br/>
+		    <input type="radio" id="show_pos_neg_grad" class="component_radio" name="show_components" value="2"/>
+		    <label for="show_pos_neg_grad">Pos/Neg </label>
+		    <br/>
+		    <input type="radio" id="show_all_grad"  class="component_radio" name="show_components" value="3"/>
+		    <label for="show_all_grad">All components </label>
+		    <br/>
+		  </fieldset>
+		</div>-->
+	    <br />
+	    <!--<form>-->
 	    <div>
-	      <button type="button" id="step_button">Step</button>
-	      <button type="button" id="solve_button">Solve</button>
 	      <br />
 	      Step size&nbsp;= 
 	      <input type="text" name="gradient_step" id="gradient_step" value="0.001" size="5"/>
+	      <br />
+
+	      <button type="button" id="step_button">Step</button>
+	      <button type="button" id="solve_button">Solve</button>
+	      
 	    </div>
-	  </form>
+	    <!--</form>-->
+	  </fieldset>
 	</div>
 	<div id="feature_slider_area" class="tablecenter">
 	  <fieldset id="feature_slider_fieldset">
 	    <legend>Feature Weights</legend>
+	    <div>
 	    <table id="feature_table" class="left" cellpadding="10px">
 	    </table>
+	    </div>
 	    <br />
-	    <form style="clear:both;">
+	    <div style="clear:both;">
 	      <div>
 		<button type="button" id="zero_weights_button">Zero weights</button>
 	      </div>
-	    </form>
+	    </div>
 	  </fieldset>
 	</div>
       </div>
@@ -208,17 +224,14 @@ $last_mod = filemtime(".");
 ?>
 	Last change: <?= $last_mod?date("F jS, Y H:i", $last_mod):"18 August 2011" ?><br />
       </p>
-      
-      <?php
-include('include/bottomnav.php');
-?>
-    </div><!--end body div--> 
+    </div>
+    <!--end body div--> 
     <!-- DO NOT DELETE THIS!!! -->
     <svg id="svg_stripe_def" display="none">
       <defs id="stripe_def">
-    	<pattern id="stripe" patternUnits="userSpaceOnUse" x="0" y="0" width="6" height="6">
+	<pattern id="stripe" patternUnits="userSpaceOnUse" x="0" y="0" width="6" height="6">
     	  <path id="gen_stripe_path_def" d="M 0 0 6 0" style="stroke: black; stroke-width:4; fill: none;"/>
-    	</pattern>
+	</pattern>
       </defs>
     </svg>
 

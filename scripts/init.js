@@ -33,6 +33,7 @@ VISUALS=[];
 //context-id -> Associative Array of counts (by type-id), e.g., 0 -> {4=>3, 1=>12,..}
 COUNTS=[];
 //context id -> associative array of positions (by type id), e.g., 0 -> {[0,0] => 0, [0,1] => 4}
+THETA_POSITION_BY_CONTEXT=[];
 POSITION_BY_CONTEXT=[];
 POSITIONS=[];
 REVERSE_POSITIONS={};
@@ -45,7 +46,6 @@ LAST_UPDATED_TOKEN_COUNT={}; //null;
 USED_CONTEXTS={};
 USED_FEATURES={};
 
-DATA_BY_POINT=[]; //maps type id_num to human readable feature vector (dim_0,...,dim_n)
 ORIG_DATA=[]; //the full, original record (from csv file)
 MAP_COUNT_INDICES=[]; //maps from type id to position in ascending sorted list
 SORT_COUNT_INDICES=[]; //sorted list of observed type counts
@@ -75,6 +75,8 @@ CURR_FOR_DIM=[];
 /*DISPLAY PARAMETERS*/
 NUM_PER_ROW=6; 
 MAX_ROWS=-1; MAX_COLS=-1;
+MAX_THETA_ROWS=-1; MAX_THETA_COLS=-1;
+FEATURE_POS_UNDEFINED=false;
 MAX_FRAMES=1;
 
 Z_THETA=[];
@@ -201,7 +203,8 @@ function reset_data_structures(full){
 	TRUE_THETA=[];
 	Z_THETA=[];
 	THETA=[];
-	
+
+	FEATURE_POS_UNDEFINED=false;	
 	NUM_TOKENS=0; //the number of *token* observations
 	GRADIENT=[]; OBS_FEAT_COUNT=[]; EXP_FEAT_COUNT=[]; REG_FOR_GRAD=[];
 	POSITIONS=[];
