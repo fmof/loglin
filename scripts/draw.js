@@ -597,9 +597,6 @@ function updateLLBar(){
 
 function prettifyShape(shape, id_name, color, fill, set_sw_opacity, opacity){
     shape.attr('stroke',color);
-    console.log(id_name);
-    console.log(shape);
-    console.log(set_sw_opacity);
     if(set_sw_opacity){	
 	shape.attr('stroke-width',EXPECTED_STROKE_WIDTH);
 	shape.attr('opacity',opacity || EXPECTED_TRANSPARENCY);
@@ -627,12 +624,11 @@ function updateD3Shape(container, id_num, id_name, width,height,visuals,color,co
 	count : isFinite(max_count) ? count: 0,
 	max_count : isFinite(max_count) ? max_count : 1,
 	scale : scale,
-	value : visuals['value']
+	value : visuals['value'],
     };
     var sdshape = SHAPE_DICTIONARY[visuals['shape']];
     sdshape.draw(s, shape_params);
     //and colors
-    console.log(sdshape.skip_opacity);
     prettifyShape(s, id_name, color, visuals['fill'],! sdshape.skip_opacity);
     return s;
 }
@@ -656,7 +652,9 @@ function createD3Shape(container, id_num, id_name, width,height, visuals, color,
 	max_count : isFinite(max_count) ? max_count : 1,
 	scale : scale,
 	first_draw : true,
-	value : visuals['value']
+	value : visuals['value'],
+	opacity : opacity,
+	hide : {'text' : id_name.indexOf("obs_count_pic")!=-1}
     };
     var sdshape = SHAPE_DICTIONARY[visuals['shape']];
     sdshape.draw(s, shape_params);

@@ -1,0 +1,5 @@
+count	position	context	features	visualization
+30	0,0		circle,solid	shape=text,fill=solid,value=what
+15	0,1		circle,striped	shape=text,fill=solid,value=bye
+10	1,0		triangle,solid	shape=text,fill=solid,value=world
+5	1,1		triangle,striped	shape=text,fill=solid,value=hello

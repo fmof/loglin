@@ -77,32 +77,46 @@ function createShapeDictionary(){
 			       return SVG_HEIGHT*SVG_WIDTH;
 			  }
 			 };
-    shapedict["text"] = {"human":"text", "svg":"text",
+    shapedict["text"] = {"human":"text", "svg":"g",
 			 draw : function(shape_obj, shape_params){
 			     var spl_nl = shape_params.value.split("\\n");
 			     var base_y = 50;
-			     shape_obj.style('visibility','hidden');
-			     shape_obj.attr('x',0).attr('y',base_y)
-				 .style('font-weight',100);
-				 //.style('font-family','monospace');
-				 //.attr('text-anchor', 'middle');
-			     var objtoopon = shape_params.first_draw ? shape_obj : shape_obj.selectAll('tspan');
-			     console.log(objtoopon.style('font'));
+			     if(shape_params.first_draw){
+				 shape_obj.append("rect");
+				 shape_obj.append("text");
+			     }
+			     var objtoopon = shape_obj.selectAll('tspan'); 
 			     objtoopon.style('font-size','16px')
 				 .style('stroke-width','.5');
 			     spl_nl.forEach(function(t,i){
-				 (shape_params.first_draw ? objtoopon.append('tspan') : objtoopon)
+				 (shape_params.first_draw ? shape_obj.selectAll("text").append('tspan') : objtoopon)
 				     .text(t)
-				     .attr('x',0)
+				     .attr('x',shape_params.width/2)
 				     .attr('y',base_y + i*15)
+				     .attr('text-anchor','middle')
+				     .style('font-family','monospace')
 				     .style('font-weight','lighter');
 				 
 			     });
-			     console.log(shape_obj[0][0].getBBox());
-			     console.log(shape_obj.style('visibility'));
-			     shape_obj.style('visbility',true);
-			     console.log(shape_obj.style('visibility'));
+		
+			     var rhei = 7;
+			     var rwid = shape_params.count/shape_params.max_count/SVG_HEIGHT;
+			     shape_obj.selectAll("rect")
+				 .attr("x",0)
+				 .attr("y",SVG_HEIGHT-rhei)
+				 .attr("width",rwid)
+				 .attr("height",rhei);
+			     if(shape_params.first_draw &&
+				shape_params.opacity!=undefined){
+				     shape_obj.selectAll("rect").attr("opacity",shape_params.opacity);
+			     }
+			     if(shape_params.hide != undefined &&
+			       shape_params.hide['text']){
+				 shape_obj.selectAll("text")
+				     .attr('visibility','hidden');
+			     }
 			 },
+			 skip_opacity:true,
 			 max_area : function(){
 			     return SVG_HEIGHT*SVG_WIDTH;
 			 }
