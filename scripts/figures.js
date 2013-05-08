@@ -52,18 +52,27 @@ function createShapeDictionary(){
     shapedict["image"] = {"human":"image", "svg":"g",
 			  draw: function(shape_obj, shape_params){
 			      if(shape_params.first_draw){
+				  var tso = shape_obj.append("rect");
 				  shape_obj = shape_obj.append("image");
 			      }
 			      var rwid, rhei;
-			      rwid = Math.sqrt(shape_params.count/shape_params.max_count);
+			      rwid = Math.max(1e-5,Math.sqrt(shape_params.count/shape_params.max_count)-1);
 			      rhei=rwid;
-			      shape_obj.selectAll('image')
-				  .attr("xlink:href", shape_params.value.replace(/^\"|\"$/g, ""))
+			      shape_obj.selectAll('rect')
 				  .attr("x",(shape_params.width-rwid)/2)
 				  .attr("y",(shape_params.height-rhei)/2)
 				  .attr("width",rwid)
+				  .attr("height",rhei)
+				  .attr("fill","white")
+				  .attr("opacity",1);
+			      shape_obj.selectAll('image')
+				  .attr("xlink:href", shape_params.value.replace(/^\"|\"$/g, ""))
+				  .attr("x",(shape_params.width-rwid-.5)/2)
+				  .attr("y",(shape_params.height-rhei-.5)/2)
+				  .attr("width",rwid)
 				  .attr("height",rhei);
 			  },
+			  skip_opacity : true,
 			  max_area : function(){
 			       return SVG_HEIGHT*SVG_WIDTH;
 			  }
@@ -81,7 +90,7 @@ function createShapeDictionary(){
 			     console.log(objtoopon.style('font'));
 			     objtoopon.style('font-size','16px')
 				 .style('stroke-width','.5');
-			     spl_nl.each(function(t,i){
+			     spl_nl.forEach(function(t,i){
 				 (shape_params.first_draw ? objtoopon.append('tspan') : objtoopon)
 				     .text(t)
 				     .attr('x',0)

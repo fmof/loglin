@@ -1,5 +1,5 @@
 count	position	context	features	visualization
-35	0,0		circle,solid	shape=image,fill=solid,value="http://jenkov.com/images/layout/top-bar-logo.png"
-5	0,1		circle,striped	shape=text,fill=striped,value=hello\nThere
-5	1,0		triangle,solid	shape=triangle,fill=solid
-15	1,1		triangle,striped,triangle & striped	shape=triangle,fill=striped
+30	0,0		circle,solid	shape=image,fill=solid,value="http://www.advocate.com/sites/advocate.com/files/imagecache/stories/Cooper_GrumpyCat_400_0.jpg"
+15	0,1		circle,striped	shape=image,fill=solid,value="http://www.advocate.com/sites/advocate.com/files/imagecache/stories/Cooper_GrumpyCat_400_0.jpg"
+10	1,0		triangle,solid	shape=image,fill=solid,value="http://www.advocate.com/sites/advocate.com/files/imagecache/stories/Cooper_GrumpyCat_400_0.jpg"
+5	1,1		triangle,striped	shape=image,fill=solid,value="http://www.advocate.com/sites/advocate.com/files/imagecache/stories/Cooper_GrumpyCat_400_0.jpg"
