@@ -55,8 +55,9 @@ function createShapeDictionary(){
 				  var tso = shape_obj.append("rect");
 				  shape_obj = shape_obj.append("image");
 			      }
+			      var border = 2;
 			      var rwid, rhei;
-			      rwid = Math.max(1e-5,Math.sqrt(shape_params.count/shape_params.max_count)-1);
+			      rwid = Math.max(1e-5,Math.sqrt(shape_params.count/shape_params.max_count));
 			      rhei=rwid;
 			      shape_obj.selectAll('rect')
 				  .attr("x",(shape_params.width-rwid)/2)
@@ -65,12 +66,14 @@ function createShapeDictionary(){
 				  .attr("height",rhei)
 				  .attr("fill","white")
 				  .attr("opacity",1);
+			      var erwid = Math.max(2*border, rwid-2*border);
+			      var erhei = Math.max(2*border, rhei-2*border);
 			      shape_obj.selectAll('image')
 				  .attr("xlink:href", shape_params.value.replace(/^\"|\"$/g, ""))
-				  .attr("x",(shape_params.width-rwid-.5)/2)
-				  .attr("y",(shape_params.height-rhei-.5)/2)
-				  .attr("width",rwid)
-				  .attr("height",rhei);
+				  .attr("x",(shape_params.width-rwid)/2 + border)
+				  .attr("y",(shape_params.height-rhei)/2 + border)
+				  .attr("width",erwid)
+				  .attr("height",erhei);
 			  },
 			  skip_opacity : true,
 			  max_area : function(){
