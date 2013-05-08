@@ -2,6 +2,59 @@
    DATA HANDLING
 **/
 
+function createKnownUserActions(){
+    var obj = {
+	do_action : function(currset, key, jqobj){
+	    var mykey = currset[key];
+	    this[key].do_action(jqobj);
+	    if("reverse" in mykey && mykey["reverse"]){
+		var x = [key, jqobj];
+		this._REVERSE_LIST.push(x);
+	    }
+	},
+	_REVERSE_LIST : Array(),
+	revert_settings : function(){
+	    for(var i =0;i<this._REVERSE_LIST.length;i++){
+		this[this._REVERSE_LIST[i][0]].do_inverse(this._REVERSE_LIST[i][1]);
+	    }
+	    this._REVERSE_LIST = [];
+	},
+	"tooltips" : {
+	    do_action : function(jqobj){
+		jqobj.qtip({
+		    content: {
+			text : jqobj.attr("title")
+		    },
+		    style : {
+			classes : "ui-tooltip"
+		    }
+		});
+	    }
+	},
+	"hide" : {
+	    do_action : function(jqobj){
+		jqobj.hide();
+	    },
+	    do_inverse : function(jqobj){
+		jqobj.show();
+	    }
+	},
+	"show" : {
+	    do_action : function(jqobj){
+	    },
+	    do_inverse : function(jqobj){
+		jqobj.hide();
+	    }
+	},
+	"lesson_subtitle": {
+	    do_action : function(jqobj){
+		
+	    }
+	}
+    };
+    return obj;
+}
+
 do_all_loading = function(){
     this.num_callbacks = 0;
     this.expected_callbacks = 2;
@@ -25,8 +78,7 @@ do_all_loading = function(){
 	if(!data_loader.timer_started){
 	    data_loader.start_timer();
 	}
-	data_loader.load_instructions(jQuery('#instruction_area'));
-	data_loader.load_textfile();
+	data_loader.load_settings(data_loader);
 	return data_loader;
     };
 
@@ -41,9 +93,35 @@ do_all_loading = function(){
 	    } else{
 		jQuery('#instruction_area').css('border', '1px solid gray');
 	    }
+	    apply_settings();
 	}
-    }
+    };
 
+    this.load_settings = function(obj){
+	jQuery.ajax({
+	    url:LESSON_SETTINGS_PATH,
+	    dataType:"json",
+	    success : function(settings){
+		LESSON_SETTINGS=settings;
+	    },
+	    error : function(jqXHR, textStatus, errorThrown){
+		if(jqXHR.status == 404){
+		    console.error("But don't worry, this 404 is allowed.");
+		    LESSON_SETTINGS={};
+		} else{
+		    console.log(jqXHR);
+		    console.log(textStatus);
+		    console.log(errorThrown);
+		    console.log("--------------");
+		    print_loading_error(jqXHR, textStatus, errorThrown);
+		}
+	    },
+	    complete : function(){
+		obj.load_instructions(jQuery('#instruction_area'));
+		obj.load_textfile();
+	    }
+	});
+    };
 
     this.load_instructions = function (ia){
 	var data_loader = this;
@@ -52,7 +130,6 @@ do_all_loading = function(){
 	    dataType:"html",
 	    success : function(txt){
 		ia.html('');
-		//set_height(ia,'');
 		ia.html(txt).scrollTop(0);
 		set_instructions_height(ia);
 	    },
@@ -83,7 +160,6 @@ do_all_loading = function(){
 	    },
 	    success : function(response){
 		(function(rows){
-		    //d3.tsv(TRUE_THETA_PATH,function(rows){
 		    rows.forEach(function(record){ 
 			var good=true;
 			for(var t in record){
@@ -102,15 +178,18 @@ do_all_loading = function(){
 			    DATA_BY_CONTEXT[context_id]={};
 			    TYPE_OBSERVATIONS_IN_C[context_id]=[];
 			    POSITION_BY_CONTEXT[context_id]={};
+			    THETA_POSITION_BY_CONTEXT[context_id]={};
 			} else{
 			    context_id = REVERSE_CONTEXTS[record['context']];
 			}
 			//add record['feature'] to theta list
-			console.log('adding ['+record['context']+', '+record['feature']+']');
 			FEATURE_LIST.push([record['context'],record['feature']]);
 			var feature_number = FEATURE_LIST.length -1;
 			INVERSE_FEATURE_LIST[[record['context'],record['feature']]]=feature_number;
 			TRUE_THETA[feature_number]=parseFloat(record['value']);
+			if(isNaN(TRUE_THETA[feature_number])){
+			    TRUE_THETA[feature_number] = 0.0;
+			}
 			THETA[feature_number]=initializeThetaValue();
 			GRADIENT[feature_number]=0;
 			OBS_FEAT_COUNT[feature_number]=0;
@@ -126,6 +205,15 @@ do_all_loading = function(){
 			} else{
 			    THETA_STRENGTH[feature_number] = 1;
 			}
+
+			//now deal with positions
+			if(record['position']==undefined){
+			    FEATURE_POS_UNDEFINED=true;
+			}
+			var temp_pos = FEATURE_POS_UNDEFINED ? [0,feature_number] : (d3.csv.parseRows(record['position'])[0]).map(function(d){return parseInt(d);});
+			THETA_POSITION_BY_CONTEXT[context_id][temp_pos] = feature_number;
+			MAX_THETA_ROWS = temp_pos[0]>=MAX_THETA_ROWS?temp_pos[0]+1:MAX_THETA_ROWS;
+			MAX_THETA_COLS = temp_pos[1]>=MAX_THETA_COLS?temp_pos[1]+1:MAX_THETA_COLS;
 		    });
 		    //now load the actual data
 		    data_loader.request_data_load();
@@ -142,7 +230,7 @@ do_all_loading = function(){
 	    success : function(response){
 		(function(rows){
 		    record_data(rows,0);
-		    $("zero_weights_button").onclick();
+		    jQuery("#zero_weights_button").click();
 		})(d3.tsv.parse(response))},
 	    complete : function(jqXHR, textStatus){
 		data_loader.callback(jqXHR);
@@ -157,10 +245,10 @@ function record_data(rows,already_created){
 	record_observation(record);
     });
     if(!already_created){
-    	addFeaturesToList($("feature_table"),FEATURE_LIST);
+    	addFeaturesToList(jQuery("#feature_table"),FEATURE_LIST);
     	addSliderEffects();
     } else{
-    	$$(".feature_slider").forEach(function(t){t.onchange();});
+    	jQuery(".feature_slider").each(function(i){jQuery(this).change();});
     }
     recompute_partition_function(THETA,Z_THETA);
     compute_max_prob(get_count,MAX_EMP_PROB,MAX_EMP_PROB_TYPE,MAX_EMP_AREA, get_num_tokens);
@@ -168,7 +256,7 @@ function record_data(rows,already_created){
     recompute_partition_function(TRUE_THETA,TRUE_Z_THETA);
     //draw the data here!
     if(!already_created){
-    	drawSVGBoxes($("draw_area"));
+    	drawSVGBoxes(jQuery("#draw_area"));
     } else{
     	updateObservedImages();
     }
@@ -185,22 +273,26 @@ function record_data(rows,already_created){
     
     if(!already_created){
 	//calculate LL(0)
-	var zerotheta = THETA.map(function(d){return 0;});
-	var zerotab=new Array(zerotheta.length);
-	var zeroll=[0]; var zeroreg=[0];
-	recompute_partition_function(zerotheta,zerotab);
-	compute_ll(zerotheta,zerotab,zeroll,zeroreg);
-	LL_SIGMOID = get_sigmoid(DIV_LL_WIDTH, zeroll[0], 0.0, .99- 70.0/DIV_LL_WIDTH);
+	//compute the partition function, and LL, under a uniform distr.
+	make_LL_SIGMOID();
      	addLLBar();
     } else{
     	updateLLBar();
     }
 }
 
+function make_LL_SIGMOID(){
+    var zerotheta = THETA.map(function(d){return 0;});
+    var zerotab=new Array(zerotheta.length);
+    var zeroll=[0]; var zeroreg=[0];
+    recompute_partition_function(zerotheta,zerotab);
+    compute_ll(zerotheta,zerotab,zeroll,zeroreg);
+    LL_SIGMOID = get_sigmoid(DIV_LL_WIDTH, zeroll[0], 0.0, .99- 70.0/DIV_LL_WIDTH);
+}
+
 function record_observation(record){
     var features = record['features'];
     var split_features =features.split(',');
-    console.log(split_features);
     var type_index;
     if(TYPE_MAP[features]==undefined){
 	TYPE_INDEX.push(split_features);
@@ -218,8 +310,9 @@ function record_observation(record){
 	REVERSE_CONTEXTS[record['context']]=context_id;
 	DATA_BY_CONTEXT[context_id]={};
 	POSITION_BY_CONTEXT[context_id]={};
+	THETA_POSITION_BY_CONTEXT[context_id]={};
 	TYPE_OBSERVATIONS_IN_C[context_id]=[];
-	console.log('seeing new context '+record['context']);
+	//console.log('seeing new context '+record['context']);
     } else{
 	context_id = REVERSE_CONTEXTS[record['context']];
     }
@@ -254,8 +347,6 @@ function record_observation(record){
     //now deal with positions
     var temp_pos=(d3.csv.parseRows(record['position'])[0]).map(function(d){return parseInt(d);});
     POSITION_BY_CONTEXT[context_id][temp_pos] = type_index;
-    //REVERSE_POSITIONS[temp_pos] = features.split(',');
-    //    POSITIONS.push(temp_pos);
     MAX_ROWS = temp_pos[0]>=MAX_ROWS?temp_pos[0]+1:MAX_ROWS;
     MAX_COLS = temp_pos[1]>=MAX_COLS?temp_pos[1]+1:MAX_COLS;
     var temp_vis = VISUALS[context_id];
@@ -274,14 +365,14 @@ function record_observation(record){
 
 function createSlider(val,isUnused){
     var d=document.createElement('div');
-    var input=document.createElement('input');
-    input.type="range"; 
-    input.className += ' feature_slider';
-    input.setAttribute('min',slider_min); 
-    input.setAttribute('max',slider_max);
-    input.setAttribute('step',slider_step);
-    input.setAttribute('value',val);
-    d.appendChild(input);
+    jQuery('<input/>', {
+	type : "range",
+	min: slider_min,
+	max: slider_max,
+	step: slider_step,
+	value : val
+    }).addClass("feature_slider")
+    .appendTo(jQuery(d));
     d.className += ' html5slider';
     return d;
 }
@@ -312,17 +403,31 @@ function addFeaturesToList(selectObj, array){
 	td.appendChild(d);
 	tfl.push(td);
     }
-    var maxwidth=$('feature_slider_area').offsetWidth;
-    //now maximize the number of 
-    var num_cols = Math.floor(maxwidth/205);
-    var num_rows = Math.ceil(FEATURE_LIST.length/num_cols);
-    //var num_rows = Math.ceil(Math.sqrt(FEATURE_LIST.length)); 
-    //var num_cols = Math.ceil(FEATURE_LIST.length / num_rows); 
+    var maxwidth=jQuery('#feature_slider_area')[0].offsetWidth;
+    var highest_row_cols=[-1,-1];
+    for(var c in THETA_POSITION_BY_CONTEXT){
+	for(var position_pair in THETA_POSITION_BY_CONTEXT[c]){
+	    var pp = position_pair.split(',').map(function(d){return parseInt(d);});
+	    for(var i=0;i<pp.length;i++){
+		highest_row_cols[i]= (pp[i]>highest_row_cols[i])?pp[i]:highest_row_cols[i];
+	    }
+	}
+    }
+    var num_rows = 0; var num_cols = 0;
+    if(FEATURE_POS_UNDEFINED || highest_row_cols[0]==-1 || highest_row_cols[1]==-1 ||
+      highest_row_cols[0] > MAX_THETA_ROWS ||
+      highest_row_cols[1] > MAX_THETA_COLS){
+	num_rows = Math.ceil(Math.sqrt(FEATURE_LIST.length)); 
+	num_cols = Math.ceil(FEATURE_LIST.length / num_rows); 
+    } else{
+	num_rows = highest_row_cols[0]+1;
+	num_cols = highest_row_cols[1]+1;
+    }
     var feature_index=0;
     for(var i=0;i<num_rows;i++){
 	var tr=document.createElement('tr');
 	tr.id='row'+i;
-	selectObj.appendChild(tr);
+	selectObj.append(jQuery(tr));
 	for(var j=0;j<num_cols && feature_index<tfl.length;j++){
 	    tr.appendChild(tfl[feature_index++]);
 	}

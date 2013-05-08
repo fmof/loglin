@@ -1,11 +1,69 @@
+<div id="welcome" class="showable_instructions">
+  <p>Welcome!  This interactive visualization will help you understand
+  the popular technique of log-linear modeling.</p>
+</div>
+
 <div id="p1" class="showable_instructions">
-  <p>This is the same tricky dataset as last time.  But we've given
-   you one more slider than before.  <i>Now</i> can you match all 4
-   shapes?  How?</p>
+  <p><b>Try it out:</b> The sliders below control the parameters ("weights") of a log-linear model.
+    When you increase the <code>circle</code> weight, which filled shapes get
+    bigger?  Which ones get smaller?</p>
+</div>
 
- <p>Does the new slider only adjust <i>p</i>(striped triangle)?  Why
- or why not?</p>
+<div id="p1" class="showable_instructions">
 
- <p>What other new feature could be used instead of <code>triangle &amp; striped</code>?</p>
+  <p>One game is to try to match all 4 shapes to
+    the <b><font color="gray">gray outlines</font></b>.  You will need
+    to use both sliders.  A shape will
+    turn <font color="gray">gray</font> if it matches well.  It turns
+    <font color="red">red</font> if it is too
+    small, <font color="blue">blue</font> if it is too
+    big.  <i>Note:</i> You may like to zoom in with your browser.</p>
+  
+</div>
 
-</div> 
+<div id="p1" class="showable_instructions">
+  <p><b>What the picture means:</b> Your model is defining a
+    probability for each shape.  When the weights are 0, all 4 shapes
+    have equal probability of 1/4.  This is shown by their equal
+    areas.</p>
+
+  <p>But the <i>empirical</i> probability of solid circles is 1/2, because
+  <b><font color="gray">30</font></b> of the <i>N</i>=60 shapes in
+  your <i>training data</i> are solid circles.  This "target" of 1/2
+  is shown by the larger area outlined
+  in <b><font color="gray">gray</font></b>.</p>
+
+  <p>Since your model currently says that <i>p</i>(solid circle) =
+    1/4, it incorrectly expects only about <font color="red">15</font>
+    of the 60 training shapes to be solid circles.  By increasing
+    the <code>circle</code> weight, you can improve your model until
+    it predicts the observed count
+    of <b><font color="gray">30</font></b>.  The <i>observed count</i>
+    of <b><font color="gray">30</font></b> and the current
+  <i>expected count</i> of <font color="red">15</font> are contrasted
+  in the solid circle box.</p>
+
+  <p><b>Activity 1: </b>What weights are needed to approximately match
+  the training data?  (All four shapes will match their outlines and turn
+  gray, and their expected counts will equal their observed counts.)</p>
+
+  Now read sections 1-2 of <A HREF="pdf/formulas.pdf">this handout</A>
+  to understand exactly how the <code>circle</code> and <code>solid</code>
+  sliders control the probability of the 4 events.  
+
+  <p><b>Activity 2:</b> Use the sliders to try the following weight
+    settings.  In each case, can you determine the exact probabilities of
+    the four shapes, using the formula from section 2 of the handout?
+    <ol type="a">
+      <li><code>circle</code> = 1, <code>solid</code> = 1
+      <li><code>circle</code> = 1, <code>solid</code> = -1
+      <li><code>circle</code> = 1, <code>solid</code> = &infin;
+      <li><code>circle</code> = 1, <code>solid</code> = -&infin;
+      <li><code>circle</code> = &infin;, <code>solid</code> = -&infin;
+    </ol>
+    How could you make each solid shape be exactly twice as big as its
+    striped counterpart?</p>
+
+  <p>When you're done playing, click "Next lesson" above.  By the
+  way, note that you can stretch this text box to make it bigger.</p>
+</div>

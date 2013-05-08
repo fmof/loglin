@@ -1,8 +1,6 @@
 {
-    "lesson_order" :
-    [
+    "lesson_order" : [
 	1,
-	"imgtest",
 	2,
 	3,
 	4,
@@ -20,5 +18,18 @@
 	16,
 	17,
 	18
-    ]
+    ],
+    "tooltips" : {
+	"attr" : "title", 
+	"list": {
+	    ".num_tokens_context_div" : "Multiplicatively scale the number of observations in this context to this number.",
+	    ".observed_count" : "",
+	    "#solve_button" : "Find best weights (sliders) given the observed counts (gray outlines). Regularization alters the definition of \"best.\"",
+	    "#new_challenge" : "Pick some new secret weights and use them to generate a new training dataset.  You can then try to estimate the weights given the dataset.",
+	    "#new_counts" : "Resample the observed counts (gray outlines).  Replaces the training dataset with a new one of the same size, generated from the same conditional distribution.",
+	    "#cheat_button": "Indicate the weights of the true distribution, and its regularized log-likelihood.",
+	    "#regularization_constant" : "Change the importance of the regularizer.",
+	    "#gradient_step" : "Change how strongly you follow the gradient."
+	}
+    }
 }

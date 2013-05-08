@@ -1,0 +1,26 @@
+#!/bin/bash
+
+PUBLIC_OBSERVABLES=( index.html scripts imgs pdf lessons styles )
+
+FILE_PERM=644
+DIR_PERM=755
+
+for dir in "${PUBLIC_OBSERVABLES[@]}"; do
+    files=$(find $dir -name '*.git*' -prune -o -name '*~' -prune -o -type f -print) 
+    for f in $files; do
+	fp=$(stat -c "%a" $f)
+	if [[ $fp -ne $FILE_PERM ]]; then
+	    echo -e "$f\t$fp => $FILE_PERM"
+	    chmod $FILE_PERM $f
+	fi
+    done
+
+    dirs=$(find $dir -name '*.git*' -prune -o -name '*~' -prune -o -type d -print) 
+    for d in $dirs; do
+	fp=$(stat -c "%a" $d)
+	if [[ $fp -ne $DIR_PERM ]]; then
+	    echo -e "$d\t$fp => $DIR_PERM"
+	    chmod $DIR_PERM $d
+	fi
+    done
+done

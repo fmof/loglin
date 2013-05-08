@@ -1,1 +1,8 @@
 *~
+paper/*.synctex.gz
+paper/*.log
+paper/*.aux
+paper/*.blg
+paper/*.bbl
+paper/*.d
+paper/tnlp2013.pdf

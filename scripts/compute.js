@@ -23,15 +23,13 @@ function recompute_expected_counts(){
 	//go through type IDs
 	for(var i=0;i<obs_in_c.length;i++){
 	    var id_num = obs_in_c[i];
-	    var p=$('exp_count_text_context_'+c+'_'+id_num); 
 	    var ecp=get_expected_count(c,id_num);
 	    EXPECTED_COUNTS[c][id_num]=ecp;
 	    var obs_count = COUNTS[c][id_num];
-	    var color = determine_color(get_empirical_prob(c,id_num),get_prob(c,id_num)/Z_THETA[c]);
-	    p.innerHTML =  formatExpected(ecp);
-	    p.style.color=color;
-	    p.setAttribute('dirty',0);
-	    p.setAttribute('value',ecp);
+	    var color = determine_color(get_empirical_prob(c,id_num),get_prob(c,id_num)/Z_THETA[c], c);
+	    jQuery('#exp_count_text_context_'+c+'_'+id_num).html(formatExpected(ecp))
+		.css("color",color)
+		.attr("dirty",0).val(ecp);
 	}
     }
 }
@@ -39,12 +37,14 @@ function recompute_expected_counts(){
 //returns [feature_index, new_feature_value] pair
 //@param: grad_only : eval to true if new_feature_value should
 //be the gradient step (i.e., not including the original 
-//theta value)
-function get_corrected_step(tindex, solve_step,grad_only){
+//theta value). This is primarily useful for gradient-based convergence.
+function get_corrected_step(tindex, solve_step,grad_only, mult_fact){
+    mult_fact = typeof mult_fact !== 'undefined' ? mult_fact : 1.0;
+    var grad_val = GRADIENT[tindex];
     //the next value *if* we followed gradient
     //proportional to solve_step, not taking into account
     //differentiability issues (with L1 regularization)
-    var propval=THETA[tindex] + solve_step*GRADIENT[tindex];
+    var propval=THETA[tindex] + solve_step*grad_val;
     //L1 regularization is proving to be a bit of a pain...
     if(USE_REGULARIZATION && REGULARIZATION_EXPONENT==1){
 	if(THETA[tindex]!=0){
@@ -52,7 +52,7 @@ function get_corrected_step(tindex, solve_step,grad_only){
 	    if(sign(THETA[tindex]*propval)<0){
 		return [tindex,grad_only?(-THETA[tindex]):0];
 	    } else{
-		return [tindex,grad_only?(solve_step*GRADIENT[tindex]):propval];
+		return [tindex,grad_only?(solve_step*grad_val):propval];
 	    }
 	} else{ //theta == 0
 	    var g = OBS_FEAT_COUNT[tindex] - EXP_FEAT_COUNT[tindex];
@@ -66,7 +66,7 @@ function get_corrected_step(tindex, solve_step,grad_only){
 	    }
 	}
     } else{ //otherwise, normal L2 stuff/no regularization
-	return [tindex, grad_only?(GRADIENT[tindex]):propval];
+	return [tindex, grad_only?grad_val:propval];
     }
     
 }
@@ -74,11 +74,11 @@ function get_corrected_step(tindex, solve_step,grad_only){
 function step_gradient(solve_step,dont_complete){
     var solve_step=solve_step || SOLVE_STEP;
     var all_zero=0;
-    var group = $$('.feature_slider');
-    var arr = group.map(function(d,i){
-	    var tindex = parseInt(group[i].parentNode.parentNode.childNodes[0].getAttribute('theta_index'));
-	    return get_corrected_step(tindex, solve_step);
-	});
+    var gs_sign = sign(jQuery('#gradient_step').val());
+    var arr = jQuery('.feature_slider').map(function(x){
+	var tindex = parseInt(this.parentNode.parentNode.childNodes[0].getAttribute('theta_index'));
+	return [get_corrected_step(tindex, solve_step, false, gs_sign)];
+    });
     if(!dont_complete){
 	reset_sliders_manually(arr);
 	redraw_all();
@@ -92,14 +92,14 @@ function converged(step){
 	//need this for L1 regularization
 	//set the third param to be 1 to only get 
 	//the new gradient step
-	var x =get_corrected_step(i,step,1)[1];
+	var x =get_corrected_step(i,step,1, sign(jQuery('#gradient_step').val()))[1];
 	return x*x;
     }));
+    console.log('convergence : ' + s);
     return s < STOPPING_EPS;
 }
 
-function scale_gamma_for_solve(gamma0,step_num){
-    //return gamma0/(step_num/Math.sqrt(10));
+function scale_gamma_for_solve(gamma0, step_num){
     return gamma0;
 }
 
@@ -115,21 +115,21 @@ function recompute_step_size(ostep,step_num,tol_low, tol_high){
     }
     var step = ostep;
     var tztable = [];
-    var tll = [LOG_LIKELIHOOD[0]];
+    var signfact = sign(jQuery('#gradient_step').val());
+    var tll = [LOG_LIKELIHOOD[0]*signfact];
     var tr=[0];
     var tth = [];
-    var old_ll = LOG_LIKELIHOOD[0];
+    var old_ll = LOG_LIKELIHOOD[0]*signfact;
     
     var f = function(s){
 	var nt = step_gradient(s,1);
-	//console.log('new theta values we got back:');
-	//console.log("\t"+nt);
 	tth=[];
 	for(var i=0;i<nt.length;i++){
 	    tth[nt[i][0]] = nt[i][1];
 	}
 	recompute_partition_function(tth,tztable);
 	compute_ll(tth,tztable,tll,tr); 
+	tll[0] *= signfact;
     };
     f(step);
     var di; var count=0; 
@@ -143,17 +143,12 @@ function recompute_step_size(ostep,step_num,tol_low, tol_high){
 	    if(step < tol_low || step > tol_high) break;
 	    step *= factors[i][1]; 
 	    f(step);
-	    // console.log("\tas a preview, step="+step+", nll_1 = "+ tll[0]);
-	    // console.log("\t" + step_gradient(0.0000000000001, 1));
-	    // console.log("\t" + step_gradient(step,1));
 	    count++;	
 	    if(count > 1000){
 		//should get here, but just in case...
 		clearInterval(SOLVE_TIMEOUT_ID);
-		$('solve_button').onclick();
+		jQuery('#solve_button').click();
 		throw "infinite loop";
-		
-	    } else{
 	    }
 	}
 	console.log('last computed nll='+tll[0]);
@@ -169,25 +164,26 @@ function improves_ll(ll,oll,foo){
 
 //gamma is original gamma
 function solve_puzzle(gamma, step_num, orig_step_size){
-    var solve_button = $('solve_button');
+    var solve_button = jQuery('#solve_button');
     //this used to be converged(step_num)... why?
     var is_converged = converged(1);
     var gamma = gamma;
     if(gamma==0 || is_converged){
 	console.log('exiting because either gamma = '+ gamma + ' == 0 or is converged: '+ is_converged);
-	solve_button.onclick();
+	solve_button.click();
 	return;
     }
+    console.log('my gamma is ' + gamma);
     gamma = scale_gamma_for_solve(gamma,step_num);
     if(gamma==0){
-	solve_button.onclick();
+	solve_button.click();
     }
-    $('gradient_step').value = gamma.toPrecision(5);
+    jQuery('#gradient_step').val(gamma.toPrecision(5));
     step_gradient(gamma);
     is_converged = converged(1);
     if(step_num==MAX_SOLVE_ITERATIONS || is_converged){
 	console.log('exiting because either step_num = '+ step_num + ' == ' + MAX_SOLVE_ITERATIONS + ' or is converged: '+ is_converged);
-	solve_button.onclick();
+	solve_button.click();
     } else{
 	console.log('more to go...');
     }
@@ -203,9 +199,7 @@ function compute_gradient(){
 	if(USE_REGULARIZATION){
 	    var local_theta = THETA[l];
 	    var lte=(REGULARIZATION_EXPONENT==1)?sign(local_theta):local_theta;
-	    //console.log('before, lte='+lte);
 	    lte = lte * REGULARIZATION_EXPONENT*REGULARIZATION_SIGMA2;
-	    //console.log('l='+l+', C='+REGULARIZATION_SIGMA2+', exponent='+REGULARIZATION_EXPONENT+' theta='+local_theta+', reg[l]='+(-lte));
 	    REG_FOR_GRAD[l]=lte;
 	    GRADIENT[l] = -lte;
 	} else{ GRADIENT[l]=0; REG_FOR_GRAD[l]=0;}	
@@ -273,11 +267,6 @@ function get_prob(context,id_num,log,theta){
     var ret = 0; var print=0;
     var theta = theta || THETA;
     var data= DATA_BY_CONTEXT[context][id_num];
-    if(print){
-	console.log(DATA_BY_CONTEXT[context]);
-	console.log(id_num);
-	console.log(data);
-    }
     for(var i=0;i<data.length;i++){
 	var ifl=INVERSE_FEATURE_LOOKUP(context,data[i]);
 	if(ifl>=0){
@@ -289,10 +278,6 @@ function get_prob(context,id_num,log,theta){
 	if((ifl=INVERSE_FEATURE_LIST[[CONTEXTS[context],'']])!=undefined){
 	    ret += theta[ifl]*THETA_STRENGTH[ifl];
 	}
-    }
-    if(print){
-	console.log('unnorm prob: '+Math.exp(ret));
-	console.log('------------');
     }
     return log?ret:Math.exp(ret);
 }
@@ -376,7 +361,7 @@ function compute_ll(theta, ztable, ll, reg){
 	ll[0] = ll[0] - sum;
     } 
 
-    if(ll[0]>0){
+    if(ll[0]>0 || isNaN(ll[0])){
 	ll[0]=-Number.MAX_VALUE;
     }
 }

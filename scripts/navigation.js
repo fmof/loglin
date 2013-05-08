@@ -11,9 +11,7 @@ function safe_dropdown_view_change(obj){
 
 
 function verify_prev_next(){
-    jQuery('.lesson_button_nav').each(function(){
-	this.verify();
-    });
+    jQuery('.lesson_button_nav').trigger('verify');
 }
 
 //a very nice solution from

@@ -84,3 +84,37 @@ function getHashParams(hs) {
 
 	return hashParams;
 }
+
+
+//more robust typeOf courtesy
+//http://javascript.crockford.com/remedial.html
+function typeOf(value) {
+    var s = typeof value;
+    if (s === 'object') {
+        if (value) {
+            if (Object.prototype.toString.call(value) == '[object Array]') {
+                s = 'array';
+            }
+        } else {
+            s = 'null';
+        }
+    }
+    return s;
+}
+
+//http://stackoverflow.com/questions/4994201/is-object-empty
+function is_empty(obj) {
+
+    // null and undefined are empty
+    if (obj == null) return true;
+    // Assume if it has a length property with a non-zero value
+    // that that property is correct.
+    if (obj.length && obj.length > 0)    return false;
+    if (obj.length === 0)  return true;
+
+    for (var key in obj) {
+        if(Object.prototype.hasOwnProperty.call(obj, key))    return false;
+    }
+
+    return true;
+}
