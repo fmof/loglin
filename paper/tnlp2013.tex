@@ -5,11 +5,14 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsthm}
-\usepackage{enumerate,enumitem}
+\usepackage{enumerate,paralist,enumitem}
 \usepackage{verbatim}
 \usepackage{mathtools}
 
+
+
 \usepackage{graphicx}
+\usepackage{caption,subcaption}
 \usepackage{algorithm}
 \usepackage{algorithmic}
 
@@ -19,6 +22,7 @@
 \usepackage{multirow}
 
 \usepackage{color,soul}
+\usepackage{transparent}
 \usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
 \newcommand{\Note}[1]{}
 \renewcommand{\Note}[1]{\hl{[#1]}}
@@ -92,7 +96,7 @@ As our model $\hat{p}_{\vec{\theta}}$ is fully described by the feature weights 
 F\left(\vec{\theta}\right) = \sum_{i=1}^N \log{\hat{p}_{\vec{\theta}}\left(y_i\ \mid\ x_i\right)} - C \cdot R\left(\vec{\theta}\right).
 \label{eqn:reg_ll}
 \end{equation}
-Equivalently, we find $\vec{\theta^*}$ that solves equation \eqref{eqn:reg_ll}:
+Equivalently, we find $\vec{\theta^*}$ that solves equation \eqref{eqn:grad}:
 \begin{equation}
 \begin{aligned}
 %\begin{split}
@@ -104,25 +108,27 @@ Equivalently, we find $\vec{\theta^*}$ that solves equation \eqref{eqn:reg_ll}:
  = & 0.
 %\end{split}
 \end{aligned}
+\label{eqn:grad}
 \end{equation}
 Here, $C \ge 0$ is the regularization penalty for the regularizer $R(\vec{\theta})$. Regardless of what regularization is applied, we will generally refer to the \textbf{full model} as that of \eqref{eqn:conditional_loglin} with objective \eqref{eqn:reg_ll}.\footnote{We consider models where $R(\vec{\theta}) = \vec{0}$ (no regularization), $R(\vec{\theta}) = \|\vec\theta\|_1$, and $R(\vec{\theta}) = \|\vec{\theta}\|_2^2$. See Section \ref{sec:overview} for more on regularization.}
 
 \NoteFF{Is it further worth detailing difficulties people may have in learning about maxent models?}
 However, the full model may present too many subtleties to be grasped all at once: reasoning about changing a single, particular $\theta_k$ requires consideration of a number of other variables, such as all other feature weights, the domain and range of the feature function $f_k$, and the amount of data available, among others. Therefore, we also consider ``simplified'' globally normalized models $\hat{p}_{\vec{\theta}}\left(y\right)$. These context-nescient models allow students to focus initially on understanding some of the core underlying concepts of exponential models, such as feature interations and weight tradeoffs, before progressing to conditional models.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{Pedagogical Aims}\label{sec:aims}
-\paragraph{Modeling Implications}
+While any attempt to teach log-linear models must tackle the concepts, issues and difficulties addressed in the previous section, we found that enumerating specific pedagogical goals and expected take-aways helped focus the design of the virtual manipulative and the creation of individual lessons (c.f., Sections \ref{sec:overview} and \ref{sec:lessons}, respectively).
+\subsection{Modeling Implications}
 \begin{enumerate}
-\item Choosing an appropriate model \textit{family} (as in lesson 18, conditional, sequence, logistic regression)
+\item Choosing an appropriate model \textit{family}% (as in lesson 18, conditional, sequence, logistic regression)
 \item Feature Design consideration:
 \begin{itemize}
 \item If the “striped” feature is predicted to occur less often than it actually does, you should raise its weight.
 \item Frequent conditions more influential
 \item binary vs. real valued features
-\item The initial setting where all weights = 0 gives the uniform distribution.
-\begin{itemize}
-\item Some further understanding of the entropy view?  (See below.)
-\end{itemize}
 \end{itemize}
 
 \item Feature Interactions
@@ -133,10 +139,14 @@ However, the full model may present too many subtleties to be grasped all at onc
 \item Feature conjunctions: fewer vs. more features
 \item Feature that everything/nothing has --- weights go to $\pm \infty$
 \item Opposing features, e.g., solid vs striped, where there are only 2 options
+\item The initial setting where all weights = 0 gives the uniform distribution.
+\begin{itemize}
+\item Some further understanding of the entropy view?  (See below.)
+\end{itemize}
 \end{itemize}
 \end{enumerate}
 
-\paragraph{Parameter estimation}
+\subsection{Parameter estimation}
 \begin{enumerate}[resume]
 \item Some distributions can't be matched --- but you get generalization
 \item It's possible to overfit the training data.  Regularization compensates for that and can in fact make you underfit.
@@ -147,14 +157,17 @@ Gradient ascent and adaptive stepsize
 \end{itemize}
 \end{enumerate}
 
-\paragraph{Evaluating the Model, and Choosing an Appropriate Objective}
+\subsection{Evaluating the Model, and Choosing an Appropriate Objective}
 \begin{enumerate}[resume]
 \item Likelihood always goes up if you follow gradient
 \begin{itemize}
 \item gradient = observed - expected count (- regularizer)
+
+see eq \eqref{eqn:grad}
 \item This is evident in the LL-bar at the top
+\item Changes in gradient reflect portions of feature interactions (how minimizing the isolated $|\frac{\partial}{\partial \theta_k} F|$ might negatively affect some other partial $\frac{\partial}{\partial \theta_{k'}}F$.
 \end{itemize}
-\item importance of convexity
+\item importance of convexity: That is, we'll always find a unique $\vec{\theta^*}$ that solves \eqref{eqn:reg_ll}.
 \item LL is maximized when you match the empirical (except for overfitting?)
 \item matching vs. log-likelihood
 Overfitting to a small training sample
@@ -165,11 +178,7 @@ Backoff smoothing = making use of backoff features and not just fine-grained fea
 (to avoid being penalized by the regularizer)
 \end{enumerate}
 
-\NoteFF{This is from lesson 18}
-
-We should note that we are \textit{not} concerned with computational issues here, e.g., that of tractably computing the per-context normalization factor. While efficiently computing the normalization factor is a crucial component to practical log-linear models, our primary concern is to provide an intuitive understand. \NoteFF{work on the wording here...}
-
-\NoteFF{It's also important to talk about convexity of the objective.} That is, we'll always find a unique $\vec{\theta^*}$ that solves \eqref{eqn:reg_ll}.
+We should note that we are \textit{not} concerned with computational issues here, e.g., that of tractably computing the normalization factors $Z(x_i)$. While efficiently computing the normalization factor is a crucial component to practical log-linear models, our primary concern is to provide a virtual manipulative that imparts a near-physical, intuitive understanding of log-linear models. 
 
 \section{Virtual Manipulative Overview}\label{sec:overview}
 See Figure \ref{fig:lesson1} for a screenshot.
@@ -179,6 +188,48 @@ See Figure \ref{fig:lesson1} for a screenshot.
 \caption{Screenshot of the first lesson from the virtual manipulative.}
 \label{fig:lesson1}
 \end{figure*}
+
+\begin{figure}[t]
+\begin{center}
+\begin{subfigure}[b]{\columnwidth}
+\centering
+\includegraphics[scale=.5]{images/different_shapes_fills3x4.PNG}
+\caption{Inventory of available shapes and fills. Note that while normally the color is indicative of the sign of \eqref{eqn:grad}, here the colors are solely provided as example.}
+\label{fig:shape_inventory}
+\end{subfigure}
+
+\vspace{1em}
+\begin{subfigure}[b]{\columnwidth}
+\centering
+\begin{tabular}{cccc}
+\multirow{2}{*}{$\nabla_{\vec{\theta}}F(\vec{\theta}) $} & $<0$ & $= 0$ & $> 0$\\
+& 
+{\color{red}
+\texttransparent{.5}{ red }
+}
+&
+{\color{gray}
+\texttransparent{.5}{ gray }
+}
+& 
+{\color{blue}
+\texttransparent{.5}{ blue }
+}
+\end{tabular}
+
+\caption{How colors indicate the sign of \eqref{eqn:grad}.}
+\label{fig:color_inventory}
+\end{subfigure}
+
+\vspace{1em}
+\begin{subfigure}[b]{\columnwidth}
+\centering
+\includegraphics[scale=.5]{images/different_shapes_fills3x4.PNG}
+\caption{\NoteFF{Replace with actual example text and images} Inventory of available shapes, fills, colors and other possible images. Note that while normally the color is indicative of the sign of \eqref{eqn:grad}, here the colors are solely provided as example.}
+\label{fig:imgtxt_inventory}
+\end{subfigure}
+\end{center}
+\end{figure}
 
 The importance of color: what red vs. blue vs. gray means. This is in contrast to the importance of size
 
@@ -236,7 +287,7 @@ mention that some ui considerations can result in very slight rounding errors
 
 solver: gradient ascent is simple (except for $\ell_1$ regularization), but it can take some finessing to make it visually appealing. We recursively call the solve function on a polynomial-decreasing schedule
 
-\section{Provided Lessons}
+\section{Provided Lessons}\label{sec:lessons}
 \subsection{Joint Models}
 \begin{enumerate}
 \item 
