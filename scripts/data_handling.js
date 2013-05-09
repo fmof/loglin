@@ -210,7 +210,7 @@ do_all_loading = function(){
 			if(record['position']==undefined){
 			    FEATURE_POS_UNDEFINED=true;
 			}
-			var temp_pos = FEATURE_POS_UNDEFINED ? [0,feature_number] : (d3.csv.parseRows(record['position'])[0]).map(function(d){return parseInt(d);});
+			var temp_pos = [FEATURE_POS_UNDEFINED ? [0,feature_number] : (d3.csv.parseRows(record['position'])[0]).map(function(d){return parseInt(d);})];
 			THETA_POSITION_BY_CONTEXT[context_id][temp_pos] = feature_number;
 			MAX_THETA_ROWS = temp_pos[0]>=MAX_THETA_ROWS?temp_pos[0]+1:MAX_THETA_ROWS;
 			MAX_THETA_COLS = temp_pos[1]>=MAX_THETA_COLS?temp_pos[1]+1:MAX_THETA_COLS;
@@ -381,7 +381,7 @@ function addFeaturesToList(selectObj, array){
     var nf=0;
     var tfl=[];
     for(var feature_index=0;feature_index<FEATURE_LIST.length;feature_index++){
-	var td=document.createElement('td');
+	var td=document.createElement('td');//div
 	td.className+=' feature_cell';
 	var d=document.createElement('div');
 	var p=document.createElement('p');
@@ -403,9 +403,9 @@ function addFeaturesToList(selectObj, array){
 	td.appendChild(d);
 	tfl.push(td);
     }
-    var maxwidth=jQuery('#feature_slider_area')[0].offsetWidth;
+    var maxwidth=parseInt(jQuery('#feature_slider_area')[0].offsetWidth,10);
     var highest_row_cols=[-1,-1];
-    for(var c in THETA_POSITION_BY_CONTEXT){
+    for(var c=0; c<THETA_POSITION_BY_CONTEXT.length; c++){
 	for(var position_pair in THETA_POSITION_BY_CONTEXT[c]){
 	    var pp = position_pair.split(',').map(function(d){return parseInt(d);});
 	    for(var i=0;i<pp.length;i++){
@@ -414,25 +414,57 @@ function addFeaturesToList(selectObj, array){
 	}
     }
     var num_rows = 0; var num_cols = 0;
+    var width_slider = jQuery('.feature_cell')
+	.get().map(function(x){return parseInt(jQuery(x).css('width'),10);})
+	.reduce(function(a,b){return Math.max(a,b);},-1000);
     if(FEATURE_POS_UNDEFINED || highest_row_cols[0]==-1 || highest_row_cols[1]==-1 ||
-      highest_row_cols[0] > MAX_THETA_ROWS ||
-      highest_row_cols[1] > MAX_THETA_COLS){
-	num_rows = Math.ceil(Math.sqrt(FEATURE_LIST.length)); 
-	num_cols = Math.ceil(FEATURE_LIST.length / num_rows); 
+       highest_row_cols[0] > MAX_THETA_ROWS ||
+       highest_row_cols[1] > MAX_THETA_COLS){
+	if(FEATURE_LIST.length <= MAX_THETA_COLS &&
+	  FEATURE_LIST.length * width_slider < maxwidth){
+	    num_cols = FEATURE_LIST.length;
+	    num_rows = 1;
+	} else{
+	    num_rows = Math.ceil(Math.sqrt(FEATURE_LIST.length)); 
+	    num_cols = Math.ceil(FEATURE_LIST.length / num_rows); 
+	}
+	var feature_index=0;
+	for(var i=0;i<num_rows;i++){
+	    var tr=document.createElement('tr'); //div
+	    tr.id='row'+i;
+	    selectObj.append(jQuery(tr));
+	    for(var j=0;j<num_cols && feature_index<tfl.length;j++){
+		tr.appendChild(tfl[feature_index++]);
+		//selectObj.append(jQuery(tfl[feature_index++]));
+	    }
+	    if(feature_index>=tfl.length) break;
+	}
     } else{
 	num_rows = highest_row_cols[0]+1;
 	num_cols = highest_row_cols[1]+1;
-    }
-    var feature_index=0;
-    for(var i=0;i<num_rows;i++){
-	var tr=document.createElement('tr');
-	tr.id='row'+i;
-	selectObj.append(jQuery(tr));
-	for(var j=0;j<num_cols && feature_index<tfl.length;j++){
-	    tr.appendChild(tfl[feature_index++]);
+	for(var c = 0; c< THETA_POSITION_BY_CONTEXT.length; c++){
+	    for(var i =0; i< num_rows;i++){
+		var tr=document.createElement('tr'); //div
+		tr.id='row'+i;
+		selectObj.append(jQuery(tr));
+		for(var j=0; j<num_cols;j++){
+		    var tid = THETA_POSITION_BY_CONTEXT[c][[i,j]];
+		    if(tid == undefined) {
+			var td = document.createElement('td'); //div
+			td.className += " feature_cell";
+		    	tr.appendChild(td); 
+			//selectObj.append(jQuery(td));
+		    }
+		    else
+			//selectObj.append(jQuery(tfl[tid]));
+			tr.appendChild(tfl[tid]);
+		}
+		//jQuery(tr).css('max-width',width_slider*num_cols);
+	    }
 	}
-	if(feature_index>=tfl.length) break;
     }
+    //selectObj.css('width',width_slider*num_cols);
+
 }
 
 function enumerate_possible_types(context, types_for_context){
