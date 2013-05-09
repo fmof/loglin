@@ -10,25 +10,20 @@ function hide_text_portion(){
 
 function show_text_portion(){
     jQuery('#instruction_wrapper').show();
-    //set_instructions_height(jQuery('#instruction_area'));
+}
+
+function j_hide_data(){
+    return jQuery('#score_area,#data_area,#slider_area');
 }
 
 function toggle_data_portion(){
-    jQuery('#score_area').toggle();
-    jQuery('#shapes_area').toggle();
-    jQuery('#slider_area').toggle();
+    j_hide_data().toggle();
 }
-
 function hide_data_portion(){
-    jQuery('#score_area').hide();
-    jQuery('#shapes_area').hide();
-    jQuery('#slider_area').hide();
+    j_hide_data().hide();
 }
-
 function show_data_portion(){
-    jQuery('#score_area').show();
-    jQuery('#shapes_area').show();
-    jQuery('#slider_area').show();
+    j_hide_data().show();
 }
 
 function show_loader(box,id){
