@@ -52,10 +52,10 @@ function createShapeDictionary(){
     shapedict["image"] = {"human":"image", "svg":"g",
 			  draw: function(shape_obj, shape_params){
 			      if(shape_params.first_draw){
-				  var tso = shape_obj.append("rect");
-				  shape_obj = shape_obj.append("image");
+				  shape_obj.append("rect");
+				  shape_obj.append("image");
 			      }
-			      var border = 2;
+			      var border = 4;
 			      var rwid, rhei;
 			      rwid = Math.max(1e-5,Math.sqrt(shape_params.count/shape_params.max_count));
 			      rhei=rwid;
@@ -68,12 +68,14 @@ function createShapeDictionary(){
 				  .attr("opacity",1);
 			      var erwid = Math.max(2*border, rwid-2*border);
 			      var erhei = Math.max(2*border, rhei-2*border);
-			      shape_obj.selectAll('image')
-				  .attr("xlink:href", shape_params.value.replace(/^\"|\"$/g, ""))
-				  .attr("x",(shape_params.width-rwid)/2 + border)
-				  .attr("y",(shape_params.height-rhei)/2 + border)
-				  .attr("width",erwid)
-				  .attr("height",erhei);
+			      if(!shape_params.is_observed){
+				  shape_obj.selectAll('image')
+				      .attr("xlink:href", shape_params.value.replace(/^\"|\"$/g, ""))
+				      .attr("x",(shape_params.width-rwid)/2 + border)
+				      .attr("y",(shape_params.height-rhei)/2 + border)
+				      .attr("width",erwid)
+				      .attr("height",erhei);
+			      }
 			  },
 			  skip_opacity : true,
 			  max_area : function(){

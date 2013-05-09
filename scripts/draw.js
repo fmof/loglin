@@ -53,6 +53,9 @@ function redraw_all(){
     compute_max_prob(get_prob,MAX_EXP_EMP_PROB,MAX_EXP_EMP_PROB_TYPE,MAX_EXP_EMP_AREA, get_model_partition_function);
     redrawAllExpected();
     updateSVGTitles();
+    //ensure correct order of observed and expected images
+    jQuery('.observed_image').each(function(){
+	jQuery(this).before(jQuery(this).siblings(".expected_image").get());})
     compute_ll();
     compute_ll(TRUE_THETA,TRUE_Z_THETA,TRUE_LOG_LIKELIHOOD,TRUE_REGULARIZATION);
     updateLLBar();
@@ -609,7 +612,6 @@ function prettifyShape(shape, id_name, color, fill, set_sw_opacity, opacity){
 	jQuery('#stripe_path_'+id_name).css('stroke',color);
 	shape.attr('style','fill: url(#stripe_'+ id_name +'); stroke: '+color+'; opacity:'+EXPECTED_TRANSPARENCY+';');
     }
-    shape.attr('stroke',color);
 }
 
 
@@ -645,6 +647,7 @@ function createD3Shape(container, id_num, id_name, width,height, visuals, color,
     var s;
     var scale=Math.min(width/2,height/2);
     s=container.selectAll('#'+id_name).data([count]).enter().append(SHAPE_DICTIONARY[visuals['shape']]["svg"]);
+    var	is_observed = id_name.indexOf("obs_count_pic")!=-1;
     var shape_params={
 	width : width,
 	height : height,
@@ -654,7 +657,11 @@ function createD3Shape(container, id_num, id_name, width,height, visuals, color,
 	first_draw : true,
 	value : visuals['value'],
 	opacity : opacity,
-	hide : {'text' : id_name.indexOf("obs_count_pic")!=-1}
+	is_observed : is_observed,
+	hide : {
+	    'text' : is_observed,
+	    'image' : is_observed
+	}
     };
     var sdshape = SHAPE_DICTIONARY[visuals['shape']];
     sdshape.draw(s, shape_params);
@@ -716,7 +723,8 @@ function drawExpectedData(context, i, container){
     var ntc=NUM_TOKENS_C[context]==0?1:NUM_TOKENS_C[context];
     if(! jQuery("#exp_count_pic_"+context+'_'+i).length){
 	var exp_count_pic = createD3Shape(container,i,'exp_count_pic_'+context+'_'+i,SVG_WIDTH,SVG_HEIGHT, vis, color, get_prob(context,i)/Z_THETA[context],MAX_EXP_EMP_PROB[context]/MAX_EXP_EMP_AREA[context],EXPECTED_TRANSPARENCY);
-	exp_count_pic.attr('id','exp_count_pic_'+context+'_'+i);
+	exp_count_pic.attr('id','exp_count_pic_'+context+'_'+i)
+	    .classed('expected_image',true);
     } else{
 	//otherwise, update it..
 	updateD3Shape(container,i,'exp_count_pic_'+context+'_'+i,SVG_WIDTH,SVG_HEIGHT, vis, color, get_prob(context,i)/Z_THETA[context], MAX_EXP_EMP_PROB[context]/MAX_EXP_EMP_AREA[context]);
@@ -921,8 +929,11 @@ function drawSVGBoxes(selectObj){
 		vis['fill']='hollow';
 		var shape = createD3Shape(svg, type_id, 'obs_count_pic_'+c+'_'+type_id, width,height, vis, '#B8B8B8',get_empirical_prob(c,type_id),MAX_EMP_PROB[c]/MAX_EMP_AREA[c],1);
 		vis['fill']=tfi;
-		shape.attr('stroke-opacity',.7).attr('stroke-width',3);
-		shape.attr('id','obs_count_pic_'+c+'_'+type_id);
+		shape.attr('fill-opacity',0)
+		    .attr('stroke-opacity',1)
+		    .attr('stroke-width',3)
+		    .attr('id','obs_count_pic_'+c+'_'+type_id)
+		    .classed('observed_image',true);
 	    } //end for over columns
 	    divi.className += ' drawrow';
 	}
