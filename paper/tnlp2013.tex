@@ -197,15 +197,38 @@ We should note that we are \textit{not} concerned with computational issues here
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Virtual Manipulative Overview}\label{sec:overview}
+\begin{figure*}
+\centering
+\includegraphics[scale=.5]{images/lesson1-050913.PNG}
+\caption{\NoteFF{Maybe stilll need to rplace this image} Screenshot of the first lesson from the virtual manipulative.}
+\label{fig:lesson1}
+\end{figure*}
 Broadly, the virtual manipulative is designed to be widely available, have minimal-to-no start-up cost, including compartmentalized ``user-'' and ``back-'' ends. While our primary goal was to teach log-linear models within the context of NLP, we thought it myopic to out-right limit users to those interested or experienced in NLP, due in part to the prevalence and success log-linear models boast throughout a number of varied computational fields. Thus one of the guiding design goals was to make the educational tool easy-to-use by both students and instructors, so that instructors could tailor the lessons to the needs, interests and abilities of the students. To that end, our manipulative has three primary components: a student end, an instuctor end, and the actual implementation.
 
 \subsection{Student Interface}
- See Figure \ref{fig:lesson1} for a screenshot.
-\begin{figure*}[t]
-\includegraphics[scale=.5]{images/lesson1-grad-moved-nonewcounts-ell2-c4.PNG}
-\caption{\NoteFF{Replace this image} Screenshot of the first lesson from the virtual manipulative.}
-\label{fig:lesson1}
-\end{figure*}
+This is the primary interaction with the tool for most users and so the interf; Figure \ref{fig:lesson1} provides a sample screenshot.
+
+The importance of color: what red vs. blue vs. gray means. This is in contrast to the importance of size
+
+How does the user know how ``good'' the current parameter settings are? 
+
+The log-likelihood bar: how to indicate the ``unregularized'' bit, and regularizer.
+
+\subsubsection{Usability}
+\begin{description}
+\item[``New random challenge'']
+\item[``New Counts'' button] The other use is to help the user experiment with datasets of different sizes, by changing N to scale the counts and then clicking "New counts."
+\item[``Show gradient'']
+\item[``Step'' and ``Solve'']
+\item[``Peek at true'']
+\item[Regularization] We consider models where $R(\vec{\theta}) = \vec{0}$ (no regularization), $R(\vec{\theta}) = \|\vec\theta\|_1$, and $R(\vec{\theta}) = \|\vec{\theta}\|_2^2$: we special-case the optimizer to handle the non-differentiable $\ell_1$ regularization, thus providing a friendly educational environment in which the student may explore the differences between $\ell_1$ and $\ell_2$ regularization.
+\end{description}
+
+\subsection{The Instructor Interface: Creating and Tailoring Lessons}
+mention the select whitelist of wayas to change some behavior
+\subsubsection{Available Visualizations}
+
+\ref{fig:inventory}
 
 \begin{figure}[t]
 \begin{center}
@@ -237,28 +260,11 @@ Broadly, the virtual manipulative is designed to be widely available, have minim
 \caption{\NoteFF{Replace with actual example text and images} Examples of including arbitrary images and text.}
 \label{fig:imgtxt_inventory}
 \end{subfigure}
+\caption{Inventory of available manipulatives.}
+\label{fig:inventory}
 \end{center}
 \end{figure}
 
-The importance of color: what red vs. blue vs. gray means. This is in contrast to the importance of size
-
-How does the user know how ``good'' the current parameter settings are? 
-
-The log-likelihood bar: how to indicate the ``unregularized'' bit, and regularizer.
-
-\subsubsection{Usability}
-\begin{description}
-\item[``New random challenge'']
-\item[``New Counts'' button] The other use is to help the user experiment with datasets of different sizes, by changing N to scale the counts and then clicking "New counts."
-\item[``Show gradient'']
-\item[``Step'' and ``Solve'']
-\item[``Peek at true'']
-\item[Regularization] We consider models where $R(\vec{\theta}) = \vec{0}$ (no regularization), $R(\vec{\theta}) = \|\vec\theta\|_1$, and $R(\vec{\theta}) = \|\vec{\theta}\|_2^2$: we special-case the optimizer to handle the non-differentiable $\ell_1$ regularization, thus providing a friendly educational environment in which the student may explore the differences between $\ell_1$ and $\ell_2$ regularization.
-\end{description}
-
-\subsection{The Instructor Interface: Creating and Tailoring Lessons}
-mention the select whitelist of wayas to change some behavior
-\subsubsection{Available Visualizations}
 available shapes: four regular shapes: circle, square, triangle, pentagon; text; images (.jpg, .png, .svg);
 shading: solid, striped, hollow
 
@@ -291,7 +297,12 @@ The basic data format is type-level TSVs
 %\end{description}
 
 \subsection{The Back-End}
-In order to be fully client-side, the back-end is written in Javascript. talk a bit about {\tt d3}, {\tt jQuery} and the various libraries/plugins used... nothing major, but it'll be good to outline here what exactly I used: jquery (1.7.2); jquery plugins tools, qtip, and ui
+In order to be fully client-side, the back-end is written in Javascript. talk a bit about the various libraries/plugins used\NoteFF{... nothing major, but it'll be good to outline here what exactly I used}: \texttt{d3}, \texttt{jQuery} and a couple publicly available plugins.\footnote{Specifically and in order, 
+\url{d3js.org/},
+\url{jquery.com/}, 
+\texttt{jQuery UI} (\url{jqueryui.com}),
+\texttt{jQuery Tools} (\url{jquerytools.org/}), and
+\texttt{qTip} (\url{craigsworks.com/projects/qtip/}).}
 
 mention that some ui considerations can result in very slight rounding errors
 
