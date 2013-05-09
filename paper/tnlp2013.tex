@@ -9,7 +9,7 @@
 \usepackage{verbatim}
 \usepackage{mathtools}
 
-
+\usepackage{url}
 
 \usepackage{graphicx}
 \usepackage{caption,subcaption}
@@ -33,6 +33,8 @@
 
 \newcommand{\empirical}[0]{\ensuremath{\tilde{p}}}
 \newcommand{\Data}[0]{\ensuremath{\mathcal{D}}}
+
+\newcommand{\WhereToFind}[0]{\url{loglin-tnlp2013.appspot.com}}
 
 \setlength\titlebox{6.5cm}    % Expanding the titlebox
 
@@ -61,11 +63,11 @@
 \maketitle
 
 \begin{abstract}
-We present a virtual manipulative for regularized conditional log-linear models. 
+We present a virtual manipulative for regularized conditional log-linear models. \WhereToFind{}
 \end{abstract}
 
 \section{Introduction}\label{sec:intro}
-Given a dataset \Data{} consisting of $N$ points $\{( x_i, y_i)\}_{i=1}^N$, define empirical distribution
+Given a dataset \Data{} of $N$ context (history) and outcome (event) points $\{( x_i, y_i)\}_{i=1}^N$, we often wish to  estimate conditional models $p(y_i\ \mid\ x_i)$. define empirical distribution
 \begin{equation}
 \empirical\left(y\ \mid\ x\right) = \frac{c(x,y)}{c(x)},
 \end{equation}
@@ -181,11 +183,12 @@ Backoff smoothing = making use of backoff features and not just fine-grained fea
 We should note that we are \textit{not} concerned with computational issues here, e.g., that of tractably computing the normalization factors $Z(x_i)$. While efficiently computing the normalization factor is a crucial component to practical log-linear models, our primary concern is to provide a virtual manipulative that imparts a near-physical, intuitive understanding of log-linear models. 
 
 \section{Virtual Manipulative Overview}\label{sec:overview}
-See Figure \ref{fig:lesson1} for a screenshot.
+
 \subsection{User Interface}
+See Figure \ref{fig:lesson1} for a screenshot.
 \begin{figure*}[t]
 \includegraphics[scale=.5]{images/lesson1-grad-moved-nonewcounts-ell2-c4.PNG}
-\caption{Screenshot of the first lesson from the virtual manipulative.}
+\caption{\NoteFF{Replace this image} Screenshot of the first lesson from the virtual manipulative.}
 \label{fig:lesson1}
 \end{figure*}
 
