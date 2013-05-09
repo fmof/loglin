@@ -27,6 +27,7 @@
 \newcommand{\NoteFF}[1]{\NoteSigned{FF}{LightBlue}{#1}}
 \newcommand{\NoteJE}[1]{\NoteSigned{JE}{LightGreen}{#1}}
 
+\newcommand{\empirical}[0]{\ensuremath{\tilde{p}}}
 \newcommand{\Data}[0]{\ensuremath{\mathcal{D}}}
 
 \setlength\titlebox{6.5cm}    % Expanding the titlebox
@@ -60,19 +61,23 @@ We present a virtual manipulative for regularized conditional log-linear models.
 \end{abstract}
 
 \section{Introduction}\label{sec:intro}
+Given a dataset \Data{} consisting of $N$ points $\{( x_i, y_i)\}_{i=1}^N$, define empirical distribution
+\begin{equation}
+\empirical\left(y\ \mid\ x\right) = \frac{c(x,y)}{c(x)},
+\end{equation}
+where $c(x,y)$ and $c(x)$ represent bigram and unigram counts, respectively.
+
 except for reading of data files, purely client-side $\Rightarrow$ very easy to set-up;
 open-source;
 data input format makes it extensible;
 individual lessons can be tailored (e.g., hide/show buttons, different tool-tips for lessons)
-
-\NoteFF{why is it difficult to reason about changes in $\theta$?}
 
 Why do we focus on shapes, rather than words? \NoteFF{maybe we can argue via virtual manipulatives}
 
 \NoteFF{what is the history of virtual manipulatives in teaching CS? NLP?} the HMM spreadsheet \cite{eisner-2002-tnlp}
 
 \subsection{Regularized Conditional Log-Linear Models} \label{sec:model} 
-Our aim is to provide an intuitive understanding of regularized conditional log-linear models. Given a dataset \Data{} consisting of $N$ points $\{( x_i, y_i)\}_{i=1}^N$ and $K$ features $f_k$ defined over \Data{} , we are interested in defining distributions 
+Our aim is to provide an intuitive understanding of regularized conditional log-linear models. Given $\Data{} = \{( x_i, y_i)\ \mid\ 1 \le i \le N\}$ and $K$ features $f_k$ defined over \Data{} , we are interested in dissecting distributions 
 \begin{equation}
 \hat{p}_{\vec{\theta}}\left(y\ \mid\ x\right) = \frac{u(x, y)}{\sum_{y'} u(x,y')},
 \label{eqn:conditional_loglin}
@@ -82,23 +87,28 @@ where $u(x,y)$ represents the unnormalized probability
 u(x,y) & = & \exp{\left(\vec{\theta}\cdot \vec{f}(x,y)\right)}\\
 & = & \exp{\left(\sum_{k=1}^K \theta_k f_k(x,y)\right)}.
 \end{eqnarray}
-As our model $\hat{p}_{\vec{\theta}}$ is fully described by the feature weights $\vec{\theta}$, we find the weights that maximize the regularized conditional log-likelihood \eqref{eqn:reg_ll}:
+As our model $\hat{p}_{\vec{\theta}}$ is fully described by the feature weights $\vec{\theta}$, we find the weights $\vec{\theta^*}$ that maximize the regularized conditional log-likelihood \eqref{eqn:reg_ll}:
 \begin{equation}
 F\left(\vec{\theta}\right) = \sum_{i=1}^N \log{\hat{p}_{\vec{\theta}}\left(y_i\ \mid\ x_i\right)} - C \cdot R\left(\vec{\theta}\right).
 \label{eqn:reg_ll}
 \end{equation}
-Here, $C \ge 0$ is the regularization penalty for the regularizer $R(\vec{\theta})$. We will generally refer to the \textbf{full model} as that of \eqref{eqn:conditional_loglin} with objective \eqref{eqn:reg_ll}.
-
-However, because the full model may present too many subtleties to be grasped all at once, we also consider ``simplified'' global models $\hat{p}_{\vec{\theta}}\left(y\right)$. These context-nescient models allow students to focus initially on understanding some of the core underlying concepts of exponential models, such as feature interations and weight tradeoffs, before progressing to conditioned models.
-
-Using $\tilde{p}$ to represent the empirical distribution, the gradient of \eqref{eqn:reg_ll} is, in general,
+Equivalently, we find $\vec{\theta^*}$ that solves equation \eqref{eqn:reg_ll}:
 \begin{equation}
-\nabla_{\vec{\theta}} F = 
-\mathbb{E}_{\tilde{p}}\left[\vec{f}(x,y)\right] 
-- \mathbb{E}_{\hat{p}}\left[\vec{f}(x,y)\right]
-- C \nabla_{\vec{\theta}}R(\vec{\theta}).
+\begin{aligned}
+%\begin{split}
+\nabla_{\vec{\theta}} F
+ = &
+\mathbb{E}_{\empirical{}}\left[\vec{f}(x,y)\right] 
+- \mathbb{E}_{{\hat{p}_{\vec{\theta}}}}\left[\vec{f}(x,y)\right]\\
+ & - C \nabla_{\vec{\theta}}R(\vec{\theta})\\
+ = & 0.
+%\end{split}
+\end{aligned}
 \end{equation}
-We consider models where $R(\vec{\theta}) = \vec{0}$ (no regularization), $R(\vec{\theta}) = \|\vec\theta\|_1$, and $R(\vec{\theta}) = \|\vec{\theta}\|_2^2$: we special-case the optimizer to handle the non-differentiable $\ell_1$ regularization, thus providing a friendly educational environment in which the student may explore the differences between $\ell_1$ and $\ell_2$ regularization.
+Here, $C \ge 0$ is the regularization penalty for the regularizer $R(\vec{\theta})$. Regardless of what regularization is applied, we will generally refer to the \textbf{full model} as that of \eqref{eqn:conditional_loglin} with objective \eqref{eqn:reg_ll}.\footnote{We consider models where $R(\vec{\theta}) = \vec{0}$ (no regularization), $R(\vec{\theta}) = \|\vec\theta\|_1$, and $R(\vec{\theta}) = \|\vec{\theta}\|_2^2$. See Section \ref{sec:overview} for more on regularization.}
+
+\NoteFF{Is it further worth detailing difficulties people may have in learning about maxent models?}
+However, the full model may present too many subtleties to be grasped all at once: reasoning about changing a single, particular $\theta_k$ requires consideration of a number of other variables, such as all other feature weights, the domain and range of the feature function $f_k$, and the amount of data available, among others. Therefore, we also consider ``simplified'' globally normalized models $\hat{p}_{\vec{\theta}}\left(y\right)$. These context-nescient models allow students to focus initially on understanding some of the core underlying concepts of exponential models, such as feature interations and weight tradeoffs, before progressing to conditional models.
 
 \section{Pedagogical Aims}\label{sec:aims}
 \paragraph{Modeling Implications}
@@ -161,7 +171,7 @@ We should note that we are \textit{not} concerned with computational issues here
 
 \NoteFF{It's also important to talk about convexity of the objective.} That is, we'll always find a unique $\vec{\theta^*}$ that solves \eqref{eqn:reg_ll}.
 
-\section{Virtual Manipulative Overview}
+\section{Virtual Manipulative Overview}\label{sec:overview}
 See Figure \ref{fig:lesson1} for a screenshot.
 \subsection{User Interface}
 \begin{figure*}[t]
@@ -181,6 +191,7 @@ How does the user know how ``good'' the current parameter settings are?
 \item[``Show gradient'']
 \item[``Step'' and ``Solve'']
 \item[``Peek at true'']
+\item[Regularization] We consider models where $R(\vec{\theta}) = \vec{0}$ (no regularization), $R(\vec{\theta}) = \|\vec\theta\|_1$, and $R(\vec{\theta}) = \|\vec{\theta}\|_2^2$: we special-case the optimizer to handle the non-differentiable $\ell_1$ regularization, thus providing a friendly educational environment in which the student may explore the differences between $\ell_1$ and $\ell_2$ regularization.
 \end{description}
 
 \subsection{The Instructor Interface: Creating and Tailoring Lessons}
