@@ -1,0 +1,12 @@
+count	position	context	features	visualization
+107	0,0	NP[sing]	left child agrees with parent,right child agrees with parent,children agree,D N	shape=text,value=D[s] N[s]
+26	0,1	NP[sing]	left child agrees with parent,D N	shape=text,value=D[s] N[pl]
+4	1,1	NP[sing]	children agree,D N	shape=text,value=D[pl] N[pl]
+21	1,0	NP[sing]	right child agrees with parent,children agree,D N	shape=text,value=D[pl] N[s]
+48	1,2	NP[sing]	unary	shape=text,value=John
+3	0,0	NP[pl]	children agree,D N	shape=text,value=D[s] N[s]
+18	0,1	NP[pl]	right child agrees with parent,D N	shape=text,value=D[s] N[pl]
+76	1,1	NP[pl]	left child agrees with parent,right child agrees with parent,children agree,D N	shape=text,value=D[pl] N[pl]
+15	1,0	NP[pl]	left child agrees with parent,children agree,D N	shape=text,value=D[pl] N[s]
+34	0,2	NP[pl]	count,unary	shape=text,value=snakes
+34	1,2	NP[pl]	unary	shape=text,value=people

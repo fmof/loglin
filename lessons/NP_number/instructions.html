@@ -1,0 +1,49 @@
+<div id="p1" class="showable_instructions">
+  <p>Taking the "unigram"/"bigram" analogy more seriously, here is a
+    "bigram language model" over a <i>sequence</i> of filled shape
+    events.  The choice of the next filled shape <i>depends on</i>
+    what its predecessor was.  The predecessor is the context.</p>
+
+  <p>We include the usual "unigram" features that consider only the
+  event without its context.  We have features for each of the 9
+  filled shape events, as well as "backed-off" unigram features for
+  each of the 3 fill-patterns and each of the 3 shapes.  A backoff
+  feature such as <code>circle</code> fires on multiple events and
+  thus can help capture generalizations across events, such as
+  "circles are common" (analogous to "words ending
+  in <code>-ing</code> are common").</p>
+
+  <p>How about the "bigram" features?  We'll back off here by modeling
+    just 3 general features that look at the event and the context
+    together:</p>
+  <ul>
+    <li>Is the event identical to the previous event?
+    <li>Does the event have the same shape as the previous event?
+    <li>Does the event have the same fill-pattern as the previous event?
+  </ul>
+
+  <p>To visualize what a feature does, just set its weight to
+  +&infin;.  Then all the shapes will vanish except for the ones
+  that have that feature (in context).</p>
+
+  <p>The observed counts below were obtained by generating
+  a <i>sequence</i> of 1000 filled shapes from exactly this kind of
+  bigram model.  In the <i>true model</i>, the bigram features had
+  weights 0.5, 1.0, and -0.25.  The 1.0 created a preference for long
+  runs of triangles (or circles or squares), since a shape preferred to
+  be followed by another copy of the same shape.  The 0.5 meant that
+  within a run of triangles, say, the solid (or striped or hollow)
+  triangles had some tendency to clump together, since the positive
+  0.5 outweighed the negative -0.25.  However, when the shape changes,
+  the -0.25 meant that the fill-pattern was likely to change as
+  well.</p>
+
+  <p>Play with the visualization as you like.  You may want to try
+  <strong>changing the data</strong>.</p>
+
+  <p>How well can the model fit the observed data sample?  (Should you
+    use regularization to answer that?)  How well can you recover the
+    true bigram feature weights?  (Should you use regularization here?)
+    What should you do if you need a very good estimate of those
+    weights?</p>
+</div>

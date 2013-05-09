@@ -99,7 +99,7 @@ function createShapeDictionary(){
 				     .attr('x',shape_params.width/2)
 				     .attr('y',base_y + i*15)
 				     .attr('text-anchor','middle')
-				     .style('font-family','monospace')
+				     //.style('font-family','monospace')
 				     .style('font-weight','lighter');
 				 
 			     });
