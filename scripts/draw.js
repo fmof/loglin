@@ -38,6 +38,16 @@ function load_html5_slider(boxid,val){
 	} else{
 	    jdiv.attr("title", boxval);
 	}
+	var jhandle = jQuery(boxid.parentNode.childNodes[0].childNodes[1]);
+	if(jhandle.data("qtip") || jhandle.data("hasqtip")){
+	    var x = parseInt(feature_info.getAttribute("theta_index"),10);
+	    jhandle.qtip({content:
+			  "Observed Counts: " + OBS_FEAT_COUNT[x]+
+			  "<br />" +
+			  "Expected Counts: " + formatExpected(EXP_FEAT_COUNT[x])
+			 });
+	}
+
 	redraw_all();
     } else{
 	feature_info.className+=' feature_name_box';
