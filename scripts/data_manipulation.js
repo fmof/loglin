@@ -138,6 +138,15 @@ function reset_manually_from_theta(slider,val){
     x=Math.max(min_slider_val,Math.min(max_slider_val,x));
     if(x< 1e-10) x=1e-5;
     h.style['left'] = x+'px';
+    var jhandle = jQuery(h);
+    if(jhandle.data("qtip") || jhandle.data("hasqtip")){
+	var x = parseInt(h.parentNode.parentNode.parentNode.childNodes[0].getAttribute("theta_index"),10);
+	jhandle.qtip({content:
+		      "Observed Counts: " + OBS_FEAT_COUNT[x]+
+		      "<br />" +
+		      "Expected Counts: " + formatExpected(EXP_FEAT_COUNT[x])
+		     });
+    }
 }
 
 function reset_sliders_manually(arr){
