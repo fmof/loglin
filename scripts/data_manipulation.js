@@ -142,9 +142,9 @@ function reset_manually_from_theta(slider,val){
     if(jhandle.data("qtip") || jhandle.data("hasqtip")){
 	var x = parseInt(h.parentNode.parentNode.parentNode.childNodes[0].getAttribute("theta_index"),10);
 	jhandle.qtip({content:
-		      "Observed Counts: " + OBS_FEAT_COUNT[x]+
+		      "Observed Count: " + OBS_FEAT_COUNT[x]+
 		      "<br />" +
-		      "Expected Counts: " + formatExpected(EXP_FEAT_COUNT[x])
+		      "Expected Count: " + formatExpected(EXP_FEAT_COUNT[x])
 		     });
     }
 }
