@@ -11,6 +11,8 @@
 
 \usepackage{url}
 
+\usepackage{array}
+
 \usepackage{graphicx}
 \usepackage{caption,subcaption}
 \usepackage{algorithm}
@@ -116,8 +118,8 @@ Equivalently, we find $\vec{\theta^*}$ that solves equation \eqref{eqn:grad}:
 \end{equation}
 Here, $C \ge 0$ is the regularization penalty for the regularizer $R(\vec{\theta})$. Regardless of what regularization is applied, we will generally refer to the \textbf{full model} as that of \eqref{eqn:conditional_loglin} with objective \eqref{eqn:reg_ll}.\footnote{We consider models where $R(\vec{\theta}) = \vec{0}$ (no regularization), $R(\vec{\theta}) = \|\vec\theta\|_1$, and $R(\vec{\theta}) = \|\vec{\theta}\|_2^2$. See Section \ref{sec:overview} for more on regularization.}
 
-\NoteFF{Is it further worth detailing difficulties people may have in learning about maxent models?}
-However, the full model may present too many subtleties to be grasped all at once: reasoning about changing a single, particular $\theta_k$ requires consideration of a number of other variables, such as all other feature weights, the domain and range of the feature function $f_k$, and the amount of data available, among others. Therefore, we also consider ``simplified'' globally normalized models $\hat{p}_{\vec{\theta}}\left(y\right)$. These context-nescient models allow students to focus initially on understanding some of the core underlying concepts of exponential models, such as feature interations and weight tradeoffs, before progressing to conditional models.
+%\NoteFF{Is it further worth detailing difficulties people may have in learning about maxent models?}
+However, the full model may present too many subtleties to be grasped all at once: reasoning about changing a particular $\theta_k$ requires consideration of a number of things, such as all other feature weights, the domain and range of the feature function $f_k$, and the amount of data available, among others. Therefore, we also consider ``simplified'' globally normalized models $\hat{p}_{\vec{\theta}}\left(y\right)$. These context-nescient models allow students to focus initially on understanding some of the core underlying mathematical concepts of exponential models, such as feature interations and weight tradeoffs, before progressing to conditional models.
 
 \subsection{Contributions and Available Materials}
 Our primary contribution is the development and open-source release of an easy-to-use, client-side virtual manipulative for teaching regularized conditional log-linear models. In addition to the code, the release contains \NoteFF{change this \#} 18 pre-made lessons, and associated explanatory text and questions. \NoteFF{say something about being useful for individual, partner/group/lab study, or assignments.} An anonymized version is available at \WhereToFind{}.
@@ -199,20 +201,82 @@ We should note that we are \textit{not} concerned with computational issues here
 \section{Virtual Manipulative Overview}\label{sec:overview}
 \begin{figure*}
 \centering
-\includegraphics[scale=.5]{images/lesson1-050913.PNG}
+\includegraphics[scale=.5]{images/lesson1-050913-intro.PNG}
 \caption{\NoteFF{Maybe stilll need to rplace this image} Screenshot of the first lesson from the virtual manipulative.}
 \label{fig:lesson1}
 \end{figure*}
 Broadly, the virtual manipulative is designed to be widely available, have minimal-to-no start-up cost, including compartmentalized ``user-'' and ``back-'' ends. While our primary goal was to teach log-linear models within the context of NLP, we thought it myopic to out-right limit users to those interested or experienced in NLP, due in part to the prevalence and success log-linear models boast throughout a number of varied computational fields. Thus one of the guiding design goals was to make the educational tool easy-to-use by both students and instructors, so that instructors could tailor the lessons to the needs, interests and abilities of the students. To that end, our manipulative has three primary components: a student end, an instuctor end, and the actual implementation.
 
 \subsection{Student Interface}
-This is the primary interaction with the tool for most users and so the interf; Figure \ref{fig:lesson1} provides a sample screenshot.
+Figure \ref{fig:lesson1} illustrates the basic blocked interface a user encounters. The two block areas at the top of the page serve basic navigation and instructional needs while the bottom five provide the requiste interactions with the model. \NoteFF{add refs to Fig {\ref{fig:lesson1}} overlay.} The student should read carefully the instructions, dragging the instruction area larger if necessary, since this is where the instructor may explain what the data are, justify modeling choices, and ask questions. 
 
-The importance of color: what red vs. blue vs. gray means. This is in contrast to the importance of size
+\begin{figure}[t]
+\small
+\begin{center}
+\begin{subfigure}[b]{\columnwidth}
+\centering
+\begin{tabular}{
+>{\centering\arraybackslash}m{.18\columnwidth} | 
+>{\centering\arraybackslash}m{.18\columnwidth}
+>{\centering\arraybackslash}m{.18\columnwidth}
+>{\centering\arraybackslash}m{.18\columnwidth}}
+$ \mathbb{E}_{\empirical{}}\left[\vec{f}\right] 
+- \mathbb{E}_{{\hat{p}_{\vec{\theta}}}}\left[\vec{f}\right] $
+& $<0$ & $= 0$ & $> 0$\\\hline\hline
+base color
+& {\bf \color{red} \texttransparent{.5}{ red } }
+& {\bf \color{gray}\texttransparent{.55}{ gray } }
+& {\bf \color{blue} \texttransparent{.55}{ blue } }\\ 
+\vspace{.5em}
 
-How does the user know how ``good'' the current parameter settings are? 
+$\nabla_{\vec{\theta}} F$ visualization
+& \includegraphics[scale=.25]{images/goldilocks-gradient-small.PNG}
+& \includegraphics[scale=.25]{images/goldilocks-gradient-justright.PNG}
+& \includegraphics[scale=.25]{images/goldilocks-gradient-large.PNG}\\ \\ 
 
-The log-likelihood bar: how to indicate the ``unregularized'' bit, and regularizer.
+$\empirical{} - \hat{p}_{\vec{\theta}} $
+& $<0$ & $= 0$ & $> 0$\\\hline\hline \\
+& \includegraphics[scale=.25]{images/goldilocks-circle-small.PNG}
+& \includegraphics[scale=.25]{images/goldilocks-circle-justright.PNG}
+& \includegraphics[scale=.25]{images/goldilocks-circle-large.PNG}\\
+\end{tabular}
+
+\caption{Colors indicate the sign of \eqref{eqn:obsexp} while the size (area) of the shapes indicates the difference betwen that type's probability under the current model and the empirical distribution (gray outline).}
+\label{fig:colorsize_inventory}
+\end{subfigure}
+
+\vspace{1em}
+\begin{subfigure}[b]{\columnwidth}
+\centering
+\includegraphics[scale=.3]{images/regularized_ll_bar_andtrue_cut.PNG}
+
+\caption{The gray and green bars and text represent the (regularized) objective \eqref{eqn:reg_ll} for the current and empirical model, respectively. The red outline indicates the regularizer penalty.}
+\label{fig:llbar}
+\end{subfigure}
+
+\caption{Inventory of available manipulatives.}
+\label{fig:colormeaning}
+\end{center}
+\end{figure}
+
+The student interacts with the model via the five remaining interactive blocks:
+%following five blocks:
+\begin{inparaenum}[(1)]
+\item the objective score,
+\item the data,
+\item feature weights,
+\item options to change the data or model,
+\item hints and helpers.
+\end{inparaenum}
+Arguably, the two most important blocks are the data and feature weight areas: the former presents the student with visual representations of the data \textit{types} while the latter allows the user to change the weights $\vec{\theta}$.\footnote{A type is some shape (see Section \ref{sec:available_vis} and Figure \ref{fig:inventory}); for example, in Figure \ref{fig:lesson1}, the data types are four different shapes: circles and triangles, both solid and striped.} Each type occupies its own drawing area and presents the user with distributional information on that shape, including its probability and expected (type) counts under both $\tilde{p}$ and $\hat{p}_{\vec{\theta}}$.
+As documented in Figure \ref{fig:colorsize_inventory}, we utilize both size and color to convey these distribution changes: the three colors red, gray and blue illustrate the difference between observed and expected counts, while the size (area) of the shapes indicates the type's mass differences.
+
+While observing changes in the data area provides some insight as to the model's quality, the objective score might initially be a better distillation. We represent the model's objective as a scalable bar graph. As shown in Figure \ref{fig:llbar}, we also visualize the regularization penalty, and the objective under the ``true'' (generating) model parameters, when known.
+
+However, even with the above feedback, solving more complex models may be too tedious or difficult. The student may then make use of \textit{hints}. The simplest is to view each component of $\nabla_{\vec{\theta}} F$, which we represent as colored portions of the respective feature slider.
+
+The manipulative attempts to be responsive to an individual user's browser and display options, and heuristically make efficient use of available space. That being said, higher resolution/larger displays are desirable when dealing with the full model and some of the larger datasets introduced in later lessons (see Section \ref{sec:conditionallessons}).
+
 
 \subsubsection{Usability}
 \begin{description}
@@ -226,7 +290,7 @@ The log-likelihood bar: how to indicate the ``unregularized'' bit, and regulariz
 
 \subsection{The Instructor Interface: Creating and Tailoring Lessons}
 mention the select whitelist of wayas to change some behavior
-\subsubsection{Available Visualizations}
+\subsubsection{Available Visualizations}\label{sec:available_vis}
 
 \ref{fig:inventory}
 
@@ -237,20 +301,6 @@ mention the select whitelist of wayas to change some behavior
 \includegraphics[scale=.5]{images/different_shapes_fills3x4.PNG}
 \caption{Inventory of available shapes and fills. Note that while normally the color is indicative of the sign of \eqref{eqn:obsexp}, here the colors are solely provided as example.}
 \label{fig:shape_inventory}
-\end{subfigure}
-
-\vspace{1em}
-\begin{subfigure}[b]{\columnwidth}
-\centering
-\begin{tabular}{cccc}
-\multirow{2}{*}{$\nabla_{\vec{\theta}}F(\vec{\theta}) $} & $<0$ & $= 0$ & $> 0$\\
-& {\bf \color{red} \texttransparent{.5}{ red } }
-& {\bf \color{gray}\texttransparent{.55}{ gray } }
-& {\bf \color{blue} \texttransparent{.55}{ blue } }
-\end{tabular}
-
-\caption{How colors indicate the sign of \eqref{eqn:obsexp}.}
-\label{fig:color_inventory}
 \end{subfigure}
 
 \vspace{1em}
@@ -311,7 +361,7 @@ solver: gradient ascent is simple (except for $\ell_1$ regularization), but it c
 sigmoidal scaling for sliders, log-likelihood bars
 
 \section{Provided Lessons}\label{sec:lessons}
-\subsection{Joint Models}
+\subsection{Joint Models} \label{sec:jointlessons}
 \begin{enumerate}
 \item 
 4 types: rows %%$\{triangle, circle\} X columns \{solid, striped\}$
@@ -373,7 +423,7 @@ like lesson 7, but now we have too many features: we have the 9 conjoined featur
 Question:  Note that each event now has its own feature.  This makes it easy to manipulate the probabilities individually -- try it by hand and with the solver.  The probabilities should match exactly.  Analogously, here is a fairly easy math question: Suppose you have 9 letters a,b,...i where a has feature 1 (only), b has feature 2 (only), etc.  You would like to match the observed probabilities $p(a)=p_1, p(b)=p_2$, etc., where $p_1+...+p_9=1$.  How could you set $theta_1, theta_2$, etc. to achieve this?   Because you have enough parameters to match the training data exactly, you will need some regularization for smoothing.  What is the effect of regularization in this setting where events don’t share features at all? 
 \end{enumerate}
 
-\subsection{Conditional Models}
+\subsection{Conditional Models} \label{sec:conditionallessons}
 \begin{enumerate}[resume]
 \item First conditional model: brief warmup for lesson 12 below, except make them all circles and label the rows that were formerly triangle, circle, square as English, Polish, Martian (and change the feature names accordingly).  This is formally identical to lesson 12.  So we are predicting fill color based on language.  Note that we have a larger corpus of English than of Polish, and no corpus of Martian (yet!).
 \item Conditional model: like lesson 7 except we now condition on the row.  “We are now showing each language as a separate shape.  Or equivalently, imagine that you already had a shape, and the event is that someone came along and picked a pattern to fill it with.  We are no longer predicting probabilities of different shapes.”  The only sliders are for solid, striped, and hollow (this is a little simpler than lesson 7).  Drop the square row for simplicity -- no, on second thought, just make that row completely unobserved so that we see generalization.  Separate the rows into different panels.  The triangle counts are (70,20,10) while the circle counts are (5,5,5) and the square counts are (0,0,0).   Note that a separate N will be shown for each context (and changing that N will generate a new random challenge in that context).  Because we have no features that pay attention to context, it’s as if we were aggregating down the column.  
