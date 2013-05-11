@@ -421,11 +421,53 @@ We should note that we are \textit{not} concerned with computational issues here
 \end{figure*}
 
 We have made an anonymized version available at \WhereToFind{}. 
-We encourage the reader to view it in tandem with this paper.
+We encourage the reader to play with it in tandem to reading this paper.
 
-While our primary goal was to teach log-linear models within the context of NLP, we thought it myopic to out-right limit users to those interested or experienced in NLP, due in part to the prevalence and success log-linear models boast throughout a number of varied computational fields. Thus one of the guiding design goals was to make the educational tool easy-to-use by both students and instructors, so that instructors could tailor the lessons to the needs, interests and abilities of the students. To that end, our manipulative has three primary components: a student end, an instuctor end, and the actual implementation.
+While our primary goal was to teach log-linear models within the context of NLP, 
+we thought it myopic to out-right limit users to those interested or experienced 
+in NLP, due in part to the prevalence and success log-linear models boast 
+throughout a number of varied computational fields. Thus one of the guiding design 
+goals was to make the educational tool easy-to-use by both students and instructors, 
+so that instructors could tailor the lessons to the needs, interests and abilities of the 
+students. To that end, our manipulative has three primary components: a student end, 
+an instuctor end, and the actual implementation.
 
 \subsection{Student Interface}
+The basic unit of completion in our manipulative is a \textit{lesson}, where 
+the aim is to further examine some subset of the goals from Section \ref{sec:aims}.
+No matter the complexity of a lesson, the main premise behind each one is for the 
+student to play either a ``matching game'' or a ``log-likelihood game'' on a provided 
+dataset \Data{}. The data, presented visually at the type-level as different shapes, 
+images, or raw text, are modeled by two distributions of interest: the empirical 
+$\tilde{p}$ \eqref{eqn:empirical_distr}, and an appropriately
+defined log-linear model $\hat{p}_{\vec{\theta}}$ \eqref{eqn:conditional_loglin}.
+The student controls $\hat{p}_{\vec{\theta}}$ via a slider bar, thereby ``physically'' 
+manipulating the parameters $\vec{\theta}$. See Figure \ref{fig:lesson1} for the
+general interface: note in particular the data area \NoteFF{ref}, the feature weight
+sliders \NoteFF{ref}, and the log-likelihood score \NoteFF{ref}.
+
+In the \textit{matching game}, the student tries to match $\hat{p}_{\vec{\theta}}$ to 
+$\tilde{p}$ --- that is, find $\vec{\theta}$ such that $\hat{p}_{\vec{\theta}}(x,y) 
+= \tilde{p}$, for all $(x,y)$. Rather than force students to numerically compare the
+two distributions, we use the shape's size to indicate its representative type's probability
+under either distribution. We represent $\tilde{p}$ by a gray 
+outline, and make salient the log-linear distribution by showing that in some 
+``interesting'' manner. Then, the game is to try to make all of the ``interesting'' objects 
+equal in size to their corresponding gray outline.
+\footnote{The student can also play a variant of the matching game, where the goal
+is to match observed and expected feature counts.}
+
+An alternative game to play is the \textit{log-likelihood game}. Try to predict the data "as well as you can." Slide the sliders and watch the horizontal gray bar, which gives the log-likelihood—an overall measure of how well your model predicts the training data. How long can you you make the bar? How well do the shapes then match?
+
+%What the student interfaces with must reliably allow us to achieve the goals
+%laid out in Section \ref{sec:aims}. Figure \ref{fig:lesson1} illustrates the basic 
+%blocked interface a user encounters. The two block areas at the top of the 
+%page serve basic navigation and instructional needs while the bottom five provide 
+%the requiste interactions with the model. \NoteFF{add refs to Fig {\ref{fig:lesson1}} 
+%overlay.} 
+The student should read carefully the instructions, dragging the instruction 
+area larger if necessary, since this is where the instructor may explain what the data 
+are, justify modeling choices, and ask questions. 
 
 \NoteJE{this is also a super-important section.  I would include some
   higher-level comments about what the student is trying to achieve
@@ -434,21 +476,19 @@ While our primary goal was to teach log-linear models within the context of NLP,
   possible that you should introduce the more advanced components only
   as you go through the lessons later}
 
-Figure \ref{fig:lesson1}
-
 \NoteJE{I might prefer a full screenshot
   rather than dividing the view up into pieces.} 
 \NoteFF{The pagination is messing up. Figure 1 provides a screenshot,
 	Figure 2 is meant to visually describe the size/color meanings.}
-\NoteJE{It's more organic.
-  The caption can then explain the color-coding in the example image,
-  just as our instruction to students do.  Remember that you are
-  talking to teachers here, not to HCI people---the goal is to
-  tell them what the student sees, rather than listing all of the nice
-  design elements, most of which can go unremarked (``it just
-  works'').}
+%\NoteJE{It's more organic.
+%  The caption can then explain the color-coding in the example image,
+%  just as our instruction to students do.  Remember that you are
+%  talking to teachers here, not to HCI people---the goal is to
+%  tell them what the student sees, rather than listing all of the nice
+%  design elements, most of which can go unremarked (``it just
+%  works'').}
 
-illustrates the basic blocked interface a user encounters. The two block areas at the top of the page serve basic navigation and instructional needs while the bottom five provide the requiste interactions with the model. \NoteFF{add refs to Fig {\ref{fig:lesson1}} overlay.} The student should read carefully the instructions, dragging the instruction area larger if necessary, since this is where the instructor may explain what the data are, justify modeling choices, and ask questions. 
+
 
 \begin{figure}[t]
 \small
