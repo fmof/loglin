@@ -38,6 +38,7 @@
 \newcommand{\Data}[0]{\ensuremath{\mathcal{D}}}
 
 \newcommand{\WhereToFind}[0]{\url{loglin-tnlp2013.appspot.com}}
+\newcommand{\NumLessons}[0]{\NoteFF{change \#: 18}}
 
 \setlength\titlebox{6.5cm}    % Expanding the titlebox
 
@@ -77,22 +78,24 @@ technique in a computational linguistics course, it should be {\em
   conditional log-linear modeling}.  Such models are pervasive in
 natural language processing.  They have the form
 \begin{equation}\label{eq:loglin}
-p_\theta(y \mid x) = \mbox{\FIXME}
+p_{\vec{\theta}}(y \mid x) \propto \exp{\left(\vec{\theta} \cdot \vec{f}\left(x,y\right)\right)},
 \end{equation}
-where $\vec{f}$ denotes a feature vector.\footnote{In the case where $y$ is a
-binary variable, this is equivalent to logistic
-regression.}\NoteJE{note that ${\cal Y}$ may depend on $x$; perhaps
-change notation to ${\cal Y}(x)$}
+where $\vec{f}$ denotes a feature vector defined on contexts $x$ and outcomes $y$. Note
+that the possible outcomes $\mathcal{Y}(x)$ might be context-dependent.\footnote{In the case where $y$ is a
+binary variable, this is equivalent to logistic regression.}
 
 % Any modern course on computational linguistics or natural language
 % processing needs to teach some machine learning tools.  
 
 We then present an interactive web visualization that guides students
 through playing with log-linear models and their estimation.  This
-tool is intended to develop intuitions, so that basic log-linear
+open source tool is intended to develop intuitions, so that basic log-linear
 models can be then taken for granted.  It can be used near the start
 of a course, perhaps after introducing probability notation and
-$n$-gram models.
+$n$-gram models. Alongside the code we release \NumLessons{} 
+ready-to-use lessons and associated explanatory text and questions, which
+are useful for individual and small group study, or folding in to current class 
+assignments. An anonymized version is available at \WhereToFind{}.
 
 \section{Why Teach With Log-Linear Models?}
 
@@ -124,27 +127,36 @@ $\vec{\theta}$ from a set of fully observed $(x,y)$ pairs is simply a
 convex optimization problem.  Maximizing the regularized maximum
 likelihood
 \begin{equation}\label{eq:rml}
-  \argmax_{\vec{\theta}} \sum_i \log p_{\vec{\theta}}(y_i \mid x_i) - C\cdot ||\vec{\theta}||
+  \argmax_{\vec{\theta}} \sum_i \log p_{\vec{\theta}}(y_i \mid x_i) - C\cdot R\left(\vec{\theta}\right)
 \end{equation}
 is a simple, uniform training principle that can be used throughout
-the course.  The regularizer prevents overfitting on sparse features.
+the course.  The regularizer $R\left(\vec{\theta}\right)$
+prevents overfitting on sparse features.
 This is arguably more straightforward than the traditional NLP
 smoothing methods for estimating probabilities from sparse data
 \cite{chen-goodman-1996}, which require applying various {\em ad hoc}
 formulas to counts, and which do not generalize well to settings where
 there is not a natural sequence of backoff models.  There exist many
 fast and usable tools that students can use to train their log-linear
-models, including \FIXME.\NoteJE{probably mention MegaM, VW, NLTK;
-  what else?  can we recommend one?}\footnote{\label{fn:bigY}A caveat is that generic
+models, including MegaM \cite{daume04cg-bfgs}, NLTK \cite{bird2009natural}, 
+\NoteFF{among others}.
+\footnote{\label{fn:bigY}A caveat is that generic
   log-linear training tools will iterate over the set ${\cal
-    Y}$\NoteJE{should be defined above} in order to maximize
+    Y}(x)$ in order to maximize
   \eqref{eq:loglin} and to compute $Z$ and the gradient of
-  \eqref{eq:rml}.  This is impractical when ${\cal Y}$ is large, as in
+  \eqref{eq:rml}.  This is impractical when ${\cal Y}(x)$ is large, as in
   language modeling or structured prediction.  One will do better to
   use specialized algorithms that exploit special structure in the
   feature set, or to fall back on sampling or variational
   approximation if no such structure is available.  In these settings,
   students will have to use other tools or write their own code.}
+\NoteJE{what else?  can we recommend one?}
+\NoteFF{I've only ever used my own so I wouldn't feel comfortable
+recommending any.}
+
+\nocite{klein-tnlp-2005}\NoteFF{Is it worthwhile to cite Klein (2005)? In it,
+Klein describes the statistical NLP course he taught in 2004, where
+one of the assignments was to build a maxent POS tagger.}
 
 Formally, log-linear models are a good gateway to a more general
 understanding of undirected graphical models and the exponential
@@ -181,6 +193,8 @@ Further reading includes \cite{smith-2011}.
 \subsection{History and Applications}
 
 \NoteJE{move to an appendix?}
+\NoteFF{I like this in here. We might want to comment out some initially
+but add it back in if any camera-ready allows for additional spaces}
 
 Conditional log-linear models were first popularized in computational
 linguistics by a group of researchers associated with the IBM speech
@@ -238,7 +252,7 @@ diagnosing problems with their features or their implementation.  A
 student cannot even design appropriate feature sets without
 understanding how the weights of these features interact to define a
 distribution.  We will discuss some of the necessary intuitions in
-section \FIXME.
+sections \ref{sec:aims} and \ref{sec:lessons}.
 
 We would like equations \eqref{eq:loglin} and \eqref{eq:rml} and the
 gradient formula to be more than just recipes.  The student should
@@ -278,51 +292,12 @@ individual lessons can be tailored (e.g., hide/show buttons, different tool-tips
 
 Why do we focus on shapes, rather than words? \NoteFF{maybe we can argue via virtual manipulatives}
 
-
-\section{...}
-
-\subsection{Regularized Conditional Log-Linear Models} \label{sec:model} 
-
-\NoteJE{can link to our handout (on the anonymized site) to cut some
-  of this material}
-
-Our aim is to provide an intuitive understanding of regularized conditional log-linear models. Given $\Data{} = \{( x_i, y_i)\ \mid\ 1 \le i \le N\}$ and $K$ features $f_k$ defined over \Data{} , we are interested in dissecting distributions 
-\begin{equation}
-\hat{p}_{\vec{\theta}}\left(y\ \mid\ x\right) = \frac{u(x, y)}{\sum_{y'} u(x,y')},
-\label{eqn:conditional_loglin}
-\end{equation}
-where $u(x,y)$ represents the unnormalized probability
-\begin{eqnarray}
-u(x,y) & = & \exp{\left(\vec{\theta}\cdot \vec{f}(x,y)\right)}\\
-& = & \exp{\left(\sum_{k=1}^K \theta_k f_k(x,y)\right)}.
-\end{eqnarray}
-As our model $\hat{p}_{\vec{\theta}}$ is fully described by the feature weights $\vec{\theta}$, we find the weights $\vec{\theta^*}$ that maximize the regularized conditional log-likelihood \eqref{eqn:reg_ll}:
-\begin{equation}
-F\left(\vec{\theta}\right) = \sum_{i=1}^N \log{\hat{p}_{\vec{\theta}}\left(y_i\ \mid\ x_i\right)} - C \cdot R\left(\vec{\theta}\right).
-\label{eqn:reg_ll}
-\end{equation}
-Equivalently, we find $\vec{\theta^*}$ that solves equation \eqref{eqn:grad}:
-\begin{equation}
-\begin{aligned}
-%\begin{split}
-\nabla_{\vec{\theta}} F
- = &
-\ \mathbb{E}_{\empirical{}}\left[\vec{f}(X,Y)\right] 
-- \mathbb{E}_{{\hat{p}_{\vec{\theta}}}}\left[\vec{f}(X,Y)\right]\\
- & - C \nabla_{\vec{\theta}}R(\vec{\theta})
-\label{eqn:grad} \\
-%= &\ \mathcal{C}(\empirical{}, p_{\vec{\theta}}) - C \nabla_{\vec{\theta}} R(\vec{\theta})\\
- = &\ 0.
-%\end{split}
-\end{aligned}
-\end{equation}
-Here, $C \ge 0$ is the regularization penalty for the regularizer $R(\vec{\theta})$. Regardless of what regularization is applied, we will generally refer to the \textbf{full model} as that of \eqref{eqn:conditional_loglin} with objective \eqref{eqn:reg_ll}.\footnote{We consider models where $R(\vec{\theta}) = \vec{0}$ (no regularization), $R(\vec{\theta}) = \|\vec\theta\|_1$, and $R(\vec{\theta}) = \|\vec{\theta}\|_2^2$. See Section \ref{sec:overview} for more on regularization.}
+%Our aim is to provide an intuitive understanding of regularized conditional log-linear models. 
 
 %\NoteFF{Is it further worth detailing difficulties people may have in learning about maxent models?}
-However, the full model may present too many subtleties to be grasped all at once: reasoning about changing a particular $\theta_k$ requires consideration of a number of things, such as all other feature weights, the domain and range of the feature function $f_k$, and the amount of data available, among others. Therefore, we also consider ``simplified'' globally normalized models $\hat{p}_{\vec{\theta}}\left(y\right)$. These context-nescient models allow students to focus initially on understanding some of the core underlying mathematical concepts of exponential models, such as feature interations and weight tradeoffs, before progressing to conditional models.
 
-\subsection{Contributions and Available Materials}
-Our primary contribution is the development and open-source release of an easy-to-use, client-side virtual manipulative for teaching regularized conditional log-linear models. In addition to the code, the release contains \NoteFF{change this \#} 18 pre-made lessons, and associated explanatory text and questions. \NoteFF{say something about being useful for individual, partner/group/lab study, or assignments.} An anonymized version is available for review at \WhereToFind{}.
+%\subsection{Contributions and Available Materials}
+%Our primary contribution is the development and open-source release of an easy-to-use, client-side virtual manipulative for teaching regularized conditional log-linear models. In addition to the code, the release contains \NoteFF{change this \#} 18 pre-made lessons, and associated explanatory text and questions. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -333,7 +308,22 @@ Our primary contribution is the development and open-source release of an easy-t
 \NoteJE{this is a super-important section}
 
 While any attempt to teach log-linear models must tackle the concepts, issues and difficulties addressed in the previous section, we found that enumerating specific pedagogical goals and expected take-aways helped focus the design of the virtual manipulative and the creation of individual lessons (c.f., Sections \ref{sec:overview} and \ref{sec:lessons}, respectively).
+
 \subsection{Modeling Implications}
+Given $\Data{} = \{( x_i, y_i)\ \mid\ 1 \le i \le N\}$ and $K$ features 
+$f_k$ defined over \Data{} , we are interested in estimating distributions 
+\begin{equation}
+\hat{p}_{\vec{\theta}}\left(y\ \mid\ x\right) = \frac{u(x, y)}{\sum_{y'} u(x,y')},
+\label{eqn:conditional_loglin}
+\end{equation}
+from the unnormalized scores $u(x,y)$
+\begin{eqnarray}
+u(x,y) & = & \exp{\left(\vec{\theta}\cdot \vec{f}(x,y)\right)}.%\\
+%& = & \exp{\left(\sum_{k=1}^K \theta_k f_k(x,y)\right)}.
+\end{eqnarray}
+
+However, there are many subtleties to be grasped all at once: reasoning about changing a particular $\theta_k$ requires consideration of a number of things, such as all other feature weights, the domain and range of the feature function $f_k$, and the amount of data available, among others. Therefore, we also consider ``simplified'' globally normalized models $\hat{p}_{\vec{\theta}}\left(y\right)$. These context-nescient models allow students to focus initially on understanding some of the core underlying mathematical concepts of exponential models, such as feature interations and weight tradeoffs, before progressing to conditional models.
+
 \begin{enumerate}
 \item Choosing an appropriate model \textit{family}% (as in lesson 18, conditional, sequence, logistic regression)
 \item Feature Design consideration:
@@ -370,6 +360,27 @@ Gradient ascent and adaptive stepsize
 \end{enumerate}
 
 \subsection{Importance of Objective} % and Evaluating the Model}
+As our model $\hat{p}_{\vec{\theta}}$ is fully described by the feature weights $\vec{\theta}$, we find the weights $\vec{\theta^*}$ that maximize the regularized conditional log-likelihood \eqref{eqn:reg_ll}:
+\begin{equation}
+F\left(\vec{\theta}\right) = \sum_{i=1}^N \log{\hat{p}_{\vec{\theta}}\left(y_i\ \mid\ x_i\right)} - C \cdot R\left(\vec{\theta}\right).
+\label{eqn:reg_ll}
+\end{equation}
+Equivalently, we find $\vec{\theta^*}$ that solves equation \eqref{eqn:grad}:
+\begin{equation}
+\begin{aligned}
+%\begin{split}
+\nabla_{\vec{\theta}} F
+ = &
+\ \mathbb{E}_{\empirical{}}\left[\vec{f}(X,Y)\right] 
+- \mathbb{E}_{{\hat{p}_{\vec{\theta}}}}\left[\vec{f}(X,Y)\right]\\
+ & - C \nabla_{\vec{\theta}}R(\vec{\theta})
+\label{eqn:grad} \\
+%= &\ \mathcal{C}(\empirical{}, p_{\vec{\theta}}) - C \nabla_{\vec{\theta}} R(\vec{\theta})\\
+ = &\ 0.
+%\end{split}
+\end{aligned}
+\end{equation}
+Here, $C \ge 0$ is the regularization penalty for the regularizer $R(\vec{\theta})$. Regardless of what regularization is applied, we will generally refer to the \textbf{full model} as that of \eqref{eqn:conditional_loglin} with objective \eqref{eqn:reg_ll}.\footnote{We consider models where $R(\vec{\theta}) = \vec{0}$ (no regularization), $R(\vec{\theta}) = \|\vec\theta\|_1$, and $R(\vec{\theta}) = \|\vec{\theta}\|_2^2$. See Section \ref{sec:overview} for more on regularization.}
 \begin{enumerate}[resume]
 \item Likelihood always goes up if you follow gradient
 \begin{itemize}
@@ -401,18 +412,18 @@ We should note that we are \textit{not} concerned with computational issues here
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Virtual Manipulative Overview\NoteJE{why just overview?}}\label{sec:overview}
+\section{Virtual Manipulative}\label{sec:overview}
 \begin{figure*}
 \centering
 \includegraphics[scale=.5]{images/lesson1-050913-intro.PNG}
-\caption{\NoteFF{Maybe stilll need to rplace this image} Screenshot of the first lesson from the virtual manipulative.}
+\caption{\NoteFF{Replace this image} Screenshot of the first lesson from the virtual manipulative.}
 \label{fig:lesson1}
 \end{figure*}
 
-\NoteJE{give the URL at the start of this section}
+We have made an anonymized version available at \WhereToFind{}. 
+We encourage the reader to view it in tandem with this paper.
 
-\NoteJE{move this bit to the end of the section?}
-Broadly, the virtual manipulative is designed to be widely available, have minimal-to-no start-up cost, including compartmentalized ``user-'' and ``back-'' ends. While our primary goal was to teach log-linear models within the context of NLP, we thought it myopic to out-right limit users to those interested or experienced in NLP, due in part to the prevalence and success log-linear models boast throughout a number of varied computational fields. Thus one of the guiding design goals was to make the educational tool easy-to-use by both students and instructors, so that instructors could tailor the lessons to the needs, interests and abilities of the students. To that end, our manipulative has three primary components: a student end, an instuctor end, and the actual implementation.
+While our primary goal was to teach log-linear models within the context of NLP, we thought it myopic to out-right limit users to those interested or experienced in NLP, due in part to the prevalence and success log-linear models boast throughout a number of varied computational fields. Thus one of the guiding design goals was to make the educational tool easy-to-use by both students and instructors, so that instructors could tailor the lessons to the needs, interests and abilities of the students. To that end, our manipulative has three primary components: a student end, an instuctor end, and the actual implementation.
 
 \subsection{Student Interface}
 
@@ -423,11 +434,16 @@ Broadly, the virtual manipulative is designed to be widely available, have minim
   possible that you should introduce the more advanced components only
   as you go through the lessons later}
 
-Figure \ref{fig:lesson1}\NoteJE{I might prefer a full screenshot
-  rather than dividing the view up into pieces.  It's more organic.
+Figure \ref{fig:lesson1}
+
+\NoteJE{I might prefer a full screenshot
+  rather than dividing the view up into pieces.} 
+\NoteFF{The pagination is messing up. Figure 1 provides a screenshot,
+	Figure 2 is meant to visually describe the size/color meanings.}
+\NoteJE{It's more organic.
   The caption can then explain the color-coding in the example image,
   just as our instruction to students do.  Remember that you are
-  talking to {\em teachers} here, not to HCI people---the goal is to
+  talking to teachers here, not to HCI people---the goal is to
   tell them what the student sees, rather than listing all of the nice
   design elements, most of which can go unremarked (``it just
   works'').}
@@ -571,7 +587,7 @@ The basic data format is type-level TSVs
 %\end{description}
 
 \subsection{The Back-End}
-In order to be fully client-side, the back-end is written in Javascript. talk a bit about the various libraries/plugins used\NoteFF{... nothing major, but it'll be good to outline here what exactly I used}: \texttt{d3}, \texttt{jQuery} and a couple publicly available plugins.\footnote{Specifically and in order, 
+Broadly, the virtual manipulative is designed to be widely available, have minimal-to-no start-up cost, including compartmentalized ``user-'' and ``back-'' ends. In order to be fully client-side, the back-end is written in Javascript. talk a bit about the various libraries/plugins used\NoteFF{... nothing major, but it'll be good to outline here what exactly I used}: \texttt{d3}, \texttt{jQuery} and a couple publicly available plugins.\footnote{Specifically and in order, 
 \url{d3js.org/},
 \url{jquery.com/}, 
 \texttt{jQuery UI} (\url{jqueryui.com}),
