@@ -425,47 +425,79 @@ We encourage the reader to play with it in tandem to reading this paper.
 
 While our primary goal was to teach log-linear models within the context of NLP, 
 we thought it myopic to out-right limit users to those interested or experienced 
-in NLP, due in part to the prevalence and success log-linear models boast 
-throughout a number of varied computational fields. Thus one of the guiding design 
-goals was to make the educational tool easy-to-use by both students and instructors, 
-so that instructors could tailor the lessons to the needs, interests and abilities of the 
-students. To that end, our manipulative has three primary components: a student end, 
-an instuctor end, and the actual implementation.
+in NLP. %, due in part to the prevalence and success log-linear models boast 
+%throughout a number of varied computational fields. 
+One of the guiding design goals was to make the educational tool easy to use by 
+both students and instructors, so that instructors could tailor the lessons to the needs, 
+interests and abilities of the students. To that end, our manipulative has three primary 
+components: the student interface (front-end), the instuctor's \NoteFF{interface}, and the back-end implementation.
 
 \subsection{Student Interface}
 The basic unit of completion in our manipulative is a \textit{lesson}, where 
 the aim is to further examine some subset of the goals from Section \ref{sec:aims}.
-No matter the complexity of a lesson, the main premise behind each one is for the 
+No matter the complexity of a lesson, the main premise behind each is for the 
 student to play either a ``matching game'' or a ``log-likelihood game'' on a provided 
-dataset \Data{}. The data, presented visually at the type-level as different shapes, 
+dataset \Data{}. The data, grouped by context and presented visually at the type-level as different shapes, 
 images, or raw text, are modeled by two distributions of interest: the empirical 
 $\tilde{p}$ \eqref{eqn:empirical_distr}, and an appropriately
 defined log-linear model $\hat{p}_{\vec{\theta}}$ \eqref{eqn:conditional_loglin}.
 The student controls $\hat{p}_{\vec{\theta}}$ via a slider bar, thereby ``physically'' 
-manipulating the parameters $\vec{\theta}$. See Figure \ref{fig:lesson1} for the
-general interface: note in particular the data area \NoteFF{ref}, the feature weight
-sliders \NoteFF{ref}, and the log-likelihood score \NoteFF{ref}.
+manipulating the parameters $\vec{\theta}$. 
+
+See Figure \ref{fig:lesson1} for the
+general interface. Note in particular the data area 
+\NoteFF{ref}, the feature weight sliders \NoteFF{ref}, and the log-likelihood 
+score \NoteFF{ref}. Each datum has two shapes associated with it, 
+an ``uninteresting'' gray outline ($\empirical{}$) and a salient ``interesting'' 
+object ($\hat{p}_{\vec{\theta}}$). The size (area) of each
+shape is proportional to its probability mass, while its color indicates whether the observed 
+or expected count is larger.
+The number above and to the left of each datum is that type's empirical 
+count, while the number above and to the right is its expected count. 
+For instance, in Figure \ref{fig:lesson1}, the data --- 30 solid circles, 15 striped circles, 10 solid triangles, 
+and 5 striped triangles --- are modeled by the two indicator features $f_{\textrm{circle}}$ and
+$f_{\textrm{solid}}$. With $\vec{\theta} = 0$ we have the uniform distribution, so the solid circle 
+is contained in its gray outline ($\empirical{}(\textrm{solid circle}) > 
+\hat{p}_{\vec{\theta}}(\textrm{solid circle})$), the striped triangle contains its gray outline 
+($\empirical{}(\textrm{striped triangle}) < \hat{p}_{\vec{\theta}}(\textrm{striped triangle})$), and
+the striped circle and gray outline are coincident
+($\empirical{}(\textrm{striped circle}) = \hat{p}_{\vec{\theta}}(\textrm{striped circle})$).
+\footnote{This example describes a globally normalized model, and as such 
+there is only one context. See \S\ref{sec:conditionallessons} for conditional models.}
+See Figure \ref{fig:colorsize_inventory} for a summary of how we use size and color to
+indicate salient information.
 
 In the \textit{matching game}, the student tries to match $\hat{p}_{\vec{\theta}}$ to 
-$\tilde{p}$ --- that is, find $\vec{\theta}$ such that $\hat{p}_{\vec{\theta}}(x,y) 
-= \tilde{p}$, for all $(x,y)$. Rather than force students to numerically compare the
-two distributions, we use the shape's size to indicate its representative type's probability
-under either distribution. We represent $\tilde{p}$ by a gray 
-outline, and make salient the log-linear distribution by showing that in some 
-``interesting'' manner. Then, the game is to try to make all of the ``interesting'' objects 
-equal in size to their corresponding gray outline.
+$\tilde{p}$ --- find $\vec{\theta}$ such that $\hat{p}_{\vec{\theta}}(y\mid x) 
+= \tilde{p}(y\mid x)$, for all $(x,y)$. The game is to try to make all of the salient log-linear objects 
+equal in size (and color) to their corresponding gray outline. The student ``wins'' once the maximum
+number of log-linear objects turn gray, thereby indicating the best possible fit.
+%Rather than force students to numerically compare the
+%two distributions, we scale the shape's size to indicate its type's probability
+%under either distribution. We represent $\tilde{p}$ by a gray 
+%outline, and use colors and shading to make $\hat{p}_{\vec{\theta}}$ salient. 
 
 An alternative game to play is the \textit{log-likelihood game}, where the goal is to
-maximize the training log-likelihood. Because the log-likelihood is a distillation of how well 
-the model predicts the training data. How long can you you make the bar? 
-
-We represent the model's objective as a scalable bar graph. As shown in Figure \ref{fig:llbar}, we also visualize the regularization penalty, and the objective under the ``true'' (generating) model parameters, when known.
+maximize the (regularized) training log-likelihood. We represent the model's objective as a scalable 
+bar graph (\NoteFF{ref}), shown directly above the data, thereby providing a quick way to distill 
+the overall quality of the model. The game is to make the bar as long as possible.
+%As shown in \NoteFF{fix} Figure \ref{fig:llbar}, we also represent the regularization penalty
+%, and the objective under the ``true'' (generating) model parameters, when known.
 
 Note that these games are not disjoint, nor are they the only ones that can be played.
 For instance, when playing the log-likelihod game, the students can think about how well 
-the shapes match, particularly when more advanced concepts such as regularization are 
+the shapes match, particularly when more advanced concepts such as regularization and conjoined features are 
 introduced. Also, the student can play a variant of the matching game, where the goal
-is to match the observed and expected feature counts.
+is to match the observed and expected feature counts. The particular game being played
+in each lesson is described in the instruction area (\NoteFF{ref}), which the student should
+read carefully, since this may explain what the data and particular task are, justify 
+modeling choices, and ask lesson-specific questions. 
+
+%How we indicate salience is important. As already mentioned, we 
+%As documented in Figure \ref{fig:colorsize_inventory}, we utilize both size and color to 
+%convey these distribution changes: the three colors red, gray and blue illustrate the 
+%difference between observed and expected counts, while the size (area) of the shapes 
+%indicates the type's mass differences.
 
 %What the student interfaces with must reliably allow us to achieve the goals
 %laid out in Section \ref{sec:aims}. Figure \ref{fig:lesson1} illustrates the basic 
@@ -473,108 +505,76 @@ is to match the observed and expected feature counts.
 %page serve basic navigation and instructional needs while the bottom five provide 
 %the requiste interactions with the model. \NoteFF{add refs to Fig {\ref{fig:lesson1}} 
 %overlay.} 
-The student should read carefully the instructions, dragging the instruction 
-area larger if necessary, since this is where the instructor may explain what the data 
-are, justify modeling choices, and ask questions. 
+%The student should read carefully the instructions, dragging the instruction 
+%area larger if necessary, since this is where the instructor may explain 
 
-\NoteJE{this is also a super-important section.  I would include some
-  higher-level comments about what the student is trying to achieve
-  and what kind of feedback they get (perhaps even include text from
-  the 1st lesson) before going through the components.  It's also
-  possible that you should introduce the more advanced components only
-  as you go through the lessons later}
-
-\NoteJE{I might prefer a full screenshot
-  rather than dividing the view up into pieces.} 
-\NoteFF{The pagination is messing up. Figure 1 provides a screenshot,
-	Figure 2 is meant to visually describe the size/color meanings.}
-%\NoteJE{It's more organic.
-%  The caption can then explain the color-coding in the example image,
-%  just as our instruction to students do.  Remember that you are
-%  talking to teachers here, not to HCI people---the goal is to
-%  tell them what the student sees, rather than listing all of the nice
-%  design elements, most of which can go unremarked (``it just
-%  works'').}
-
-
+%\NoteJE{this is also a super-important section.  I would include some
+%  higher-level comments about what the student is trying to achieve
+%  and what kind of feedback they get (perhaps even include text from
+%  the 1st lesson) before going through the components.  It's also
+%  possible that you should introduce the more advanced components only
+%  as you go through the lessons later}
 
 \begin{figure}[t]
-\small
-\begin{center}
-\begin{subfigure}[b]{\columnwidth}
 \centering
+\small
 \begin{tabular}{
->{\centering\arraybackslash}m{.18\columnwidth} | 
+>{\centering\arraybackslash}m{.18\columnwidth} 
 >{\centering\arraybackslash}m{.18\columnwidth}
 >{\centering\arraybackslash}m{.18\columnwidth}
 >{\centering\arraybackslash}m{.18\columnwidth}}
+
+\textbf{Quantity of Interest} & $\mathbf{<0}$ 
+& $\mathbf{= 0}$ & $\mathbf{> 0}$\\ \\
+
 $ \mathbb{E}_{\empirical{}}\left[\vec{f}\right] 
-- \mathbb{E}_{{\hat{p}_{\vec{\theta}}}}\left[\vec{f}\right] $
-& $<0$ & $= 0$ & $> 0$\\\hline\hline
-base color
+- \mathbb{E}_{{\hat{p}_{\vec{\theta}}}}\left[\vec{f}\right]$, and 
+$\nabla_{\vec{\theta}} F$
 & {\bf \color{red} \texttransparent{.5}{ red } }
 & {\bf \color{gray}\texttransparent{.55}{ gray } }
-& {\bf \color{blue} \texttransparent{.55}{ blue } }\\ 
+& {\bf \color{blue} \texttransparent{.55}{ blue } }\\  \\
 \vspace{.5em}
+%
+%$\nabla_{\vec{\theta}} F$ visualization
+%& \includegraphics[scale=.25]{images/goldilocks-gradient-small.PNG}
+%& \includegraphics[scale=.25]{images/goldilocks-gradient-justright.PNG}
+%& \includegraphics[scale=.25]{images/goldilocks-gradient-large.PNG}\\ \\ 
 
-$\nabla_{\vec{\theta}} F$ visualization
-& \includegraphics[scale=.25]{images/goldilocks-gradient-small.PNG}
-& \includegraphics[scale=.25]{images/goldilocks-gradient-justright.PNG}
-& \includegraphics[scale=.25]{images/goldilocks-gradient-large.PNG}\\ \\ 
 
-$\empirical{} - \hat{p}_{\vec{\theta}} $
-& $<0$ & $= 0$ & $> 0$\\\hline\hline \\
-& \includegraphics[scale=.25]{images/goldilocks-circle-small.PNG}
+%& $<0$ & $= 0$ & $> 0$\\\hline\hline \\
+$\empirical{} - \hat{p}_{\vec{\theta}} $& \includegraphics[scale=.25]{images/goldilocks-circle-small.PNG}
 & \includegraphics[scale=.25]{images/goldilocks-circle-justright.PNG}
 & \includegraphics[scale=.25]{images/goldilocks-circle-large.PNG}\\
 \end{tabular}
 
-\caption{Colors indicate the sign of \eqref{eqn:obsexp} while the size (area) of the shapes indicates the difference betwen that type's probability under the current model and the empirical distribution (gray outline).}
+\caption{Colors indicate the sign of \eqref{eqn:obsexp} while the size (area) of 
+the shapes indicates the difference betwen that type's probability under the 
+current model and the empirical distribution (gray outline).}
 \label{fig:colorsize_inventory}
-\end{subfigure}
+\end{figure}
 
-\vspace{1em}
-\begin{subfigure}[b]{\columnwidth}
+
+\begin{figure}[t]
 \centering
 \includegraphics[scale=.3]{images/regularized_ll_bar_andtrue_cut.PNG}
 
-\caption{The gray and green bars and text represent the (regularized) objective \eqref{eqn:reg_ll} for the current and empirical model, respectively. The red outline indicates the regularizer penalty.}
+\caption{The gray and green bars and text represent the (regularized) objective
+ \eqref{eqn:reg_ll} for the current and empirical model, respectively. The red 
+outline indicates the regularizer penalty.}
 \label{fig:llbar}
-\end{subfigure}
-
-\caption{Inventory of available manipulatives.}
-\label{fig:colormeaning}
-\end{center}
 \end{figure}
 
-The student interacts with the model via the five remaining interactive blocks:
-%following five blocks:
-\begin{inparaenum}[(1)]
-\item the objective score,
-\item the data,
-\item feature weights,
-\item options to change the data or model,
-\item hints and helpers.
-\end{inparaenum}
-Arguably, the two most important blocks are the data and feature weight areas: the former presents the student with visual representations of the data \textit{types} while the latter allows the user to change the weights $\vec{\theta}$.\footnote{A type is some shape (see Section \ref{sec:available_vis} and Figure \ref{fig:inventory}); for example, in Figure \ref{fig:lesson1}, the data types are four different shapes: circles and triangles, both solid and striped.} Each type occupies its own drawing area and presents the user with distributional information on that shape, including its probability and expected (type) counts under both $\tilde{p}$ and $\hat{p}_{\vec{\theta}}$.
-As documented in Figure \ref{fig:colorsize_inventory}, we utilize both size and color to convey these distribution changes: the three colors red, gray and blue illustrate the difference between observed and expected counts, while the size (area) of the shapes indicates the type's mass differences.
+However, solving more complex models may be too tedious or difficult. 
+The student may then make use of \textit{hints} \NoteFF{ref}, such as
+viewing each component of the gradient, changing all feature weights by 
+linearly following the gradient (as given by ``Step size''), or simply having
+the manipulative solve the problem and providing feedback at each iteration 
+of gradient ascent.
 
-While observing changes in the data area provides some insight as to the model's quality, the objective score might initially be a better distillation. We represent the model's objective as a scalable bar graph. As shown in Figure \ref{fig:llbar}, we also visualize the regularization penalty, and the objective under the ``true'' (generating) model parameters, when known.
+Once the student is comfortable with the provided model and data, the student
+can begin to play around with the dataset and model options. These utilities, such as
+generating a new random challenge'' and tweaking regularizaiton, are described more in Section \ref{sec:lessons}.
 
-However, even with the above feedback, solving more complex models may be too tedious or difficult. The student may then make use of \textit{hints}. The simplest is to view each component of $\nabla_{\vec{\theta}} F$, which we represent as colored portions of the respective feature slider.
-
-The manipulative attempts to be responsive to an individual user's browser and display options, and heuristically make efficient use of available space. That being said, higher resolution/larger displays are desirable when dealing with the full model and some of the larger datasets introduced in later lessons (see Section \ref{sec:conditionallessons}).
-
-
-\subsubsection{Usability}
-\begin{description}
-\item[``New random challenge'']
-\item[``New Counts'' button] The other use is to help the user experiment with datasets of different sizes, by changing N to scale the counts and then clicking "New counts."
-\item[``Show gradient'']
-\item[``Step'' and ``Solve'']
-\item[``Peek at true'']
-\item[Regularization] We consider models where $R(\vec{\theta}) = \vec{0}$ (no regularization), $R(\vec{\theta}) = \|\vec\theta\|_1$, and $R(\vec{\theta}) = \|\vec{\theta}\|_2^2$: we special-case the optimizer to handle the non-differentiable $\ell_1$ regularization, thus providing a friendly educational environment in which the student may explore the differences between $\ell_1$ and $\ell_2$ regularization.
-\end{description}
 
 \subsection{The Instructor Interface: Creating and Tailoring Lessons}
 mention the select whitelist of wayas to change some behavior
@@ -642,9 +642,12 @@ Broadly, the virtual manipulative is designed to be widely available, have minim
 \texttt{jQuery Tools} (\url{jquerytools.org/}), and
 \texttt{qTip} (\url{craigsworks.com/projects/qtip/}).}
 
+The manipulative attempts to be responsive to an individual user's browser and display options, and heuristically make efficient use of available space. That being said, higher resolution/larger displays are desirable when dealing with the full model and some of the larger datasets introduced in later lessons (see Section \ref{sec:conditionallessons}).
+
 mention that some ui considerations can result in very slight rounding errors
 
 solver: gradient ascent is simple (except for $\ell_1$ regularization), but it can take some finessing to make it visually appealing. We recursively call the solve function on a polynomial-decreasing schedule
+
 
 sigmoidal scaling for sliders, log-likelihood bars
 
@@ -652,6 +655,17 @@ sigmoidal scaling for sliders, log-likelihood bars
 
 \NoteJE{this will have to be shortened.  I suggest a narrative
   description, and encourage the reader to go try it out!}
+
+%For instance, the student can 
+%pick some new secret weights, generate a new training dataset,
+%and re-estimate the weights given the new data ("New random 
+%challenge"). Or 
+
+\begin{description}
+\item[``New Counts'' button] The other use is to help the user experiment with datasets of different sizes, by changing N to scale the counts and then clicking "New counts."
+\item[``Peek at true'']
+\item[Regularization] We consider models where $R(\vec{\theta}) = \vec{0}$ (no regularization), $R(\vec{\theta}) = \|\vec\theta\|_1$, and $R(\vec{\theta}) = \|\vec{\theta}\|_2^2$: we special-case the optimizer to handle the non-differentiable $\ell_1$ regularization, thus providing a friendly educational environment in which the student may explore the differences between $\ell_1$ and $\ell_2$ regularization.
+\end{description}
 
 \subsection{Joint Models} \label{sec:jointlessons}
 \begin{enumerate}
