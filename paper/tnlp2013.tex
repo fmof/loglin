@@ -454,10 +454,18 @@ under either distribution. We represent $\tilde{p}$ by a gray
 outline, and make salient the log-linear distribution by showing that in some 
 ``interesting'' manner. Then, the game is to try to make all of the ``interesting'' objects 
 equal in size to their corresponding gray outline.
-\footnote{The student can also play a variant of the matching game, where the goal
-is to match observed and expected feature counts.}
 
-An alternative game to play is the \textit{log-likelihood game}. Try to predict the data "as well as you can." Slide the sliders and watch the horizontal gray bar, which gives the log-likelihood—an overall measure of how well your model predicts the training data. How long can you you make the bar? How well do the shapes then match?
+An alternative game to play is the \textit{log-likelihood game}, where the goal is to
+maximize the training log-likelihood. Because the log-likelihood is a distillation of how well 
+the model predicts the training data. How long can you you make the bar? 
+
+We represent the model's objective as a scalable bar graph. As shown in Figure \ref{fig:llbar}, we also visualize the regularization penalty, and the objective under the ``true'' (generating) model parameters, when known.
+
+Note that these games are not disjoint, nor are they the only ones that can be played.
+For instance, when playing the log-likelihod game, the students can think about how well 
+the shapes match, particularly when more advanced concepts such as regularization are 
+introduced. Also, the student can play a variant of the matching game, where the goal
+is to match the observed and expected feature counts.
 
 %What the student interfaces with must reliably allow us to achieve the goals
 %laid out in Section \ref{sec:aims}. Figure \ref{fig:lesson1} illustrates the basic 
