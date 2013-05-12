@@ -235,7 +235,7 @@ programming or sampling, as in linear-chain conditional random fields
 \cite{lafferty-mccallum-pereira-2001} and whole-sentence language
 modeling \cite{rosenfeld-chen-zhu-2001}.
 
-\section{The Teaching Challenge}
+\section{The Teaching Challenge} \label{sec:challenges}
 
 Unfortunately, there is a difficulty with introducing log-linear
 models early in a course.  Once grasped, they seem very simple.  But
@@ -304,52 +304,63 @@ Why do we focus on shapes, rather than words? \NoteFF{maybe we can argue via vir
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Pedagogical Aims}\label{sec:aims}
-
-\NoteJE{this is a super-important section}
-
-While any attempt to teach log-linear models must tackle the concepts, issues and difficulties addressed in the previous section, we found that enumerating specific pedagogical goals and expected take-aways helped focus the design of the virtual manipulative and the creation of individual lessons (c.f., Sections \ref{sec:overview} and \ref{sec:lessons}, respectively).
+While any attempt to teach log-linear models must tackle the concepts, issues and difficulties 
+addressed in Section \ref{sec:challenges}, we found that enumerating specific pedagogical 
+goals and expected take-aways helped focus the design of the virtual manipulative and the 
+creation of individual lessons. % (c.f., Sections \ref{sec:overview} and \ref{sec:lessons}, respectively).
 
 \subsection{Modeling Implications}
-Given $\Data{} = \{( x_i, y_i)\ \mid\ 1 \le i \le N\}$ and $K$ features 
-$f_k$ defined over \Data{} , we are interested in estimating distributions 
-\begin{equation}
-\hat{p}_{\vec{\theta}}\left(y\ \mid\ x\right) = \frac{u(x, y)}{\sum_{y'} u(x,y')},
-\label{eqn:conditional_loglin}
-\end{equation}
-from the unnormalized scores $u(x,y)$
-\begin{eqnarray}
-u(x,y) & = & \exp{\left(\vec{\theta}\cdot \vec{f}(x,y)\right)}.%\\
-%& = & \exp{\left(\sum_{k=1}^K \theta_k f_k(x,y)\right)}.
-\end{eqnarray}
+Given $\Data{} = \{( x_i, y_i)\ \mid\ 1 \le i \le N\}$, one of the initial, and perhaps most impactful, decisions 
+to make is choosing an appropriate model and distribution family. At a high-level, we may ask the question of 
+whether to use an exponential famiy or not.  what constraints does the model satisfy (if any; eg., maxent formulation or empirical
+MLE?) globally or locally normalized?
+What do specific values for $\vec{\theta}$ yield? In particular, the initial setting where all weights = 0 gives the uniform distribution. How does this relate to the maximum entropy view? 
 
-However, there are many subtleties to be grasped all at once: reasoning about changing a particular $\theta_k$ requires consideration of a number of things, such as all other feature weights, the domain and range of the feature function $f_k$, and the amount of data available, among others. Therefore, we also consider ``simplified'' globally normalized models $\hat{p}_{\vec{\theta}}\left(y\right)$. These context-nescient models allow students to focus initially on understanding some of the core underlying mathematical concepts of exponential models, such as feature interations and weight tradeoffs, before progressing to conditional models.
+We also wish to impart the differences between conditional models and globally normalized ones 
+$\hat{p}_{\vec{\theta}}\left(y\right)$. Although these context-nescient models allow students 
+to focus on understanding some of the core underlying mathematical concepts of 
+exponential models, such as feature interations and weight tradeoffs, there are important differences
+between global and conditional models that we wish students to be aware of. For instance, 
+features can be ``shared'' across conditions and this helps regularizer even if likelihood is the same
 
-\begin{enumerate}
-\item Choosing an appropriate model \textit{family}% (as in lesson 18, conditional, sequence, logistic regression)
-\item Feature Design consideration:
-\begin{itemize}
-\item If the “striped” feature is predicted to occur less often than it actually does, you should raise its weight.
-\item Frequent conditions more influential
-\item binary vs. real valued features
-\end{itemize}
+Having chosen to model $\Data{}$ by \eqref{eq:loglin}, the modeler must then deal with the 
+onus of proper feature design. That is, when defining $K$ appropriate features $f_k$, there 
+are a number of at-times complex interactions to consider. For example, when defining a globally normalized model 
+over solid circles, striped circles, solid triangles and striped triangles, perhaps the first features 
+a student should consider are contrasting features. ....
 
-\item Feature Interactions
-\begin{itemize} 
-\item Raising one weight may reduce or reverse the need to raise other weights.  This can be seen by watching the gradient as we slide the slider.
-\item Can share features across conditions and this helps regularizer even if likelihood is the same
-\item Features that only fire on conditions have no effect on conditional distribution
-\item Feature conjunctions: fewer vs. more features---affects expressive power
-\item Feature that everything/nothing has --- weights go to $\pm \infty$
-\item Opposing features are redundant, e.g., solid vs striped, where there are only 2 options
-\item The initial setting where all weights = 0 gives the uniform distribution.
-\begin{itemize}
-\item Some further understanding of the entropy view?  (See below.)
-\end{itemize}
-\end{itemize}
-\end{enumerate}
+If the “striped” feature is predicted to occur less often than it actually does, you should raise its weight. 
+Frequent conditions more influential
+effect of the amount of data (per context) on what features are appropriate to define
+
+Commonly, $f_k$ is designed to be binary, but this is not a strict requirement. Defining non-binary feature
+functions, such as one that fires in proportion to some property of the datum (e.g., the number of sides of
+a shape).
+% defined over \Data{} , we are interested in estimating distributions 
+%\begin{equation}
+%\hat{p}_{\vec{\theta}}\left(y\ \mid\ x\right) = \frac{u(x, y)}{\sum_{y'} u(x,y')},
+%\label{eqn:conditional_loglin}
+%\end{equation}
+%from the unnormalized scores $u(x,y)$
+%\begin{eqnarray}
+%u(x,y) & = & \exp{\left(\vec{\theta}\cdot \vec{f}(x,y)\right)}.%\\
+%%& = & \exp{\left(\sum_{k=1}^K \theta_k f_k(x,y)\right)}.
+%\end{eqnarray}
+
+%Therefore, we also 
+
+Feature Interactions: Raising one weight may reduce or reverse the need to raise other weights. 
+Feature that everything/nothing has --- weights go to $\pm \infty$ (and the importance of regularization)
+Feature conjunctions: fewer vs. more features---affects expressive power
+
+
+Features that only fire on conditions have no effect on conditional distribution
+Opposing features are redundant, e.g., solid vs striped, where there are only 2 options
+
+
 
 \subsection{Parameter estimation}
-\begin{enumerate}[resume]
+\begin{enumerate}
 \item Some distributions can't be matched --- but you get generalization
 \item It's possible to overfit the training data.  Regularization compensates for that and can in fact make you underfit.
 \item bias vs. variance
