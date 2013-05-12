@@ -553,17 +553,6 @@ current model and the empirical distribution (gray outline).}
 \label{fig:colorsize_inventory}
 \end{figure}
 
-
-\begin{figure}[t]
-\centering
-\includegraphics[scale=.3]{images/regularized_ll_bar_andtrue_cut.PNG}
-
-\caption{The gray and green bars and text represent the (regularized) objective
- \eqref{eqn:reg_ll} for the current and empirical model, respectively. The red 
-outline indicates the regularizer penalty.}
-\label{fig:llbar}
-\end{figure}
-
 However, solving more complex models may be too tedious or difficult. 
 The student may then make use of \textit{hints} \NoteFF{ref}, such as
 viewing each component of the gradient, changing all feature weights by 
@@ -573,14 +562,21 @@ of gradient ascent.
 
 Once the student is comfortable with the provided model and data, the student
 can begin to play around with the dataset and model options. These utilities, such as
-generating a new random challenge'' and tweaking regularizaiton, are described more in Section \ref{sec:lessons}.
+generating a new random challenge and experimenting with regularizaiton, 
+are described more in Section \ref{sec:lessons}.
 
 
 \subsection{The Instructor Interface: Creating and Tailoring Lessons}
-mention the select whitelist of wayas to change some behavior
-\subsubsection{Available Visualizations}\label{sec:available_vis}
+To support a wide-range of lessons, the manipulative has support for twelve predefined shape and fill combinations.
+As seen in Figure \ref{fig:shape_inventory}, the available shapes are circles, triangles, squares and pentagons,
+where each can be solid, striped or hollow.
 
-\ref{fig:inventory}
+However, it is important for the instructor to be able to tailor lessons to his or her students' needs, 
+interests, and abilities. For instance, it may be appropriate to reason about different types of shapes
+when introducing students to log-linear models, but eventually NLP students will want to think about 
+how log-linear models can be applied to NLP problems, whereas vision students will want to think about 
+how to apply them to vision problems. Therefore, we have designed the manipulative to handle text
+and arbitrary images as well (c.f. Figure \ref{fig:imgtxt_inventory}).
 
 \begin{figure}[t]
 \begin{center}
@@ -598,22 +594,27 @@ mention the select whitelist of wayas to change some behavior
 \caption{\NoteFF{Replace with actual example text and images} Examples of including arbitrary images and text.}
 \label{fig:imgtxt_inventory}
 \end{subfigure}
-\caption{Inventory of available manipulatives.}
+\caption{Inventory of available shapes and objects.}
 \label{fig:inventory}
 \end{center}
 \end{figure}
 
-available shapes: four regular shapes: circle, square, triangle, pentagon; text; images (.jpg, .png, .svg);
-shading: solid, striped, hollow
+Tailoring lessons to the students' needs is as simple as editting a couple text files. These must detail:
+\begin{inparaenum}[(1)]
+\item a set of features, 
+\item a set of contexts, and
+\item for each context, a set of uniquely featurized events, including counts and visual positions.
+\end{inparaenum}
+These simple requirements allow one to describe some rather involved models. For example, some of 
+the features may be marked as ``hidden'' to the student, thereby allowing the student to experience 
+model mismatch. If the set of contexts is missing, the model is assumed to contain only 
+one context and be globally normalized. Note that the visual positioning information is pedagogically 
+important: aligning objects by orthogonal descriptions, e.g., circles vs. triangles or solid vs. striped, 
+can make feature contrasts stand out more.
 
-\subsubsection{Data description}
-The basic data format is type-level TSVs
-
-\begin{itemize}
-\item a set of contexts (if missing, will be assumed to contain only one context)
-\item a set of features; some of these may be marked as hidden
-\item for each context, a set of events and visual positions for them \NoteFF{explain why this visual positioning is pedagogically important, i.e., aligning \texttt{circles} vs. \texttt{triangles}, and \texttt{solid} vs. \texttt{striped} can make feature contrasts stand out more}
-\end{itemize}
+Finally, because an instructor may not want all functionality to always be available (e.g., hiding the ``solve''
+capability in early lessons), we allow the instructor to declaratively make certain lesson-specific changes to 
+the interface, \textit{without} going into the back-end code. 
 
 %\item[Optional]
 %
@@ -634,22 +635,32 @@ The basic data format is type-level TSVs
 
 %\end{description}
 
-\subsection{The Back-End}
-Broadly, the virtual manipulative is designed to be widely available, have minimal-to-no start-up cost, including compartmentalized ``user-'' and ``back-'' ends. In order to be fully client-side, the back-end is written in Javascript. talk a bit about the various libraries/plugins used\NoteFF{... nothing major, but it'll be good to outline here what exactly I used}: \texttt{d3}, \texttt{jQuery} and a couple publicly available plugins.\footnote{Specifically and in order, 
-\url{d3js.org/},
-\url{jquery.com/}, 
+\subsection{Back-End Implementation}
+Broadly, the virtual manipulative is designed to be widely available and have minimal-to-no start-up cost. 
+Aside from reading the lesson data and instruction files from the web server, the manipulative is fully 
+client-side. The back-end is written in Javascript, and uses common and well-supported open-source 
+libraries to help with visualization and cross-browser compatibility.\footnote{Specifically and in order, 
+\texttt{d3} (\url{d3js.org/}),
+\texttt{jQuery} (\url{jquery.com/}), 
 \texttt{jQuery UI} (\url{jqueryui.com}),
 \texttt{jQuery Tools} (\url{jquerytools.org/}), and
 \texttt{qTip} (\url{craigsworks.com/projects/qtip/}).}
 
-The manipulative attempts to be responsive to an individual user's browser and display options, and heuristically make efficient use of available space. That being said, higher resolution/larger displays are desirable when dealing with the full model and some of the larger datasets introduced in later lessons (see Section \ref{sec:conditionallessons}).
+That being said, eventually the buck must stop somewhere and the manipulative does rely on certain HTML5 
+capabilities. Unfortunately, not all current browsers support these capabilities. The manipulative works 
+with recent verisons of Firefox, Chrome and Safari. We do not believe this restriction to be unreasonable, 
+especially as all browers adopt widely used standards.
 
-mention that some ui considerations can result in very slight rounding errors
-
-solver: gradient ascent is simple (except for $\ell_1$ regularization), but it can take some finessing to make it visually appealing. We recursively call the solve function on a polynomial-decreasing schedule
-
-
-sigmoidal scaling for sliders, log-likelihood bars
+%The manipulative attempts to be responsive to an individual user's browser and display options, and 
+%heuristically make efficient use of available space. That being said, higher resolution/larger displays 
+%are desirable when dealing with the full model and some of the larger datasets introduced in later 
+%lessons (see Section \ref{sec:conditionallessons}).
+%
+%mention that some ui considerations can result in very slight rounding errors
+%
+%solver: gradient ascent is simple (except for $\ell_1$ regularization), but it can take some finessing to make it visually appealing. We recursively call the solve function on a polynomial-decreasing schedule
+%
+%sigmoidal scaling for sliders, log-likelihood bars
 
 \section{Provided Lessons}\label{sec:lessons}
 
@@ -668,6 +679,16 @@ sigmoidal scaling for sliders, log-likelihood bars
 \end{description}
 
 \subsection{Joint Models} \label{sec:jointlessons}
+\begin{figure}[t]
+\centering
+\includegraphics[scale=.3]{images/regularized_ll_bar_andtrue_cut.PNG}
+
+\caption{The gray and green bars and text represent the (regularized) objective
+ \eqref{eqn:reg_ll} for the current and empirical model, respectively. The red 
+outline indicates the regularizer penalty.}
+\label{fig:llbar}
+\end{figure}
+
 \begin{enumerate}
 \item 
 4 types: rows %%$\{triangle, circle\} X columns \{solid, striped\}$
@@ -688,6 +709,7 @@ No features for specific shapes, but have a non-binary feature for number of sid
 Question: what happens if you make the feature weight negative?  What would be different if if the feature were redefined from \# of sides to \# of sides - 3, or \# sides - 4?  If you added a pentagon feature, what would that allow you to do?
 
 If this feature's weight is set to 1 (or -1), then what is the ratio of probabilities among the solid triangle, solid square, and solid pentagon? Try it! How does your answer change as you vary the weight of the solid feature?
+
 \item rows {triangle, circle, square} X columns {solid, striped, hollow}
 Questions: Is it hard to match by hand?  Learn about gradient display.
 Understanding the hints. Recall the two games from lesson 3. The hint on the slider can be interpreted as a hint for either game.
