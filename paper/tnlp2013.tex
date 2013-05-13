@@ -77,30 +77,54 @@ We argue that if one is going to teach only a single machine learning
 technique in a computational linguistics course, it should be {\em
   conditional log-linear modeling}.  Such models are pervasive in
 natural language processing.  They have the form
-\begin{equation}\label{eq:loglin}
+\begin{equation}\label{eqn:loglin}
 p_{\vec{\theta}}(y \mid x) \propto \exp{\left(\vec{\theta} \cdot \vec{f}\left(x,y\right)\right)},
 \end{equation}
-where $\vec{f}$ denotes a feature vector defined on contexts $x$ and outcomes $y$. Note
-that the possible outcomes $\mathcal{Y}(x)$ might be context-dependent.\footnote{In the case where $y$ is a
-binary variable, this is equivalent to logistic regression.}
+where $\vec{f}$ extracts a feature vector from context $x$ and
+outcome $y \in \mathcal{Y}(x)$.  The set of possible
+outcomes $\mathcal{Y}(x)$ might depend on the context $x$.\footnote{In the
+  case where $y$ is a binary variable, so $\mathcal{Y}(x)=\{0,1\}$,
+  this model is equivalent to logistic regression.}
 
 % Any modern course on computational linguistics or natural language
 % processing needs to teach some machine learning tools.  
 
 We then present an interactive web visualization that guides students
-through playing with log-linear models and their estimation.  This
-open source tool is intended to develop intuitions, so that basic log-linear
-models can be then taken for granted.  It can be used near the start
-of a course, perhaps after introducing probability notation and
-$n$-gram models. Alongside the code we release \NumLessons{} 
-ready-to-use lessons and associated explanatory text and questions, which
-are useful for individual and small group study, or folding in to current class 
-assignments. An anonymized version is available at \WhereToFind{}.
+through playing with log-linear models and their estimation.  An
+anonymized version is available for review at \WhereToFind{}.  This
+open-source tool is intended to develop intuitions, so that basic
+log-linear models can be then taken for granted.  It can be used near
+the start of a course, perhaps after introducing probability notation
+and $n$-gram models. 
+
+The code includes \NumLessons{} ready-to-use lessons that can be used
+for individual or small-group study.  Each lesson guides the student
+through a manipulative exercise that centers on fitting some model
+$p_{\vec{\theta}}(y \mid x)$, where ${\cal Y}(x)$ is a collection of
+shapes, words, or images such as parse trees.  Each lesson is peppered
+with questions, and students could be asked to answer some of these
+questions in writing.\footnote{We found that answering {\em all} the
+  questions\NoteJE{how many?} took them from ???--???
+  words\NoteJE{Frank, fill in based on the submitted homeworks}, which
+  was probably both unreasonable and unnecessary.}\NoteJE{We might
+  consider releasing a couple of pencil-and-paper problems from past
+  exams.}  Other instructors can add new lessons by writing 
+configuration files (see section~\ref{sec:tailoring}).
+
+\nocite{klein-tnlp-2005}\NoteFF{Is it worthwhile to cite Klein (2005)?
+  In it, Klein describes the statistical NLP course he taught in 2004,
+  where one of the assignments was to build a maxent POS
+  tagger.}\NoteJE{Probably not: he said he was going to remove this
+  assignment next time because it was too slow to train!  However, I
+  think it would be helpful (maybe in the final version?) to list
+  other people's NLP homework assignments or practical exercises that
+  use maxent.  I bet you could find a few good assignments on the web,
+  including in the NLTK book.}
 
 \section{Why Teach With Log-Linear Models?}
 
-Log-linear models are very handy.  They can be used {\em throughout} 
-one's course, whenever one needs 
+Log-linear models are very handy in NLP.  They can be used {\em throughout} 
+a course, whenever one needs 
 \begin{itemize}
 \item a global classifier for an applied task, such as detecting
   sentiment, topic, spam, or gender;
@@ -119,18 +143,19 @@ one's course, whenever one needs
 Log-linear models over discrete variables are also sufficiently
 expressive for an NLP course.  Students can experiment freely with
 adding linguistically interesting features of their own devising,
-since the probability \eqref{eq:loglin} may consider any number of
+since the probability \eqref{eqn:loglin} may consider any number of
 informative features of the $(x,y)$ pair.
 
 How about training?  Estimation of the parameter weights
 $\vec{\theta}$ from a set of fully observed $(x,y)$ pairs is simply a
 convex optimization problem.  Maximizing the regularized maximum
 likelihood
-\begin{equation}\label{eq:rml}
-  \argmax_{\vec{\theta}} \sum_i \log p_{\vec{\theta}}(y_i \mid x_i) - C\cdot R\left(\vec{\theta}\right)
+\begin{equation}\label{eqn:reg_ll}
+% \argmax_{\vec{\theta}} \sum_i \log p_{\vec{\theta}}(y_i \mid x_i) - C\cdot R\left(\vec{\theta}\right)
+  F\left(\vec{\theta}\right) = \sum_{i=1}^N \log{p_{\vec{\theta}}\left(y_i\ \mid\ x_i\right)} - C \cdot R\left(\vec{\theta}\right)
 \end{equation}
 is a simple, uniform training principle that can be used throughout
-the course.  The regularizer $R\left(\vec{\theta}\right)$
+the course.  The regularizer $R(\vec{\theta})$
 prevents overfitting on sparse features.
 This is arguably more straightforward than the traditional NLP
 smoothing methods for estimating probabilities from sparse data
@@ -140,10 +165,11 @@ there is not a natural sequence of backoff models.  There exist
 fast and usable tools that students can use to train their log-linear
 models, including, among others, MegaM \cite{daume04cg-bfgs}, 
 and NLTK \cite{bird2009natural}.\footnote{\label{fn:bigY}A caveat is that generic
-  log-linear training tools will iterate over the set ${\cal
+  log-linear training tools will {\em iterate} over the set ${\cal
     Y}(x)$ in order to maximize
-  \eqref{eq:loglin} and to compute $Z$ and the gradient of
-  \eqref{eq:rml}.  This is impractical when ${\cal Y}(x)$ is large, as in
+  \eqref{eqn:loglin} and to compute the constant of proportionality
+  in \eqref{eqn:loglin} and the gradient of
+  \eqref{eqn:reg_ll}.  This is impractical when ${\cal Y}(x)$ is large, as in
   language modeling or structured prediction.  One will do better to
   use specialized algorithms that exploit special structure in the
   feature set, or to fall back on sampling or variational
@@ -152,10 +178,6 @@ and NLTK \cite{bird2009natural}.\footnote{\label{fn:bigY}A caveat is that generi
 %\NoteJE{what else?  can we recommend one?}
 %\NoteFF{I've only ever used my own so I wouldn't feel comfortable
 %recommending any.}
-
-\nocite{klein-tnlp-2005}\NoteFF{Is it worthwhile to cite Klein (2005)? In it,
-Klein describes the statistical NLP course he taught in 2004, where
-one of the assignments was to build a maxent POS tagger.}
 
 Formally, log-linear models are a good gateway to a more general
 understanding of undirected graphical models and the exponential
@@ -174,7 +196,7 @@ useful is that they explicitly model {\em probabilities}.  These can be
   expected loss (risk).
 \end{itemize}
 The training procedure also takes a probabilistic view.  Equation
-\eqref{eq:rml} illustrates important statistical principles such as maximum
+\eqref{eqn:reg_ll} illustrates important statistical principles such as maximum
 likelihood, regularization, and cross-validation, as well as
 optimization principles such as gradient ascent.\footnote{In an
   advanced class, this objective can also be regarded as the
@@ -191,9 +213,16 @@ Further reading includes \cite{smith-2011}.
 
 \subsection{History and Applications}
 
-%\NoteJE{move to an appendix?}
-%\NoteFF{I like this in here. We might want to comment out some initially
-%but add it back in if any camera-ready allows for additional spaces}
+\NoteJE{move to an appendix?}%
+\NoteFF{I like this in here. We might want to comment out some initially
+  but add it back in if any camera-ready allows for additional spaces}%
+\NoteJE{It's just that I don't want to keep the reader from getting to
+  the fresh stuff that we are presenting in the paper.  Possibly YOU found this 
+  more interesting than the visualization because you were already 
+  overly familiar with the visualization.  But the reader hasn't seen 
+  the visualization before and is presumably impatient to get to it.
+  It's true that the section is not that long, so I dunno.  But it's not that
+  important either, even though it was slow to write.}
 
 Conditional log-linear models were first popularized in computational
 linguistics by a group of researchers associated with the IBM speech
@@ -210,7 +239,7 @@ structured prediction problems such as tagging, parsing, chunking,
 segmentation, and language modeling.  A simple strategy is to reduce
 structured prediction to a sequence of multiclass log-linear
 predictions \cite{ratnaparkhi-1998}.  A more global approach---used in
-the original ``maximum entropy'' papers---is to use \eqref{eq:loglin}
+the original ``maximum entropy'' papers---is to use \eqref{eqn:loglin}
 to define the conditional probabilities of the steps in a generative
 process that gradually produces the structure
 \cite{rosenfeld-1994,berger-dellapietra-dellapietra-1996}.  This idea
@@ -219,7 +248,7 @@ into a variety of generative models \cite{bergkirkpatrick-et-al-2010}.
 For example, a PCFG that uses richly annotated nonterminals involves a
 large number of context-free rules.  Rather than estimating their
 probabilities separately, or with traditional backoff smoothing, a
-simpler approach is to use \eqref{eq:loglin} to model the probability
+simpler approach is to use \eqref{eqn:loglin} to model the probability
 of all rules given their left-hand sides, based on features that
 consider subsets of the nonterminal annotations.\footnote{E.g., case,
   number, gender, tense, aspect, mood, lexical head.  In the case of a
@@ -227,8 +256,8 @@ consider subsets of the nonterminal annotations.\footnote{E.g., case,
   be considered.}  A final approach to structured prediction is to
 simply predict the structured output all at once, so that $y$ is a
 large structured object.  Since it is hard to enumerate
-a large set of possible outputs ${\cal Y}$ (see footnote
-\ref{fn:bigY}), one can either restrict ${\cal Y}$ before training
+a large set of possible outputs ${\cal Y}(x)$ (see footnote
+\ref{fn:bigY}), one can either restrict ${\cal Y}(x)$ before training
 \cite{johnson-et-al-1999}, or else use techniques such as dynamic
 programming or sampling, as in linear-chain conditional random fields
 \cite{lafferty-mccallum-pereira-2001} and whole-sentence language
@@ -253,7 +282,7 @@ understanding how the weights of these features interact to define a
 distribution.  We will discuss some of the necessary intuitions in
 sections \ref{sec:aims} and \ref{sec:lessons}.
 
-We would like equations \eqref{eq:loglin} and \eqref{eq:rml} and the
+We would like equations \eqref{eqn:loglin} and \eqref{eqn:reg_ll} and the
 gradient formula to be more than just recipes.  The student should
 regard them as {\em familiar objects with predictable behavior}.  Like
 computer science, pedagogy proceeds by layering new ideas on top of
@@ -263,15 +292,19 @@ log-linear models is prerequisite to
 \item using them in NLP applications that have their own complexities, 
 \item using them as component distributions within larger probability
   models or decision rules,
-\item generalizing the algorithms for working with \eqref{eq:loglin}
-  and \eqref{eq:rml} to settings where one cannot easily enumerate
+\item generalizing the algorithms for working with \eqref{eqn:loglin}
+  and \eqref{eqn:reg_ll} to settings where one cannot easily enumerate
   ${\cal Y}$.
 \end{itemize}
 
 \section{Manipulatives}
 
 \NoteJE{Start by explaining the use of manipulatives in early math
-  education, perhaps including an example and a quote}
+  education, perhaps including an example and a quote.  I tried to set
+  this up at the end of the previous section by talking about
+  ``familiar objects with predictable behavior.''  The bottom line is
+  that we'd like students to develop \emph{physical} intuitions about
+  these abstract models.}
 
 \NoteFF{what is the history of virtual manipulatives in teaching CS? NLP?} the HMM spreadsheet \cite{eisner-2002-tnlp}
 
@@ -280,22 +313,41 @@ log-linear models is prerequisite to
 %data input format makes it extensible;
 %individual lessons can be tailored (e.g., hide/show buttons, different tool-tips for lessons)
 
-Why do we focus on shapes, rather than words? \NoteFF{maybe we can argue via virtual manipulatives}
+Why do we focus on shapes, rather than words? \NoteFF{maybe we can argue via virtual manipulatives}\NoteJE{yes}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Pedagogical Aims}\label{sec:aims}
-We wish to make log-linear models a concept that students can
-reason about quickly and intuitively. We found that expanding upon the difficulties from 
-Section \ref{sec:challenges} and listing specific pedagogical goals helped focus the design 
-of the virtual manipulative and hone the creation and expected take-aways of individual lessons. 
 
-\subsection{Modeling Implications}
+\NoteJE{This key section is a bit hard to read and especially to skim.
+  It has too much repetitive padding about our desires, and what the
+  students must do, and how ``important'' it is.  Instead, could we
+  just list the facts about log-linear models that we want students to
+  appreciate?  (You should be able to harvest these by going through
+  the lessons.)  That is, it would be crisper to stay focused on the
+  properties of the model rather than referring repeatedly to the
+  people.  See for example the bullet points in section 3 of
+  eisner-2002-tnlp, although you don't necessarily need to follow that
+  format.}
+
+We wish to make log-linear models a concept that students can reason
+about quickly and intuitively. We found that expanding upon the
+difficulties from Section \ref{sec:challenges} and listing specific
+pedagogical goals helped focus the design of the virtual manipulative
+and hone the creation and expected take-aways of individual
+lessons.\NoteJE{True but boringly meta. We also used section headers
+  because we found them useful to organize the paper, but we don't
+  have to say so. :-) Just list the goals or better yet the facts.
+  They'll speak for themselves.}
+
+\subsection{Modeling Implications\NoteJE{I don't understand this
+    (ambiguous) section title}}
+
 Given $N$ data points $\Data{} = \{( x_i, y_i)\ \mid\ 1 \le i \le N\}$, one of the initial, and perhaps most important, decisions 
 to make is choosing an appropriate model and distribution family. As argued above, for this manipulative we focus on 
-contrasting exponential families \eqref{eq:loglin} with what students may iniitally posit, the empirical distribution:
+contrasting exponential families \eqref{eqn:loglin} with what students may iniitally posit, the empirical distribution:
 \begin{equation}
 \empirical\left(y\ \mid\ x\right) = \frac{c(x,y)}{c(x)}.
 \label{eqn:empirical_distr}
@@ -303,20 +355,27 @@ contrasting exponential families \eqref{eq:loglin} with what students may iniita
 %where $c(x,y)$ and $c(x)$ represent bigram and unigram counts, respectively.
 While perhaps pragmatically the most important consequence of this modeling decision is that of 
 proper feature design, we wish students to consider additional implications.  
-How does \eqref{eq:loglin} generalize other distributions: $\vec{\theta} = 0$ 
+How does \eqref{eqn:loglin} generalize other distributions: $\vec{\theta} = 0$ 
 yields the uniform distribution, but can one match the empirical? What constraints does 
 the model satisfy?
 %How does this relate to the maximum entropy view?
 % (if any; eg., maxent formulation or empirical
 %MLE?)
  
-We also wish to impart the differences between conditional models and globally normalized ones 
-$\hat{p}_{\vec{\theta}}\left(y\right)$. Although these context-nescient models allow students 
-to focus on understanding some of the core underlying mathematical concepts of 
-exponential models, such as feature interations and weight tradeoffs, there are important differences
-between global and conditional models that must be understood. For instance, in conditional models
-features can be ``shared'' across conditions, which can help %the regularizer even if likelihood is the same. 
-generalization to unseen context-outcome pairs and maximizing the regularized objective.
+We also wish to impart the differences between conditional models and
+globally normalized ones
+$\hat{p}_{\vec{\theta}}\left(y\right)$.\NoteJE{I'd get rid of the hat
+  in $\hat{p}$.  It hasn't been defined or used above, and may be
+  distracting, so you could get rid of it later as well.}  Although
+these context-nescient\NoteJE{???} models allow students to focus on
+understanding some of the core underlying mathematical concepts of
+exponential models, such as feature interations and weight tradeoffs,
+there are important differences between global and conditional models
+that must be understood. For instance, in conditional models features
+can be ``shared'' across conditions, which can
+help %the regularizer even if likelihood is the same.
+generalization to unseen context-outcome pairs and maximizing the
+regularized objective.
 
 The modeler has the onus of proper feature design: when defining $K$ 
 appropriate features $f_k$, there are a number of at-times complex interactions 
@@ -365,17 +424,14 @@ features that only fire on conditions have no effect on conditional distribution
 %Therefore, we also 
 
 \subsection{Importance of the Objective and Parameter Estimation} % and Evaluating the Model}
-We summarize the model's quality via the regularized conditional log-likelihood 
-\eqref{eqn:reg_ll},
-\begin{equation}
-F\left(\vec{\theta}\right) = \sum_{i=1}^N \log{\hat{p}_{\vec{\theta}}\left(y_i\ \mid\ x_i\right)} - C \cdot R\left(\vec{\theta}\right);
-\label{eqn:reg_ll}
-\end{equation}
-$C \ge 0$ is the penalty for the regularizer $R(\vec{\theta})$.
+
+We summarize the model's quality via the regularized conditional
+log-likelihood \eqref{eqn:reg_ll}.  $C \ge 0$ is the penalty for the
+regularizer $R(\vec{\theta})$.
 %The model is fully described by the feature weights $\vec{\theta}$, but weights can be fit too
 %strongly to particular observations. 
 
-The maximizer is $\vec{\theta^*}$ that solves equation \eqref{eqn:grad}:
+The maximizer is the $\vec{\theta^*}$ that solves equation \eqref{eqn:grad}:
 \begin{equation}
 \begin{aligned}
 %\begin{split}
@@ -446,53 +502,83 @@ We should note that we are \textit{not} concerned with computational issues here
 \label{fig:lesson1}
 \end{figure*}
 
+\NoteJE{maybe move this section before ``pedagogical aims'' so that
+  the reader can find out sooner about our actual contribution,
+  a.k.a. The Cool Stuff?  Then the pedagogical aims would lead right
+  into the lessons or could even be combined with them.}
+
 We have made an anonymized version available at \WhereToFind{}. 
 We encourage the reader to play with it in tandem to reading this paper.
 
 While our primary goal was to teach log-linear models within the context of NLP, 
-we thought it myopic to out-right limit users to those interested or experienced 
+we thought it myopic to outright limit users to those interested or experienced 
 in NLP. %, due in part to the prevalence and success log-linear models boast 
 %throughout a number of varied computational fields. 
-One of the guiding design goals was to make the educational tool easy to use by 
-both students and instructors, so that instructors could tailor the lessons to the needs, 
-interests and abilities of the students. To that end, our manipulative has three primary 
-components: the student interface (front-end), important aspects transparent to the 
-instuctor, and the back-end implementation.
+\NoteJE{The next two sentences seem unnecessary since they'll be
+  obvious by the end of the paper if they aren't already.  Again,
+  shouldn't we spend as much time as we can on what it's like for the
+  student and teacher to use the manipulative, rather than on our
+  (mostly) boring and irrelevant experience of designing and coding
+  it?  The goal of the paper is to sell other teachers on using the
+  app.}  One of the guiding design goals was to make the educational
+tool easy to use by both students and instructors, so that instructors
+could tailor the lessons to the needs, interests and abilities of the
+students. To that end, our manipulative has three primary components:
+the student interface (front-end), important aspects transparent to
+the instuctor, and the back-end implementation.
 
 \subsection{Student Interface}
-The basic unit of completion in our manipulative is a \textit{lesson}, where 
-the aim is to further examine some subset of the goals from Section \ref{sec:aims}.
-No matter the complexity of a lesson, the main premise behind each is for the 
-student to play either a ``matching game'' or a ``log-likelihood game'' on a provided 
-dataset \Data{}. The data, grouped by context and presented visually at the type-level as different shapes, 
-images, or raw text, are modeled by two distributions of interest: the empirical 
-$\tilde{p}$ \eqref{eqn:empirical_distr}, and an appropriately
-defined log-linear model $\hat{p}_{\vec{\theta}}$ \eqref{eqn:conditional_loglin}.
-The student controls $\hat{p}_{\vec{\theta}}$ via a slider bar, thereby ``physically'' 
-manipulating the parameters $\vec{\theta}$. 
+The basic unit of completion in our manipulative is a \textit{lesson},
+where the aim is to further examine some subset of the goals from
+Section \ref{sec:aims}.\NoteJE{Again, beware of nerdview.  How about:
+  ``Each lesson addresses some of the points above.''  Even that could
+  be cut, because duh.}  No matter the complexity of a lesson, the main
+premise behind each is for the student to play either a ``matching
+game'' or a ``log-likelihood game'' on a provided dataset \Data{}. The
+data, grouped by context and presented visually at the type-level as
+different shapes, images, or raw text, are modeled by two
+distributions of interest: the empirical $\tilde{p}$
+\eqref{eqn:empirical_distr}, and an appropriately defined log-linear
+model $\hat{p}_{\vec{\theta}}$ \eqref{eqn:conditional_loglin}.  The
+student controls $\hat{p}_{\vec{\theta}}$ via a slider bar, thereby
+``physically'' manipulating the parameters $\vec{\theta}$.\NoteJE{And
+  that makes the shapes GROW and SHRINK!  COOOOL!!!}
 
-See Figure \ref{fig:lesson1} for the
-general interface. Note in particular the data area 
-\NoteFF{ref}, the feature weight sliders \NoteFF{ref}, and the log-likelihood 
-score \NoteFF{ref}. Each datum has two shapes associated with it, 
-an ``uninteresting'' gray outline ($\empirical{}$) and a salient ``interesting'' 
-object ($\hat{p}_{\vec{\theta}}$). The size (area) of each
-shape is proportional to its probability mass, while its color indicates whether the observed 
-or expected count is larger.
-The number above and to the left of each datum is that type's empirical 
-count, while the number above and to the right is its expected count. 
-For instance, in Figure \ref{fig:lesson1}, the data --- 30 solid circles, 15 striped circles, 10 solid triangles, 
-and 5 striped triangles --- are modeled by the two indicator features $f_{\textrm{circle}}$ and
-$f_{\textrm{solid}}$. With $\vec{\theta} = 0$ we have the uniform distribution, so the solid circle 
-is contained in its gray outline ($\empirical{}(\textrm{solid circle}) > 
-\hat{p}_{\vec{\theta}}(\textrm{solid circle})$), the striped triangle contains its gray outline 
-($\empirical{}(\textrm{striped triangle}) < \hat{p}_{\vec{\theta}}(\textrm{striped triangle})$), and
-the striped circle and gray outline are coincident
-($\empirical{}(\textrm{striped circle}) = \hat{p}_{\vec{\theta}}(\textrm{striped circle})$).
-\footnote{This example describes a globally normalized model, and as such 
-there is only one context. See \S\ref{sec:conditionallessons} for conditional models.}
-See Figure \ref{fig:colorsize_inventory} for a summary of how we use size and color to
-indicate salient information.
+See Figure \ref{fig:lesson1} for the general interface.\NoteJE{I'd
+  lead with this.  In fact, I think the text shown in Fig. 1 is
+  extremely helpful for the reader to understand what this
+  manipulative is all about, which is so far rather obscure even
+  though we're well into the paper by now.  Maybe encourage the reader
+  explicitly to read Fig. 1, and maybe enlarge it a bit (although the
+  reader can zoom in if they're reading onscreen).  In the final
+  version, you might be able to get a higher-res screenshot by zooming
+  the browser (and using an appropriately large window); this gives a
+  larger image and larger-font text, which you can shrink back again
+  in the PDF.}  Note in particular the data area \NoteFF{ref}, the
+feature weight sliders \NoteFF{ref}, and the log-likelihood score
+\NoteFF{ref}. Each datum has two shapes associated with it, an
+``uninteresting'' gray outline ($\empirical{}$) and a salient
+``interesting'' object ($\hat{p}_{\vec{\theta}}$). The size (area) of
+each shape is proportional to its probability mass, while its color
+indicates whether the observed or expected count is larger.  The
+number above and to the left of each datum is that type's empirical
+count, while the number above and to the right is its expected count.
+For instance, in Figure \ref{fig:lesson1}, the data --- 30 solid
+circles, 15 striped circles, 10 solid triangles, and 5 striped
+triangles --- are modeled by the two indicator features
+$f_{\textrm{circle}}$ and $f_{\textrm{solid}}$. With $\vec{\theta} =
+0$ we have the uniform distribution, so the solid circle is contained
+in its gray outline ($\empirical{}(\textrm{solid circle}) >
+\hat{p}_{\vec{\theta}}(\textrm{solid circle})$), the striped triangle
+contains its gray outline ($\empirical{}(\textrm{striped triangle}) <
+\hat{p}_{\vec{\theta}}(\textrm{striped triangle})$), and the striped
+circle and gray outline are coincident ($\empirical{}(\textrm{striped
+  circle}) = \hat{p}_{\vec{\theta}}(\textrm{striped circle})$).
+\footnote{This example describes a globally normalized model, and as
+  such there is only one context. See \S\ref{sec:conditionallessons}
+  for conditional models.}  See Figure \ref{fig:colorsize_inventory}
+for a summary of how we use size and color to indicate salient
+information.
 
 In the \textit{matching game}, the student tries to match $\hat{p}_{\vec{\theta}}$ to 
 $\tilde{p}$ --- find $\vec{\theta}$ such that $\hat{p}_{\vec{\theta}}(y\mid x) 
@@ -586,7 +672,7 @@ generating a new random challenge and experimenting with regularizaiton,
 are described more in Section \ref{sec:lessons}.
 
 
-\subsection{The Instructor Interface: Creating and Tailoring Lessons}
+\subsection{The Instructor Interface: Creating and Tailoring Lessons}\label{sec:tailoring}
 To support a wide-range of lessons, the manipulative has support for twelve predefined shape and fill combinations.
 As seen in Figure \ref{fig:shape_inventory}, the available shapes are circles, triangles, squares and pentagons,
 where each can be solid, striped or hollow.
