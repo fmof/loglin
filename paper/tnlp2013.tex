@@ -321,6 +321,271 @@ Why do we focus on shapes, rather than words? \NoteFF{maybe we can argue via vir
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\section{Our Log-Linear Virtual Manipulative}\label{sec:overview}
+\begin{figure*}
+\centering
+\includegraphics[scale=.49]{images/lesson1-051313-intro-zoom-instmore.PNG}
+\caption{The first lesson; the instructions 
+have been enlarged for presentation considerations.}
+\label{fig:lesson1}
+\end{figure*}
+
+\Commented{
+\NoteJE{maybe move this section before ``pedagogical aims'' so that
+  the reader can find out sooner about our actual contribution,
+  a.k.a. The Cool Stuff?  Then the pedagogical aims would lead right
+  into the lessons or could even be combined with them.}}
+
+See Figure \ref{fig:lesson1} for the general interface and an overview 
+of the tool. We have made an anonymized version available at 
+\WhereToFind{}; which we encourage you to play with as you
+read.
+
+%While our primary goal was to teach log-linear models within the context of NLP, 
+%we thought it myopic to outright limit users to those interested or experienced 
+%in NLP. 
+\Commented{
+\NoteJE{The next two sentences seem unnecessary since they'll be
+  obvious by the end of the paper if they aren't already.  Again,
+  shouldn't we spend as much time as we can on what it's like for the
+  student and teacher to use the manipulative, rather than on our
+  (mostly) boring and irrelevant experience of designing and coding
+  it?  The goal of the paper is to sell other teachers on using the
+  app.}  
+One of the guiding design goals was to make the educational
+tool easy to use by both students and instructors, so that instructors
+could tailor the lessons to the needs, interests and abilities of the
+students.}
+%Our manipulative has three primary components:
+%the student interface (front-end), an easily-configurable ``middle-end''
+%for the instructor, and the back-end implementation.
+
+\subsection{Student Interface}
+
+The student learns about log-linear models through lessons designed
+to isolate particular challenges or intricacies. No matter the complexity of a lesson, the main
+premise behind each is to play a ``matching
+game'' or a ``log-likelihood game'' on a provided dataset \Data{}. The
+data, grouped by context and presented visually at the type-level as
+different shapes, images, or raw text, are modeled by two
+distributions of interest: the empirical $\tilde{p}$
+\eqref{eqn:empirical_distr}, and an appropriately defined log-linear
+model $p_{\vec{\theta}}$ \eqref{eqn:loglin}. You control $p_{\vec{\theta}}$ 
+via a sliders, ``physically'' manipulating the parameters. These physical 
+manipulations are projected in real time on the expected observations as the 
+shapes shrink, grow and change color according to the new distribution. 
+
+\Commented{\NoteJE{I'd
+  lead with this.  In fact, I think the text shown in Fig. 1 is
+  extremely helpful for the reader to understand what this
+  manipulative is all about, which is so far rather obscure even
+  though we're well into the paper by now.  Maybe encourage the reader
+  explicitly to read Fig. 1, and maybe enlarge it a bit (although the
+  reader can zoom in if they're reading onscreen).  In the final
+  version, you might be able to get a higher-res screenshot by zooming
+  the browser (and using an appropriately large window); this gives a
+  larger image and larger-font text, which you can shrink back again
+  in the PDF.}  }
+Note in particular the data area (``Type Counts''), the
+feature weight sliders, and the log-likelihood score. 
+Each datum has two shapes associated with it, an
+``uninteresting'' gray outline ($\empirical{}$) and a salient
+``interesting'' object ($p_{\vec{\theta}}$). The size (area) of
+each shape is proportional to its probability mass, while its color
+indicates whether the observed or expected count is larger.  The
+number above and to the left of each datum is that type's empirical
+count, while the number above and to the right is its expected count.
+For instance, in Figure \ref{fig:lesson1}, the data --- 30 solid
+circles, 15 striped circles, 10 solid triangles, and 5 striped
+triangles --- are modeled by the two indicator features
+$f_{\textrm{circle}}$ and $f_{\textrm{solid}}$. With $\vec{\theta} =
+0$ we have the uniform distribution, so the solid circle is contained
+in its gray outline ($\empirical{}(\textrm{solid circle}) >
+p_{\vec{\theta}}(\textrm{solid circle})$), the striped triangle
+contains its gray outline ($\empirical{}(\textrm{striped triangle}) <
+p_{\vec{\theta}}(\textrm{striped triangle})$), and the striped
+circle and gray outline are coincident ($\empirical{}(\textrm{striped
+  circle}) = p_{\vec{\theta}}(\textrm{striped circle})$).
+\footnote{We start off with globally normalized models (only one 
+context). See \S\ref{sec:conditionallessons} for conditional models.}  
+See Figure \ref{fig:colorsize_inventory}
+for a summary of how we use size and color to indicate salient
+information.
+
+In the \textit{matching game}, the student tries to match $p_{\vec{\theta}}$ to 
+$\tilde{p}$ --- find $\vec{\theta}$ such that $p_{\vec{\theta}}(y\mid x) 
+= \tilde{p}(y\mid x)$, for all $(x,y)$. The game is to try to make all of the salient log-linear objects 
+equal in size (and color) to their corresponding gray outline. The student ``wins'' once the maximum
+number of log-linear objects turn gray, indicating the best possible fit.
+%Rather than force students to numerically compare the
+%two distributions, we scale the shape's size to indicate its type's probability
+%under either distribution. We represent $\tilde{p}$ by a gray 
+%outline, and use colors and shading to make $p_{\vec{\theta}}$ salient. 
+
+An alternative game to play is the \textit{log-likelihood game}, where the goal is to
+maximize the (regularized) training log-likelihood. The log-likelihood bar adapts to 
+changes to $\vec{\theta}$, just like the shapes. The game is to make the bar as 
+long as possible.\footnote{``Winning'' may not be immediately clear, but the concept should be 
+as more advanced topics, such as the gradient, are introduced.}
+%As shown in \NoteFF{fix} Figure \ref{fig:llbar}, we also represent the regularization penalty
+%, and the objective under the ``true'' (generating) model parameters, when known.
+
+Note that these games are not disjoint, nor are they the only ones that can be played.
+For instance, when playing the log-likelihod game, the students can think about how well 
+the shapes match, particularly when more advanced concepts such as regularization and conjoined features are 
+introduced. Also, the student can play a variant of the matching game, where the goal
+is to match the observed and expected feature counts. The particular game being played
+in each lesson is described in the instruction area, which the student should
+read carefully, since this may explain what the data and particular task are, justify 
+modeling choices, and ask lesson-specific questions. 
+
+%How we indicate salience is important. As already mentioned, we 
+%As documented in Figure \ref{fig:colorsize_inventory}, we utilize both size and color to 
+%convey these distribution changes: the three colors red, gray and blue illustrate the 
+%difference between observed and expected counts, while the size (area) of the shapes 
+%indicates the type's mass differences.
+
+%What the student interfaces with must reliably allow us to achieve the goals
+%laid out in Section \ref{sec:aims}. Figure \ref{fig:lesson1} illustrates the basic 
+%blocked interface a user encounters. The two block areas at the top of the 
+%page serve basic navigation and instructional needs while the bottom five provide 
+%the requiste interactions with the model. \NoteFF{add refs to Fig {\ref{fig:lesson1}} 
+%overlay.} 
+%The student should read carefully the instructions, dragging the instruction 
+%area larger if necessary, since this is where the instructor may explain 
+
+\begin{figure}[t]
+\centering
+\small
+\begin{tabular}{
+>{\centering\arraybackslash}m{.18\columnwidth} 
+>{\centering\arraybackslash}m{.18\columnwidth}
+>{\centering\arraybackslash}m{.18\columnwidth}
+>{\centering\arraybackslash}m{.18\columnwidth}}
+
+\textbf{Quantity of Interest} & $\mathbf{<0}$ 
+& $\mathbf{= 0}$ & $\mathbf{> 0}$\\ \\
+
+$ \mathbb{E}_{\empirical{}}\left[\vec{f}\right] 
+- \mathbb{E}_{{p_{\vec{\theta}}}}\left[\vec{f}\right]$, and 
+$\nabla_{\vec{\theta}} F$
+& {\bf \color{red} \texttransparent{.5}{ red } }
+& {\bf \color{gray}\texttransparent{.55}{ gray } }
+& {\bf \color{blue} \texttransparent{.55}{ blue } }\\  \\
+\vspace{.5em}
+%
+%$\nabla_{\vec{\theta}} F$ visualization
+%& \includegraphics[scale=.25]{images/goldilocks-gradient-small.PNG}
+%& \includegraphics[scale=.25]{images/goldilocks-gradient-justright.PNG}
+%& \includegraphics[scale=.25]{images/goldilocks-gradient-large.PNG}\\ \\ 
+
+
+%& $<0$ & $= 0$ & $> 0$\\\hline\hline \\
+$\empirical{} - p_{\vec{\theta}} $& \includegraphics[scale=.25]{images/goldilocks-circle-small.PNG}
+& \includegraphics[scale=.25]{images/goldilocks-circle-justright.PNG}
+& \includegraphics[scale=.25]{images/goldilocks-circle-large.PNG}\\
+\end{tabular}
+
+\caption{Colors indicate the sign of \eqref{eqn:obsexp} while the size (area) of 
+the shapes indicates the difference betwen that type's probability under the 
+current model and the empirical distribution (gray outline).}
+\label{fig:colorsize_inventory}
+\end{figure}
+
+However, solving more complex models may be too tedious or difficult. 
+The student may then make use of \textit{hints}, such as
+viewing each component of the gradient, changing all feature weights by 
+linearly following the gradient (as given by ``Step size''), or simply having
+the manipulative solve the problem and providing feedback at each iteration 
+of gradient ascent.
+
+Once the student is comfortable with the provided model and data, the student
+can begin to play around with the dataset and model options. These utilities, such as
+generating a new random challenge and experimenting with regularizaiton, 
+are described more in Section \ref{sec:lessons}.
+
+
+\subsection{The Instructor Interface: Creating and Tailoring Lessons}\label{sec:tailoring}
+To support a wide-range of lessons, the manipulative has support for twelve predefined shape and fill combinations.
+As seen in Figure \ref{fig:shape_inventory}, the available shapes are circles, triangles, squares and pentagons,
+where each can be solid, striped or hollow.
+
+However, it is important for the instructor to be able to tailor lessons to his or her students' needs, 
+interests, and abilities. For instance, it may be appropriate to reason about different types of shapes
+when introducing students to log-linear models, but eventually NLP students will want to think about 
+how log-linear models can be applied to NLP problems, whereas vision students will want to think about 
+how to apply them to vision problems. Therefore, we have designed the manipulative to handle text
+and arbitrary images as well (c.f. Figure \ref{fig:imgtxt_inventory}).
+
+\begin{figure}[t]
+\begin{center}
+\begin{subfigure}[b]{\columnwidth}
+\centering
+\includegraphics[scale=.5]{images/different_shapes_fills3x4.PNG}
+\caption{Inventory of available shapes and fills. Note that while normally the color is indicative of the sign of \eqref{eqn:obsexp}, here the colors are solely provided as example.}
+\label{fig:shape_inventory}
+\end{subfigure}
+
+\vspace{1em}
+\begin{subfigure}[b]{\columnwidth}
+\centering
+\includegraphics[scale=.5]{images/different_shapes_fills3x4.PNG}
+\caption{\NoteFF{Replace with actual example text and images} Examples of including arbitrary images and text.}
+\label{fig:imgtxt_inventory}
+\end{subfigure}
+\caption{Inventory of available shapes and objects.}
+\label{fig:inventory}
+\end{center}
+\end{figure}
+
+Tailoring lessons to the students' needs is as simple as editting a couple text files. These must detail:
+\begin{inparaenum}[(1)]
+\item a set of features, 
+\item a set of contexts, and
+\item for each context, a set of uniquely featurized events, including counts and visual positions.
+\end{inparaenum}
+These simple requirements allow one to describe some rather involved models. For example, some of 
+the features may be marked as ``hidden'' to the student, thereby allowing the student to experience 
+model mismatch. If the set of contexts is missing, the model is assumed to contain only 
+one context and be globally normalized. Note that the visual positioning information is pedagogically 
+important: aligning objects by orthogonal descriptions, e.g., circles vs. triangles or solid vs. striped, 
+can make feature contrasts stand out more.
+
+Finally, because an instructor may not want all functionality to always be available (e.g., hiding the ``solve''
+capability in early lessons), we allow the instructor to declaratively make certain lesson-specific changes to 
+the interface, \textit{without} going into the back-end code. 
+
+\subsection{Back-End Implementation}
+Broadly, the virtual manipulative is designed to be widely available and have minimal-to-no start-up cost. 
+Aside from reading the lesson data and instruction files from the web server, the manipulative is fully 
+client-side. The back-end is written in Javascript, and uses common and well-supported open-source 
+libraries to help with visualization and cross-browser compatibility.\footnote{Specifically and in order, 
+\texttt{d3} (\url{d3js.org/}),
+\texttt{jQuery} (\url{jquery.com/}), 
+\texttt{jQuery UI} (\url{jqueryui.com}),
+\texttt{jQuery Tools} (\url{jquerytools.org/}), and
+\texttt{qTip} (\url{craigsworks.com/projects/qtip/}).}
+
+That being said, eventually the buck must stop somewhere and the manipulative does rely on certain HTML5 
+capabilities. Unfortunately, not all current browsers support these capabilities. The manipulative works 
+with recent verisons of Firefox, Chrome and Safari. We do not believe this restriction to be unreasonable, 
+especially as all browers adopt widely used standards.
+
+%The manipulative attempts to be responsive to an individual user's browser and display options, and 
+%heuristically make efficient use of available space. That being said, higher resolution/larger displays 
+%are desirable when dealing with the full model and some of the larger datasets introduced in later 
+%lessons (see Section \ref{sec:conditionallessons}).
+%
+%mention that some ui considerations can result in very slight rounding errors
+%
+%solver: gradient ascent is simple (except for $\ell_1$ regularization), but it can take some finessing to make it visually appealing. We recursively call the solve function on a polynomial-decreasing schedule
+%
+%sigmoidal scaling for sliders, log-likelihood bars
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{Pedagogical Aims}\label{sec:aims}
 
 \NoteJE{This key section is a bit hard to read and especially to skim.
@@ -403,8 +668,6 @@ take extreme values (go to $\pm \infty$). Further, though $f_k$ is commonly desi
 this is not a strict requirement, and defining non-binary feature functions, such as one that fires in 
 proportion to some property of the datum (e.g., the number of sides of a shape) can affect the
 proportions of feature counts.
-
-% (and the importance of regularization)
 
 Our manipulative must generalize the above points to conditional models. In particular, students should 
 understand the effect the amount of data (per context) has on what features are appropriate to define 
@@ -495,261 +758,6 @@ We should note that we are \textit{not} concerned with computational issues here
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{Virtual Manipulative}\label{sec:overview}
-\begin{figure*}
-\centering
-\includegraphics[scale=.5]{images/lesson1-050913-intro.PNG}
-\caption{\NoteFF{Add references} Screenshot of the first lesson from the virtual manipulative.}
-\label{fig:lesson1}
-\end{figure*}
-
-\NoteJE{maybe move this section before ``pedagogical aims'' so that
-  the reader can find out sooner about our actual contribution,
-  a.k.a. The Cool Stuff?  Then the pedagogical aims would lead right
-  into the lessons or could even be combined with them.}
-
-We have made an anonymized version available at \WhereToFind{}. 
-We encourage the reader to play with it in tandem to reading this paper.
-
-While our primary goal was to teach log-linear models within the context of NLP, 
-we thought it myopic to outright limit users to those interested or experienced 
-in NLP. %, due in part to the prevalence and success log-linear models boast 
-%throughout a number of varied computational fields. 
-\NoteJE{The next two sentences seem unnecessary since they'll be
-  obvious by the end of the paper if they aren't already.  Again,
-  shouldn't we spend as much time as we can on what it's like for the
-  student and teacher to use the manipulative, rather than on our
-  (mostly) boring and irrelevant experience of designing and coding
-  it?  The goal of the paper is to sell other teachers on using the
-  app.}  One of the guiding design goals was to make the educational
-tool easy to use by both students and instructors, so that instructors
-could tailor the lessons to the needs, interests and abilities of the
-students. To that end, our manipulative has three primary components:
-the student interface (front-end), important aspects transparent to
-the instuctor, and the back-end implementation.
-
-\subsection{Student Interface}
-The basic unit of completion in our manipulative is a \textit{lesson},
-where the aim is to further examine some subset of the goals from
-Section \ref{sec:aims}.\NoteJE{Again, beware of nerdview.  How about:
-  ``Each lesson addresses some of the points above.''  Even that could
-  be cut, because duh.}  No matter the complexity of a lesson, the main
-premise behind each is for the student to play either a ``matching
-game'' or a ``log-likelihood game'' on a provided dataset \Data{}. The
-data, grouped by context and presented visually at the type-level as
-different shapes, images, or raw text, are modeled by two
-distributions of interest: the empirical $\tilde{p}$
-\eqref{eqn:empirical_distr}, and an appropriately defined log-linear
-model $p_{\vec{\theta}}$ \eqref{eqn:conditional_loglin}.  The
-student controls $p_{\vec{\theta}}$ via a slider bar, thereby
-``physically'' manipulating the parameters $\vec{\theta}$.\NoteJE{And
-  that makes the shapes GROW and SHRINK!  COOOOL!!!}
-
-See Figure \ref{fig:lesson1} for the general interface.\NoteJE{I'd
-  lead with this.  In fact, I think the text shown in Fig. 1 is
-  extremely helpful for the reader to understand what this
-  manipulative is all about, which is so far rather obscure even
-  though we're well into the paper by now.  Maybe encourage the reader
-  explicitly to read Fig. 1, and maybe enlarge it a bit (although the
-  reader can zoom in if they're reading onscreen).  In the final
-  version, you might be able to get a higher-res screenshot by zooming
-  the browser (and using an appropriately large window); this gives a
-  larger image and larger-font text, which you can shrink back again
-  in the PDF.}  Note in particular the data area \NoteFF{ref}, the
-feature weight sliders \NoteFF{ref}, and the log-likelihood score
-\NoteFF{ref}. Each datum has two shapes associated with it, an
-``uninteresting'' gray outline ($\empirical{}$) and a salient
-``interesting'' object ($p_{\vec{\theta}}$). The size (area) of
-each shape is proportional to its probability mass, while its color
-indicates whether the observed or expected count is larger.  The
-number above and to the left of each datum is that type's empirical
-count, while the number above and to the right is its expected count.
-For instance, in Figure \ref{fig:lesson1}, the data --- 30 solid
-circles, 15 striped circles, 10 solid triangles, and 5 striped
-triangles --- are modeled by the two indicator features
-$f_{\textrm{circle}}$ and $f_{\textrm{solid}}$. With $\vec{\theta} =
-0$ we have the uniform distribution, so the solid circle is contained
-in its gray outline ($\empirical{}(\textrm{solid circle}) >
-p_{\vec{\theta}}(\textrm{solid circle})$), the striped triangle
-contains its gray outline ($\empirical{}(\textrm{striped triangle}) <
-p_{\vec{\theta}}(\textrm{striped triangle})$), and the striped
-circle and gray outline are coincident ($\empirical{}(\textrm{striped
-  circle}) = p_{\vec{\theta}}(\textrm{striped circle})$).
-\footnote{This example describes a globally normalized model, and as
-  such there is only one context. See \S\ref{sec:conditionallessons}
-  for conditional models.}  See Figure \ref{fig:colorsize_inventory}
-for a summary of how we use size and color to indicate salient
-information.
-
-In the \textit{matching game}, the student tries to match $p_{\vec{\theta}}$ to 
-$\tilde{p}$ --- find $\vec{\theta}$ such that $p_{\vec{\theta}}(y\mid x) 
-= \tilde{p}(y\mid x)$, for all $(x,y)$. The game is to try to make all of the salient log-linear objects 
-equal in size (and color) to their corresponding gray outline. The student ``wins'' once the maximum
-number of log-linear objects turn gray, thereby indicating the best possible fit.
-%Rather than force students to numerically compare the
-%two distributions, we scale the shape's size to indicate its type's probability
-%under either distribution. We represent $\tilde{p}$ by a gray 
-%outline, and use colors and shading to make $p_{\vec{\theta}}$ salient. 
-
-An alternative game to play is the \textit{log-likelihood game}, where the goal is to
-maximize the (regularized) training log-likelihood. We represent the model's objective as a scalable 
-bar graph (\NoteFF{ref}), shown directly above the data, thereby providing a quick way to distill 
-the overall quality of the model. The game is to make the bar as long as possible.
-%As shown in \NoteFF{fix} Figure \ref{fig:llbar}, we also represent the regularization penalty
-%, and the objective under the ``true'' (generating) model parameters, when known.
-
-Note that these games are not disjoint, nor are they the only ones that can be played.
-For instance, when playing the log-likelihod game, the students can think about how well 
-the shapes match, particularly when more advanced concepts such as regularization and conjoined features are 
-introduced. Also, the student can play a variant of the matching game, where the goal
-is to match the observed and expected feature counts. The particular game being played
-in each lesson is described in the instruction area (\NoteFF{ref}), which the student should
-read carefully, since this may explain what the data and particular task are, justify 
-modeling choices, and ask lesson-specific questions. 
-
-%How we indicate salience is important. As already mentioned, we 
-%As documented in Figure \ref{fig:colorsize_inventory}, we utilize both size and color to 
-%convey these distribution changes: the three colors red, gray and blue illustrate the 
-%difference between observed and expected counts, while the size (area) of the shapes 
-%indicates the type's mass differences.
-
-%What the student interfaces with must reliably allow us to achieve the goals
-%laid out in Section \ref{sec:aims}. Figure \ref{fig:lesson1} illustrates the basic 
-%blocked interface a user encounters. The two block areas at the top of the 
-%page serve basic navigation and instructional needs while the bottom five provide 
-%the requiste interactions with the model. \NoteFF{add refs to Fig {\ref{fig:lesson1}} 
-%overlay.} 
-%The student should read carefully the instructions, dragging the instruction 
-%area larger if necessary, since this is where the instructor may explain 
-
-\begin{figure}[t]
-\centering
-\small
-\begin{tabular}{
->{\centering\arraybackslash}m{.18\columnwidth} 
->{\centering\arraybackslash}m{.18\columnwidth}
->{\centering\arraybackslash}m{.18\columnwidth}
->{\centering\arraybackslash}m{.18\columnwidth}}
-
-\textbf{Quantity of Interest} & $\mathbf{<0}$ 
-& $\mathbf{= 0}$ & $\mathbf{> 0}$\\ \\
-
-$ \mathbb{E}_{\empirical{}}\left[\vec{f}\right] 
-- \mathbb{E}_{{p_{\vec{\theta}}}}\left[\vec{f}\right]$, and 
-$\nabla_{\vec{\theta}} F$
-& {\bf \color{red} \texttransparent{.5}{ red } }
-& {\bf \color{gray}\texttransparent{.55}{ gray } }
-& {\bf \color{blue} \texttransparent{.55}{ blue } }\\  \\
-\vspace{.5em}
-%
-%$\nabla_{\vec{\theta}} F$ visualization
-%& \includegraphics[scale=.25]{images/goldilocks-gradient-small.PNG}
-%& \includegraphics[scale=.25]{images/goldilocks-gradient-justright.PNG}
-%& \includegraphics[scale=.25]{images/goldilocks-gradient-large.PNG}\\ \\ 
-
-
-%& $<0$ & $= 0$ & $> 0$\\\hline\hline \\
-$\empirical{} - p_{\vec{\theta}} $& \includegraphics[scale=.25]{images/goldilocks-circle-small.PNG}
-& \includegraphics[scale=.25]{images/goldilocks-circle-justright.PNG}
-& \includegraphics[scale=.25]{images/goldilocks-circle-large.PNG}\\
-\end{tabular}
-
-\caption{Colors indicate the sign of \eqref{eqn:obsexp} while the size (area) of 
-the shapes indicates the difference betwen that type's probability under the 
-current model and the empirical distribution (gray outline).}
-\label{fig:colorsize_inventory}
-\end{figure}
-
-However, solving more complex models may be too tedious or difficult. 
-The student may then make use of \textit{hints} \NoteFF{ref}, such as
-viewing each component of the gradient, changing all feature weights by 
-linearly following the gradient (as given by ``Step size''), or simply having
-the manipulative solve the problem and providing feedback at each iteration 
-of gradient ascent.
-
-Once the student is comfortable with the provided model and data, the student
-can begin to play around with the dataset and model options. These utilities, such as
-generating a new random challenge and experimenting with regularizaiton, 
-are described more in Section \ref{sec:lessons}.
-
-
-\subsection{The Instructor Interface: Creating and Tailoring Lessons}\label{sec:tailoring}
-To support a wide-range of lessons, the manipulative has support for twelve predefined shape and fill combinations.
-As seen in Figure \ref{fig:shape_inventory}, the available shapes are circles, triangles, squares and pentagons,
-where each can be solid, striped or hollow.
-
-However, it is important for the instructor to be able to tailor lessons to his or her students' needs, 
-interests, and abilities. For instance, it may be appropriate to reason about different types of shapes
-when introducing students to log-linear models, but eventually NLP students will want to think about 
-how log-linear models can be applied to NLP problems, whereas vision students will want to think about 
-how to apply them to vision problems. Therefore, we have designed the manipulative to handle text
-and arbitrary images as well (c.f. Figure \ref{fig:imgtxt_inventory}).
-
-\begin{figure}[t]
-\begin{center}
-\begin{subfigure}[b]{\columnwidth}
-\centering
-\includegraphics[scale=.5]{images/different_shapes_fills3x4.PNG}
-\caption{Inventory of available shapes and fills. Note that while normally the color is indicative of the sign of \eqref{eqn:obsexp}, here the colors are solely provided as example.}
-\label{fig:shape_inventory}
-\end{subfigure}
-
-\vspace{1em}
-\begin{subfigure}[b]{\columnwidth}
-\centering
-\includegraphics[scale=.5]{images/different_shapes_fills3x4.PNG}
-\caption{\NoteFF{Replace with actual example text and images} Examples of including arbitrary images and text.}
-\label{fig:imgtxt_inventory}
-\end{subfigure}
-\caption{Inventory of available shapes and objects.}
-\label{fig:inventory}
-\end{center}
-\end{figure}
-
-Tailoring lessons to the students' needs is as simple as editting a couple text files. These must detail:
-\begin{inparaenum}[(1)]
-\item a set of features, 
-\item a set of contexts, and
-\item for each context, a set of uniquely featurized events, including counts and visual positions.
-\end{inparaenum}
-These simple requirements allow one to describe some rather involved models. For example, some of 
-the features may be marked as ``hidden'' to the student, thereby allowing the student to experience 
-model mismatch. If the set of contexts is missing, the model is assumed to contain only 
-one context and be globally normalized. Note that the visual positioning information is pedagogically 
-important: aligning objects by orthogonal descriptions, e.g., circles vs. triangles or solid vs. striped, 
-can make feature contrasts stand out more.
-
-Finally, because an instructor may not want all functionality to always be available (e.g., hiding the ``solve''
-capability in early lessons), we allow the instructor to declaratively make certain lesson-specific changes to 
-the interface, \textit{without} going into the back-end code. 
-
-\subsection{Back-End Implementation}
-Broadly, the virtual manipulative is designed to be widely available and have minimal-to-no start-up cost. 
-Aside from reading the lesson data and instruction files from the web server, the manipulative is fully 
-client-side. The back-end is written in Javascript, and uses common and well-supported open-source 
-libraries to help with visualization and cross-browser compatibility.\footnote{Specifically and in order, 
-\texttt{d3} (\url{d3js.org/}),
-\texttt{jQuery} (\url{jquery.com/}), 
-\texttt{jQuery UI} (\url{jqueryui.com}),
-\texttt{jQuery Tools} (\url{jquerytools.org/}), and
-\texttt{qTip} (\url{craigsworks.com/projects/qtip/}).}
-
-That being said, eventually the buck must stop somewhere and the manipulative does rely on certain HTML5 
-capabilities. Unfortunately, not all current browsers support these capabilities. The manipulative works 
-with recent verisons of Firefox, Chrome and Safari. We do not believe this restriction to be unreasonable, 
-especially as all browers adopt widely used standards.
-
-%The manipulative attempts to be responsive to an individual user's browser and display options, and 
-%heuristically make efficient use of available space. That being said, higher resolution/larger displays 
-%are desirable when dealing with the full model and some of the larger datasets introduced in later 
-%lessons (see Section \ref{sec:conditionallessons}).
-%
-%mention that some ui considerations can result in very slight rounding errors
-%
-%solver: gradient ascent is simple (except for $\ell_1$ regularization), but it can take some finessing to make it visually appealing. We recursively call the solve function on a polynomial-decreasing schedule
-%
-%sigmoidal scaling for sliders, log-likelihood bars
 
 \section{Provided Lessons}\label{sec:lessons}
 
