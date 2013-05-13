@@ -267,14 +267,14 @@ on the effectiveness of manipulatives.
 
 Using concrete manipulatives has been shown effective but they present certain problems, including procurement 
 of the necessary materials, replicability and applicability to certain concepts and group of students. These issues, among others, have 
-resulted in increased interest over the past two decades into \textit{virtual manipulatives}. 
+resulted in increased interest over the past two decades into \textit{virtual manipulatives}, including the creation of 
+the National Library of Virtual Manipulatives.\footnote{\url{nlvm.usu.edu/en/nav/vlibrary.html} and 
+\url{enlvm.usu.edu/ma/nav/doc/intro.jsp}} 
 Both \newcite{clements1996concrete} and \newcite{moyer2002virtual} provide accessible overviews of 
 virtual manipulatives in early math education, but for our current purposes, the following highly simplified definition 
 suffices: they are the virtual (e.g., web-based) analogue of concrete manipulatives. Virtual manipulatives give students the 
 ability to affect some change upon a system and thus learn underlying properties \cite{moyer2002virtual}.
-
-This latter point is most applicable here, 
-since 
+This latter point is particularly applicable for log-linear models, given the difficulties they present.
 
 \Commented{
 "Clements and Sarama
@@ -297,22 +297,29 @@ or reading and writing numbers’’" \cite{linder2011early}
   these abstract models.}
 }
 
+Members within the NLP and speech communities have previously explored manipulatives and the idea of
+``learning by doing.''
+\newcite{eisner-2002-tnlp} presented a spreadsheet-based posterior- and Viterbi-decoding Hidden Markov Models 
+on provided synthetic data, allowing students to develop intuitions for the underlying statistical properties; 
+\newcite{nouza1999teaching} explored VISPER, an applied educational tool that wrapped various speech technologies and 
+was also targeted toward understanding the acoustics and overall recognition pipeline. 
+\newcite{light-tnlp-2005} developed web interfaces for a number of core NLP technologies and systems, such as parsers, part-of-speech 
+taggers, and finite-state transducers. 
+Most manipulatives/interfaces targeted at NLP have been virtual but a notable exception is \newcite{halteren-tnlp-2002}, 
+who created a (physical) board game for parsing. 
 
+In machine learning, there are a plethora of virtual manipulatives demonstrating central concepts such 
+as decision boundaries and kernel methods.\footnote{\url{cs.cmu.edu/~ggordon/SVMs/svm-applet.html}, i.a.} 
+There are also a number of systems built around teaching artificial intelligence: these tend to to consist of controlling 
+virtual robots\footnote{E.g., \url{http://www-inst.eecs.berkeley.edu/~cs188/pacman/pacman.html}}
+%, or \url{http://www.cs.rochester.edu/trac/quagents}} 
+or physical ones \newcite{tokic2012robot}.
+Overall, manipulatives for math, NLP and ML have been successful in teaching their core concepts. 
 
-
-manipulatives in math: ``Learning and understanding mathematics, at every level, requires student engagement.'' 
-National Library of Virtual Manipulatives\footnote{\url{nlvm.usu.edu/en/nav/vlibrary.html}} 
-
-Members within the NLP community have previously explored this idea of ``teaching by doing.'' 
-\newcite{eisner-2002-tnlp} presented a spreadsheet-based Hidden Markov Model.
-\newcite{nouza1999teaching} explored a suite of interfaces and visualizations for various speech technologies 
-\cite{light-tnlp-2005} developed web interfaces for a number of core NLP technologies and systems, such as parses, part-of-speech 
-taggers, and finite-state transducers. They found this setup allowed students without the requisite background to experiment with and 
-begin to learn about different NLP algorithms. 
-
-\cite{halteren-tnlp-2002}  board game for teaching parsing
-
-Why do we focus on shapes, rather than words? \NoteFF{maybe we can argue via virtual manipulatives}\NoteJE{yes}
+Next, we present our main contribution, a virtual manipulative that teaches log-linear models. We initially ground 
+the models in simple objects such as circles and regular polygons, and appeal to the 
+students' physical intuitions. Once this link has been established, we can use text and images to provide area/task-specific 
+examples.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
