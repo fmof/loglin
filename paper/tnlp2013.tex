@@ -33,6 +33,7 @@
 \newcommand{\RemoveFF}[1]{\NoteSigned{Remove (FF)}{Crimson}{#1}}
 \newcommand{\NoteFF}[1]{\NoteSigned{FF}{LightBlue}{#1}}
 \newcommand{\NoteJE}[1]{\NoteSigned{JE}{LightGreen}{#1}}
+\newcommand{\Commented}[1]{}
 
 \newcommand{\empirical}[0]{\ensuremath{\tilde{p}}}
 \newcommand{\Data}[0]{\ensuremath{\mathcal{D}}}
@@ -103,23 +104,19 @@ through a manipulative exercise that centers on fitting some model
 $p_{\vec{\theta}}(y \mid x)$, where ${\cal Y}(x)$ is a collection of
 shapes, words, or images such as parse trees.  Each lesson is peppered
 with questions, and students could be asked to answer some of these
-questions in writing.\footnote{We found that answering {\em all} the
-  questions\NoteJE{how many?} took them from ???--???
-  words\NoteJE{Frank, fill in based on the submitted homeworks}, which
+questions in writing.\footnote{There are approximately six questions per
+lesson. We found that answering {\em all} the
+  questions took them about 2300 words, or just under 23 words per question, which
   was probably both unreasonable and unnecessary.}\NoteJE{We might
   consider releasing a couple of pencil-and-paper problems from past
   exams.}  Other instructors can add new lessons by writing 
 configuration files (see section~\ref{sec:tailoring}).
 
-\nocite{klein-tnlp-2005}\NoteFF{Is it worthwhile to cite Klein (2005)?
-  In it, Klein describes the statistical NLP course he taught in 2004,
-  where one of the assignments was to build a maxent POS
-  tagger.}\NoteJE{Probably not: he said he was going to remove this
-  assignment next time because it was too slow to train!  However, I
+\Commented{\NoteJE{However, I
   think it would be helpful (maybe in the final version?) to list
   other people's NLP homework assignments or practical exercises that
   use maxent.  I bet you could find a few good assignments on the web,
-  including in the NLTK book.}
+  including in the NLTK book.}}
 
 \section{Why Teach With Log-Linear Models?}
 
@@ -223,6 +220,11 @@ Further reading includes \cite{smith-2011}.
   the visualization before and is presumably impatient to get to it.
   It's true that the section is not that long, so I dunno.  But it's not that
   important either, even though it was slow to write.}
+\NoteFF{Perhaps move this to the end, as a ``future works'' or 
+``possible extensions'' section... we motivate the section by providing
+something that teachers can use to motivate students to use log-linear models
+in actual projects (not just homeworks), or as ways to extend the lessons
+already there.}
 
 Conditional log-linear models were first popularized in computational
 linguistics by a group of researchers associated with the IBM speech
@@ -332,18 +334,19 @@ Why do we focus on shapes, rather than words? \NoteFF{maybe we can argue via vir
   eisner-2002-tnlp, although you don't necessarily need to follow that
   format.}
 
-We wish to make log-linear models a concept that students can reason
+\Commented{We wish to make log-linear models a concept that students can reason
 about quickly and intuitively. We found that expanding upon the
 difficulties from Section \ref{sec:challenges} and listing specific
 pedagogical goals helped focus the design of the virtual manipulative
 and hone the creation and expected take-aways of individual
-lessons.\NoteJE{True but boringly meta. We also used section headers
-  because we found them useful to organize the paper, but we don't
-  have to say so. :-) Just list the goals or better yet the facts.
-  They'll speak for themselves.}
+lessons.
+\NoteJE{True but boringly meta. We also used section headers
+because we found them useful to organize the paper, but we don't
+have to say so. :-) Just list the goals or better yet the facts.
+They'll speak for themselves.}
+}
 
-\subsection{Modeling Implications\NoteJE{I don't understand this
-    (ambiguous) section title}}
+\subsection{Feature Design and Modeling Considerations}
 
 Given $N$ data points $\Data{} = \{( x_i, y_i)\ \mid\ 1 \le i \le N\}$, one of the initial, and perhaps most important, decisions 
 to make is choosing an appropriate model and distribution family. As argued above, for this manipulative we focus on 
@@ -364,10 +367,9 @@ the model satisfy?
  
 We also wish to impart the differences between conditional models and
 globally normalized ones
-$\hat{p}_{\vec{\theta}}\left(y\right)$.\NoteJE{I'd get rid of the hat
-  in $\hat{p}$.  It hasn't been defined or used above, and may be
-  distracting, so you could get rid of it later as well.}  Although
-these context-nescient\NoteJE{???} models allow students to focus on
+$p_{\vec{\theta}}\left(y\right)$. Although
+these context-nescient\NoteJE{???} 
+\NoteFF{ignorant? unaware?} models allow students to focus on
 understanding some of the core underlying mathematical concepts of
 exponential models, such as feature interations and weight tradeoffs,
 there are important differences between global and conditional models
@@ -412,7 +414,7 @@ features that only fire on conditions have no effect on conditional distribution
 
 % defined over \Data{} , we are interested in estimating distributions 
 %\begin{equation}
-%\hat{p}_{\vec{\theta}}\left(y\ \mid\ x\right) = \frac{u(x, y)}{\sum_{y'} u(x,y')},
+%p_{\vec{\theta}}\left(y\ \mid\ x\right) = \frac{u(x, y)}{\sum_{y'} u(x,y')},
 %\label{eqn:conditional_loglin}
 %\end{equation}
 %from the unnormalized scores $u(x,y)$
@@ -438,7 +440,7 @@ The maximizer is the $\vec{\theta^*}$ that solves equation \eqref{eqn:grad}:
 \nabla_{\vec{\theta}} F
  = &
 \ \mathbb{E}_{\empirical{}}\left[\vec{f}(X,Y)\right] 
-- \mathbb{E}_{{\hat{p}_{\vec{\theta}}}}\left[\vec{f}(X,Y)\right]\\
+- \mathbb{E}_{{p_{\vec{\theta}}}}\left[\vec{f}(X,Y)\right]\\
  & - C \nabla_{\vec{\theta}}R(\vec{\theta})
 \label{eqn:grad} \\
 %= &\ \mathcal{C}(\empirical{}, p_{\vec{\theta}}) - C \nabla_{\vec{\theta}} R(\vec{\theta})\\
@@ -454,7 +456,7 @@ We believe the most important concept is that of the non-regularized gradient be
 feature counts and the expected feature counts:
 \begin{equation}
 \ \mathbb{E}_{\empirical{}}\left[\vec{f}(X,Y)\right] 
-- \mathbb{E}_{{\hat{p}_{\vec{\theta}}}}\left[\vec{f}(X,Y)\right].
+- \mathbb{E}_{p_{\vec{\theta}}}\left[\vec{f}(X,Y)\right].
 \label{eqn:obsexp} 
 \end{equation}
 Students should already have been introduced to this when considering the difference between type and 
@@ -539,8 +541,8 @@ data, grouped by context and presented visually at the type-level as
 different shapes, images, or raw text, are modeled by two
 distributions of interest: the empirical $\tilde{p}$
 \eqref{eqn:empirical_distr}, and an appropriately defined log-linear
-model $\hat{p}_{\vec{\theta}}$ \eqref{eqn:conditional_loglin}.  The
-student controls $\hat{p}_{\vec{\theta}}$ via a slider bar, thereby
+model $p_{\vec{\theta}}$ \eqref{eqn:conditional_loglin}.  The
+student controls $p_{\vec{\theta}}$ via a slider bar, thereby
 ``physically'' manipulating the parameters $\vec{\theta}$.\NoteJE{And
   that makes the shapes GROW and SHRINK!  COOOOL!!!}
 
@@ -558,7 +560,7 @@ See Figure \ref{fig:lesson1} for the general interface.\NoteJE{I'd
 feature weight sliders \NoteFF{ref}, and the log-likelihood score
 \NoteFF{ref}. Each datum has two shapes associated with it, an
 ``uninteresting'' gray outline ($\empirical{}$) and a salient
-``interesting'' object ($\hat{p}_{\vec{\theta}}$). The size (area) of
+``interesting'' object ($p_{\vec{\theta}}$). The size (area) of
 each shape is proportional to its probability mass, while its color
 indicates whether the observed or expected count is larger.  The
 number above and to the left of each datum is that type's empirical
@@ -569,26 +571,26 @@ triangles --- are modeled by the two indicator features
 $f_{\textrm{circle}}$ and $f_{\textrm{solid}}$. With $\vec{\theta} =
 0$ we have the uniform distribution, so the solid circle is contained
 in its gray outline ($\empirical{}(\textrm{solid circle}) >
-\hat{p}_{\vec{\theta}}(\textrm{solid circle})$), the striped triangle
+p_{\vec{\theta}}(\textrm{solid circle})$), the striped triangle
 contains its gray outline ($\empirical{}(\textrm{striped triangle}) <
-\hat{p}_{\vec{\theta}}(\textrm{striped triangle})$), and the striped
+p_{\vec{\theta}}(\textrm{striped triangle})$), and the striped
 circle and gray outline are coincident ($\empirical{}(\textrm{striped
-  circle}) = \hat{p}_{\vec{\theta}}(\textrm{striped circle})$).
+  circle}) = p_{\vec{\theta}}(\textrm{striped circle})$).
 \footnote{This example describes a globally normalized model, and as
   such there is only one context. See \S\ref{sec:conditionallessons}
   for conditional models.}  See Figure \ref{fig:colorsize_inventory}
 for a summary of how we use size and color to indicate salient
 information.
 
-In the \textit{matching game}, the student tries to match $\hat{p}_{\vec{\theta}}$ to 
-$\tilde{p}$ --- find $\vec{\theta}$ such that $\hat{p}_{\vec{\theta}}(y\mid x) 
+In the \textit{matching game}, the student tries to match $p_{\vec{\theta}}$ to 
+$\tilde{p}$ --- find $\vec{\theta}$ such that $p_{\vec{\theta}}(y\mid x) 
 = \tilde{p}(y\mid x)$, for all $(x,y)$. The game is to try to make all of the salient log-linear objects 
 equal in size (and color) to their corresponding gray outline. The student ``wins'' once the maximum
 number of log-linear objects turn gray, thereby indicating the best possible fit.
 %Rather than force students to numerically compare the
 %two distributions, we scale the shape's size to indicate its type's probability
 %under either distribution. We represent $\tilde{p}$ by a gray 
-%outline, and use colors and shading to make $\hat{p}_{\vec{\theta}}$ salient. 
+%outline, and use colors and shading to make $p_{\vec{\theta}}$ salient. 
 
 An alternative game to play is the \textit{log-likelihood game}, where the goal is to
 maximize the (regularized) training log-likelihood. We represent the model's objective as a scalable 
@@ -634,7 +636,7 @@ modeling choices, and ask lesson-specific questions.
 & $\mathbf{= 0}$ & $\mathbf{> 0}$\\ \\
 
 $ \mathbb{E}_{\empirical{}}\left[\vec{f}\right] 
-- \mathbb{E}_{{\hat{p}_{\vec{\theta}}}}\left[\vec{f}\right]$, and 
+- \mathbb{E}_{{p_{\vec{\theta}}}}\left[\vec{f}\right]$, and 
 $\nabla_{\vec{\theta}} F$
 & {\bf \color{red} \texttransparent{.5}{ red } }
 & {\bf \color{gray}\texttransparent{.55}{ gray } }
@@ -648,7 +650,7 @@ $\nabla_{\vec{\theta}} F$
 
 
 %& $<0$ & $= 0$ & $> 0$\\\hline\hline \\
-$\empirical{} - \hat{p}_{\vec{\theta}} $& \includegraphics[scale=.25]{images/goldilocks-circle-small.PNG}
+$\empirical{} - p_{\vec{\theta}} $& \includegraphics[scale=.25]{images/goldilocks-circle-small.PNG}
 & \includegraphics[scale=.25]{images/goldilocks-circle-justright.PNG}
 & \includegraphics[scale=.25]{images/goldilocks-circle-large.PNG}\\
 \end{tabular}
