@@ -101,8 +101,7 @@ and $n$-gram models.
 \begin{figure*}
 \centering
 \includegraphics[scale=.49]{images/lesson1-051313-intro-zoom-instmore.PNG}
-\caption{The first lesson; the instructions 
-have been enlarged for presentation considerations.}
+\caption{The first lesson; the lower half is larger in reality.}
 \label{fig:lesson1}
 \end{figure*}
 
@@ -178,10 +177,19 @@ and NLTK \cite{bird2009natural}.\footnote{\label{fn:bigY}A caveat is that generi
   in \eqref{eqn:loglin} and the gradient of
   \eqref{eqn:reg_ll}.  This is impractical when ${\cal Y}(x)$ is large, as in
   language modeling or structured prediction.  One will do better to
-  use specialized algorithms that exploit special structure in the
-  feature set, or to fall back on sampling or variational
-  approximation if no such structure is available.  In these settings,
-  students will have to use other tools or write their own code.}
+ one either restrict ${\cal Y}(x)$ before training
+\cite{johnson-et-al-1999}, or else use techniques such as dynamic
+programming or sampling, e.g., 
+\cite{lafferty-mccallum-pereira-2001} and \cite{rosenfeld-chen-zhu-2001}. 
+These often exploit special
+structure in the feature set; students will have to use other tools or 
+write their own code.}
+%
+%  use specialized algorithms that exploit special structure in the
+%  feature set, or to fall back on sampling or variational
+%  approximation if no such structure is available.  In these settings,
+%  students will have to use other tools or write their own code.}
+
 %\NoteJE{what else?  can we recommend one?}
 %\NoteFF{I've only ever used my own so I wouldn't feel comfortable
 %recommending any.}
@@ -255,15 +263,13 @@ log-linear models is prerequisite to
 \section{(Virtual) Manipulatives}
 The idea of making abstract mathematical concepts intuitive and recognizable as familiar objects 
 has been explored successfully for many years in other disciplines. Specifically within early 
-math education, researchers have found using \textit{manipulatives} --- some concrete (tangible) 
+math education, researchers have found using \textit{manipulatives}---some concrete (tangible) 
 objects --- to be an effective teaching strategy. Examples of manipulatives include using groups of 
 sticks to represent natural numbers, or geoboards\footnote{A geoboard uses nail (generally) to represent 
 the 2D integral plane.} to explore (planar) geometric properties, such as area. The key idea is to 
 successfully ground and link the \textit{language} (symbols, mathematical notation) to a well-known physical 
-object. 
-A full survey of manipulatives' use in math education is beyond the scope of this paper; see the classic analysis from 
-\newcite{sowell1989effects}, as well as the recent one by \newcite{carbonneau2013meta}, for more information 
-on the effectiveness of manipulatives.
+object; for more, see the classic and recent analyses from
+\newcite{sowell1989effects} and \newcite{carbonneau2013meta}.
 
 Using concrete manipulatives has been shown effective but they present certain problems, including procurement 
 of the necessary materials, replicability and applicability to certain concepts and group of students. These issues, among others, have 
@@ -271,8 +277,7 @@ resulted in increased interest over the past two decades into \textit{virtual ma
 the National Library of Virtual Manipulatives.\footnote{\url{nlvm.usu.edu/en/nav/vlibrary.html} and 
 \url{enlvm.usu.edu/ma/nav/doc/intro.jsp}} 
 Both \newcite{clements1996concrete} and \newcite{moyer2002virtual} provide accessible overviews of 
-virtual manipulatives in early math education, but for our current purposes, the following highly simplified definition 
-suffices: they are the virtual (e.g., web-based) analogue of concrete manipulatives. Virtual manipulatives give students the 
+virtual manipulatives in early math education; briefly, they are the software analogue of concrete manipulatives. Virtual manipulatives give students the 
 ability to affect some change upon a system and thus learn underlying properties \cite{moyer2002virtual}.
 This latter point is particularly applicable for log-linear models, given the difficulties they present.
 
@@ -308,7 +313,7 @@ taggers, and finite-state transducers.
 Most manipulatives/interfaces targeted at NLP have been virtual but a notable exception is \newcite{halteren-tnlp-2002}, 
 who created a (physical) board game for parsing. 
 
-In machine learning, there are a plethora of virtual manipulatives demonstrating central concepts such 
+In machine learning, there are plethora of virtual manipulatives demonstrating central concepts such 
 as decision boundaries and kernel methods.\footnote{\url{cs.cmu.edu/~ggordon/SVMs/svm-applet.html}, i.a.} 
 There are also a number of systems built around teaching artificial intelligence: these tend to to consist of controlling 
 virtual robots\footnote{E.g., \url{http://www-inst.eecs.berkeley.edu/~cs188/pacman/pacman.html}}
@@ -391,16 +396,14 @@ shapes shrink, grow and change color according to the new distribution.
 
 Note in particular the data area (``Type Counts''), the
 feature weight sliders, and the log-likelihood score. 
-Each datum has two shapes associated with it, an
-``uninteresting'' gray outline ($\empirical{}$) and a salient
-``interesting'' object ($p_{\vec{\theta}}$). The size (area) of
-each shape is proportional to its probability mass, while its color
+Each datum has an outline and shape associated with it; the size (area) of
+each is proportional to its probability mass, while its color
 indicates whether the observed or expected count is larger.  The
-number above and to the left of each datum is that type's empirical
+number above and to the left of a shape is its empirical
 count, while the number above and to the right is its expected count.
-For instance, in Figure \ref{fig:lesson1}, the data --- 30 solid
+For instance, in Figure \ref{fig:lesson1}, the data---30 solid
 circles, 15 striped circles, 10 solid triangles, and 5 striped
-triangles --- are modeled by the two indicator features
+triangles---are modeled by the two indicator features
 $f_{\textrm{circle}}$ and $f_{\textrm{solid}}$. With $\vec{\theta} =
 0$ we have the uniform distribution, so the solid circle is contained
 in its gray outline ($\empirical{}(\textrm{solid circle}) >
@@ -541,7 +544,7 @@ and arbitrary images as well (c.f. Figure \ref{fig:imgtxt_inventory}).
 \end{center}
 \end{figure}
 
-Tailoring lessons to the students' needs is as simple as editting a couple text files. These must detail:
+Tailoring lessons to the students' needs is as simple as editing a couple text files. These must detail:
 \begin{inparaenum}[(1)]
 \item a set of features, 
 \item a set of contexts, and
@@ -559,7 +562,7 @@ capability in early lessons), we allow the instructor to declaratively make cert
 the interface, \textit{without} going into the back-end code. 
 
 \subsection{Back-End Implementation}
-Broadly, the virtual manipulative is designed to be widely available and have minimal-to-no start-up cost. 
+Broadly, the virtual manipulative is designed to be widely available and have no start-up cost. 
 Aside from reading the lesson data and instruction files from the web server, the manipulative is fully 
 client-side. The back-end is written in Javascript, and uses common and well-supported open-source 
 libraries to help with visualization and cross-browser compatibility.\footnote{Specifically and in order, 
@@ -764,9 +767,6 @@ We should note that we are \textit{not} concerned with computational issues here
 
 \section{Provided Lessons}\label{sec:lessons}
 
-\NoteJE{this will have to be shortened.  I suggest a narrative
-  description, and encourage the reader to go try it out!}
-
 %For instance, the student can 
 %pick some new secret weights, generate a new training dataset,
 %and re-estimate the weights given the new data ("New random 
@@ -892,64 +892,66 @@ conclusion
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{History and Applications}
-\NoteFF{RETITLE}
-
-\NoteJE{move to an appendix?}%
-\NoteFF{I like this in here. We might want to comment out some initially
-  but add it back in if any camera-ready allows for additional spaces}%
-\NoteJE{It's just that I don't want to keep the reader from getting to
-  the fresh stuff that we are presenting in the paper.  Possibly YOU found this 
-  more interesting than the visualization because you were already 
-  overly familiar with the visualization.  But the reader hasn't seen 
-  the visualization before and is presumably impatient to get to it.
-  It's true that the section is not that long, so I dunno.  But it's not that
-  important either, even though it was slow to write.}
-\NoteFF{Perhaps move this to the end, as a ``future works'' or 
-``possible extensions'' section... we motivate the section by providing
-something that teachers can use to motivate students to use log-linear models
-in actual projects (not just homeworks), or as ways to extend the lessons
-already there.}
-
-Conditional log-linear models were first popularized in computational
-linguistics by a group of researchers associated with the IBM speech
-and language group, who called them ``maximum entropy models,'' after
-a principle that can be used to motivate their form
-\cite{jaynes-1957}.  They applied the method to various binary or
-multiclass classification problems in NLP, such as prepositional
-phrase attachment \cite{ratnaparkhi-1994}, text categorization
-\cite{nigam-lafferty-mccallum-1999}, and boundary prediction
-\cite{beeferman-berger-lafferty-1999}.
-
-Of particular importance for NLP, these models can be also used for
-structured prediction problems such as tagging, parsing, chunking,
-segmentation, and language modeling.  A simple strategy is to reduce
-structured prediction to a sequence of multiclass log-linear
-predictions \cite{ratnaparkhi-1998}.  A more global approach---used in
-the original ``maximum entropy'' papers---is to use \eqref{eqn:loglin}
-to define the conditional probabilities of the steps in a generative
-process that gradually produces the structure
-\cite{rosenfeld-1994,berger-dellapietra-dellapietra-1996}.  This idea
-remains popular today and can be used to embed rich distributions
-into a variety of generative models \cite{bergkirkpatrick-et-al-2010}.
-For example, a PCFG that uses richly annotated nonterminals involves a
-large number of context-free rules.  Rather than estimating their
-probabilities separately, or with traditional backoff smoothing, a
-simpler approach is to use \eqref{eqn:loglin} to model the probability
-of all rules given their left-hand sides, based on features that
-consider subsets of the nonterminal annotations.\footnote{E.g., case,
-  number, gender, tense, aspect, mood, lexical head.  In the case of a
-  terminal rule, the spelling or morphology of the terminal symbol can
-  be considered.}  A final approach to structured prediction is to
-simply predict the structured output all at once, so that $y$ is a
-large structured object.  Since it is hard to enumerate
-a large set of possible outputs ${\cal Y}(x)$ (see footnote
-\ref{fn:bigY}), one can either restrict ${\cal Y}(x)$ before training
-\cite{johnson-et-al-1999}, or else use techniques such as dynamic
-programming or sampling, as in linear-chain conditional random fields
-\cite{lafferty-mccallum-pereira-2001} and whole-sentence language
-modeling \cite{rosenfeld-chen-zhu-2001}.
+%
+%\Commented{
+%\section{History and Applications}
+%\NoteFF{RETITLE}
+%
+%\NoteJE{move to an appendix?}%
+%\NoteFF{I like this in here. We might want to comment out some initially
+%  but add it back in if any camera-ready allows for additional spaces}%
+%\NoteJE{It's just that I don't want to keep the reader from getting to
+%  the fresh stuff that we are presenting in the paper.  Possibly YOU found this 
+%  more interesting than the visualization because you were already 
+%  overly familiar with the visualization.  But the reader hasn't seen 
+%  the visualization before and is presumably impatient to get to it.
+%  It's true that the section is not that long, so I dunno.  But it's not that
+%  important either, even though it was slow to write.}
+%\NoteFF{Perhaps move this to the end, as a ``future works'' or 
+%``possible extensions'' section... we motivate the section by providing
+%something that teachers can use to motivate students to use log-linear models
+%in actual projects (not just homeworks), or as ways to extend the lessons
+%already there.}
+%}
+%
+%Conditional log-linear models were first popularized in computational
+%linguistics by a group of researchers associated with the IBM speech
+%and language group, who called them ``maximum entropy models,'' after
+%a principle that can be used to motivate their form
+%\cite{jaynes-1957}.  They applied the method to various binary or
+%multiclass classification problems in NLP, such as prepositional
+%phrase attachment \cite{ratnaparkhi-1994}, text categorization
+%\cite{nigam-lafferty-mccallum-1999}, and boundary prediction
+%\cite{beeferman-berger-lafferty-1999}.
+%
+%Of particular importance for NLP, these models can be also used for
+%structured prediction problems such as tagging, parsing, chunking,
+%segmentation, and language modeling.  A simple strategy is to reduce
+%structured prediction to a sequence of multiclass log-linear
+%predictions \cite{ratnaparkhi-1998}.  A more global approach---used in
+%the original ``maximum entropy'' papers---is to use \eqref{eqn:loglin}
+%to define the conditional probabilities of the steps in a generative
+%process that gradually produces the structure
+%\cite{rosenfeld-1994,berger-dellapietra-dellapietra-1996}.  This idea
+%remains popular today and can be used to embed rich distributions
+%into a variety of generative models \cite{bergkirkpatrick-et-al-2010}.
+%For example, a PCFG that uses richly annotated nonterminals involves a
+%large number of context-free rules.  Rather than estimating their
+%probabilities separately, or with traditional backoff smoothing, a
+%simpler approach is to use \eqref{eqn:loglin} to model the probability
+%of all rules given their left-hand sides, based on features that
+%consider subsets of the nonterminal annotations.\footnote{E.g., case,
+%  number, gender, tense, aspect, mood, lexical head.  In the case of a
+%  terminal rule, the spelling or morphology of the terminal symbol can
+%  be considered.}  A final approach to structured prediction is to
+%simply predict the structured output all at once, so that $y$ is a
+%large structured object.  Since it is hard to enumerate
+%a large set of possible outputs ${\cal Y}(x)$ (see footnote
+%\ref{fn:bigY}), one can either restrict ${\cal Y}(x)$ before training
+%\cite{johnson-et-al-1999}, or else use techniques such as dynamic
+%programming or sampling, as in linear-chain conditional random fields
+%\cite{lafferty-mccallum-pereira-2001} and whole-sentence language
+%modeling \cite{rosenfeld-chen-zhu-2001}.
 
 \bibliography{tnlp}
 \bibliographystyle{acl}
