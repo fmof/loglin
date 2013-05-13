@@ -252,21 +252,53 @@ log-linear models is prerequisite to
   ${\cal Y}$.
 \end{itemize}
 
-\section{Manipulatives}
+\section{(Virtual) Manipulatives}
+The idea of making abstract mathematical concepts intuitive and recognizable as familiar objects 
+has been explored successfully for many years in other disciplines. Specifically within early 
+math education, researchers have found using \textit{manipulatives} --- some concrete (tangible) 
+objects --- to be an effective teaching strategy. Examples of manipulatives include using groups of 
+sticks to represent natural numbers, or geoboards\footnote{A geoboard uses nail (generally) to represent 
+the 2D integral plane.} to explore (planar) geometric properties, such as area.
+A full survey of manipulatives' use in math education is beyond the scope of this paper; see the classic analysis from 
+\newcite{sowell1989effects}, as well as the recent one by \newcite{carbonneau2013meta}, for more information 
+on the effectiveness of manipulatives.
 
+"Clements and Sarama
+(2005) cite six categories of math that emerge through
+play: ‘‘classiﬁcation (grouping and sorting), magnitude
+(describing or comparing the size of objects), dynamics
+(putting things together and taking them apart), pattern and
+shape (identifying or creating patterns or shapes, exploring
+geometry concepts), spatial relations (describing or drawing a location or direction), and enumeration (saying
+number words, counting, recognizing a number of objects,
+or reading and writing numbers’’" \cite{linder2011early}
+
+\Commented{
 \NoteJE{Start by explaining the use of manipulatives in early math
   education, perhaps including an example and a quote.  I tried to set
   this up at the end of the previous section by talking about
   ``familiar objects with predictable behavior.''  The bottom line is
   that we'd like students to develop \emph{physical} intuitions about
   these abstract models.}
+}
 
-\NoteFF{what is the history of virtual manipulatives in teaching CS? NLP?} the HMM spreadsheet \cite{eisner-2002-tnlp}
 
-%except for reading of data files, purely client-side $\Rightarrow$ very easy to set-up;
-%open-source;
-%data input format makes it extensible;
-%individual lessons can be tailored (e.g., hide/show buttons, different tool-tips for lessons)
+Both \newcite{clements1996concrete} and \newcite{moyer2002virtual} provide accessible overviews of 
+manipulatives in early math education. Though their definitions of virtual manipulatives are nuanced, they 
+agree on the basics...
+``link  iconic  and symbolic notation'' \cite{moyer2002virtual}; 
+
+manipulatives in math: ``Learning and understanding mathematics, at every level, requires student engagement.'' 
+National Library of Virtual Manipulatives\footnote{\url{nlvm.usu.edu/en/nav/vlibrary.html}} 
+
+Members within the NLP community have previously explored this idea of ``teaching by doing.'' 
+\newcite{eisner-2002-tnlp} presented a spreadsheet-based Hidden Markov Model.
+\newcite{nouza1999teaching} explored a suite of interfaces and visualizations for various speech technologies 
+\cite{light-tnlp-2005} developed web interfaces for a number of core NLP technologies and systems, such as parses, part-of-speech 
+taggers, and finite-state transducers. They found this setup allowed students without the requisite background to experiment with and 
+begin to learn about different NLP algorithms. 
+
+\cite{halteren-tnlp-2002}  board game for teaching parsing
 
 Why do we focus on shapes, rather than words? \NoteFF{maybe we can argue via virtual manipulatives}\NoteJE{yes}
 
@@ -582,8 +614,7 @@ are there?
 %MLE?)
  
 \NoteFF{FIX}
-We also wish to impart the differences between conditional models and
-globally normalized ones
+Contrasting conditional models and globally normalized ones
 $p_{\vec{\theta}}\left(y\right)$. Although
 these context-%nescient\NoteJE{???} 
 unaware models allow students to focus on
@@ -675,6 +706,8 @@ feature counts, and how expectation proportions affect how much one needs to cha
 now, with the gradient, they can better understand why, and thus justify and strengthen their developing intuitions.
 
 \NoteFF{how does the penalty $C$ affect the overall solution?}
+
+\NoteFF{what regularizers do we use?}
 
 While a number of students may have prior experience with numerical optimization, for those that haven't, the next 
 important ideas are that ``following'' the gradient will
