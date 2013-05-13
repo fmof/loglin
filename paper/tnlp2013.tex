@@ -303,7 +303,7 @@ contrasting exponential families \eqref{eq:loglin} with what students may iniita
 \end{equation}
 %where $c(x,y)$ and $c(x)$ represent bigram and unigram counts, respectively.
 While perhaps pragmatically the most important consequence of this modeling decision is that of 
-proper feature design, we wish studetns to consider additional implications.  
+proper feature design, we wish students to consider additional implications.  
 How does \eqref{eq:loglin} generalize other distributions: $\vec{\theta} = 0$ 
 yields the uniform distribution, but can one match the empirical? What constraints does 
 the model satisfy?
@@ -319,7 +319,7 @@ between global and conditional models that must be understood. For instance, in 
 features can be ``shared'' across conditions, which can help %the regularizer even if likelihood is the same. 
 generalization to unseen context-outcome pairs and maximizing the regularized objective.
 
-The modeler has the onus of proper feature design. That is, when defining $K$ 
+The modeler has the onus of proper feature design: when defining $K$ 
 appropriate features $f_k$, there are a number of at-times complex interactions 
 to consider, so the lessons and take-aways must reflect these complexities. 
 First, the student must intuit what good discriminative features are: 
@@ -370,10 +370,7 @@ features that only fire on conditions have no effect on conditional distribution
 \item Some distributions can't be matched --- but you get generalization
 \item It's possible to overfit the training data.  Regularization compensates for that and can in fact make you underfit.
 \item bias vs. variance
-\begin{itemize}
-\item In particular, weights may zoom off to +infinity or -infinity if a feature is always or never present on the *observed* examples (may need to cook special datasets for this)
 Gradient ascent and adaptive stepsize
-\end{itemize}
 \end{enumerate}
 
 \subsection{Importance of Objective} % and Evaluating the Model}
