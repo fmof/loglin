@@ -347,8 +347,9 @@ proportions of feature counts.
 % (and the importance of regularization)
 
 Our manipulative must generalize the above points to conditional models. In particular, students should 
-understand that frequent conditions are more influential and that the effect the amount of data 
-(per context) has on what features are appropriate to define. Finally, students need to know that 
+understand the effect the amount of data (per context) has on what features are appropriate to define 
+(e.g., that frequent conditions are more influential). It is also important to introduce backoff features 
+and smoothing, and why defining those coarser features are useful. Finally, students need to know that 
 features that only fire on conditions have no effect on conditional distribution.
 
 % defined over \Data{} , we are interested in estimating distributions 
@@ -365,16 +366,17 @@ features that only fire on conditions have no effect on conditional distribution
 %Therefore, we also 
 
 \subsection{Importance of the Objective and Parameter Estimation} % and Evaluating the Model}
-We summarize the model's quality via the (training) regularized conditional log-likelihood 
+We summarize the model's quality via the regularized conditional log-likelihood 
 \eqref{eqn:reg_ll},
 \begin{equation}
-F\left(\vec{\theta}\right) = \sum_{i=1}^N \log{\hat{p}_{\vec{\theta}}\left(y_i\ \mid\ x_i\right)} - C \cdot R\left(\vec{\theta}\right).
+F\left(\vec{\theta}\right) = \sum_{i=1}^N \log{\hat{p}_{\vec{\theta}}\left(y_i\ \mid\ x_i\right)} - C \cdot R\left(\vec{\theta}\right);
 \label{eqn:reg_ll}
 \end{equation}
+$C \ge 0$ is the penalty for the regularizer $R(\vec{\theta})$.
 %The model is fully described by the feature weights $\vec{\theta}$, but weights can be fit too
 %strongly to particular observations. 
 
-While mathematically we find $\vec{\theta^*}$ that solves equation \eqref{eqn:grad}:
+The maximizer is $\vec{\theta^*}$ that solves equation \eqref{eqn:grad}:
 \begin{equation}
 \begin{aligned}
 %\begin{split}
@@ -389,42 +391,47 @@ While mathematically we find $\vec{\theta^*}$ that solves equation \eqref{eqn:gr
 %\end{split}
 \end{aligned}
 \end{equation}
+Many important concepts are introduced in these two equations. Some are new to the student, in that he or
+she was not exposed to them when considering feature design); others provide an alternative view
+on concepts already introduced. It is important to highlight these connections.
 
-%Here, $C \ge 0$ is the regularization penalty for the regularizer $R(\vec{\theta})$. Regardless of what regularization is applied, we will generally refer to the \textbf{full model} as that of \eqref{eqn:conditional_loglin} with objective \eqref{eqn:reg_ll}.\footnote{We consider models where $R(\vec{\theta}) = \vec{0}$ (no regularization), $R(\vec{\theta}) = \|\vec\theta\|_1$, and $R(\vec{\theta}) = \|\vec{\theta}\|_2^2$. See Section \ref{sec:overview} for more on regularization.}
-
-\begin{enumerate}[resume]
-\item Likelihood always goes up if you follow gradient
-\begin{itemize}
-\item gradient = observed - expected count (- regularizer)
-
+We believe the most important concept is that of the non-regularized gradient being the difference between the observed
+feature counts and the expected feature counts:
 \begin{equation}
 \ \mathbb{E}_{\empirical{}}\left[\vec{f}(X,Y)\right] 
-- \mathbb{E}_{{\hat{p}_{\vec{\theta}}}}\left[\vec{f}(X,Y)\right]
+- \mathbb{E}_{{\hat{p}_{\vec{\theta}}}}\left[\vec{f}(X,Y)\right].
 \label{eqn:obsexp} 
 \end{equation}
+Students should already have been introduced to this when considering the difference between type and 
+feature counts, and how expectation proportions affect how much one needs to change a given feature weight: 
+now, with the gradient, they can better understand why, and thus justify and strengthen their developing intuitions.
 
-\item This is evident in the LL-bar at the top
-\item Changes in gradient reflect portions of feature interactions (how minimizing the isolated $|\frac{\partial}{\partial \theta_k} F|$ might negatively affect some other partial $\frac{\partial}{\partial \theta_{k'}}F$.
-\end{itemize}
-\item importance of convexity: That is, we'll always find a unique $\vec{\theta^*}$ that solves \eqref{eqn:reg_ll}.
-\item LL is maximized when you match the empirical (except for overfitting?)
-\item matching vs. log-likelihood
-Overfitting to a small training sample
-Regularization (reduces the variance of your estimated parameters on a small training sample)
-Smoothing = fitting the data imperfectly
-(because the model has fewer parameters than outcomes, or because using too many parameters would be penalized by the regularizer)
-Backoff smoothing = making use of backoff features and not just fine-grained features
-(to avoid being penalized by the regularizer)
-\end{enumerate}
+While a number of students may have prior experience with numerical optimization, for those that haven't, the next 
+important ideas are that ``following'' \eqref{eqn:grad} will
+\begin{inparaenum}[i)]
+\item actually yield a solution, even though a closed-form solution is not generally available, and
+\item not decrease the objective.
+\end{inparaenum}
+The importance of the convexity of \eqref{eqn:reg_ll} should be introduced here as a way to generalize the 
+previous two observations, notably that we will always find a unique $\vec{\theta^*}$ that solves \eqref{eqn:reg_ll}.
+\footnote{Advanced students may find it interesting to see what happens when you ``break'' convexity, e.g., what 
+happens when $C < 0$?}
+Students should understand that matching the empirical distribution will generally maximize the (unregularized) log-likelihood, 
+though that overfitting is possible and may result in a larger log-likelihood than the true generating distribution yields.
+%Here, Regardless of what regularization is applied, we will generally refer to the \textbf{full model} as that of \eqref{eqn:conditional_loglin} with objective \eqref{eqn:reg_ll}.\footnote{We consider models where $R(\vec{\theta}) = \vec{0}$ (no regularization), $R(\vec{\theta}) = \|\vec\theta\|_1$, and $R(\vec{\theta}) = \|\vec{\theta}\|_2^2$. See Section \ref{sec:overview} for more on regularization.}
 
-%\subsection{Parameter estimation}
-The students must 
-\begin{enumerate}
-\item Some distributions can't be matched --- but you get generalization
-\item It's possible to overfit the training data.  Regularization compensates for that and can in fact make you underfit.
-\item bias vs. variance
-Gradient ascent and adaptive stepsize
-\end{enumerate}
+We may use the gradient to further illustrate feature modeling considerations. The most obvious is to show how 
+minimizing a single isolated $|\frac{\partial}{\partial \theta_k} F|$ might adversely affect another partial 
+$\frac{\partial}{\partial \theta_{k'}}F$, but one should also make the additional connections to type vs. feature counts 
+and that even if distributions do not full match, expected counts should.
+
+The student should take away additional general machine learning knowledge here, including how a small training set can
+affect the overall estimator $\vec{\theta^*}$ (higher variance), but that regularization, which should the student should consider
+to be a form of smoothing, reduces the variance at the expense of the \textit{training} log-likelihood. Thus regularization 
+(smoothing) fits the data imperfectly, either because the model has fewer parameters than outcomes, or because using too 
+many parameters would be penalized by the regularizer (this should be connected back to the expressiveness considerations 
+introduced in feature modeling). Further, to limit regularization penalty, the model can make use of backoff features and 
+not just fine-grained features, thereby resulting in backoff smoothing.
 
 We should note that we are \textit{not} concerned with computational issues here, e.g., that of tractably computing the normalization factors $Z(x_i)$. While efficiently computing the normalization factor is a crucial component to practical log-linear models, our primary concern is to provide a virtual manipulative that imparts a near-physical, intuitive understanding of log-linear models. 
 
