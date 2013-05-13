@@ -162,7 +162,7 @@ likelihood
   F\left(\vec{\theta}\right) = \sum_{i=1}^N \log{p_{\vec{\theta}}\left(y_i\ \mid\ x_i\right)} - C \cdot R\left(\vec{\theta}\right)
 \end{equation}
 is a simple, uniform training principle that can be used throughout
-the course.  The regularizer $R(\vec{\theta})$
+the course.  The scaled regularizer $C\cdot R(\vec{\theta})$
 prevents overfitting on sparse features.
 This is arguably more straightforward than the traditional NLP
 smoothing methods for estimating probabilities from sparse data
@@ -282,9 +282,9 @@ Why do we focus on shapes, rather than words? \NoteFF{maybe we can argue via vir
   a.k.a. The Cool Stuff?  Then the pedagogical aims would lead right
   into the lessons or could even be combined with them.}}
 
-See Figure \ref{fig:lesson1} for the general interface and an overview 
+Recall Figure \ref{fig:lesson1} for the general interface and an overview 
 of the tool. We have made an anonymized version available at 
-\WhereToFind{}; which we encourage you to play with as you
+\WhereToFind{}, which we encourage you to play with as you
 read.
 
 %While our primary goal was to teach log-linear models within the context of NLP, 
@@ -308,16 +308,21 @@ students.}
 
 \subsection{Student Interface}
 
-The student learns about log-linear models through lessons designed
-to isolate particular challenges or intricacies. No matter the complexity of a lesson, the main
-premise behind each is to play a ``matching
+The applications is centered around lessons designed to isolate particular 
+challenges or intricacies of log-linear models. No matter the complexity, the main
+premise behind a lesson is to play a ``matching
 game'' or a ``log-likelihood game'' on a provided dataset \Data{}. The
 data, grouped by context and presented visually at the type-level as
 different shapes, images, or raw text, are modeled by two
 distributions of interest: the empirical $\tilde{p}$
-\eqref{eqn:empirical_distr}, and an appropriately defined log-linear
+\eqref{eqn:empirical_distr}
+\begin{equation}
+\empirical\left(y\ \mid\ x\right) = \frac{c(x,y)}{c(x)},
+\label{eqn:empirical_distr}
+\end{equation} 
+and an appropriately defined log-linear
 model $p_{\vec{\theta}}$ \eqref{eqn:loglin}. You control $p_{\vec{\theta}}$ 
-via a sliders, ``physically'' manipulating the parameters. These physical 
+via sliders, ``physically'' manipulating the parameters. These physical 
 manipulations are projected in real time on the expected observations as the 
 shapes shrink, grow and change color according to the new distribution. 
 
@@ -332,6 +337,7 @@ shapes shrink, grow and change color according to the new distribution.
   the browser (and using an appropriately large window); this gives a
   larger image and larger-font text, which you can shrink back again
   in the PDF.}  }
+
 Note in particular the data area (``Type Counts''), the
 feature weight sliders, and the log-likelihood score. 
 Each datum has two shapes associated with it, an
@@ -358,9 +364,10 @@ See Figure \ref{fig:colorsize_inventory}
 for a summary of how we use size and color to indicate salient
 information.
 
-In the \textit{matching game}, the student tries to match $p_{\vec{\theta}}$ to 
-$\tilde{p}$ --- find $\vec{\theta}$ such that $p_{\vec{\theta}}(y\mid x) 
-= \tilde{p}(y\mid x)$, for all $(x,y)$. The game is to try to make all of the salient log-linear objects 
+In the \textit{matching game}, the student tries to match $p_{\vec{\theta}}$ to  $\tilde{p}$. 
+%--- find $\vec{\theta}$ such that $p_{\vec{\theta}}(y\mid x) 
+%= \tilde{p}(y\mid x)$, for all $(x,y)$. 
+The game is to try to make all of the salient log-linear objects 
 equal in size (and color) to their corresponding gray outline. The student ``wins'' once the maximum
 number of log-linear objects turn gray, indicating the best possible fit.
 %Rather than force students to numerically compare the
@@ -378,8 +385,9 @@ as more advanced topics, such as the gradient, are introduced.}
 
 Note that these games are not disjoint, nor are they the only ones that can be played.
 For instance, when playing the log-likelihod game, the students can think about how well 
-the shapes match, particularly when more advanced concepts such as regularization and conjoined features are 
-introduced. Also, the student can play a variant of the matching game, where the goal
+the shapes match, particularly when more advanced concepts such as regularization and 
+conjoined features are introduced. Further, because not every distribution can be matched, 
+the student can play a variant of the matching game, where the goal
 is to match the observed and expected feature counts. The particular game being played
 in each lesson is described in the instruction area, which the student should
 read carefully, since this may explain what the data and particular task are, justify 
@@ -438,18 +446,16 @@ current model and the empirical distribution (gray outline).}
 \label{fig:colorsize_inventory}
 \end{figure}
 
-However, solving more complex models may be too tedious or difficult. 
-The student may then make use of \textit{hints}, such as
-viewing each component of the gradient, changing all feature weights by 
-linearly following the gradient (as given by ``Step size''), or simply having
-the manipulative solve the problem and providing feedback at each iteration 
-of gradient ascent.
+Winning either game with more complex models may be too tedious or difficult. 
+The student may then make use of \textit{hints}. These hints, such as
+viewing components of the gradient, or simply having
+the application solve the problem, use the salience features above to 
+develop intuition.
 
 Once the student is comfortable with the provided model and data, the student
 can begin to play around with the dataset and model options. These utilities, such as
 generating a new random challenge and experimenting with regularizaiton, 
 are described more in Section \ref{sec:lessons}.
-
 
 \subsection{The Instructor Interface: Creating and Tailoring Lessons}\label{sec:tailoring}
 To support a wide-range of lessons, the manipulative has support for twelve predefined shape and fill combinations.
@@ -534,6 +540,7 @@ especially as all browers adopt widely used standards.
 
 \section{Pedagogical Aims}\label{sec:aims}
 
+\Commented{
 \NoteJE{This key section is a bit hard to read and especially to skim.
   It has too much repetitive padding about our desires, and what the
   students must do, and how ``important'' it is.  Instead, could we
@@ -543,7 +550,7 @@ especially as all browers adopt widely used standards.
   properties of the model rather than referring repeatedly to the
   people.  See for example the bullet points in section 3 of
   eisner-2002-tnlp, although you don't necessarily need to follow that
-  format.}
+  format.}}
 
 \Commented{We wish to make log-linear models a concept that students can reason
 about quickly and intuitively. We found that expanding upon the
@@ -559,61 +566,60 @@ They'll speak for themselves.}
 
 \subsection{Feature Design and Modeling Considerations}
 
-Given $N$ data points $\Data{} = \{( x_i, y_i)\ \mid\ 1 \le i \le N\}$, one of the initial, and perhaps most important, decisions 
-to make is choosing an appropriate model and distribution family. As argued above, for this manipulative we focus on 
-contrasting exponential families \eqref{eqn:loglin} with what students may iniitally posit, the empirical distribution:
-\begin{equation}
-\empirical\left(y\ \mid\ x\right) = \frac{c(x,y)}{c(x)}.
-\label{eqn:empirical_distr}
-\end{equation}
-%where $c(x,y)$ and $c(x)$ represent bigram and unigram counts, respectively.
-While perhaps pragmatically the most important consequence of this modeling decision is that of 
-proper feature design, we wish students to consider additional implications.  
-How does \eqref{eqn:loglin} generalize other distributions: $\vec{\theta} = 0$ 
-yields the uniform distribution, but can one match the empirical? What constraints does 
-the model satisfy?
+Given data $\Data{} = \{( x_i, y_i)\ \mid\ 1 \le i \le N\}$, one of the initial decisions 
+to make is \textbf{choosing an appropriate model} and distribution family. 
+As argued above, for this manipulative we focus on contrasting exponential families 
+\eqref{eqn:loglin} with what students may initially posit, the empirical 
+distribution \eqref{eqn:empirical_distr}. While pragmatically the most important 
+consequence of this modeling decision is that of proper feature design, one should 
+understand certain underlying statistical properties of the model: what estimators 
+exist and how ``good'' are they? How does \eqref{eqn:loglin} generalize other 
+distributions: $\vec{\theta} = 0$ yields the uniform distribution, but can you match 
+the empirical? What constraints does the model satisfy and what practical implications
+are there?
 %How does this relate to the maximum entropy view?
 % (if any; eg., maxent formulation or empirical
 %MLE?)
  
+\NoteFF{FIX}
 We also wish to impart the differences between conditional models and
 globally normalized ones
 $p_{\vec{\theta}}\left(y\right)$. Although
-these context-nescient\NoteJE{???} 
-\NoteFF{ignorant? unaware?} models allow students to focus on
+these context-%nescient\NoteJE{???} 
+unaware models allow students to focus on
 understanding some of the core underlying mathematical concepts of
 exponential models, such as feature interations and weight tradeoffs,
 there are important differences between global and conditional models
-that must be understood. For instance, in conditional models features
-can be ``shared'' across conditions, which can
-help %the regularizer even if likelihood is the same.
-generalization to unseen context-outcome pairs and maximizing the
-regularized objective.
+that must be understood. For instance, conditional models can share 
+features' across conditions, helping generalize to unseen context-outcome 
+pairs and maximizing the regularized objective.
 
-The modeler has the onus of proper feature design: when defining $K$ 
+The modeler has the onus of proper \textbf{feature design}. When defining $K$ 
 appropriate features $f_k$, there are a number of at-times complex interactions 
-to consider, so the lessons and take-aways must reflect these complexities. 
-First, the student must intuit what good discriminative features are: 
-when defining a globally normalized model over solid circles, striped 
-circles, solid triangles and striped triangles, the first features 
-one might consider are contrasting indicator functions for whether a shape
-is a circle or is solid. The student should be aware that opposing (binary) features 
-that completely partition the outcome space (e.g., solid vs. striped features) are redundant.
+to consider: what are useful discriminative features? Say we define a globally 
+normalized model over solid circles, striped circles, solid triangles and striped triangles. 
+The first features we might consider are contrasting indicator functions for whether a shape
+is a circle or is solid. For what datasets can the student ``win'' with this two feature model? 
+Will adding additional features always help? That is, why might including (binary) 
+features that completely partition the space, such as solid vs. striped, be redundant in some 
+cases, yet insufficient in others?
 
-Second, the student must understand the difference between \textit{type} and 
-\textit{feature} counts, and how those counts affect the feature weights. 
-For example, if the “solid” feature is predicted to occur less often 
-than it actually does, the student must raise its weight. But since raising one weight 
-may affect (significantly) the quality of all the other weight, fitting one weight in
-isolation may reduce or reverse the need to raise other weights. 
+The empirical distribution deals with \textit{type} counts, but because log-linear models 
+deal with descriptions of type, we can instead talk about \textbf{feature counts}. Our 
+manipulative allows exploration of these two different counts and how they affect the 
+feature weights. For example, we should raise the weight of the “solid” feature if it is 
+predicted to occur less often than it actually does. But raising that weight 
+may affect the quality of all the other weights, so fitting one weight in
+isolation may reduce or reverse the need to raise other weights. How can you mitigate any 
+adverse effects and get to the solution quickly?
 
-In general we must show that both the number and range of features affects the expressive 
+Generally, both the number and range of features affect the expressive 
 power of the model. But this expressiveness has a cost, as too many features can lead to overfitting. 
 Similarly, defining features that everything (or nothing) has can make the weights 
 take extreme values (go to $\pm \infty$). Further, though $f_k$ is commonly designed to be binary, 
-this is not a strict requirement, and defining non-binary feature functions, such as one that fires in 
+this is not a strict requirement: defining non-binary feature functions, such as one that fires in 
 proportion to some property of the datum (e.g., the number of sides of a shape) can affect the
-proportions of feature counts.
+proportions of feature counts. How does this interact with the amount of training data?
 
 Our manipulative must generalize the above points to conditional models. In particular, students should 
 understand the effect the amount of data (per context) has on what features are appropriate to define 
@@ -637,11 +643,7 @@ features that only fire on conditions have no effect on conditional distribution
 \subsection{Importance of the Objective and Parameter Estimation} % and Evaluating the Model}
 
 We summarize the model's quality via the regularized conditional
-log-likelihood \eqref{eqn:reg_ll}.  $C \ge 0$ is the penalty for the
-regularizer $R(\vec{\theta})$.
-%The model is fully described by the feature weights $\vec{\theta}$, but weights can be fit too
-%strongly to particular observations. 
-
+log-likelihood \eqref{eqn:reg_ll}.  
 The maximizer is the $\vec{\theta^*}$ that solves equation \eqref{eqn:grad}:
 \begin{equation}
 \begin{aligned}
@@ -658,11 +660,11 @@ The maximizer is the $\vec{\theta^*}$ that solves equation \eqref{eqn:grad}:
 \end{aligned}
 \end{equation}
 Many important concepts are introduced in these two equations. Some are new to the student, in that he or
-she was not exposed to them when considering feature design); others provide an alternative view
+she was not exposed to them when considering feature design; others provide an alternative view
 on concepts already introduced. It is important to highlight these connections.
 
-We believe the most important concept is that of the non-regularized gradient being the difference between the observed
-feature counts and the expected feature counts:
+We believe the most important concept is that of the non-regularized gradient being the \textbf{difference 
+between observed and expected feature counts}:
 \begin{equation}
 \ \mathbb{E}_{\empirical{}}\left[\vec{f}(X,Y)\right] 
 - \mathbb{E}_{p_{\vec{\theta}}}\left[\vec{f}(X,Y)\right].
@@ -672,16 +674,18 @@ Students should already have been introduced to this when considering the differ
 feature counts, and how expectation proportions affect how much one needs to change a given feature weight: 
 now, with the gradient, they can better understand why, and thus justify and strengthen their developing intuitions.
 
+\NoteFF{how does the penalty $C$ affect the overall solution?}
+
 While a number of students may have prior experience with numerical optimization, for those that haven't, the next 
-important ideas are that ``following'' \eqref{eqn:grad} will
+important ideas are that ``following'' the gradient will
 \begin{inparaenum}[i)]
 \item actually yield a solution, even though a closed-form solution is not generally available, and
 \item not decrease the objective.
 \end{inparaenum}
-The importance of the convexity of \eqref{eqn:reg_ll} should be introduced here as a way to generalize the 
-previous two observations, notably that we will always find a unique $\vec{\theta^*}$ that solves \eqref{eqn:reg_ll}.
-\footnote{Advanced students may find it interesting to see what happens when you ``break'' convexity, e.g., what 
-happens when $C < 0$?}
+The importance of the convexity of \eqref{eqn:reg_ll} generalizes these two observations, 
+notably that we will always find a unique $\vec{\theta^*}$ that solves 
+\eqref{eqn:reg_ll}.\footnote{Advanced students may find it interesting to see what happens 
+when you ``break'' convexity, e.g., what happens when $C < 0$?}
 Students should understand that matching the empirical distribution will generally maximize the (unregularized) log-likelihood, 
 though that overfitting is possible and may result in a larger log-likelihood than the true generating distribution yields.
 %Here, Regardless of what regularization is applied, we will generally refer to the \textbf{full model} as that of \eqref{eqn:conditional_loglin} with objective \eqref{eqn:reg_ll}.\footnote{We consider models where $R(\vec{\theta}) = \vec{0}$ (no regularization), $R(\vec{\theta}) = \|\vec\theta\|_1$, and $R(\vec{\theta}) = \|\vec{\theta}\|_2^2$. See Section \ref{sec:overview} for more on regularization.}
@@ -691,13 +695,14 @@ minimizing a single isolated $|\frac{\partial}{\partial \theta_k} F|$ might adve
 $\frac{\partial}{\partial \theta_{k'}}F$, but one should also make the additional connections to type vs. feature counts 
 and that even if distributions do not full match, expected counts should.
 
-The student should take away additional general machine learning knowledge here, including how a small training set can
-affect the overall estimator $\vec{\theta^*}$ (higher variance), but that regularization, which should the student should consider
-to be a form of smoothing, reduces the variance at the expense of the \textit{training} log-likelihood. Thus regularization 
-(smoothing) fits the data imperfectly, either because the model has fewer parameters than outcomes, or because using too 
-many parameters would be penalized by the regularizer (this should be connected back to the expressiveness considerations 
-introduced in feature modeling). Further, to limit regularization penalty, the model can make use of backoff features and 
-not just fine-grained features, thereby resulting in backoff smoothing.
+Underlying the above concepts is \textbf{general machine learning} and \textbf{statistical knowledge}. This includes the quality of estimators, 
+can be affected by different data or model configurations, such as a small sample size leads to estimators with 
+higher variance, but regularization can mitigate that (at the expense of the \textit{training} log-likelihood). 
+Regularization can be considered a form of smoothing that fits the data imperfectly, but why? The model might 
+has fewer parameters than outcomes, or it might forgo many parameters to avoid being penalized by 
+the regularizer.  Further, to limit regularization penalty, the model can make use of backoff features and 
+not just fine-grained features, thereby resulting in \textit{backoff smoothing}. 
+These concepts are connected to the expressiveness considerations introduced in feature modeling.
 
 We should note that we are \textit{not} concerned with computational issues here, e.g., that of tractably computing the normalization factors $Z(x_i)$. While efficiently computing the normalization factor is a crucial component to practical log-linear models, our primary concern is to provide a virtual manipulative that imparts a near-physical, intuitive understanding of log-linear models. 
 
