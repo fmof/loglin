@@ -91,15 +91,24 @@ outcomes $\mathcal{Y}(x)$ might depend on the context $x$.\footnote{In the
 % processing needs to teach some machine learning tools.  
 
 We then present an interactive web visualization that guides students
-through playing with log-linear models and their estimation.  An
+through playing with log-linear models and their estimation. An
 anonymized version is available for review at \WhereToFind{}.  This
 open-source tool is intended to develop intuitions, so that basic
 log-linear models can be then taken for granted.  It can be used near
 the start of a course, perhaps after introducing probability notation
 and $n$-gram models. 
 
+\begin{figure*}
+\centering
+\includegraphics[scale=.49]{images/lesson1-051313-intro-zoom-instmore.PNG}
+\caption{The first lesson; the instructions 
+have been enlarged for presentation considerations.}
+\label{fig:lesson1}
+\end{figure*}
+
+
 The code includes \NumLessons{} ready-to-use lessons that can be used
-for individual or small-group study.  Each lesson guides the student
+for individual or small-group study.  Each lesson, e.g. Figure \ref{fig:lesson1}, guides the student
 through a manipulative exercise that centers on fitting some model
 $p_{\vec{\theta}}(y \mid x)$, where ${\cal Y}(x)$ is a collection of
 shapes, words, or images such as parse trees.  Each lesson is peppered
@@ -107,9 +116,10 @@ with questions, and students could be asked to answer some of these
 questions in writing.\footnote{There are approximately six questions per
 lesson. We found that answering {\em all} the
   questions took them about 2300 words, or just under 23 words per question, which
-  was probably both unreasonable and unnecessary.}\NoteJE{We might
+  was probably both unreasonable and unnecessary.}
+\Commented{\NoteJE{We might
   consider releasing a couple of pencil-and-paper problems from past
-  exams.}  Other instructors can add new lessons by writing 
+  exams.}}  Other instructors can add new lessons by writing 
 configuration files (see section~\ref{sec:tailoring}).
 
 \Commented{\NoteJE{However, I
@@ -121,7 +131,7 @@ configuration files (see section~\ref{sec:tailoring}).
 \section{Why Teach With Log-Linear Models?}
 
 Log-linear models are very handy in NLP.  They can be used {\em throughout} 
-a course, whenever one needs 
+a course, when one needs 
 \begin{itemize}
 \item a global classifier for an applied task, such as detecting
   sentiment, topic, spam, or gender;
@@ -208,63 +218,6 @@ for training $\vec{\theta}$ are harder to understand or to justify.
 Thus, they can be taught as variants later on or in another course.
 Further reading includes \cite{smith-2011}.
 
-\subsection{History and Applications}
-
-\NoteJE{move to an appendix?}%
-\NoteFF{I like this in here. We might want to comment out some initially
-  but add it back in if any camera-ready allows for additional spaces}%
-\NoteJE{It's just that I don't want to keep the reader from getting to
-  the fresh stuff that we are presenting in the paper.  Possibly YOU found this 
-  more interesting than the visualization because you were already 
-  overly familiar with the visualization.  But the reader hasn't seen 
-  the visualization before and is presumably impatient to get to it.
-  It's true that the section is not that long, so I dunno.  But it's not that
-  important either, even though it was slow to write.}
-\NoteFF{Perhaps move this to the end, as a ``future works'' or 
-``possible extensions'' section... we motivate the section by providing
-something that teachers can use to motivate students to use log-linear models
-in actual projects (not just homeworks), or as ways to extend the lessons
-already there.}
-
-Conditional log-linear models were first popularized in computational
-linguistics by a group of researchers associated with the IBM speech
-and language group, who called them ``maximum entropy models,'' after
-a principle that can be used to motivate their form
-\cite{jaynes-1957}.  They applied the method to various binary or
-multiclass classification problems in NLP, such as prepositional
-phrase attachment \cite{ratnaparkhi-1994}, text categorization
-\cite{nigam-lafferty-mccallum-1999}, and boundary prediction
-\cite{beeferman-berger-lafferty-1999}.
-
-Of particular importance for NLP, these models can be also used for
-structured prediction problems such as tagging, parsing, chunking,
-segmentation, and language modeling.  A simple strategy is to reduce
-structured prediction to a sequence of multiclass log-linear
-predictions \cite{ratnaparkhi-1998}.  A more global approach---used in
-the original ``maximum entropy'' papers---is to use \eqref{eqn:loglin}
-to define the conditional probabilities of the steps in a generative
-process that gradually produces the structure
-\cite{rosenfeld-1994,berger-dellapietra-dellapietra-1996}.  This idea
-remains popular today and can be used to embed rich distributions
-into a variety of generative models \cite{bergkirkpatrick-et-al-2010}.
-For example, a PCFG that uses richly annotated nonterminals involves a
-large number of context-free rules.  Rather than estimating their
-probabilities separately, or with traditional backoff smoothing, a
-simpler approach is to use \eqref{eqn:loglin} to model the probability
-of all rules given their left-hand sides, based on features that
-consider subsets of the nonterminal annotations.\footnote{E.g., case,
-  number, gender, tense, aspect, mood, lexical head.  In the case of a
-  terminal rule, the spelling or morphology of the terminal symbol can
-  be considered.}  A final approach to structured prediction is to
-simply predict the structured output all at once, so that $y$ is a
-large structured object.  Since it is hard to enumerate
-a large set of possible outputs ${\cal Y}(x)$ (see footnote
-\ref{fn:bigY}), one can either restrict ${\cal Y}(x)$ before training
-\cite{johnson-et-al-1999}, or else use techniques such as dynamic
-programming or sampling, as in linear-chain conditional random fields
-\cite{lafferty-mccallum-pereira-2001} and whole-sentence language
-modeling \cite{rosenfeld-chen-zhu-2001}.
-
 \section{The Teaching Challenge} \label{sec:challenges}
 
 Unfortunately, there is a difficulty with introducing log-linear
@@ -284,7 +237,7 @@ understanding how the weights of these features interact to define a
 distribution.  We will discuss some of the necessary intuitions in
 sections \ref{sec:aims} and \ref{sec:lessons}.
 
-We would like equations \eqref{eqn:loglin} and \eqref{eqn:reg_ll} and the
+We would like equations \eqref{eqn:loglin}, \eqref{eqn:reg_ll} and the
 gradient formula to be more than just recipes.  The student should
 regard them as {\em familiar objects with predictable behavior}.  Like
 computer science, pedagogy proceeds by layering new ideas on top of
@@ -322,13 +275,6 @@ Why do we focus on shapes, rather than words? \NoteFF{maybe we can argue via vir
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Our Log-Linear Virtual Manipulative}\label{sec:overview}
-\begin{figure*}
-\centering
-\includegraphics[scale=.49]{images/lesson1-051313-intro-zoom-instmore.PNG}
-\caption{The first lesson; the instructions 
-have been enlarged for presentation considerations.}
-\label{fig:lesson1}
-\end{figure*}
 
 \Commented{
 \NoteJE{maybe move this section before ``pedagogical aims'' so that
@@ -886,6 +832,67 @@ This is an example of binary classification, since there are just two possible d
 \item %lesson 18
 conclusion
 \end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{History and Applications}
+\NoteFF{RETITLE}
+
+\NoteJE{move to an appendix?}%
+\NoteFF{I like this in here. We might want to comment out some initially
+  but add it back in if any camera-ready allows for additional spaces}%
+\NoteJE{It's just that I don't want to keep the reader from getting to
+  the fresh stuff that we are presenting in the paper.  Possibly YOU found this 
+  more interesting than the visualization because you were already 
+  overly familiar with the visualization.  But the reader hasn't seen 
+  the visualization before and is presumably impatient to get to it.
+  It's true that the section is not that long, so I dunno.  But it's not that
+  important either, even though it was slow to write.}
+\NoteFF{Perhaps move this to the end, as a ``future works'' or 
+``possible extensions'' section... we motivate the section by providing
+something that teachers can use to motivate students to use log-linear models
+in actual projects (not just homeworks), or as ways to extend the lessons
+already there.}
+
+Conditional log-linear models were first popularized in computational
+linguistics by a group of researchers associated with the IBM speech
+and language group, who called them ``maximum entropy models,'' after
+a principle that can be used to motivate their form
+\cite{jaynes-1957}.  They applied the method to various binary or
+multiclass classification problems in NLP, such as prepositional
+phrase attachment \cite{ratnaparkhi-1994}, text categorization
+\cite{nigam-lafferty-mccallum-1999}, and boundary prediction
+\cite{beeferman-berger-lafferty-1999}.
+
+Of particular importance for NLP, these models can be also used for
+structured prediction problems such as tagging, parsing, chunking,
+segmentation, and language modeling.  A simple strategy is to reduce
+structured prediction to a sequence of multiclass log-linear
+predictions \cite{ratnaparkhi-1998}.  A more global approach---used in
+the original ``maximum entropy'' papers---is to use \eqref{eqn:loglin}
+to define the conditional probabilities of the steps in a generative
+process that gradually produces the structure
+\cite{rosenfeld-1994,berger-dellapietra-dellapietra-1996}.  This idea
+remains popular today and can be used to embed rich distributions
+into a variety of generative models \cite{bergkirkpatrick-et-al-2010}.
+For example, a PCFG that uses richly annotated nonterminals involves a
+large number of context-free rules.  Rather than estimating their
+probabilities separately, or with traditional backoff smoothing, a
+simpler approach is to use \eqref{eqn:loglin} to model the probability
+of all rules given their left-hand sides, based on features that
+consider subsets of the nonterminal annotations.\footnote{E.g., case,
+  number, gender, tense, aspect, mood, lexical head.  In the case of a
+  terminal rule, the spelling or morphology of the terminal symbol can
+  be considered.}  A final approach to structured prediction is to
+simply predict the structured output all at once, so that $y$ is a
+large structured object.  Since it is hard to enumerate
+a large set of possible outputs ${\cal Y}(x)$ (see footnote
+\ref{fn:bigY}), one can either restrict ${\cal Y}(x)$ before training
+\cite{johnson-et-al-1999}, or else use techniques such as dynamic
+programming or sampling, as in linear-chain conditional random fields
+\cite{lafferty-mccallum-pereira-2001} and whole-sentence language
+modeling \cite{rosenfeld-chen-zhu-2001}.
 
 \bibliography{tnlp}
 \bibliographystyle{acl}
