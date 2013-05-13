@@ -364,22 +364,17 @@ features that only fire on conditions have no effect on conditional distribution
 
 %Therefore, we also 
 
-
-\subsection{Parameter estimation}
-\begin{enumerate}
-\item Some distributions can't be matched --- but you get generalization
-\item It's possible to overfit the training data.  Regularization compensates for that and can in fact make you underfit.
-\item bias vs. variance
-Gradient ascent and adaptive stepsize
-\end{enumerate}
-
-\subsection{Importance of Objective} % and Evaluating the Model}
-As our model $\hat{p}_{\vec{\theta}}$ is fully described by the feature weights $\vec{\theta}$, we find the weights $\vec{\theta^*}$ that maximize the regularized conditional log-likelihood \eqref{eqn:reg_ll}:
+\subsection{Importance of the Objective and Parameter Estimation} % and Evaluating the Model}
+We summarize the model's quality via the (training) regularized conditional log-likelihood 
+\eqref{eqn:reg_ll},
 \begin{equation}
 F\left(\vec{\theta}\right) = \sum_{i=1}^N \log{\hat{p}_{\vec{\theta}}\left(y_i\ \mid\ x_i\right)} - C \cdot R\left(\vec{\theta}\right).
 \label{eqn:reg_ll}
 \end{equation}
-Equivalently, we find $\vec{\theta^*}$ that solves equation \eqref{eqn:grad}:
+%The model is fully described by the feature weights $\vec{\theta}$, but weights can be fit too
+%strongly to particular observations. 
+
+While mathematically we find $\vec{\theta^*}$ that solves equation \eqref{eqn:grad}:
 \begin{equation}
 \begin{aligned}
 %\begin{split}
@@ -394,7 +389,9 @@ Equivalently, we find $\vec{\theta^*}$ that solves equation \eqref{eqn:grad}:
 %\end{split}
 \end{aligned}
 \end{equation}
-Here, $C \ge 0$ is the regularization penalty for the regularizer $R(\vec{\theta})$. Regardless of what regularization is applied, we will generally refer to the \textbf{full model} as that of \eqref{eqn:conditional_loglin} with objective \eqref{eqn:reg_ll}.\footnote{We consider models where $R(\vec{\theta}) = \vec{0}$ (no regularization), $R(\vec{\theta}) = \|\vec\theta\|_1$, and $R(\vec{\theta}) = \|\vec{\theta}\|_2^2$. See Section \ref{sec:overview} for more on regularization.}
+
+%Here, $C \ge 0$ is the regularization penalty for the regularizer $R(\vec{\theta})$. Regardless of what regularization is applied, we will generally refer to the \textbf{full model} as that of \eqref{eqn:conditional_loglin} with objective \eqref{eqn:reg_ll}.\footnote{We consider models where $R(\vec{\theta}) = \vec{0}$ (no regularization), $R(\vec{\theta}) = \|\vec\theta\|_1$, and $R(\vec{\theta}) = \|\vec{\theta}\|_2^2$. See Section \ref{sec:overview} for more on regularization.}
+
 \begin{enumerate}[resume]
 \item Likelihood always goes up if you follow gradient
 \begin{itemize}
@@ -420,6 +417,15 @@ Backoff smoothing = making use of backoff features and not just fine-grained fea
 (to avoid being penalized by the regularizer)
 \end{enumerate}
 
+%\subsection{Parameter estimation}
+The students must 
+\begin{enumerate}
+\item Some distributions can't be matched --- but you get generalization
+\item It's possible to overfit the training data.  Regularization compensates for that and can in fact make you underfit.
+\item bias vs. variance
+Gradient ascent and adaptive stepsize
+\end{enumerate}
+
 We should note that we are \textit{not} concerned with computational issues here, e.g., that of tractably computing the normalization factors $Z(x_i)$. While efficiently computing the normalization factor is a crucial component to practical log-linear models, our primary concern is to provide a virtual manipulative that imparts a near-physical, intuitive understanding of log-linear models. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -430,7 +436,7 @@ We should note that we are \textit{not} concerned with computational issues here
 \begin{figure*}
 \centering
 \includegraphics[scale=.5]{images/lesson1-050913-intro.PNG}
-\caption{\NoteFF{Replace this image} Screenshot of the first lesson from the virtual manipulative.}
+\caption{\NoteFF{Add references} Screenshot of the first lesson from the virtual manipulative.}
 \label{fig:lesson1}
 \end{figure*}
 
@@ -444,7 +450,8 @@ in NLP. %, due in part to the prevalence and success log-linear models boast
 One of the guiding design goals was to make the educational tool easy to use by 
 both students and instructors, so that instructors could tailor the lessons to the needs, 
 interests and abilities of the students. To that end, our manipulative has three primary 
-components: the student interface (front-end), the instuctor's \NoteFF{interface}, and the back-end implementation.
+components: the student interface (front-end), important aspects transparent to the 
+instuctor, and the back-end implementation.
 
 \subsection{Student Interface}
 The basic unit of completion in our manipulative is a \textit{lesson}, where 
