@@ -276,66 +276,81 @@ log-linear models is prerequisite to
 
 \NoteFF{what is the history of virtual manipulatives in teaching CS? NLP?} the HMM spreadsheet \cite{eisner-2002-tnlp}
 
-
-
-Given a dataset \Data{} of $N$ context (history) and outcome (event) points $\{( x_i, y_i)\}_{i=1}^N$, we often wish to  estimate conditional models $p(y_i\ \mid\ x_i)$. While the empirical distribution provides a 
-\begin{equation}
-\empirical\left(y\ \mid\ x\right) = \frac{c(x,y)}{c(x)},
-\label{eqn:empirical_distr}
-\end{equation}
-where $c(x,y)$ and $c(x)$ represent bigram and unigram counts, respectively.
-
-except for reading of data files, purely client-side $\Rightarrow$ very easy to set-up;
-open-source;
-data input format makes it extensible;
-individual lessons can be tailored (e.g., hide/show buttons, different tool-tips for lessons)
+%except for reading of data files, purely client-side $\Rightarrow$ very easy to set-up;
+%open-source;
+%data input format makes it extensible;
+%individual lessons can be tailored (e.g., hide/show buttons, different tool-tips for lessons)
 
 Why do we focus on shapes, rather than words? \NoteFF{maybe we can argue via virtual manipulatives}
-
-%Our aim is to provide an intuitive understanding of regularized conditional log-linear models. 
-
-%\NoteFF{Is it further worth detailing difficulties people may have in learning about maxent models?}
-
-%\subsection{Contributions and Available Materials}
-%Our primary contribution is the development and open-source release of an easy-to-use, client-side virtual manipulative for teaching regularized conditional log-linear models. In addition to the code, the release contains \NoteFF{change this \#} 18 pre-made lessons, and associated explanatory text and questions. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Pedagogical Aims}\label{sec:aims}
-While any attempt to teach log-linear models must tackle the concepts, issues and difficulties 
-addressed in Section \ref{sec:challenges}, we found that enumerating specific pedagogical 
-goals and expected take-aways helped focus the design of the virtual manipulative and the 
-creation of individual lessons. % (c.f., Sections \ref{sec:overview} and \ref{sec:lessons}, respectively).
+We wish to make log-linear models a concept that students can
+reason about quickly and intuitively. We found that expanding upon the difficulties from 
+Section \ref{sec:challenges} and listing specific pedagogical goals helped focus the design 
+of the virtual manipulative and hone the creation and expected take-aways of individual lessons. 
 
 \subsection{Modeling Implications}
-Given $\Data{} = \{( x_i, y_i)\ \mid\ 1 \le i \le N\}$, one of the initial, and perhaps most impactful, decisions 
-to make is choosing an appropriate model and distribution family. At a high-level, we may ask the question of 
-whether to use an exponential famiy or not.  what constraints does the model satisfy (if any; eg., maxent formulation or empirical
-MLE?) globally or locally normalized?
-What do specific values for $\vec{\theta}$ yield? In particular, the initial setting where all weights = 0 gives the uniform distribution. How does this relate to the maximum entropy view? 
-
+Given $N$ data points $\Data{} = \{( x_i, y_i)\ \mid\ 1 \le i \le N\}$, one of the initial, and perhaps most important, decisions 
+to make is choosing an appropriate model and distribution family. As argued above, for this manipulative we focus on 
+contrasting exponential families \eqref{eq:loglin} with what students may iniitally posit, the empirical distribution:
+\begin{equation}
+\empirical\left(y\ \mid\ x\right) = \frac{c(x,y)}{c(x)}.
+\label{eqn:empirical_distr}
+\end{equation}
+%where $c(x,y)$ and $c(x)$ represent bigram and unigram counts, respectively.
+While perhaps pragmatically the most important consequence of this modeling decision is that of 
+proper feature design, we wish studetns to consider additional implications.  
+How does \eqref{eq:loglin} generalize other distributions: $\vec{\theta} = 0$ 
+yields the uniform distribution, but can one match the empirical? What constraints does 
+the model satisfy?
+%How does this relate to the maximum entropy view?
+% (if any; eg., maxent formulation or empirical
+%MLE?)
+ 
 We also wish to impart the differences between conditional models and globally normalized ones 
 $\hat{p}_{\vec{\theta}}\left(y\right)$. Although these context-nescient models allow students 
 to focus on understanding some of the core underlying mathematical concepts of 
 exponential models, such as feature interations and weight tradeoffs, there are important differences
-between global and conditional models that we wish students to be aware of. For instance, 
-features can be ``shared'' across conditions and this helps regularizer even if likelihood is the same
+between global and conditional models that must be understood. For instance, in conditional models
+features can be ``shared'' across conditions, which can help %the regularizer even if likelihood is the same. 
+generalization to unseen context-outcome pairs and maximizing the regularized objective.
 
-Having chosen to model $\Data{}$ by \eqref{eq:loglin}, the modeler must then deal with the 
-onus of proper feature design. That is, when defining $K$ appropriate features $f_k$, there 
-are a number of at-times complex interactions to consider. For example, when defining a globally normalized model 
-over solid circles, striped circles, solid triangles and striped triangles, perhaps the first features 
-a student should consider are contrasting features. ....
+The modeler has the onus of proper feature design. That is, when defining $K$ 
+appropriate features $f_k$, there are a number of at-times complex interactions 
+to consider, so the lessons and take-aways must reflect these complexities. 
+First, the student must intuit what good discriminative features are: 
+when defining a globally normalized model over solid circles, striped 
+circles, solid triangles and striped triangles, the first features 
+one might consider are contrasting indicator functions for whether a shape
+is a circle or is solid. The student should be aware that opposing (binary) features 
+that completely partition the outcome space (e.g., solid vs. striped features) are redundant.
 
-If the “striped” feature is predicted to occur less often than it actually does, you should raise its weight. 
-Frequent conditions more influential
-effect of the amount of data (per context) on what features are appropriate to define
+Second, the student must understand the difference between \textit{type} and 
+\textit{feature} counts, and how those counts affect the feature weights. 
+For example, if the “solid” feature is predicted to occur less often 
+than it actually does, the student must raise its weight. But since raising one weight 
+may affect (significantly) the quality of all the other weight, fitting one weight in
+isolation may reduce or reverse the need to raise other weights. 
 
-Commonly, $f_k$ is designed to be binary, but this is not a strict requirement. Defining non-binary feature
-functions, such as one that fires in proportion to some property of the datum (e.g., the number of sides of
-a shape).
+In general we must show that both the number and range of features affects the expressive 
+power of the model. But this expressiveness has a cost, as too many features can lead to overfitting. 
+Similarly, defining features that everything (or nothing) has can make the weights 
+take extreme values (go to $\pm \infty$). Further, though $f_k$ is commonly designed to be binary, 
+this is not a strict requirement, and defining non-binary feature functions, such as one that fires in 
+proportion to some property of the datum (e.g., the number of sides of a shape) can affect the
+proportions of feature counts.
+
+% (and the importance of regularization)
+
+Our manipulative must generalize the above points to conditional models. In particular, students should 
+understand that frequent conditions are more influential and that the effect the amount of data 
+(per context) has on what features are appropriate to define. Finally, students need to know that 
+features that only fire on conditions have no effect on conditional distribution.
+
 % defined over \Data{} , we are interested in estimating distributions 
 %\begin{equation}
 %\hat{p}_{\vec{\theta}}\left(y\ \mid\ x\right) = \frac{u(x, y)}{\sum_{y'} u(x,y')},
@@ -348,15 +363,6 @@ a shape).
 %\end{eqnarray}
 
 %Therefore, we also 
-
-Feature Interactions: Raising one weight may reduce or reverse the need to raise other weights. 
-Feature that everything/nothing has --- weights go to $\pm \infty$ (and the importance of regularization)
-Feature conjunctions: fewer vs. more features---affects expressive power
-
-
-Features that only fire on conditions have no effect on conditional distribution
-Opposing features are redundant, e.g., solid vs striped, where there are only 2 options
-
 
 
 \subsection{Parameter estimation}
