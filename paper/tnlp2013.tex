@@ -318,7 +318,7 @@ as decision boundaries and kernel methods.\footnote{\url{cs.cmu.edu/~ggordon/SVM
 There are also a number of systems built around teaching artificial intelligence: these tend to to consist of controlling 
 virtual robots\footnote{E.g., \url{http://www-inst.eecs.berkeley.edu/~cs188/pacman/pacman.html}}
 %, or \url{http://www.cs.rochester.edu/trac/quagents}} 
-or physical ones \newcite{tokic2012robot}.
+or physical ones \cite{tokic2012robot}.
 Overall, manipulatives for math, NLP and ML have been successful in teaching their core concepts. 
 
 Next, we present our main contribution, a virtual manipulative that teaches log-linear models. We initially ground 
@@ -494,8 +494,8 @@ $\empirical{} - p_{\vec{\theta}} $& \includegraphics[scale=.25]{images/goldilock
 & \includegraphics[scale=.25]{images/goldilocks-circle-large.PNG}\\
 \end{tabular}
 
-\caption{Colors indicate the sign of \eqref{eqn:obsexp} while the size (area) of 
-the shapes indicates the difference betwen that type's probability under the 
+\caption{Colors indicate the sign of \eqref{eqn:obsexp} while a shape's area indicate 
+the difference betwen that type's probability under the 
 current model and the empirical distribution (gray outline).}
 \label{fig:colorsize_inventory}
 \end{figure}
@@ -519,8 +519,7 @@ where each can be solid, striped or hollow.
 However, it is important for the instructor to be able to tailor lessons to his or her students' needs, 
 interests, and abilities. For instance, it may be appropriate to reason about different types of shapes
 when introducing students to log-linear models, but eventually NLP students will want to think about 
-how log-linear models can be applied to NLP problems, whereas vision students will want to think about 
-how to apply them to vision problems. Therefore, we have designed the manipulative to handle text
+NLP problems, whereas vision students will want to think about vision problems: we have designed the manipulative to handle text
 and arbitrary images as well (c.f. Figure \ref{fig:imgtxt_inventory}).
 
 \begin{figure}[t]
@@ -558,8 +557,8 @@ important: aligning objects by orthogonal descriptions, e.g., circles vs. triang
 can make feature contrasts stand out more.
 
 Finally, because an instructor may not want all functionality to always be available (e.g., hiding the ``solve''
-capability in early lessons), we allow the instructor to declaratively make certain lesson-specific changes to 
-the interface, \textit{without} going into the back-end code. 
+capability in early lessons), we allow certain declaratively specified lesson-specific changes to 
+the interface, with no coding necessary.
 
 \subsection{Back-End Implementation}
 Broadly, the virtual manipulative is designed to be widely available and have no start-up cost. 
@@ -606,17 +605,7 @@ especially as all browers adopt widely used standards.
   eisner-2002-tnlp, although you don't necessarily need to follow that
   format.}}
 
-\Commented{We wish to make log-linear models a concept that students can reason
-about quickly and intuitively. We found that expanding upon the
-difficulties from Section \ref{sec:challenges} and listing specific
-pedagogical goals helped focus the design of the virtual manipulative
-and hone the creation and expected take-aways of individual
-lessons.
-\NoteJE{True but boringly meta. We also used section headers
-because we found them useful to organize the paper, but we don't
-have to say so. :-) Just list the goals or better yet the facts.
-They'll speak for themselves.}
-}
+%Here we enumerate the different 
 
 \subsection{Feature Design and Modeling Considerations}
 
@@ -727,10 +716,6 @@ Students should already have been introduced to this when considering the differ
 feature counts, and how expectation proportions affect how much one needs to change a given feature weight: 
 now, with the gradient, they can better understand why, and thus justify and strengthen their developing intuitions.
 
-\NoteFF{how does the penalty $C$ affect the overall solution?}
-
-\NoteFF{what regularizers do we use?}
-
 While a number of students may have prior experience with numerical optimization, for those that haven't, the next 
 important ideas are that ``following'' the gradient will
 \begin{inparaenum}[i)]
@@ -750,14 +735,25 @@ minimizing a single isolated $|\frac{\partial}{\partial \theta_k} F|$ might adve
 $\frac{\partial}{\partial \theta_{k'}}F$, but one should also make the additional connections to type vs. feature counts 
 and that even if distributions do not full match, expected counts should.
 
-Underlying the above concepts is \textbf{general machine learning} and \textbf{statistical knowledge}. This includes the quality of estimators, 
-can be affected by different data or model configurations, such as a small sample size leads to estimators with 
-higher variance, but regularization can mitigate that (at the expense of the \textit{training} log-likelihood). 
-Regularization can be considered a form of smoothing that fits the data imperfectly, but why? The model might 
-has fewer parameters than outcomes, or it might forgo many parameters to avoid being penalized by 
-the regularizer.  Further, to limit regularization penalty, the model can make use of backoff features and 
-not just fine-grained features, thereby resulting in \textit{backoff smoothing}. 
-These concepts are connected to the expressiveness considerations introduced in feature modeling.
+When we include regularization, we consider $R(\vec{\theta}) = \|\vec\theta\|_1$, and 
+$R(\vec{\theta}) = \|\vec{\theta}\|_2^2$. This contrasts encouraging sparsity vs. simply 
+heavily preferencing away from large feature weights.\footnote{We special-case the optimizer 
+to handle the non-differentiable $\ell_1$ regularization, but inform the students of this difficulty.} 
+Related to this is exploring how does  penalty weighter $C$ affects the overall solution?
+
+Underlying the above concepts is \textbf{general machine learning} and 
+\textbf{statistical knowledge}. This includes the quality of estimators, 
+which can be affected by different data or model configurations, such 
+as a small sample size leads to estimators with 
+higher variance; regularization can mitigate that (at the expense of 
+the \textit{training} log-likelihood). 
+Regularization can be considered a form of smoothing that fits the data 
+imperfectly, but why? The model might has fewer parameters than 
+outcomes, or it might forgo many parameters to avoid being penalized by 
+the regularizer.  Further, to limit regularization penalty, the model can make 
+use of backoff features and not just fine-grained features, thereby resulting 
+in \textit{backoff smoothing}. These concepts are connected to the expressiveness 
+considerations introduced in feature modeling.
 
 We should note that we are \textit{not} concerned with computational issues here, e.g., that of tractably computing the normalization factors $Z(x_i)$. While efficiently computing the normalization factor is a crucial component to practical log-linear models, our primary concern is to provide a virtual manipulative that imparts a near-physical, intuitive understanding of log-linear models. 
 
@@ -765,8 +761,53 @@ We should note that we are \textit{not} concerned with computational issues here
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Provided Lessons}\label{sec:lessons}
 
+\section{Provided Lessons}\label{sec:lessons}
+We provide \NumLessons{} lessons. 
+
+Lessons \textbf{1} - \textbf{5} provide the introduction to log-linear modeling: basic introduction, feature modeling. The lessons become progressively harder; model mismatch due to missing features; non-binary features.
+
+Lessons \textbf{6} - \textbf{8} becomes much harder and introduces the color coded gradient (Figure \ref{fig:gradients}); ties back in to lessons 3-4. importance of convexity (with caveat of possibly stopping prematurely---``circling up'' the bowl. ``new random challenge,'' ``peek,'' and why your estimate of $\vec{\theta}$ might be different from the ``true'' parameters (sampling error)
+
+\begin{figure}[t]
+\centering
+\small
+\includegraphics[scale=.65]{images/gradient-lesson7.PNG}
+\caption{Gradient components use the same color coding as given in Figure \ref{fig:colorsize_inventory}.}
+\label{fig:gradients}
+\end{figure}
+
+
+Knowing about the gradient, lessons \textbf{8} - \textbf{10} may consider more advanced topics in joint modeling. First is regularization, presented under the guise of unseen data. ``Experiment with changing the regularization coefficient C. How does this affect the size of the regularizer? How does it affect the gradient hints? What weights does "Solve" find if C is large? Is the answer different for ℓ1 and ℓ2?''  (sparsity!); lesson 9 specifically asks students to consider the effect the sample size has on the estimator; overfitting in 10
+
+Finally in lessons \textbf{11}-\textbf{13} we introduce conditional models. We have designed these lessons such that the observed counts are in different proportions in each language; this helps provide a clear distinction between maximizing the conditional log-likelihood vs. the joint log-likelihood.
+
+Lessons \textbf{14}-\textbf{15} re-introduce the important of informed feature design in conditional models. Specifically, in Lesson \textbf{14}, we add a feature for each context (triangle, circle, square); the students are asked what happens when we solve (the context-only features don't move from their initial 0 values) and why. Then in \textbf{15}, we consider conjoined features. The new conjoined features resemble bigram features (as they consider the probability of an outcome in context). This model also retains the original features, which resemble unigram features (as they ignore context). We turn to the regularizer and how it can help break parameter setting ties.
+
+Lesson \textbf{16} extends the ``unigram''/``bigram'' concepts from the previous lesson to create a ``bigram language model.'' 
+How about the "bigram" features? We'll back off here by modeling just 3 general features that look at the event and the context together:
+
+Is the event identical to the previous event?
+Does the event have the same shape as the previous event?
+Does the event have the same fill-pattern as the previous event?
+
+We ask the students open-ended questions such as,
+Even though the data were generated from the ``true'' model, how well does the model fit the observed data sample, and how well can the model recover the ``true'' weights? Should regularization be used to answer these questions? What should you do if you need a very good estimate of those weights?
+
+The last lesson, \textbf{\NoteFF{FIX ME}}, applies log-linear modeling to the applied task of text categorization (spam detection). We ask questions to make sure they understand what the conditional models actually mean
+
+What kind of information below indicates that a particular training phrase has been labeled as spam?
+Which are the two test phrases included below? How do you know?
+If you train this model without regularization, what happens to the log-likelihood and the weights? Why?
+If you train this model with regularization, how does it classify the two test phrases? Look at the weights: what features helped it make this classification?
+You might think that 'fortune' fires on any phrase that contains the word 'fortune'. But lesson 14 suggests that can't quite work. Let's be precise: what (context,outcome) pairs is 'fortune' really defined to fire on?
+mentions money is a binary feature. What are some words that cause it to fire? How did you find out?
+Is the feature 'yada' a binary feature, or a counting feature? That is, does fyada return 1 or 3 on yada yada yada? How did you find out?
+Which of the non-spam messages does your trained model think is spammiest? How do you know?
+This is an example of binary classification, since there are just two possible decisions. How would you extend the approach to do three-way classification of a phrase as {spam,work,fun}?
+
+
+\Commented{
 %For instance, the student can 
 %pick some new secret weights, generate a new training dataset,
 %and re-estimate the weights given the new data ("New random 
@@ -889,6 +930,17 @@ This is an example of binary classification, since there are just two possible d
 \item %lesson 18
 conclusion
 \end{enumerate}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Conclusion}
+We have introduced an open-source log-linear virtual manipulative. Included with the code are
+\NumLessons{} lessons, with possible assignment questions, and an auxiliary handout that 
+gives a formal treatment of the necessary derivations.
+A version is available at \WhereToFind{}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
