@@ -39,7 +39,10 @@
 \newcommand{\Data}[0]{\ensuremath{\mathcal{D}}}
 
 \newcommand{\WhereToFind}[0]{\url{loglin-tnlp2013.appspot.com}}
-\newcommand{\NumLessons}[0]{\NoteFF{change \#: 18}}
+
+%%%%%%%%%%%%%%%%%5
+%CHANGE THIS!!!
+\newcommand{\NumLessons}[0]{18}% \NoteFF{change \#: 18}}
 
 \setlength\titlebox{6.5cm}    % Expanding the titlebox
 
@@ -68,8 +71,12 @@
 \maketitle
 
 \begin{abstract}
-We present a virtual manipulative for regularized conditional log-linear models. \WhereToFind{}
-\NoteJE{also mention that our instructional materials guide the student through a series of lessons, and that we provide an accompanying handout with a more formal treatment including derivations.}
+We present an open-source virtual manipulative for regularized conditional 
+log-linear models. The online application adapts in real-time to user-directed 
+changes in the model parameters, providing instant feedback to develop 
+students' intuitions. Included with our system are auxiliary instructional materials, 
+including questions usable for assignments. An anonymized version is available at
+\WhereToFind{}.
 \end{abstract}
 
 \section{Introduction}\label{sec:intro}
@@ -101,7 +108,7 @@ and $n$-gram models.
 \begin{figure*}
 \centering
 \includegraphics[scale=.49]{images/lesson1-051313-intro-zoom-instmore.PNG}
-\caption{The first lesson; the lower half is larger in reality.}
+\caption{The first lesson; the lower half is larger on the actual application.}
 \label{fig:lesson1}
 \end{figure*}
 
@@ -413,7 +420,7 @@ p_{\vec{\theta}}(\textrm{striped triangle})$), and the striped
 circle and gray outline are coincident ($\empirical{}(\textrm{striped
   circle}) = p_{\vec{\theta}}(\textrm{striped circle})$).
 \footnote{We start off with globally normalized models (only one 
-context). See \S\ref{sec:conditionallessons} for conditional models.}  
+context). See \S\ref{sec:lessons} for conditional models.}  
 See Figure \ref{fig:colorsize_inventory}
 for a summary of how we use size and color to indicate salient
 information.
@@ -494,9 +501,8 @@ $\empirical{} - p_{\vec{\theta}} $& \includegraphics[scale=.25]{images/goldilock
 & \includegraphics[scale=.25]{images/goldilocks-circle-large.PNG}\\
 \end{tabular}
 
-\caption{Colors indicate the sign of \eqref{eqn:obsexp} while a shape's area indicate 
-the difference betwen that type's probability under the 
-current model and the empirical distribution (gray outline).}
+\caption{Colors indicate the sign of \eqref{eqn:obsexp}; area indicates 
+differences betwen the model and empirical probability (gray outline).}
 \label{fig:colorsize_inventory}
 \end{figure}
 
@@ -520,7 +526,7 @@ However, it is important for the instructor to be able to tailor lessons to his 
 interests, and abilities. For instance, it may be appropriate to reason about different types of shapes
 when introducing students to log-linear models, but eventually NLP students will want to think about 
 NLP problems, whereas vision students will want to think about vision problems: we have designed the manipulative to handle text
-and arbitrary images as well (c.f. Figure \ref{fig:imgtxt_inventory}).
+and arbitrary images as well.\Commented{ (c.f. Figure \ref{fig:imgtxt_inventory}).}
 
 \begin{figure}[t]
 \begin{center}
@@ -531,6 +537,7 @@ and arbitrary images as well (c.f. Figure \ref{fig:imgtxt_inventory}).
 \label{fig:shape_inventory}
 \end{subfigure}
 
+\Commented{
 \vspace{1em}
 \begin{subfigure}[b]{\columnwidth}
 \centering
@@ -538,6 +545,7 @@ and arbitrary images as well (c.f. Figure \ref{fig:imgtxt_inventory}).
 \caption{\NoteFF{Replace with actual example text and images} Examples of including arbitrary images and text.}
 \label{fig:imgtxt_inventory}
 \end{subfigure}
+}
 \caption{Inventory of available shapes and objects.}
 \label{fig:inventory}
 \end{center}
@@ -624,16 +632,14 @@ are there?
 % (if any; eg., maxent formulation or empirical
 %MLE?)
  
-\NoteFF{FIX}
-Contrasting conditional models and globally normalized ones
+We contrast conditional models and globally normalized ones
 $p_{\vec{\theta}}\left(y\right)$. Although
-these context-%nescient\NoteJE{???} 
-unaware models allow students to focus on
+these context-unaware models allow students to focus on
 understanding some of the core underlying mathematical concepts of
 exponential models, such as feature interations and weight tradeoffs,
 there are important differences between global and conditional models
 that must be understood. For instance, conditional models can share 
-features' across conditions, helping generalize to unseen context-outcome 
+features across conditions, helping generalize to unseen context-outcome 
 pairs and maximizing the regularized objective.
 
 The modeler has the onus of proper \textbf{feature design}. When defining $K$ 
@@ -763,7 +769,8 @@ We should note that we are \textit{not} concerned with computational issues here
 
 
 \section{Provided Lessons}\label{sec:lessons}
-We provide \NumLessons{} lessons. 
+Here we provide an overview of the \NumLessons{} available lessons. We encourage the reader to 
+walk through the tutorial.
 
 Lessons \textbf{1} - \textbf{5} provide the introduction to log-linear modeling: basic introduction, feature modeling. The lessons become progressively harder; model mismatch due to missing features; non-binary features.
 
@@ -794,7 +801,7 @@ Does the event have the same fill-pattern as the previous event?
 We ask the students open-ended questions such as,
 Even though the data were generated from the ``true'' model, how well does the model fit the observed data sample, and how well can the model recover the ``true'' weights? Should regularization be used to answer these questions? What should you do if you need a very good estimate of those weights?
 
-The last lesson, \textbf{\NoteFF{FIX ME}}, applies log-linear modeling to the applied task of text categorization (spam detection). We ask questions to make sure they understand what the conditional models actually mean
+Finally, we apply log-linear modeling to the task of text categorization (spam detection). We ask questions to make sure they understand what the conditional models actually mean
 
 What kind of information below indicates that a particular training phrase has been labeled as spam?
 Which are the two test phrases included below? How do you know?
