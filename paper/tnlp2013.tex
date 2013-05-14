@@ -112,6 +112,11 @@ and $n$-gram models.
 \label{fig:lesson1}
 \end{figure*}
 
+We have used the tool in our class and received very positive feedback on it. 
+Students were excited by it, with some saying the tool helped develop their 
+``physical intuition'' for log-linear models. We also received feedback from users 
+with no statistical, computational or technical backgrounds: working through the introductory 
+lessons, they began to understand the models.
 
 The code includes \NumLessons{} ready-to-use lessons that can be used
 for individual or small-group study.  Each lesson, e.g. Figure \ref{fig:lesson1}, guides the student
@@ -328,10 +333,10 @@ virtual robots\footnote{E.g., \url{http://www-inst.eecs.berkeley.edu/~cs188/pacm
 or physical ones \cite{tokic2012robot}.
 Overall, manipulatives for math, NLP and ML have been successful in teaching their core concepts. 
 
-Next, we present our main contribution, a virtual manipulative that teaches log-linear models. We initially ground 
-the models in simple objects such as circles and regular polygons, and appeal to the 
-students' physical intuitions. Once this link has been established, we can use text and images to provide area/task-specific 
-examples.
+Next, we present our main contribution, a virtual manipulative that teaches log-linear models. We ground 
+the models in simple objects such as circles and regular polygons, in order to appeal to the 
+students' physical intuitions. Note that once this link has been established, we can use text and images to 
+provide area/task-specific examples.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -530,12 +535,14 @@ and arbitrary images as well.\Commented{ (c.f. Figure \ref{fig:imgtxt_inventory}
 
 \begin{figure}[t]
 \begin{center}
-\begin{subfigure}[b]{\columnwidth}
+%\begin{subfigure}[b]{\columnwidth}
 \centering
 \includegraphics[scale=.5]{images/different_shapes_fills3x4.PNG}
-\caption{Inventory of available shapes and fills. Note that while normally the color is indicative of the sign of \eqref{eqn:obsexp}, here the colors are solely provided as example.}
+\caption{Inventory of available shapes and fills. Normally color is indicative of 
+the sign of \eqref{eqn:obsexp}, but here they are solely provided as example. 
+Text and images (not shown) may also be included.}
 \label{fig:shape_inventory}
-\end{subfigure}
+%\end{subfigure}
 
 \Commented{
 \vspace{1em}
@@ -546,7 +553,7 @@ and arbitrary images as well.\Commented{ (c.f. Figure \ref{fig:imgtxt_inventory}
 \label{fig:imgtxt_inventory}
 \end{subfigure}
 }
-\caption{Inventory of available shapes and objects.}
+%\caption{Inventory of available shapes and objects.}
 \label{fig:inventory}
 \end{center}
 \end{figure}
@@ -742,10 +749,10 @@ $\frac{\partial}{\partial \theta_{k'}}F$, but one should also make the additiona
 and that even if distributions do not full match, expected counts should.
 
 When we include regularization, we consider $R(\vec{\theta}) = \|\vec\theta\|_1$, and 
-$R(\vec{\theta}) = \|\vec{\theta}\|_2^2$. This contrasts encouraging sparsity vs. simply 
+$R(\vec{\theta}) = \|\vec{\theta}\|_2^2$. This contrasts encouraging sparsity vs.  
 heavily preferencing away from large feature weights.\footnote{We special-case the optimizer 
 to handle the non-differentiable $\ell_1$ regularization, but inform the students of this difficulty.} 
-Related to this is exploring how does  penalty weighter $C$ affects the overall solution?
+Related to this is exploring how does  penalty coefficient $C$ affects the overall solution?
 
 Underlying the above concepts is \textbf{general machine learning} and 
 \textbf{statistical knowledge}. This includes the quality of estimators, 
@@ -769,50 +776,83 @@ We should note that we are \textit{not} concerned with computational issues here
 
 
 \section{Provided Lessons}\label{sec:lessons}
-Here we provide an overview of the \NumLessons{} available lessons. We encourage the reader to 
-walk through the tutorial.
+Here we provide an overview of the \NumLessons{} available lessons. This is intended as a 
+summary of the major concepts from the previous sections; we encourage the reader to 
+walk through the tutorial to attempt the activities and read all the questions.
 
-Lessons \textbf{1} - \textbf{5} provide the introduction to log-linear modeling: basic introduction, feature modeling. The lessons become progressively harder; model mismatch due to missing features; non-binary features.
+Lessons \textbf{1} - \textbf{5} provide the basic introduction to log-linear modeling. To keep 
+the models simple and incrementally build intution, we only consider joint models over shapes and focus 
+on feature modeling. We start off with two features over four shapes but the lessons 
+become progressively complex. We consider model mismatch by hiding certain 
+features from the student, a possible way to handle this, and non-binary features. We play both the 
+matching and log-likelihood games.
 
-Lessons \textbf{6} - \textbf{8} becomes much harder and introduces the color coded gradient (Figure \ref{fig:gradients}); ties back in to lessons 3-4. importance of convexity (with caveat of possibly stopping prematurely---``circling up'' the bowl. ``new random challenge,'' ``peek,'' and why your estimate of $\vec{\theta}$ might be different from the ``true'' parameters (sampling error)
+Having begun to develop the appropriate intuition, lessons \textbf{6} - \textbf{8} introduce 
+additional outcomes, and as a result, larger models. To deal with this complexity, we discuss the gradient 
+(Figure \ref{fig:gradients}), 
+automatically solving for $\vec{\theta}$ and how a larger partial derivative means the objective is more 
+sensitive to changing that feature. We connect the gradient, specifically computing observed and expected feature 
+counts, with the previous lessons involving model mismatch; this allows students to better understand. 
+We bring up the importance of convexity and its implications for our model's estimator.
+%\footnote{There is with caveat of possibly stopping prematurely---``circling up'' the bowl.
 
 \begin{figure}[t]
 \centering
 \small
 \includegraphics[scale=.65]{images/gradient-lesson7.PNG}
-\caption{Gradient components use the same color coding as given in Figure \ref{fig:colorsize_inventory}.}
+\caption{Gradient components use the same color coding as given in Figure \ref{fig:colorsize_inventory}. The length of each component indicates its potential effect on the objective, and not its magnitude.}
 \label{fig:gradients}
 \end{figure}
 
+We also introduce some features of the application and encourage their use as a way to 
+further explore log-linear models. For instance, students can generate secret oracle weights, and 
+fit a model to data sampled from those new weights. Students can also ``cheat'' and look at the true 
+weights,  and question why estimates of $\vec{\theta}$ might be different from the true parameters 
+(sampling error).
 
-Knowing about the gradient, lessons \textbf{8} - \textbf{10} may consider more advanced topics in joint modeling. First is regularization, presented under the guise of unseen data. ``Experiment with changing the regularization coefficient C. How does this affect the size of the regularizer? How does it affect the gradient hints? What weights does "Solve" find if C is large? Is the answer different for ℓ1 and ℓ2?''  (sparsity!); lesson 9 specifically asks students to consider the effect the sample size has on the estimator; overfitting in 10
+Having explored the gradient, lessons \textbf{8} - \textbf{10} consider more advanced topics in joint 
+modeling. The first is regularization: how does regularization help with unseen data? Students are encouraged 
+to play with the regularization coefficient $C$ and how it affects the model; specifically, changing the amount 
+of data enables exploration of $\ell_1$ vs. $\ell_2$ regularization.
 
-Finally in lessons \textbf{11}-\textbf{13} we introduce conditional models. We have designed these lessons such that the observed counts are in different proportions in each language; this helps provide a clear distinction between maximizing the conditional log-likelihood vs. the joint log-likelihood.
+Lessons \textbf{11}-\textbf{13} introduce conditional models. We have designed these lessons such that the 
+observed counts are in different proportions, thus providing a clear distinction between maximizing the conditional 
+vs. joint log-likelihoods.
 
-Lessons \textbf{14}-\textbf{15} re-introduce the important of informed feature design in conditional models. Specifically, in Lesson \textbf{14}, we add a feature for each context (triangle, circle, square); the students are asked what happens when we solve (the context-only features don't move from their initial 0 values) and why. Then in \textbf{15}, we consider conjoined features. The new conjoined features resemble bigram features (as they consider the probability of an outcome in context). This model also retains the original features, which resemble unigram features (as they ignore context). We turn to the regularizer and how it can help break parameter setting ties.
+Lessons \textbf{14}-\textbf{15} re-introduce the importance of informed feature design in conditional models. 
+Specifically in lesson \textbf{14}, we add a feature for each context and the students are asked what happens 
+when we solve and why (i.e., why don't the context-only features move from their initial 0 values). 
+In lesson \textbf{15}, we consider conjoined features (e.g., bigram features) as a way to successfully incorporate 
+contextual information into the model. We retain the original ``unigram'' (outcome) features, and explore
+how the regularizer breaks parameter setting ties.
 
-Lesson \textbf{16} extends the ``unigram''/``bigram'' concepts from the previous lesson to create a ``bigram language model.'' 
-How about the "bigram" features? We'll back off here by modeling just 3 general features that look at the event and the context together:
+Lesson \textbf{16} extends the ``unigram'' and ``bigram'' concepts from the previous lesson to create a ``bigram 
+language model.'' We step through the design of three general features that look at the event and the context 
+together and ask open-ended questions that cause students to ponder estimation issues in conditional sequence 
+models even when there is no model mismatch.%such as,
+%Even though the data were generated from the ``true'' model, how well does the model fit the observed data sample, and how well can the model recover the ``true'' weights? Should regularization be used to answer these questions? What should you do if you need a very good estimate of those weights?
 
-Is the event identical to the previous event?
-Does the event have the same shape as the previous event?
-Does the event have the same fill-pattern as the previous event?
+%\begin{figure}[t]
+%\centering
+%\small
+%\includegraphics[scale=.75]{images/genspam.PNG}
+%\caption{A portion of the real email/spam text classification task.}
+%\label{fig:spam}
+%\end{figure}
 
-We ask the students open-ended questions such as,
-Even though the data were generated from the ``true'' model, how well does the model fit the observed data sample, and how well can the model recover the ``true'' weights? Should regularization be used to answer these questions? What should you do if you need a very good estimate of those weights?
-
-Finally, we apply log-linear modeling to the task of text categorization (spam detection). We ask questions to make sure they understand what the conditional models actually mean
-
-What kind of information below indicates that a particular training phrase has been labeled as spam?
-Which are the two test phrases included below? How do you know?
-If you train this model without regularization, what happens to the log-likelihood and the weights? Why?
-If you train this model with regularization, how does it classify the two test phrases? Look at the weights: what features helped it make this classification?
-You might think that 'fortune' fires on any phrase that contains the word 'fortune'. But lesson 14 suggests that can't quite work. Let's be precise: what (context,outcome) pairs is 'fortune' really defined to fire on?
-mentions money is a binary feature. What are some words that cause it to fire? How did you find out?
-Is the feature 'yada' a binary feature, or a counting feature? That is, does fyada return 1 or 3 on yada yada yada? How did you find out?
-Which of the non-spam messages does your trained model think is spammiest? How do you know?
-This is an example of binary classification, since there are just two possible decisions. How would you extend the approach to do three-way classification of a phrase as {spam,work,fun}?
-
+Finally, we apply log-linear modeling to the task of text categorization (spam detection). This lesson demonstrates to students how to encode logistic regression in our framework, and so 
+we first ask some simpler questions to make sure they understand what is going on and what the conditional models actually mean.
+Then, we can ask particular questions and make sure they understand how the feature modeling experience gained in 
+prior lessons should be applied in practice. We also ask them to think about how to extend the approach to do three-way classification 
+of a phrase (e.g., as \texttt{spam},\texttt{work}, or \texttt{fun}).
+%What kind of information below indicates that a particular training phrase has been labeled as spam?
+%Which are the two test phrases included below? How do you know?
+%If you train this model without regularization, what happens to the log-likelihood and the weights? Why?
+%If you train this model with regularization, how does it classify the two test phrases? Look at the weights: what features helped it make this classification?
+%You might think that 'fortune' fires on any phrase that contains the word 'fortune'. But lesson 14 suggests that can't quite work. Let's be precise: what (context,outcome) pairs is 'fortune' really defined to fire on?
+%mentions money is a binary feature. What are some words that cause it to fire? How did you find out?
+%Is the feature 'yada' a binary feature, or a counting feature? That is, does fyada return 1 or 3 on yada yada yada? How did you find out?
+%Which of the non-spam messages does your trained model think is spammiest? How do you know?
 
 \Commented{
 %For instance, the student can 
