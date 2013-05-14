@@ -310,15 +310,16 @@ function draw_gradient(){
 	    var tt = bound_dom_range(true_theta); 
 	    var st1=st; var snt1=snt; var grad_color;
 	    var seen={};
-	    if(grad>0){
+	    //determine the gradient color
+	    if(grad>=0){
 		if(st1==snt){
 		    snt+= 2*0.000001;
 		    snt1=snt;
 		}
 		st1+=0.000001; 
 		snt1+=0.000001;
-		grad_color='#EE4455';
-	    } else{
+		grad_color=grad==0?COUNTS_EQUAL:'#EE4455';
+	    } else {
 		if(st1==snt){
 		    snt-= 2*0.000001;
 		    snt1=snt;
@@ -326,7 +327,7 @@ function draw_gradient(){
 		st1-=0.000001; 
 		snt1-=0.000001;
 		grad_color='#4455EE';
-	    }
+	    } 
 	    if(st>=t[0][0] && st<=t[3][0]){
 		if(grad>0) st=t[3][0]+0.00001;
 		else if(grad<0) st=t[0][0]-0.00001;
@@ -629,6 +630,10 @@ function updateD3Shape(container, id_num, id_name, width,height,visuals,color,co
     var s;
     var scale=Math.min(width/2,height/2);
     s=container.selectAll('#'+id_name).data([count]);
+    max_count = parseFloat(max_count);
+    count = parseFloat(count);
+    //hack
+    if(!isFinite(count)) count = .5;
     //reset sizes
     var shape_params={
 	width : width,

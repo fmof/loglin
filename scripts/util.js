@@ -64,10 +64,10 @@ function get_handle(slider_value_box){
 function get_slider_zero_positions(sh,known){
     var onepx = .75/slider_width*100;
     var c = known ? '#FFFFFF' : '';
-    return [[sh-onepx-0.00000001,c],
+    return [[sh-onepx-0.0000001,c],
 	    [sh-onepx,'#000000'],
 	    [sh+onepx,'#000000'],
-	    [sh+onepx+0.00000001,c]];
+	    [sh+onepx+0.0000001,c]];
 }
 
 //http://stackoverflow.com/questions/4197591/parsing-url-hash-fragment-identifier-with-javascript

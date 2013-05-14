@@ -45,30 +45,44 @@ function get_corrected_step(tindex, solve_step,grad_only, mult_fact){
     //proportional to solve_step, not taking into account
     //differentiability issues (with L1 regularization)
     var propval=THETA[tindex] + solve_step*grad_val;
+    var retval=0;
     //L1 regularization is proving to be a bit of a pain...
     if(USE_REGULARIZATION && REGULARIZATION_EXPONENT==1){
 	if(THETA[tindex]!=0){
 	    //if moving causes us to go beyond zero
 	    if(sign(THETA[tindex]*propval)<0){
-		return [tindex,grad_only?(-THETA[tindex]):0];
+		retval = grad_only?(-THETA[tindex]):0;
+		//return [tindex,];
 	    } else{
-		return [tindex,grad_only?(solve_step*grad_val):propval];
+		retval = grad_only?(solve_step*grad_val):propval;
+		//return [tindex,];
 	    }
 	} else{ //theta == 0
 	    var g = OBS_FEAT_COUNT[tindex] - EXP_FEAT_COUNT[tindex];
 	    if(Math.abs(g) <= REGULARIZATION_SIGMA2){
-		return [tindex,grad_only?(-THETA[tindex]):0];
+		retval = grad_only?(-THETA[tindex]):0;
+		//return [tindex,];
 	    }
-	    if(g>REGULARIZATION_SIGMA2){
-		return [tindex,solve_step*(g-REGULARIZATION_SIGMA2)];
-	    } else{
-		return [tindex, solve_step*(g+REGULARIZATION_SIGMA2)];
+	    else{
+		if(g>REGULARIZATION_SIGMA2){
+		    retval = solve_step*(g-REGULARIZATION_SIGMA2);
+		    //return [tindex,];
+		} else{
+		    retval = solve_step*(g+REGULARIZATION_SIGMA2);
+		    //return [tindex, ];
+		}
 	    }
 	}
     } else{ //otherwise, normal L2 stuff/no regularization
-	return [tindex, grad_only?grad_val:propval];
+	retval = grad_only?grad_val:propval;
+	//return [tindex, ];
     }
-    
+    if(!isFinite(retval)){
+	if(isNaN(retval))
+	    retval = grad_only?0:THETA[tindex];
+	retval = retval>0? 100 : -100;
+    }
+    return [tindex, retval];
 }
 
 function step_gradient(solve_step,dont_complete){
