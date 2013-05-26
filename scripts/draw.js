@@ -704,7 +704,6 @@ function updateSVGTitles(){
 	var emp_prob = get_empirical_prob(context, typeid).toPrecision(4);
 	var model_prob = (get_prob(context,typeid)/Z_THETA[context]).toPrecision(4);
 	
-	//if(1 || "uiTooltip" in jthis.data()){
 	if(jthis.data("qtip")){
 	    jQuery(this).qtip({content:
 			       'Empirical Probability: ' + emp_prob +"<br/>"+

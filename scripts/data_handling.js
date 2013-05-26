@@ -94,6 +94,7 @@ do_all_loading = function(){
 		jQuery('#instruction_area').css('border', '1px solid gray');
 	    }
 	    apply_settings();
+	    redraw_all();
 	}
     };
 
