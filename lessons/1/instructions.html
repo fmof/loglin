@@ -22,32 +22,36 @@
 </div>
 
 <div id="p1" class="showable_instructions">
-  <p><b>What the picture means:</b> Your model is defining a
-    probability for each shape.  When the weights are 0, all 4 shapes
-    have equal probability of 1/4.  This is shown by their equal
-    areas.</p>
+  <p><b>What the picture means:</b> Your model defines a probability
+    for each shape.  You're adjusting these <i>model probabilities</i>
+    by changing the weights.  When the weights are 0, all 4 shapes
+    have equal probability of &frac14;, as shown by their equal areas.</p>
 
-  <p>But the <i>empirical</i> probability of solid circles is 1/2, because
-  <b><font color="gray">30</font></b> of the <i>N</i>=60 shapes in
-  your <i>training data</i> are solid circles.  This "target" of 1/2
-  is shown by the larger area outlined
-  in <b><font color="gray">gray</font></b>.</p>
+  <p>However, fully &frac12; of the shapes in your <i>training data</i>
+    are solid circles.  You are trying to match this "target" of
+    &frac12;: the <i>empirical probability</i> of solid circles.  It is shown by the larger area
+    outlined in <b><font color="gray">gray</font></b>.
+    (To compare the probabilities as decimal numbers rather than
+    areas, point to the solid circle with your mouse.)</p>
 
-  <p>Since your model currently says that <i>p</i>(solid circle) =
-    1/4, it incorrectly expects only about <font color="red">15</font>
-    of the 60 training shapes to be solid circles.  By increasing
-    the <code>circle</code> weight, you can improve your model until
-    it predicts the observed count
-    of <b><font color="gray">30</font></b>.  The <i>observed count</i>
-    of <b><font color="gray">30</font></b> and the current
-  <i>expected count</i> of <font color="red">15</font> are contrasted
-  in the solid circle box.</p>
+  <p><b>Expected and observed counts:</b> There are <i>N</i>=60 shapes
+    in your training data.  If your model says that <i>p</i>(solid
+    circle) = &frac14;, it incorrectly predicts that &frac14;&middot;<i>N</i>
+    = <font color="red">15</font> of the 60 training shapes should be
+    solid circles.  By increasing the <code>circle</code> weight, you
+    can improve your model until it predicts the actual observed count
+    of &frac12;&middot;<i>N</i> = <b><font color="gray">30</font></b>.
+    The <i>observed count</i> <b><font color="gray">30</font></b> and
+    the current <i>expected count</i> <font color="red">15</font> are
+    contrasted in the solid circle box.  They are proportional to the
+    empirical and model probabilities.</p>
 
-  <p><b>Activity 1: </b>What weights are needed to approximately match
-  the training data?  (All four shapes will match their outlines and turn
-  gray, and their expected counts will equal their observed counts.)</p>
+  <p><b>Activity 1: </b>What weights are needed to make the model
+  approximately match the training data?  (All four shapes will match
+  their outlines and turn gray, and their expected counts will equal
+  their observed counts.)</p>
 
-  Now read sections 1-2 of <A HREF="pdf/formulas.pdf">this handout</A>
+  Now read sections 1-2 of <A HREF="pdf/formulas.pdf" target="_blank">this handout</A>
   to understand exactly how the <code>circle</code> and <code>solid</code>
   sliders control the probability of the 4 events.  
 
