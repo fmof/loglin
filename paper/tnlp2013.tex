@@ -27,7 +27,7 @@
 \usepackage{transparent}
 \usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
 \newcommand{\Note}[1]{}
-\renewcommand{\Note}[1]{\hl{[#1]}}
+\renewcommand{\Note}[1]{\hl{[#1]}}  % comment this out to remove notes
 \newcommand{\FIXME}{\Note{FIXME}}
 \newcommand{\NoteSigned}[3]{{\sethlcolor{#2}\Note{#1: #3}}}
 \newcommand{\RemoveFF}[1]{\NoteSigned{Remove (FF)}{Crimson}{#1}}
@@ -81,6 +81,12 @@ including questions usable for assignments. An anonymized version is available a
 
 \section{Introduction}\label{sec:intro}
 
+\NoteJE{Frank - please uncomment the notes that are still relevant
+  (and delete the others, or convert them to \% comments).  If
+  you want to suppress notes for publication, see the definition of
+  the Note command.  There's no need to comment them out individually
+  and it risks their getting lost.}
+
 We argue that if one is going to teach only a single machine learning
 technique in a computational linguistics course, it should be {\em
   conditional log-linear modeling}.  Such models are pervasive in
@@ -90,9 +96,9 @@ p_{\vec{\theta}}(y \mid x) \propto \exp{\left(\vec{\theta} \cdot \vec{f}\left(x,
 \end{equation}
 where $\vec{f}$ extracts a feature vector from context $x$ and
 outcome $y \in \mathcal{Y}(x)$.  The set of possible
-outcomes $\mathcal{Y}(x)$ might depend on the context $x$.\footnote{In the
-  case where $y$ is a binary variable, so $\mathcal{Y}(x)=\{0,1\}$,
-  this model is equivalent to logistic regression.}
+outcomes $\mathcal{Y}(x)$ might depend on the context
+$x$.\footnote{The model is equivalent to logistic regression
+  when $y$ is a binary variable, that is, when $\mathcal{Y}(x)=\{0,1\}$.}
 
 % Any modern course on computational linguistics or natural language
 % processing needs to teach some machine learning tools.  
@@ -114,7 +120,7 @@ and $n$-gram models.
 
 We have used the tool in our class and received very positive feedback on it. 
 Students were excited by it, with some saying the tool helped develop their 
-``physical intuition'' for log-linear models. We also received feedback from users 
+``physical intuition'' for log-linear models.\NoteJE{they did? who?}  We also received feedback from users 
 with no statistical, computational or technical backgrounds: working through the introductory 
 lessons, they began to understand the models.
 
@@ -126,7 +132,7 @@ shapes, words, or images such as parse trees.  Each lesson is peppered
 with questions, and students could be asked to answer some of these
 questions in writing.\footnote{There are approximately six questions per
 lesson. We found that answering {\em all} the
-  questions took them about 2300 words, or just under 23 words per question, which
+  questions took our students about 2300 words, or just under 23 words per question, which
   was probably both unreasonable and unnecessary.}
 \Commented{\NoteJE{We might
   consider releasing a couple of pencil-and-paper problems from past
@@ -152,10 +158,10 @@ a course, when one needs
 \item a conditional probability within some generative process, such
   as an $n$-gram model, HMM, PCFG, probabilistic FSA or FST, noisy-channel MT model,
   or Bayes net;
-\item a global structured prediction method---here $y$ is a structured
-  object from a large space of possible outputs.  (Then $p(y \mid x)$ is a
-  Markov random field or a conditional random field, depending on whether 
-  $x$ is empty or not.)
+\item a global structured prediction method---here $y$ is a complete
+  structured object such as a tagging, segmentation, parse, alignment, or translation.  Then $p(y
+  \mid x)$ is a Markov random field or a conditional random field,
+  depending on whether $x$ is empty or not.
 \end{itemize}  
 
 Log-linear models over discrete variables are also sufficiently
@@ -215,11 +221,11 @@ One reason that log-linear models are both versatile and pedagogically
 useful is that they explicitly model {\em probabilities}.  These can be 
 \begin{itemize}
 \item combined with other probabilities using the usual rules of probability;
-\item marginalized at test time to obtain the probability that the output 
+\item marginalized at test time to obtain the probability that the outcome 
   $y$ has a particular property (e.g., one can sum over alignments);
 \item marginalized at training time in the case of incomplete data $y$
   (e.g., the training data may not include alignments);
-\item used to choose among possible outputs by computing their 
+\item used to choose among possible decisions by computing their 
   expected loss (risk).
 \end{itemize}
 The training procedure also takes a probabilistic view.  Equation
@@ -284,13 +290,15 @@ object; for more, see the classic and recent analyses from
 \newcite{sowell1989effects} and \newcite{carbonneau2013meta}.
 
 Using concrete manipulatives has been shown effective but they present certain problems, including procurement 
-of the necessary materials, replicability and applicability to certain concepts and group of students. These issues, among others, have 
+of the necessary materials, replicability,\NoteJE{is this a problem
+  with using concrete manipulatives or only a problem in doing
+  research on them?} and applicability to certain concepts and group of students. These issues, among others, have 
 resulted in increased interest over the past two decades into \textit{virtual manipulatives}, including the creation of 
 the National Library of Virtual Manipulatives.\footnote{\url{nlvm.usu.edu/en/nav/vlibrary.html} and 
 \url{enlvm.usu.edu/ma/nav/doc/intro.jsp}} 
 Both \newcite{clements1996concrete} and \newcite{moyer2002virtual} provide accessible overviews of 
 virtual manipulatives in early math education; briefly, they are the software analogue of concrete manipulatives. Virtual manipulatives give students the 
-ability to affect some change upon a system and thus learn underlying properties \cite{moyer2002virtual}.
+ability to effect some change upon a system and thus learn underlying properties \cite{moyer2002virtual}.
 This latter point is particularly applicable for log-linear models, given the difficulties they present.
 
 \Commented{
@@ -314,7 +322,7 @@ or reading and writing numbers’’" \cite{linder2011early}
   these abstract models.}
 }
 
-Members within the NLP and speech communities have previously explored manipulatives and the idea of
+Members of the NLP and speech communities have previously explored manipulatives and the idea of
 ``learning by doing.''
 \newcite{eisner-2002-tnlp} presented a spreadsheet-based posterior- and Viterbi-decoding Hidden Markov Models 
 on provided synthetic data, allowing students to develop intuitions for the underlying statistical properties; 
@@ -325,9 +333,9 @@ taggers, and finite-state transducers.
 Most manipulatives/interfaces targeted at NLP have been virtual but a notable exception is \newcite{halteren-tnlp-2002}, 
 who created a (physical) board game for parsing. 
 
-In machine learning, there are plethora of virtual manipulatives demonstrating central concepts such 
+In machine learning, there is a plethora of virtual manipulatives demonstrating central concepts such 
 as decision boundaries and kernel methods.\footnote{\url{cs.cmu.edu/~ggordon/SVMs/svm-applet.html}, i.a.} 
-There are also a number of systems built around teaching artificial intelligence: these tend to to consist of controlling 
+There are also several systems for teaching artificial intelligence: these tend to to consist of controlling 
 virtual robots\footnote{E.g., \url{http://www-inst.eecs.berkeley.edu/~cs188/pacman/pacman.html}}
 %, or \url{http://www.cs.rochester.edu/trac/quagents}} 
 or physical ones \cite{tokic2012robot}.
@@ -435,7 +443,7 @@ In the \textit{matching game}, the student tries to match $p_{\vec{\theta}}$ to 
 %= \tilde{p}(y\mid x)$, for all $(x,y)$. 
 The game is to try to make all of the salient log-linear objects 
 equal in size (and color) to their corresponding gray outline. The student ``wins'' once the maximum
-number of log-linear objects turn gray, indicating the best possible fit.
+number of log-linear objects turn gray, indicating the best possible fit.\NoteJE{not quite accurate\ldots}
 %Rather than force students to numerically compare the
 %two distributions, we scale the shape's size to indicate its type's probability
 %under either distribution. We represent $\tilde{p}$ by a gray 
@@ -512,17 +520,20 @@ differences betwen the model and empirical probability (gray outline).}
 \end{figure}
 
 Winning either game with more complex models may be too tedious or difficult. 
-The student may then make use of \textit{hints}. These hints, such as
-viewing components of the gradient, or simply having
-the application solve the problem, use the salience features above to 
-develop intuition.
+The student may then make use of \textit{hints}, such as
+viewing components of the gradient (Figure~\ref{fig:gradients}), or simply clicking a button to have
+the system follow the gradient.  
+% These use the salience features above to develop intuition.
 
-Once the student is comfortable with the provided model and data, the student
-can begin to play around with the dataset and model options. These utilities, such as
+Once the student is comfortable with the provided model and data, he
+or she can begin to play around with the dataset and model options. These utilities, such as
 generating a new random challenge and experimenting with regularizaiton, 
 are described more in Section \ref{sec:lessons}.
 
 \subsection{The Instructor Interface: Creating and Tailoring Lessons}\label{sec:tailoring}
+
+\NoteJE{mention tooltips somewhere}
+
 To support a wide-range of lessons, the manipulative has support for twelve predefined shape and fill combinations.
 As seen in Figure \ref{fig:shape_inventory}, the available shapes are circles, triangles, squares and pentagons,
 where each can be solid, striped or hollow.
@@ -571,9 +582,9 @@ one context and be globally normalized. Note that the visual positioning informa
 important: aligning objects by orthogonal descriptions, e.g., circles vs. triangles or solid vs. striped, 
 can make feature contrasts stand out more.
 
-Finally, because an instructor may not want all functionality to always be available (e.g., hiding the ``solve''
-capability in early lessons), we allow certain declaratively specified lesson-specific changes to 
-the interface, with no coding necessary.
+Finally, the configuration file can be used to turn off certain
+features on a per-lesson basis (without programming) .  For example, 
+an instructor may want to hide the ``solve'' button in early lessons.
 
 \subsection{Back-End Implementation}
 Broadly, the virtual manipulative is designed to be widely available and have no start-up cost. 
@@ -586,10 +597,14 @@ libraries to help with visualization and cross-browser compatibility.\footnote{S
 \texttt{jQuery Tools} (\url{jquerytools.org/}), and
 \texttt{qTip} (\url{craigsworks.com/projects/qtip/}).}
 
-That being said, eventually the buck must stop somewhere and the manipulative does rely on certain HTML5 
-capabilities. Unfortunately, not all current browsers support these capabilities. The manipulative works 
-with recent verisons of Firefox, Chrome and Safari. We do not believe this restriction to be unreasonable, 
-especially as all browers adopt widely used standards.
+% That being said, eventually the buck must stop somewhere and 
+The manipulative does rely on certain capabilities from the HTML5
+standard. Unfortunately, not all current browsers support these
+capabilities.\NoteJE{which browsers don't?}  However, the manipulative works 
+with recent versions of Firefox, Chrome and Safari, 
+so our students had no trouble running it.\NoteJE{true?}
+% so we do not believe this restriction to be unreasonable, 
+% especially as all browers adopt widely used standards.
 
 %The manipulative attempts to be responsive to an individual user's browser and display options, and 
 %heuristically make efficient use of available space. That being said, higher resolution/larger displays 
@@ -659,6 +674,10 @@ Will adding additional features always help? That is, why might including (binar
 features that completely partition the space, such as solid vs. striped, be redundant in some 
 cases, yet insufficient in others?
 
+\NoteJE{One point we want to get across is that if you have one
+  feature for each $(x,y)$ pair, then you can fit the data perfectly
+  and in fact you will do so if unregularized (MLE).}
+
 The empirical distribution deals with \textit{type} counts, but because log-linear models 
 deal with descriptions of type, we can instead talk about \textbf{feature counts}. Our 
 manipulative allows exploration of these two different counts and how they affect the 
@@ -718,7 +737,8 @@ Many important concepts are introduced in these two equations. Some are new to t
 she was not exposed to them when considering feature design; others provide an alternative view
 on concepts already introduced. It is important to highlight these connections.
 
-We believe the most important concept is that of the non-regularized gradient being the \textbf{difference 
+We believe the most important concept is that the gradient of
+maximum likelihood is the \textbf{difference 
 between observed and expected feature counts}:
 \begin{equation}
 \ \mathbb{E}_{\empirical{}}\left[\vec{f}(X,Y)\right] 
@@ -780,14 +800,14 @@ Here we provide an overview of the \NumLessons{} available lessons. This is inte
 summary of the major concepts from the previous sections; we encourage the reader to 
 walk through the tutorial to attempt the activities and read all the questions.
 
-Lessons \textbf{1} - \textbf{5} provide the basic introduction to log-linear modeling. To keep 
+Lessons \textbf{1}--\textbf{5} provide the basic introduction to log-linear modeling. To keep 
 the models simple and incrementally build intution, we only consider joint models over shapes and focus 
 on feature modeling. We start off with two features over four shapes but the lessons 
 become progressively complex. We consider model mismatch by hiding certain 
 features from the student, a possible way to handle this, and non-binary features. We play both the 
 matching and log-likelihood games.
 
-Having begun to develop the appropriate intuition, lessons \textbf{6} - \textbf{8} introduce 
+Having begun to develop the appropriate intuition, lessons \textbf{6}--\textbf{8} introduce 
 additional outcomes, and as a result, larger models. To deal with this complexity, we discuss the gradient 
 (Figure \ref{fig:gradients}), 
 automatically solving for $\vec{\theta}$ and how a larger partial derivative means the objective is more 
@@ -810,16 +830,16 @@ fit a model to data sampled from those new weights. Students can also ``cheat'' 
 weights,  and question why estimates of $\vec{\theta}$ might be different from the true parameters 
 (sampling error).
 
-Having explored the gradient, lessons \textbf{8} - \textbf{10} consider more advanced topics in joint 
+Having explored the gradient, lessons \textbf{8}--\textbf{10} consider more advanced topics in joint 
 modeling. The first is regularization: how does regularization help with unseen data? Students are encouraged 
 to play with the regularization coefficient $C$ and how it affects the model; specifically, changing the amount 
 of data enables exploration of $\ell_1$ vs. $\ell_2$ regularization.
 
-Lessons \textbf{11}-\textbf{13} introduce conditional models. We have designed these lessons such that the 
+Lessons \textbf{11}--\textbf{13} introduce conditional models. We have designed these lessons such that the 
 observed counts are in different proportions, thus providing a clear distinction between maximizing the conditional 
 vs. joint log-likelihoods.
 
-Lessons \textbf{14}-\textbf{15} re-introduce the importance of informed feature design in conditional models. 
+Lessons \textbf{14}--\textbf{15} re-introduce the importance of informed feature design in conditional models. 
 Specifically in lesson \textbf{14}, we add a feature for each context and the students are asked what happens 
 when we solve and why (i.e., why don't the context-only features move from their initial 0 values). 
 In lesson \textbf{15}, we consider conjoined features (e.g., bigram features) as a way to successfully incorporate 
