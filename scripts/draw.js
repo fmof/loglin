@@ -39,20 +39,29 @@ function load_html5_slider(boxid,val){
 	    jdiv.attr("title", boxval);
 	}
 	var jhandle = jQuery(boxid.parentNode.childNodes[0].childNodes[1]);
-	if(jhandle.data("qtip") || jhandle.data("hasqtip")){
-	    var x = parseInt(feature_info.getAttribute("theta_index"),10);
-	    jhandle.qtip({content:
-			  "Observed Count: " + OBS_FEAT_COUNT[x]+
-			  "<br />" +
-			  "Expected Count: " + formatExpected(EXP_FEAT_COUNT[x])
-			 });
-	}
-
+	update_qtip_count(jhandle);
 	redraw_all();
     } else{
 	feature_info.className+=' feature_name_box';
 	boxid.parentNode.parentNode.className += ' feature_box';
     }
+}
+
+//jhandle should be a jQuery object representing a slider handle
+function update_qtip_count(jhandle){
+    if(jhandle.data("qtip") || jhandle.data("hasqtip")){
+	var fi = jhandle.parent().parent().parent().children(":first");
+	var x = parseInt(fi.attr("theta_index"),10);
+	jhandle.qtip({content:
+		      "Observed Count: " + OBS_FEAT_COUNT[x]+
+		      "<br />" +
+		      "Expected Count: " + formatExpected(EXP_FEAT_COUNT[x])
+		     });
+    }
+}
+
+function update_all_qtip_counts(){
+    jQuery('.handle').each(function(){ update_qtip_count(jQuery(this));});
 }
 
 //REQUIRES: svg_loaded=1
