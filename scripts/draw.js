@@ -39,7 +39,7 @@ function load_html5_slider(boxid,val){
 	    jdiv.attr("title", boxval);
 	}
 	var jhandle = jQuery(boxid.parentNode.childNodes[0].childNodes[1]);
-	update_qtip_count(jhandle);
+	//update_qtip_count(jhandle);
 	redraw_all();
     } else{
 	feature_info.className+=' feature_name_box';
@@ -71,6 +71,7 @@ function redraw_all(){
     recompute_expected_counts();    
     compute_max_prob(get_prob,MAX_EXP_EMP_PROB,MAX_EXP_EMP_PROB_TYPE,MAX_EXP_EMP_AREA, get_model_partition_function);
     redrawAllExpected();
+    update_all_qtip_counts();
     updateSVGTitles();
     //ensure correct order of observed and expected images
     jQuery('.observed_image').each(function(){
