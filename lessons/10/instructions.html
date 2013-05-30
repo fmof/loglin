@@ -4,24 +4,23 @@
   regularization and <i>C</i> = 1.  What do you notice about the
   expected counts of the five novel outcomes?</p>
 
-  <p>The dataset has lots of solid shapes and no striped shapes, so
-    why doesn't the model predict that solid squares should be more
-    likely than striped squares?</p>
-
   <p>Now increase <i>N</i> to 5000 and click "Solve" again.  What
   happens to the novel outcomes?  What happens to the weights?</p>
 
   <p>What if you turn regularization off completely in each case?</p>
 
   <p>Discuss how these behaviors differ from what you saw in the
-    <A HREF="#9" target="_blank">previous lesson</A>, and why.</p>
+    <A HREF="#9" target="_blank">previous lesson</A>, and why.
+    <!-- (The dataset has lots of solid shapes and no striped shapes, so
+    why doesn't this model predict that solid squares should be more
+    likely than striped squares?) --></p>
 
   <p>If you include a special feature for each shape, as in this
-    lesson, then you can always tune each shape independently of the
+    lesson, then you can always tune that shape independently of the
     others.  Such a model can match any empirical distribution
     perfectly.  However, regularization prevents the solver
     from using the parameters to overfit the data in this way, so
-    you will still get some smoothing.</p>
+    you will get some smoothing.</p>
 
 </p>
 </p>

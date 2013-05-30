@@ -18,7 +18,7 @@ count	position	context	features	visualization
 1	0,0	fortune cookie		shape=image,value="lessons/17/mail2.png"
 0	0,1	fortune cookie	mentions money,'fortune','cookie'	shape=image,value="lessons/17/spam.jpg"
 1	0,0	cookie baking		shape=image,value="lessons/17/mail2.png"
-0	0,1	cookie baking	'cookie','baking'	shape=image,value="lessons/17/spam.jpg"
+1	0,1	cookie baking	'cookie','baking'	shape=image,value="lessons/17/spam.jpg"
 1	0,0	my car		shape=image,value="lessons/17/mail2.png"
 0	0,1	my car	'my','car'	shape=image,value="lessons/17/spam.jpg"
 1	0,0	my parents		shape=image,value="lessons/17/mail2.png"
