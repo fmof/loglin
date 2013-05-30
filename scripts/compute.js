@@ -253,8 +253,10 @@ function compute_gradient(){
 }
 
 
-function get_empirical_prob(context,id_num){
-    return NUM_TOKENS_C[context]==0?0:COUNTS[context][id_num]/NUM_TOKENS_C[context];
+function get_empirical_prob(context,id_num, as_num){
+    return (typeof(as_num)==="undefined" || as_num) ? 
+	(NUM_TOKENS_C[context]==0?0:COUNTS[context][id_num]/NUM_TOKENS_C[context]) : 
+    (NUM_TOKENS_C[context]==0 ? "--" : COUNTS[context][id_num]/NUM_TOKENS_C[context]);
 }
 
 //return the empirical count (unnormalized emp. prob.)

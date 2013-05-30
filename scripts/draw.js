@@ -730,7 +730,8 @@ function updateSVGTitles(){
 	var jthis=jQuery(this);
 	var spid=this.id.split("_");
 	var context = spid[3], typeid=spid[4];
-	var emp_prob = get_empirical_prob(context, typeid).toPrecision(4);
+	var emp_prob = get_empirical_prob(context, typeid, false);
+	if(isNumber(emp_prob)) emp_prob=emp_prob.toPrecision(4);
 	var model_prob = (get_prob(context,typeid)/Z_THETA[context]).toPrecision(4);
 	
 	if(jthis.data("qtip")){
