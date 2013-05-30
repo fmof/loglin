@@ -5,6 +5,10 @@ function rescale_context_counts(context_id, old_val,n_val){
 	var tid = TYPE_OBSERVATIONS_IN_C[context_id][i];
 	if(old_val!=0){
 	    COUNTS[context_id][tid] *= n_val/old_val;
+	} else{
+	    //HACK -- when you're going from context_count=0 to >0, what
+	    //do you do? 
+	    COUNTS[context_id][tid] = n_val/TYPE_OBSERVATIONS_IN_C[context_id].length;
 	}
     }
     updateObservedImages();
@@ -71,7 +75,6 @@ function sample_from_true(context_id, num_times){
 	NUM_TOKENS-=NUM_TOKENS_C[c];
 	NUM_TOKENS_C[c]=0;
 	var a=enumerate_possible_types(c,VISUALS[c]);
-	console.log(a);
 	var num_times = num_times || oldntokc[c] || 50;	
 	//first lay-out each type along the unit interval
 	var s = []; var prev=0; var ncounts = a[1];
@@ -88,7 +91,6 @@ function sample_from_true(context_id, num_times){
 		prev=s[i];
 	    }
 	}
-	console.log(s);
 	for(var i = 0;i<num_times;i++){
 	    var n=Math.random();
 	    var j=0;

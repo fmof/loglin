@@ -636,7 +636,7 @@ function prettifyShape(shape, id_name, color, fill, set_sw_opacity, opacity){
 }
 
 
-function updateD3Shape(container, id_num, id_name, width,height,visuals,color,count,max_count){
+function updateD3Shape(container, id_num, id_name, width,height,visuals,color,count,max_count,hack_observed){
     var s;
     var scale=Math.min(width/2,height/2);
     s=container.selectAll('#'+id_name).data([count]);
@@ -652,6 +652,7 @@ function updateD3Shape(container, id_num, id_name, width,height,visuals,color,co
 	max_count : isFinite(max_count) ? max_count : 1,
 	scale : scale,
 	value : visuals['value'],
+	is_observed : (typeof(hack_observed)!=="undefined" || hack_observed)
     };
     var sdshape = SHAPE_DICTIONARY[visuals['shape']];
     sdshape.draw(s, shape_params);
@@ -766,7 +767,7 @@ function updateObservedImages(){
 	var x = VISUALS[c][j];
 	var tfi = x['fill'];
 	x['fill'] = 'hollow';
-	var s=updateD3Shape(d3.select('#observed_point_context_'+c+'_'+j),j,'obs_count_pic_'+c+'_'+j,SVG_WIDTH,SVG_HEIGHT, VISUALS[c][j], '#B8B8B8', get_empirical_prob(c,j),MAX_EMP_PROB[c]/MAX_EMP_AREA[c]);
+	var s=updateD3Shape(d3.select('#observed_point_context_'+c+'_'+j),j,'obs_count_pic_'+c+'_'+j,SVG_WIDTH,SVG_HEIGHT, VISUALS[c][j], '#B8B8B8', get_empirical_prob(c,j),MAX_EMP_PROB[c]/MAX_EMP_AREA[c], true);
 	x['fill']=tfi;
 	s.attr('stroke-opacity',1).attr('stroke-width',3);
 	jQuery('#obs_count_text_'+c+'_'+j).html(formatExpected(count));
@@ -836,7 +837,7 @@ function drawSVGBoxes(selectObj){
 	ntok.setAttribute('size',6);
 	ntok.onchange = function(){
 	    var v = this.value; var cc = parseInt(this.getAttribute('context_id'));
-	    if(isNumber(v) && NUM_TOKENS_C[cc]!=0){
+	    if(isNumber(v) /* && NUM_TOKENS_C[cc]!=0*/ ){
 		v=parseFloat(v);
 		var ov = NUM_TOKENS_C[cc];
 		NUM_TOKENS = NUM_TOKENS - ov + v;
@@ -941,6 +942,8 @@ function drawSVGBoxes(selectObj){
 		svg.setAttribute('id','observed_point_context_'+c+'_'+type_id);
 		svg.setAttribute('width',width);
 		svg.setAttribute('height',height);
+		svg.setAttribute("xmlns","http://www.w3.org/2000/svg");
+		svg.setAttribute("xmlns:xlink","http://www.w3.org/1999/xlink");
 		divj.appendChild(svg);
 		svg = d3.select('#observed_point_context_'+c+'_'+type_id);
 		var max_count=-1;
