@@ -24,11 +24,51 @@
   That is, try to make your model predict that among 60 shape tokens, there
   would be
   <ul>
-    <li>40 <code>circle</code> tokens &nbsp;&nbsp;&nbsp;&nbsp;(total of solid and striped)
-    <li>20 <code>triangle</code> tokens &nbsp;(total of solid and striped)
-    <li>40 <code>solid</code> tokens &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(total of circles and triangles)
-    <li>20 <code>striped</code> tokens &nbsp;&nbsp;&nbsp;(total of circles and triangles)
+    <li>40 <code>circle</code> tokens &nbsp;&nbsp;&nbsp;= 
+      <svg xmlns="http://www.w3.org/2000/svg"
+	   xmlns:xlink="http://www.w3.org/1999/xlink"
+	   width="30" height="30" class="instructionable_object" 
+	   shape_params='{"shape":"circle","fill":"solid","width":"30","height":"30","count":"225","max_count":"1", "color":"gray"}'/>
+	+
+	<svg xmlns="http://www.w3.org/2000/svg"
+	     xmlns:xlink="http://www.w3.org/1999/xlink"
+	     width="30" height="30" class="instructionable_object" 
+	     shape_params='{"shape":"circle","fill":"striped","width":"30","height":"30","count":"225","max_count":"1", "color":"gray"}'/>
+	(total of solid and striped)
+    <li>20 <code>triangle</code> tokens = 
+      <svg xmlns="http://www.w3.org/2000/svg"
+	   xmlns:xlink="http://www.w3.org/1999/xlink"
+	   width="30" height="30" class="instructionable_object" 
+	   shape_params='{"shape":"triangle","fill":"solid","width":"30","height":"30","count":"225","max_count":"1", "color":"gray"}'/>
+	+
+	<svg xmlns="http://www.w3.org/2000/svg"
+	     xmlns:xlink="http://www.w3.org/1999/xlink"
+	     width="30" height="30" class="instructionable_object" 
+	     shape_params='{"shape":"triangle","fill":"striped","width":"30","height":"30","count":"225","max_count":"1", "color":"gray"}'/> (total of solid and striped)
+    <li>40 <code>solid</code> tokens &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= 
+      <svg xmlns="http://www.w3.org/2000/svg"
+	   xmlns:xlink="http://www.w3.org/1999/xlink"
+	   width="30" height="30" class="instructionable_object" 
+	   shape_params='{"shape":"circle","fill":"solid","width":"30","height":"30","count":"225","max_count":"1", "color":"gray"}'/>
+	+
+	<svg xmlns="http://www.w3.org/2000/svg"
+	     xmlns:xlink="http://www.w3.org/1999/xlink"
+	     width="30" height="30" class="instructionable_object" 
+	     shape_params='{"shape":"triangle","fill":"solid","width":"30","height":"30","count":"225","max_count":"1", "color":"gray"}'/>
+	(total of circles and triangles)
+    <li>20 <code>striped</code> tokens &nbsp;= 
+      <svg xmlns="http://www.w3.org/2000/svg"
+	   xmlns:xlink="http://www.w3.org/1999/xlink"
+	   width="30" height="30" class="instructionable_object" 
+	   shape_params='{"shape":"circle","fill":"striped","width":"30","height":"30","count":"225","max_count":"1", "color":"gray"}'/>
+	+
+	<svg xmlns="http://www.w3.org/2000/svg"
+	     xmlns:xlink="http://www.w3.org/1999/xlink"
+	     width="30" height="30" class="instructionable_object" 
+	     shape_params='{"shape":"triangle","fill":"striped","width":"30","height":"30","count":"225","max_count":"1", "color":"gray"}'/>
+	(total of circles and triangles)
   </ul>
+
   just as in the training data.  Hover your mouse over a slider to see
   how well you're doing on that feature.  Does moving one slider 
   disturb the matches you've already made on other sliders?
@@ -40,3 +80,13 @@
   the matching game?  How about vice-versa?
 </p>
 </div>
+
+<script type="text/javascript">
+  jQuery('.instructionable_object').each(function(){
+  var jthis=jQuery(this);
+  var jsp =jQuery.parseJSON(jthis.attr("shape_params"));
+  var dthis=d3.select(this);
+  createInstructionableD3Shape(dthis, 'instructionable_object', jsp);
+  jthis.css("display","inline-block").css("vertical-align","middle");
+  });
+</script>
