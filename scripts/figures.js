@@ -66,8 +66,8 @@ function createShapeDictionary(){
 				  .attr("height",rhei)
 				  .attr("fill","white")
 				  .attr("opacity",1);
-			      var erwid = Math.max(2*border, rwid-2*border);
-			      var erhei = Math.max(2*border, rhei-2*border);
+			      var erwid = Math.max(1e-5/*2*border*/, rwid-2*border);
+			      var erhei = Math.max(1e-5/*2*border*/, rhei-2*border);
 			      if(!shape_params.is_observed){
 				  shape_obj.selectAll('image')
 				      .attr("xlink:href", shape_params.value.replace(/^\"|\"$/g, ""))
