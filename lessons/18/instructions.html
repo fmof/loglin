@@ -178,7 +178,7 @@
 
   <p>So why, unlike regression, does classification need to convert
     &theta; &sdot; <i>f</i>(<i>x</i>,<i>y</i>) to a probability (by
-    exponentiating and renormalizing)?  We do it only for the purposes
+    exponentiating and renormalizing)?  We do it mainly for the purposes
     of training&mdash;it's because the conditional log-likelihood
     training objective refers to p(<i>y</i> | <i>x</i>).  The point of
     the training objective is to evaluate whether &theta; does a good
@@ -196,9 +196,9 @@
     are also in this family.</p>
 
   <p><b>Nonlinear decision rules.</b> Why confine yourself to linear
-    scoring functions?  While <u>neural networks</u> and other
-    arbitrary nonlinear functions can be hard to optimize, a great
-    general technique is to write the score as &theta; &sdot;
+    scoring functions?  It can be hard to optimize the weights of 
+    <u>neural networks</u> and other arbitrary nonlinear functions.  
+    But a really nice compromise is to write the score as &theta; &sdot;
     &Phi;(<i>f</i>(<i>x</i>,<i>y</i>)), where &Phi; is some nonlinear
     transform of your original feature vector.  Because you still have
     a linear scoring function on the transformed feature vector, you
@@ -211,7 +211,7 @@
     &theta;, without ever explicitly computing the high-dimensional
     vectors &theta; and &Phi;(...).  In particular, if &Phi; is chosen
     carefully, then nearly all the methods discussed here can be kept
-    efficient, <i>provided that the set of possible outcomes <i>y</i>
+    pretty efficient, <i>provided that the set of possible outcomes <i>y</i>
     for each <i>x</i> is small</i>, as in logistic regression.
 </p>
 </div>
