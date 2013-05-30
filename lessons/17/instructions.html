@@ -15,6 +15,9 @@
     <li>Which are the two <i>test</i> phrases included below?  How do you know?
     <li>If you train this model without regularization, what happens
     to the log-likelihood and the weights?  Why?
+    <li>If you were classifying long email messages instead of very
+      short phrases, would this model tend to be more or less
+      confident in its classifications?  Why?
     <li>If you train this model with &ell;<sub>2</sub> regularization, how does it
       classify the two test phrases?  Look at the weights: what features helped it make
       this classification?
@@ -30,10 +33,8 @@
       How did you find out?
     <li>Which of the non-spam messages does your trained model think is
       spammiest?  How do you know?
-    <li>What does the model think about the test phrases at the
-      bottom ("parents yada yada" and "my
-      substantial HGH $199.95"), which have count 0 because they were not observed
-      in training data?  Hover the mouse over them to find out.
+    <li>How does your trained model classify the two test phrases?  
+      (Hover the mouse over them to find out.)
     <li>What happens to the weights if you switch to &ell;<sub>1</sub>
       regularization?  What if you reduce <i>C</i> to 0.5 and try again?
     <li>This is an example of <i>binary classification</i>, since there
