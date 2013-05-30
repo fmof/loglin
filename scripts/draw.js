@@ -695,6 +695,24 @@ function createD3Shape(container, id_num, id_name, width,height, visuals, color,
     return s;
 }
 
+function createInstructionableD3Shape(container, c_name, shape_params){
+    var tid='#'+c_name+'_'+shape_params.shape+'_'+shape_params.fill;
+    if(shape_params['fill']=='striped'){
+	var cloned=jQuery('#stripe_def').clone()
+	    .attr('id','stripe_def_'+tid);
+	cloned.children().eq(0).attr('id','stripe_'+tid);
+	cloned.children().eq(0).children().eq(0).attr('id','stripe_path_'+tid)
+	    .css('stroke',shape_params.color);
+	container[0][0].appendChild(cloned[0]);
+    }
+    var s;
+    s=container.selectAll(tid).data([shape_params.count]).enter().append(SHAPE_DICTIONARY[shape_params['shape']]["svg"]);
+    var sdshape = SHAPE_DICTIONARY[shape_params['shape']];
+    sdshape.draw(s, shape_params);
+    prettifyShape(s, tid, shape_params.color, shape_params['fill']);
+    return s;
+}
+
 
 function redrawAllExpected(){
     for(var c=0;c<CONTEXTS.length;c++){
