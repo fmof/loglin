@@ -30,7 +30,10 @@
 	    "#cheat_button": "Reveal the weights of the true distribution, and its regularized log-likelihood.",
 	    "#regularization_constant" : "The strength of the regularizer.",
 	    "#gradient_step" : "Change how strongly you follow the current gradient.",
-	    ".handle" : ""
+	    ".handle" : "",
+	    "#step_button" : "Follow the gradient, proportional to the above &quot;Step size.&quot;",
+	    "#group_ll_bars" : "How well your <em>current</em> model fits the given data.",
+	    "#group_true_ll_bars" : "How well the true <em>generating</em> model fits the given data."
 	}
     }
 }

@@ -399,7 +399,7 @@ function addLLBar(){
     var overall_min = Math.min(min_u_ll,min_t_ll);
     worst_ll = Math.min(worst_ll,overall_min);
     var resizer = ll_resizer();
-    var llrects=svg.selectAll(".ll_bar").data(ll).enter().append("rect");
+    var llrects=svg.append("g").selectAll(".ll_bar").data(ll).enter().append("rect");
     llrects.attr('x',70)
 	.attr('width',function(d,i){
 		return resizer(d);
@@ -413,7 +413,7 @@ function addLLBar(){
 		return "gray";
 	    })
 	.attr('class','ll_bar');
-    var tllrects=svg.selectAll(".true_ll_bar").data(tll).enter().append("rect");
+    var tllrects=svg.append("g").selectAll(".true_ll_bar").data(tll).enter().append("rect");
     tllrects.attr('x',70)
 	.attr('width',function(d,i){
 		return resizer(d);
@@ -427,6 +427,8 @@ function addLLBar(){
 		return TRUE_MODEL_COLOR;
 	    })
 	.attr('class','true_ll_bar');
+    jQuery('.ll_bar').parent().attr('id','group_ll_bars');
+    jQuery('.true_ll_bar').parent().attr('id','group_true_ll_bars');
     //now see about regularization...
     var regrects=svg.selectAll(".reg_bar");
     var regdata;
