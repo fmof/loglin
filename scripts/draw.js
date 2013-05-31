@@ -1,6 +1,5 @@
 function load_html5_slider(boxid,val){
     val = val || slider_step;
-    //return function(batch){
     var tmpval = boxid.value;
     if(!isFinite(tmpval)){
 	if(!isNaN(tmpval)){
@@ -38,8 +37,6 @@ function load_html5_slider(boxid,val){
 	} else{
 	    jdiv.attr("title", boxval);
 	}
-	var jhandle = jQuery(boxid.parentNode.childNodes[0].childNodes[1]);
-	//update_qtip_count(jhandle);
 	redraw_all();
     } else{
 	feature_info.className+=' feature_name_box';
@@ -93,7 +90,7 @@ function addSliderEffects(){
 	var theta_index = jthis.parent().parent().children()[0].getAttribute('theta_index');
 	var handle_trigger=function(){
 	    //handle 
-	    var t = parseFloat(this.getAttribute("moving_to"))+handle_width/2;
+	    var t = parseFloat(this.getAttribute("moving_to"));
 	    t=Math.min(slider_width-handle_width,Math.max(0,t));
 	    this.parentNode.parentNode.childNodes[1].value= SLIDER_SIGMOID.inverse(t);
 	    load_html5_slider(this.parentNode.parentNode.childNodes[1],SLIDER_DIV);
@@ -110,7 +107,7 @@ function addSliderEffects(){
 		jQuery(this.parentNode.childNodes[0].childNodes[1]).animate({left: SLIDER_SIGMOID.transform(cv)}, 100);
 		
 	    } else{
-		this.value = formatSliderWeight(SLIDER_SIGMOID.inverse(parseFloat(this.parentNode.childNodes[0].childNodes[1].getAttribute("moving_to")) + handle_width/2));
+		this.value = formatSliderWeight(SLIDER_SIGMOID.inverse(parseFloat(this.parentNode.childNodes[0].childNodes[1].getAttribute("moving_to"))));
 	    }
 	    load_html5_slider(this,SLIDER_DIV);
 	};
@@ -171,7 +168,7 @@ function addSliderEffects(){
 	    //reset the original val
 	    jQuery.fn.val = originalVal;
 
-	    this.parentNode.childNodes[1].value = formatSliderWeight(SLIDER_SIGMOID.inverse(parseFloat(this.childNodes[1].getAttribute("moving_to")) + handle_width/2));
+	    this.parentNode.childNodes[1].value = formatSliderWeight(SLIDER_SIGMOID.inverse(parseFloat(this.childNodes[1].getAttribute("moving_to"))));
 	});
 	
     });

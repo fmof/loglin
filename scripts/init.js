@@ -172,6 +172,7 @@ function get_sigmoid(amp,hmove, xdef, ratio){
 		return amp / (1+Math.exp(-this.sconst * (x - this.hmove)));
 	    },
 		inverse : function(x){
+		    if(x>this.amp) x=this.amp;
 		return -1/this.sconst * Math.log(this.amp/x - 1) + this.hmove;
 	    }});
 }
