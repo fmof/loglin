@@ -57,7 +57,8 @@ function createShapeDictionary(){
 			      }
 			      var border = 4;
 			      var rwid, rhei;
-			      rwid = Math.max(1e-5,Math.sqrt(shape_params.count/shape_params.max_count));
+			      var t = Math.sqrt(shape_params.count/shape_params.max_count);
+			      rwid = t<1e-5 ? 0 : Math.max(1e-5,t);
 			      rhei=rwid;
 			      shape_obj.selectAll('rect')
 				  .attr("x",(shape_params.width-rwid)/2)
@@ -66,8 +67,8 @@ function createShapeDictionary(){
 				  .attr("height",rhei)
 				  .attr("fill","white")
 				  .attr("opacity",1);
-			      var erwid = Math.max(1e-5/*2*border*/, rwid-2*border);
-			      var erhei = Math.max(1e-5/*2*border*/, rhei-2*border);
+			      var erwid = t<1e-7 ? 0 : Math.max(1e-5, rwid-2*border);
+			      var erhei = t<1e-7 ? 0 : Math.max(1e-5, rhei-2*border);
 			      if(!shape_params.is_observed){
 				  shape_obj.selectAll('image')
 				      .attr("xlink:href", shape_params.value.replace(/^\"|\"$/g, ""))
@@ -144,14 +145,14 @@ function createCircleRadius(count,max_count,scale){
     //I need to absorb the 1/Math.sqrt(Math.PI) into the scale...
     //so don't even bother including it
     var ret= Math.sqrt(count/(max_count*Math.PI));
-    return ret<1 ? 1 : ret;
+    return ret<1e-10? 0 : ret<1 ? 1 : ret;
 }
 
 function createPentagonPoints(cx,width,cy,height,count,max_count,scale){
     var points=[];
     var a = 2*Math.sqrt(count/max_count)/Math.sqrt(Math.sqrt(25+10*Math.sqrt(5)));
     var r=.1*a*Math.sqrt(50+10*Math.sqrt(5));
-    r=Math.max(r,1);
+    r=r<1e-10 ? 0 : Math.max(r,1);
     var c1=.25*(Math.sqrt(5)-1)*r;
     var c2=.25*(Math.sqrt(5)+1)*r;
     var s1=.25*Math.sqrt(10+2*Math.sqrt(5))*r;
