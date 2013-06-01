@@ -22,20 +22,20 @@
     "tooltips" : {
 	"attr" : "title", 
 	"list": {
-	    ".num_tokens_context_div" : "The total number of observations in this context (changing it will rescale all the gray counts).",
+	    ".num_tokens_context_div" : "The total number of observations in this context.  (Changing it will rescale all the gray counts.)",
 	    ".observed_count" : "",
-	    "#solve_button" : "Find best feature weights (sliders) given the observed counts (gray outlines). Regularization alters the definition of \"best.\"",
+	    "#solve_button" : "Take enough steps to find the <i>best</i> feature weights (sliders) given the observed counts (gray outlines). Regularization alters the definition of \"best.\"",
 	    "#new_challenge" : "Sample a new training dataset from a <i>new</i> probability distribution.  From the new gray counts, you can then try to estimate the secret weights that define the new distribution.",
-	    "#new_counts" : "Sample a new training dataset from the <i>same</i> probability distribution.  Small datasets can differ dramatically, leading you to different estimates of the weights.  Regularization tries to reduce this variance.",
+	    "#new_counts" : "Sample a new training dataset from the <i>same</i> probability distribution.  Small datasets can vary dramatically, leading you to different estimates of the weights.  Regularization tries to reduce this variance.",
 	    "#cheat_button": "Reveal the weights of the true distribution, and its regularized log-likelihood.",
-	    "#regularization_constant" : "The strength of the regularizer.",
-	    "#gradient_step" : "Change how strongly you follow the current gradient.",
+	    "#regularization_constant" : "The strength of the regularizer.  This affects",
+	    "#gradient_step" : "How strongly the \"Step\" button nudges the weights.",
 	    ".handle" : "",
-	    "#step_button" : "Follow the gradient, proportional to the above &quot;Step size.&quot;",
-	    "#group_ll_bars" : "How well your <em>current</em> model fits the given data.",
+	    "#step_button" : "Nudge all the weights (sliders) at once, in the direction of the gradient.  A gentle-enough nudge will improve your model's log-likelihood and bring the expected counts closer to the observed counts.",
+	    "#group_ll_bars" : "How well your <em>current</em> model fits the given data.  (The \"Solve\" button maximizes only the gray part, which is the <em>regularized</em> log-likelihood.)",
 	    "#group_true_ll_bars" : "How well the true <em>generating</em> model fits the given data.",
-	    "#regularization_header" : "How much to penalize your log-likelihood score for non-zero feature weights.",
-	    "#zero_weights_button" : "Return all weights to zero (yielding the uniform distribution)."
+	    "#regularization_header" : "How strongly to penalize your log-likelihood score as the weights move away from zero.  A larger penalty subtracts more of the gray LL bar (turning it red).",
+	    "#zero_weights_button" : "Reset all weights to zero.  This makes all outcomes in each context equally probable (the &quot:uniform distribution\")."
 	}
     }
 }
