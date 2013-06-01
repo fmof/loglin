@@ -24,7 +24,7 @@
 	"list": {
 	    ".num_tokens_context_div" : "The total number of observations in this context.  (Changing it will rescale all the gray counts.)",
 	    ".observed_count" : "",
-	    "#solve_button" : "Take enough steps to find the <i>best</i> feature weights (sliders) given the observed counts (gray outlines). Regularization alters the definition of \"best.\"",
+	    "#solve_button" : "Take enough steps to maximize the length of the gray LL bar.  This finds the <i>best</i> feature weights (sliders) given the observed counts (gray outlines).",
 	    "#new_challenge" : "Sample a new training dataset from a <i>new</i> probability distribution.  From the new gray counts, you can then try to estimate the secret weights that define the new distribution.",
 	    "#new_counts" : "Sample a new training dataset from the <i>same</i> probability distribution.  Small datasets can differ dramatically, leading you to different estimates of the weights.  Regularization tries to reduce this variance.",
 	    "#cheat_button": "Reveal the weights of the true distribution, and its regularized log-likelihood.",
@@ -38,7 +38,7 @@
 	    "#zero_weights_button" : "Reset all weights to zero.  This makes all outcomes in each context equally probable.",
 	    "#no_regularization_span" : "No regularization penalty.",
 	    "#ell1_regularization_span" : "Penalize your LL score in proportion to the weights' distance from 0.  If <i>C</i> is large, this may make 0 the best choice for many weights.",
-	    "#ell2_regularization_span" : "Penalize your LL score in proportion to the weights' <i>squared</i> distance from 0.  Compared to &#8467;<sub>1</sub>, this penalizes small weights less and large weights more.",
+	    "#ell2_regularization_span" : "Penalize your LL score in proportion to the weights' <i>squared</i> distance from 0.  Compared to &#8467;<sub>1</sub>, the &#8467;<sub>2</sub> option penalizes small weights less and large weights more.",
 	    "#show_gradient_span" : "Shows which direction you should nudge each weight, and how much that will help the gray LL bar."
 	}
     }
