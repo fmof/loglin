@@ -31,7 +31,7 @@
 	    "#regularization_constant" : "The strength of the regularizer.  By doubling <i>C</i>, you double the penalty for large weights.",
 	    "#gradient_step" : "How strongly the \"Step\" button nudges the weights.",
 	    ".handle" : "",
-	    "#step_button" : "Nudge all the weights (sliders) at once, in the direction of the gradient.  A gentle-enough nudge will improve your model's log-likelihood and bring the expected counts closer to the observed counts.",
+	    "#step_button" : "Nudge all the weights (sliders) at once, in the direction of the gradient.  A gentle enough nudge will lengthen the gray LL bar (unless it has already reached its maximum).",
 	    "#group_ll_bars" : "How well your <em>current</em> model fits the given data.  (The \"Solve\" button maximizes the length of only the gray part, which is the <em>regularized</em> log-likelihood.)",
 	    "#group_true_ll_bars" : "How well the true <em>generating</em> model fits the given data.",
 	    "#regularization_header" : "Penalize your LL score as the weights move away from 0.  This subtracts some of the gray LL bar (turning it red).",
@@ -39,7 +39,7 @@
 	    "#no_regularization_span" : "No regularization penalty.",
 	    "#ell1_regularization_span" : "Penalize your LL score in proportion to the weights' distance from 0.  If <i>C</i> is large, this may make 0 the best choice for many weights.",
 	    "#ell2_regularization_span" : "Penalize your LL score in proportion to the weights' <i>squared</i> distance from 0.  Compared to &#8467;<sub>1</sub>, this penalizes small weights less and large weights more.",
-	    "#show_gradient_span" : "Shows which direction you should nudge each weight, and how much it will help the gray LL bar."
+	    "#show_gradient_span" : "Shows which direction you should nudge each weight, and how much that will help the gray LL bar."
 	}
     }
 }
