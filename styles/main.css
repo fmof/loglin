@@ -462,3 +462,6 @@ ul #data_options_area{
     padding-left:25px;
 }
 
+#regularization_header{
+    display:inline-block;
+}

@@ -33,7 +33,9 @@
 	    ".handle" : "",
 	    "#step_button" : "Follow the gradient, proportional to the above &quot;Step size.&quot;",
 	    "#group_ll_bars" : "How well your <em>current</em> model fits the given data.",
-	    "#group_true_ll_bars" : "How well the true <em>generating</em> model fits the given data."
+	    "#group_true_ll_bars" : "How well the true <em>generating</em> model fits the given data.",
+	    "#regularization_header" : "How much to penalize your log-likelihood score for non-zero feature weights.",
+	    "#zero_weights_button" : "Return all weights to zero (yielding the uniform distribution)."
 	}
     }
 }
