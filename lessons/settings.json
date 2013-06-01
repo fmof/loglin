@@ -22,24 +22,24 @@
     "tooltips" : {
 	"attr" : "title", 
 	"list": {
-	    ".num_tokens_context_div" : "The total number of observations in this context.  (Changing it will rescale all the gray counts.)",
-	    ".observed_count" : "",
-	    "#solve_button" : "Take enough steps to maximize the length of the gray LL bar.  This finds the <em>best</em> feature weights (sliders) given the observed counts (gray outlines).",
+	    "#group_ll_bars" : "How well your <em>current</em> model fits the given data.  You want to maximize only the gray part, which subtracts the regularization penalty shown in red in order to discourage <strong>over</strong>fitting.",
+	    "#cheat_button": "Reveal the weights of the true distribution, and its regularized log-likelihood.",
+	    "#group_true_ll_bars" : "How well the true <em>generating</em> model fits the given data.",
 	    "#new_challenge" : "Sample a new training dataset from a <em>new</em> probability distribution.  From the new gray counts, you can then try to estimate the secret weights that define the new distribution.",
 	    "#new_counts" : "Sample a new training dataset from the <em>same</em> probability distribution.  Small datasets can differ dramatically, leading you to different estimates of the weights.  Regularization tries to reduce this variance.",
-	    "#cheat_button": "Reveal the weights of the true distribution, and its regularized log-likelihood.",
-	    "#regularization_constant" : "The strength of the regularizer.  By doubling <i>C</i>, you double the penalty for large weights.",
-	    "#gradient_step" : "How strongly the \"Step\" button nudges the weights.",
-	    ".handle" : "",
-	    "#step_button" : "Nudge all the weights (sliders) at once, in the direction of the gradient.  A gentle enough nudge will lengthen the gray LL bar (unless it has already reached its maximum).",
-	    "#group_ll_bars" : "How well your <em>current</em> model fits the given data.  You want to maximize only the gray part, which subtracts the regularization penalty shown in red in order to discourage <em>over</em>fitting.",
-	    "#group_true_ll_bars" : "How well the true <em>generating</em> model fits the given data.",
 	    "#regularization_header" : "Penalize your LL score as the weights move away from 0.  This subtracts some of the gray LL bar (turning it red).",
-	    "#zero_weights_button" : "Reset all weights to zero, which makes all outcomes equally probable (within each context).",
 	    "#no_regularization_span" : "No regularization penalty.",
 	    "#ell1_regularization_span" : "Penalize your LL score in proportion to the weights' distance from 0.  If <i>C</i> is large, this may make 0 the best choice for many weights.",
 	    "#ell2_regularization_span" : "Penalize your LL score in proportion to the weights' <em>squared</em> distance from 0.  Compared to &#8467;<sub>1</sub>, the &#8467;<sub>2</sub> option penalizes small weights less and large weights more.",
-	    "#show_gradient_span" : "Shows which direction you should nudge each weight, and how much that will help the gray LL bar."
+	    "#regularization_constant" : "The strength of the regularizer.  By doubling <i>C</i>, you double the penalty for large weights.",
+	    "#show_gradient_span" : "Shows which direction you should nudge each weight, and how much that will help the gray LL bar.",
+	    "#gradient_step" : "How strongly the \"Step\" button nudges the weights.",
+	    "#step_button" : "Nudge all the weights (sliders) at once, in the direction of the gradient.  A gentle enough nudge will lengthen the gray LL bar (unless it has already reached its maximum).",
+	    "#solve_button" : "Take enough steps to maximize the length of the gray LL bar.  This finds the <em>best</em> feature weights (sliders) given the observed counts (gray outlines).",
+	    ".observed_count" : "",
+	    ".handle" : "",
+	    ".num_tokens_context_div" : "The total number of observations in this context.  (Changing it will rescale all the gray counts.)",
+	    "#zero_weights_button" : "Reset all weights to zero.  Then nothing distinguishes the outcomes in each context: they all get the same probability."
 	}
     }
 }
