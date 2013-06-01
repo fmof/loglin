@@ -2,7 +2,7 @@
     "tooltips" : {
 	"attr" : "title", 
 	"list": {
-	    ".num_tokens_context_div" : "Multiplicatively scale the number of observations in this context to this number"
+	    ".num_tokens_context_div" : "The total number of observations.  (Changing it will rescale all the gray counts.)"
 	}
     }
 }
