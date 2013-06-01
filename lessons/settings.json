@@ -26,7 +26,7 @@
 	    ".observed_count" : "",
 	    "#solve_button" : "Take enough steps to find the <i>best</i> feature weights (sliders) given the observed counts (gray outlines). Regularization alters the definition of \"best.\"",
 	    "#new_challenge" : "Sample a new training dataset from a <i>new</i> probability distribution.  From the new gray counts, you can then try to estimate the secret weights that define the new distribution.",
-	    "#new_counts" : "Sample a new training dataset from the <i>same</i> probability distribution.  Small datasets can vary dramatically, leading you to different estimates of the weights.  Regularization tries to reduce this variance.",
+	    "#new_counts" : "Sample a new training dataset from the <i>same</i> probability distribution.  Small datasets can differ dramatically, leading you to different estimates of the weights.  Regularization tries to reduce this variance.",
 	    "#cheat_button": "Reveal the weights of the true distribution, and its regularized log-likelihood.",
 	    "#regularization_constant" : "The strength of the regularizer.  This affects",
 	    "#gradient_step" : "How strongly the \"Step\" button nudges the weights.",
