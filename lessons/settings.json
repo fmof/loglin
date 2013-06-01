@@ -37,7 +37,7 @@
 	    "#regularization_header" : "Penalize your LL score as the weights move away from 0.  This subtracts some of the gray LL bar (turning it red).",
 	    "#zero_weights_button" : "Reset all weights to zero.  This makes all outcomes in each context equally probable.",
 	    "#no_regularization_span" : "No regularization penalty.",
-	    "#ell1_regularization_span" : "Penalize your LL score in proportion to the weights' distance from 0.  If <i>C</i> is large, this may make 0 the best choice for many weights."
+	    "#ell1_regularization_span" : "Penalize your LL score in proportion to the weights' distance from 0.  If <i>C</i> is large, this may make 0 the best choice for many weights.",
 	    "#ell2_regularization_span" : "Penalize your LL score in proportion to the weights' <i>squared</i> distance from 0.  Compared to &#8467;<sub>1</sub>, this penalizes small weights less and large weights more.",
 	    "#show_gradient_span" : "Shows which direction you should nudge each weight, and how much it will help the gray LL bar."
 	}
