@@ -35,7 +35,11 @@
 	    "#group_ll_bars" : "How well your <em>current</em> model fits the given data.  (The \"Solve\" button maximizes the length of only the gray part, which is the <em>regularized</em> log-likelihood.)",
 	    "#group_true_ll_bars" : "How well the true <em>generating</em> model fits the given data.",
 	    "#regularization_header" : "Penalize your log-likelihood score as the weights move away from zero.  A larger penalty subtracts more of the gray LL bar (turning it red).",
-	    "#zero_weights_button" : "Reset all weights to zero.  This makes all outcomes in each context equally probable (the \"uniform distribution\")."
+	    "#zero_weights_button" : "Reset all weights to zero.  This makes all outcomes in each context equally probable (the \"uniform distribution\").",
+	    "#no_regularizaton_span" : "Don't apply any penalty.",
+	    "#ell1_regularization_span" : "Use &#8467;<sub>1</sub> regularization to encourage <em>sparse</em> weights.",
+	    "#ell2_regularization_span" : "Use &#8467;<sub>2</sub> regularization to encourage <em>small</em> weights.",
+	    "#show_gradient_span" : "Display the gradient on the weight sliders, and let it help you nudge the weights"
 	}
     }
 }
