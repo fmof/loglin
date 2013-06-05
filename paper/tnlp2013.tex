@@ -268,6 +268,17 @@ log-linear models is prerequisite to
   ${\cal Y}$.
 \end{itemize}
 
+\NoteJE{following a question from a reviewer, we should give a
+  recommendation for teaching weighted grammars and sequence models.
+  My recommendation: start with ordinary probabilistic CKY and HMMs,
+  which multiply probs (possibly themselves modeled by conditional
+  log-lin models) to get p(parse), and normalize to get p(parse |
+  sentence).  Once this is understood, replace the log-probs with
+  arbitrary weights or sums of weights.  Nothing about the algorithm
+  or the family of distributions changes, but now we can use
+  non-stationary features that look at the entire sentence (i.e., CRF
+  parsing).}
+  
 \section{(Virtual) Manipulatives}
 The idea of making abstract mathematical concepts intuitive and recognizable as familiar objects 
 has been explored successfully for many years in other disciplines. Specifically within early 
