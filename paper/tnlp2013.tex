@@ -67,8 +67,8 @@ Baltimore, MD, USA
 We present an open-source virtual manipulative for regularized conditional 
 log-linear models. The online application adapts in real-time to user-directed 
 changes in the model parameters, providing instant feedback to develop 
-students' intuitions. Included with our system are auxiliary instructional materials, 
-including questions usable for assignments. A live version is available at
+students' intuitions. Included with our system are auxiliary instructional materials 
+and questions usable for assignments. A live version is available at
 \WhereToFind{}.
 \end{abstract}
 
@@ -85,9 +85,6 @@ outcome $y \in \mathcal{Y}(x)$.  The set of possible
 outcomes $\mathcal{Y}(x)$ might depend on the context
 $x$.\footnote{The model is equivalent to logistic regression
   when $y$ is a binary variable, that is, when $\mathcal{Y}(x)=\{0,1\}$.}
-
-% Any modern course on computational linguistics or natural language
-% processing needs to teach some machine learning tools.  
 
 We then present an interactive web visualization that guides students
 through playing with log-linear models and their estimation. This open-source 
@@ -110,33 +107,32 @@ and $n$-gram models.
 
 We have used the tool in our class and received very positive feedback on it. 
 Students were excited by it, with some saying the tool helped develop their 
-``physical intuition'' for log-linear models.\NoteJE{they did? who?}  
-\NoteFF{Students, either through email, comments in homework assignments 
-or one-on-one discussions. I can send names via email if you like.}
+``physical intuition'' for log-linear models.
+%\NoteJE{they did? who?}  
+%\NoteFF{Students, either through email, comments in homework assignments 
+%or one-on-one discussions. I can send names via email if you like.}
 We also received feedback from users 
 with no statistical, computational or technical backgrounds: working through the introductory 
 lessons, they began to understand the models.
 
 The code includes \NumLessons{} ready-to-use lessons that can be used
 for individual or small-group study.  Each lesson, e.g. Figure \ref{fig:lesson1}, guides the student
-through a manipulative exercise that centers on fitting some model
-$p_{\vec{\theta}}(y \mid x)$, where ${\cal Y}(x)$ is a collection of
+through a manipulative exercise that centers on fitting a model
+$p_{\vec{\theta}}(y \mid x)$, where $y$ is from a collection ${\cal Y}(x)$ of
 shapes, words, or images such as parse trees.  Each lesson is peppered
-with questions, and students could be asked to answer some of these
+with questions; students can be asked to answer some of these
 questions in writing.\footnote{There are approximately six questions per
 lesson. We found that answering {\em all} the
   questions took our students about 2300 words, or just under 23 words per question, which
   was probably both unreasonable and unnecessary.}
-\Commented{\NoteJE{We might
-  consider releasing a couple of pencil-and-paper problems from past
-  exams.}}  Other instructors can add new lessons by writing 
+Other instructors can add new lessons or edit existing ones by writing 
 configuration files (see section~\ref{sec:tailoring}).
 
-\Commented{\NoteJE{However, I
+\NoteJE{However, I
   think it would be helpful (maybe in the final version?) to list
   other people's NLP homework assignments or practical exercises that
   use maxent.  I bet you could find a few good assignments on the web,
-  including in the NLTK book.}}
+  including in the NLTK book.}
 
 \section{Why Teach With Log-Linear Models?}
 
@@ -158,8 +154,9 @@ a course, when one needs
 \end{itemize}  
 
 Log-linear models over discrete variables are also sufficiently
-expressive for an NLP course.  Students can experiment freely with
-adding linguistically interesting features of their own devising,
+expressive for an NLP course.  Students may experiment freely with
+adding model \textit{features} of their own devising to capture interesting 
+linguistic \textit{attributes} or \textit{properties}, 
 since the probability \eqref{eqn:loglin} may consider any number of
 informative features of the $(x,y)$ pair.
 
@@ -195,11 +192,6 @@ programming or sampling, e.g.,
 These often exploit special
 structure in the feature set; students will have to use other tools or 
 write their own code.}
-%
-%  use specialized algorithms that exploit special structure in the
-%  feature set, or to fall back on sampling or variational
-%  approximation if no such structure is available.  In these settings,
-%  students will have to use other tools or write their own code.}
 
 Formally, log-linear models are a good gateway to a more general
 understanding of undirected graphical models and the exponential
@@ -277,10 +269,6 @@ log-linear models is prerequisite to
   or the family of distributions changes, but now we can use
   non-stationary features that look at the entire sentence (i.e., CRF
   parsing).}
-
-\NoteJE{Somewhere, we should prescribe non-confusing terminology:
-  model features vs.  linguistic ``attributes'' or ``properties.''
-  And our lessons should use these terms in the same way.}
   
 \section{(Virtual) Manipulatives}
 The idea of making abstract mathematical concepts intuitive and recognizable as familiar objects 
@@ -654,6 +642,7 @@ is a circle or is solid. For what datasets can the student ``win'' with this two
 Will adding additional features always help? That is, why might including (binary) 
 features that completely partition the space, such as solid vs. striped, be redundant in some 
 cases, yet insufficient in others?
+\NoteFF{mention exp. families with/without full rank?}
 
 \NoteJE{One point we want to get across is that if you have one
   feature for each $(x,y)$ pair, then you can fit the data perfectly
@@ -826,14 +815,14 @@ model a context-specific outcome $\mathcal{Y}(x)$.
 Lessons \textbf{14}--\textbf{15} further explore the importance of informed feature design in conditional models. 
 Specifically in lesson \textbf{14}, we add a feature for each context and the students are asked what happens 
 when we solve and why; that is, why context-only features do not move from their initial 0 values. 
-In lesson \textbf{15}, we consider conjoined features (e.g., bigram features) as a way to successfully incorporate 
+In lesson \textbf{15}, we consider conjoined ``bigram'' features as a way to successfully incorporate 
 contextual information into the model. We retain the original ``unigram'' (outcome) features, and explore
 how the regularizer breaks parameter setting ties.
 
 Lesson \textbf{16} extends the ``unigram'' and ``bigram'' concepts from the previous lesson to create a ``bigram 
 language model.'' We step through the design of three general features that look at the event and the context 
 together and ask open-ended questions that cause students to ponder estimation issues in conditional sequence 
-models even when there is no model mismatch.%such as,
+models even when there is no model mismatch.
 %Even though the data were generated from the ``true'' model, how well does the model fit the observed data sample, and how well can the model recover the ``true'' weights? Should regularization be used to answer these questions? What should you do if you need a very good estimate of those weights?
 
 %\begin{figure}[t]
@@ -866,121 +855,6 @@ of a phrase (e.g., as \texttt{spam},\texttt{work}, or \texttt{fun}).
 %\item[``New Counts'' button] The other use is to help the user experiment with datasets of different sizes, by changing N to scale the counts and then clicking "New counts."
 %\item[``Peek at true'']
 %Regularization: We consider models where $R(\vec{\theta}) = \vec{0}$ (no regularization), $R(\vec{\theta}) = \|\vec\theta\|_1$, and $R(\vec{\theta}) = \|\vec{\theta}\|_2^2$: we special-case the optimizer to handle the non-differentiable $\ell_1$ regularization, thus providing a friendly educational environment in which the student may explore the differences between $\ell_1$ and $\ell_2$ regularization.
-
-%
-%\subsection{Joint Models} \label{sec:jointlessons}
-%\begin{figure}[t]
-%\centering
-%\includegraphics[scale=.3]{images/regularized_ll_bar_andtrue_cut.PNG}
-%
-%\caption{The gray and green bars and text represent the (regularized) objective
-% \eqref{eqn:reg_ll} for the current and empirical model, respectively. The red 
-%outline indicates the regularizer penalty.}
-%\label{fig:llbar}
-%\end{figure}
-%
-%\begin{enumerate}
-%\item 
-% Lead students through navigation, introduce them to helpful tooltips, ask simple understanding questions. If you make striped \& circle really big, what happens to the four probabilities?  What are the probabilities and expected counts (given N) when all features are 0?  If the total score of one object is 1 or 2 more than the total score of another object, what happens to their relative probabilities? Now try to match the gray outlines, which represent the counts you’re trying to match.  If circles overall have too low a count, you should increase circle slider: the tooltip on the slider adds up the expected and observed counts for you.  Show them the “new random challenge button.”  
-%\item same as lesson 1 but sliders for triangle, circle, solid, striped
-%Questions: What’s the difference between increasing triangle and decreasing circle?  What if you increase triangle and circle by the same amount?  Does it help at all to have 4 sliders, or could you do just as well with 2 of them? Which 2?
-%\item same as lesson 2 but unmatchable (“XOR problem”)
-%Questions: Why can’t you match the probabilities of the 4 events? But can you still use your four sliders to match the aggregate expected counts of the two features?  Is it enough to use just two of the sliders and leave the others at 0?  What kind of inductive bias does the model have -- i.e., how are the the probabilities being smoothed when you match those counts?    
-%Log-likelihood game. Try to predict the data "as well as you can." Slide the sliders and watch the horizontal gray bar, which gives the log-likelihood—an overall measure of how well your model predicts the training data. How long can you you make the bar? How well do the shapes then match?
-%
-%Matching game. Even if you can't match all 4 probabilities with your sliders, maybe you can match the 4 features. That is, try to make your model predict that among 60 shape tokens, there would be
-%\item same as lesson 3, but add a single conjoined feature so it’s matchable again Questions: Does it matter which conjoined feature is added?  Would it be ok to get rid of triangle and solid as in lesson 1?
-%\item {triangle, square, pentagon} x {solid, striped}
-%a non-binary feature for number of sides: fires 3 times on triangle, 4 on square, 5 on pentagon.  Increasing this feature’s weight blows up pentagon at expense of triangle and perhaps expense of square.  Also have features for solid and for striped.
-%Question: what happens if you make the feature weight negative?  What would be different if if the feature were redefined from \# of sides to \# of sides - 3, or \# sides - 4?  If you added a pentagon feature, what would that allow you to do?
-%If this feature's weight is set to 1 (or -1), then what is the ratio of probabilities among the solid triangle, solid square, and solid pentagon? Try it! How does your answer change as you vary the weight of the solid feature?
-%
-%\item %lesson 6 
-%rows {triangle, circle, square} X columns {solid, striped, hollow}
-%Questions: Is it hard to match by hand?  Learn about gradient display.
-%Log-likelihood game and partial derivatives; Matching game, observed circles - expected circles
-%
-%Extra fun. If you enjoy trying to match the gray outlines, you can get more puzzles of this kind. Clicking "New random challenge" (at the top of the page) picks a new log-linear distribution and samples N observed events from it. Your job as a statistician is to use those N events (the gray counts and gray outlines) as clues to help you guess the true distribution. You can do a good job by playing the games above to maximize log-likelihood. Then click "Peek!" to reveal the true parameters and how well they would do on log-likelihood. (But remember lesson 2, and don't be disappointed if you found different parameters that define exactly the same distribution.)
-%
-%%Warning: Reducing N before you generate the new challenge will give you fewer clues—making your statistical task harder! Your random sample of N events will be sparse and perhaps idiosyncratic. In fact, you can see the variance among random samples by clicking "New counts" to see another sample you could have gotten—with different observed counts indicated by the different-sized gray outlines. So if you try too hard to match them, you might be overfitting the training data (achieving an even better training log-likelihood than the true parameters would) rather than finding the true parameters. More about that soon ...
-%\item %lesson 7
-%Like lesson 6, but now unmatchable 
-%Question: Learn about solver and gradient ascent. Introduced to step size box, step button and solve button.  What solution does the model find?
-%``However, there will still be red and blue left on some of the shapes. How well do the expected counts for individual kinds of circles match the training data? Why?'' (actually, answer for triangles: expected = observed = 195)
-%\item %lesson 8
-%Like lesson 7, and now the solver overfits because all of the squares have count 0: so the weight goes to -infinity and we estimate the probabilities of the squares as 0, which is not good for a smoothing method.  Learn about regularization.  Question: What effect does regularization have on the expected counts of the stripes?  How about the expected counts of the others?  On the log-likelihood? why? How is this related to smoothing?  
-%students are encouraged to retry previous lessons to ease into regularizaiton on simpler models; \NoteFF{maybe add a screenshot of LL bar?}
-%\item %lesson 9 
-%Like lesson 7, but this time get overfitting by reducing N.  Here the student should generate a number of random challenges with different values of N, and use the solver.  Question: For a given amount of regularization, is there more smoothing of the probabilities with high N or with low N?  (Distinguish between the counts and the probabilities here.)  For a given N, is there more smoothing with high or low $sigma^2$?
-%What if you use $\ell_1$ regularization instead? Also, in this case, did any of your weights come out to exactly 0? (This is often the case for the optimal solution under $\ell_1$.)
-%
-%Smoothing on larger data. Regularization had a strong smoothing effect on this small dataset. However, what if you had more evidence? You can scale up the counts by increasing N in the text box to the left of the shapes. Open a second window so that you can easily compare N = 50 with N = 5000. In both cases, solve with ℓ2 regularization with C = 1.
-%
-%What happens to the optimal log-likelihood and why?
-%What happens to the weights and why?
-%The observed counts increased by a factor of 100. Which of the expected counts increased by a factor of much less than 100?
-%The model has decreased its estimated probability for those outcomes. Which other outcomes did it move their probability to?
-%What happens if you also increase C by a factor of 100?
-%Discussion: tradeoff between N and C. Remember that the optimal θ maximizes F = (log-likelihood - regularizer), a difference of two functions.
-%Increasing N stretches the first function vertically; the more training data there is, the more the solver just tries to fit the training data.
-%Increasing C stretches the second function vertically; the stronger the regularizer is, the harder the solver will try to keep the weights close to 0.
-%Doubling both N and C will just stretch F vertically, leaving the optimal θ unchanged.
-%
-%\item %lesson 10
-%like lesson 7, but now we have too many features: we have the 9 conjoined features like triangle\&solid, triangle\&striped, etc.  So each shape can now be manipulated independently.
-%Question:  Note that each event now has its own feature.  This makes it easy to manipulate the probabilities individually -- try it by hand and with the solver.  The probabilities should match exactly.  Analogously, here is a fairly easy math question: Suppose you have 9 letters a,b,...i where a has feature 1 (only), b has feature 2 (only), etc.  You would like to match the observed probabilities $p(a)=p_1, p(b)=p_2$, etc., where $p_1+...+p_9=1$.  How could you set $theta_1, theta_2$, etc. to achieve this?   Because you have enough parameters to match the training data exactly, you will need some regularization for smoothing.  What is the effect of regularization in this setting where events don’t share features at all? 
-%\end{enumerate}
-%
-%\subsection{Conditional Models} \label{sec:conditionallessons}
-%\begin{enumerate}[resume]
-%\item First conditional model: brief warmup for lesson 12 below, except make them all circles and label the rows that were formerly triangle, circle, square as English, Polish, Martian (and change the feature names accordingly).  This is formally identical to lesson 12.  So we are predicting fill color based on language.  Note that we have a larger corpus of English than of Polish, and no corpus of Martian (yet!).
-%\item Conditional model: like lesson 7 except we now condition on the row.  “We are now showing each language as a separate shape.  Or equivalently, imagine that you already had a shape, and the event is that someone came along and picked a pattern to fill it with.  We are no longer predicting probabilities of different shapes.”  The only sliders are for solid, striped, and hollow (this is a little simpler than lesson 7).  Drop the square row for simplicity -- no, on second thought, just make that row completely unobserved so that we see generalization.  Separate the rows into different panels.  The triangle counts are (70,20,10) while the circle counts are (5,5,5) and the square counts are (0,0,0).   Note that a separate N will be shown for each context (and changing that N will generate a new random challenge in that context).  Because we have no features that pay attention to context, it’s as if we were aggregating down the column.  
-%Questions: What happens to triangle fit when you match the circles by hand?  How about vice-versa?  Which has the better log-likelihood and why?  If you follow the gradients to maximize the likelihood, does that fit the triangles or the circles or somewhere in between?  [The circles counts should be high enough so that the answer is clearly “in between.”]   Do the squares (unobserved) then act more like the triangles or the circles?
-%\item Like lesson 12, but now we have only the solid triangle (with count 100) -- so there’s only one outcome for triangles.  (The others essentially have probabilities tied to 0.)  Now the parameters only affect circles, so it pays to match the circles.  Let’s remove the hollow square as well, just for fun.
-%This example shows one way that maximizing conditional likelihood is different from maximizing joint likelihood.
-%
-%In the English (circle) context, it is now only possible to talk about solid. Since English is popular, this means there are lots of solid shapes in our training data. Yet what are the weights that maxmize the conditional log-likelihood? Discuss why this is.
-%\item Like lesson 12, but add sliders for the triangle, circle, and square features (in addition to the existing solid, striped, and hollow).  Question: Why don’t these new sliders do anything?
-%\item Like lesson 14, but add 3 sliders for conjoined features “solid circle,” “solid triangle,” “solid square.”  These are our first bigram features, whereas solid was our unigram feature.  Question: Demonstrate multiple solutions that give you the same likelihood.  (For example, run solver from different starting points.)  Which has the best regularization penalty?   (Turn on regularization and solve again.)  How about if we use l1 regularization?  What is the effect of that on smoothing?  How is this related to backoff?  [Note: Focus this on tuning solid circle / solid triangle / solid square versus just tuning solid.  Probably the data should be generated from a model where the backoff features like solid are indeed strong.  Also, make $sigma^2$ large so that the regularization penalty is easier to see.] 
-%
-%big take-away: the effect the regularization constant $C$ has on the solution
-%\item Logistic regression.  Contexts are the following phrases or objects being classified:
-%…
-%...
-%In each context we have a hollow circle for “no” and a solid circle for “yes”.  (Might be better to show as  - and +.)  The features are always features of the context conjoined with blue:
-%solid\&...
-%solid\&...
-%Maybe classify languages as Indo-European or agglutinative or something?  But classifying baby names as male vs. female is probably better.  The observed counts are the number of times that name has been observed attached to a boy vs. a girl.  Pick a small set of names to use as data.  We can have features for multisyllabic, \# of syllables (this is integer-valued), starts with a vowel, ends with a vowel, ends with -a, ends with -ja, and prevalence in sports (this is a real number in [0,1], perhaps the fraction of days that it appears in the sports section of the newspaper).  “Venus” might be misclassified.  Emphasize that many more features could be generated manually or automatically (link to nltk lesson).
-%
-%Taking the "unigram"/"bigram" analogy more seriously, here is a "bigram language model" over a sequence of filled shape events. The choice of the next filled shape depends on what its predecessor was. The predecessor is the context.
-%
-%We include the usual "unigram" features that consider only the event without its context. We have features for each of the 9 filled shape events, as well as "backed-off" unigram features for each of the 3 fill-patterns and each of the 3 shapes. A backoff feature such as circle fires on multiple events and thus can help capture generalizations across events, such as "circles are common" (analogous to "words ending in -ing are common").
-%
-%How about the "bigram" features? We'll back off here by modeling just 3 general features that look at the event and the context together:
-%
-%Is the event identical to the previous event?
-%Does the event have the same shape as the previous event?
-%Does the event have the same fill-pattern as the previous event?
-%\item Here's a little application of log-linear modeling to text categorization. Each natural-language phrase is classified as to whether it is spam.
-%
-%Your job is to poke around and figure out what is going on here. Remember, we must be modeling some conditional probability distribution p(outcome | context).
-%
-%What are the contexts? Why do most (but not all) contexts have count 1?
-%What are the possible outcomes? How are they displayed as shapes?
-%What kind of information below indicates that a particular training phrase has been labeled as spam?
-%Which are the two test phrases included below? How do you know?
-%If you train this model without regularization, what happens to the log-likelihood and the weights? Why?
-%If you train this model with regularization, how does it classify the two test phrases? Look at the weights: what features helped it make this classification?
-%You might think that 'fortune' fires on any phrase that contains the word 'fortune'. But lesson 14 suggests that can't quite work. Let's be precise: what (context,outcome) pairs is 'fortune' really defined to fire on?
-%mentions money is a binary feature. What are some words that cause it to fire? How did you find out?
-%Is the feature 'yada' a binary feature, or a counting feature? That is, does fyada return 1 or 3 on yada yada yada? How did you find out?
-%Which of the non-spam messages does your trained model think is spammiest? How do you know?
-%This is an example of binary classification, since there are just two possible decisions. How would you extend the approach to do three-way classification of a phrase as {spam,work,fun}?
-%
-%\item %lesson 18
-%conclusion
-%\end{enumerate}
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
