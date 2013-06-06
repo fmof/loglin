@@ -68,7 +68,7 @@ We present an open-source virtual manipulative for regularized conditional
 log-linear models. The online application adapts in real-time to user-directed 
 changes in the model parameters, providing instant feedback to develop 
 students' intuitions. Included with our system are auxiliary instructional materials, 
-including questions usable for assignments. An anonymized version is available at
+including questions usable for assignments. A live version is available at
 \WhereToFind{}.
 \end{abstract}
 
@@ -90,9 +90,8 @@ $x$.\footnote{The model is equivalent to logistic regression
 % processing needs to teach some machine learning tools.  
 
 We then present an interactive web visualization that guides students
-through playing with log-linear models and their estimation. An
-anonymized version is available for review at \WhereToFind{}.  This
-open-source tool is intended to develop intuitions, so that basic
+through playing with log-linear models and their estimation. This open-source 
+tool, available at \WhereToFind{}, is intended to develop intuitions, so that basic
 log-linear models can be then taken for granted.  It can be used near
 the start of a course, perhaps after introducing probability notation
 and $n$-gram models. 
@@ -189,7 +188,7 @@ and NLTK \cite{bird2009natural}.\footnote{\label{fn:bigY}A caveat is that generi
   in \eqref{eqn:loglin} and the gradient of
   \eqref{eqn:reg_ll}.  This is impractical when ${\cal Y}(x)$ is large, as in
   language modeling or structured prediction.  One will do better to
- one either restrict ${\cal Y}(x)$ before training
+ either restrict ${\cal Y}(x)$ before training
 \cite{johnson-et-al-1999}, or else use techniques such as dynamic
 programming or sampling, e.g., 
 \cite{lafferty-mccallum-pereira-2001} and \cite{rosenfeld-chen-zhu-2001}. 
@@ -357,9 +356,8 @@ provide area/task-specific examples.
 \section{Our Log-Linear Virtual Manipulative}\label{sec:overview}
 
 Recall Figure \ref{fig:lesson1} for the general interface and an overview 
-of the tool. We have made an anonymized version available at 
-\WhereToFind{}, which we encourage you to play with as you
-read.
+of the tool. We encourage you to play with it, available at 
+\WhereToFind{}, as you read.
 
 %While our primary goal was to teach log-linear models within the context of NLP, 
 %we thought it myopic to outright limit users to those interested or experienced 
@@ -429,8 +427,9 @@ In the \textit{matching game}, the student tries to match $p_{\vec{\theta}}$\ to
 %--- find $\vec{\theta}$ such that $p_{\vec{\theta}}(y\mid x) 
 %= \tilde{p}(y\mid x)$, for all $(x,y)$. 
 The game is to try to make all of the salient log-linear objects 
-equal in size (and color) to their corresponding gray outline. The student ``wins'' once the maximum
-number of log-linear objects turn gray, indicating the best possible fit.\NoteJE{not quite accurate\ldots}
+equal in size (and color) to their corresponding gray outline. 
+The student ``wins'' once the maximum number of objects turn gray, 
+taking into account any regularization penalty.
 %Rather than force students to numerically compare the
 %two distributions, we scale the shape's size to indicate its type's probability
 %under either distribution. We represent $\tilde{p}$ by a gray 
@@ -794,7 +793,8 @@ additional outcomes, and as a result, larger models. To deal with this complexit
 (Figure \ref{fig:gradients}), 
 automatically solving for $\vec{\theta}$ and how a larger partial derivative means the objective is more 
 sensitive to changing that feature. We connect the gradient, specifically computing observed and expected feature 
-counts, with the previous lessons involving model mismatch; this allows students to better understand. 
+counts, with the previous lessons involving model mismatch; this allows students to better understand what the 
+model was learning and why. 
 We bring up the importance of convexity and its implications for our model's estimator.
 %\footnote{There is with caveat of possibly stopping prematurely---``circling up'' the bowl.
 
@@ -806,8 +806,8 @@ We bring up the importance of convexity and its implications for our model's est
 \label{fig:gradients}
 \end{figure}
 
-We also introduce some features of the application and encourage their use as a way to 
-further explore log-linear models. For instance, students can generate secret oracle weights, and 
+We also introduce additional manipulative functionality and encourage their use to 
+explore log-linear models. For instance, students can generate secret oracle weights and 
 fit a model to data sampled from those new weights. Students can also ``cheat'' and look at the true 
 weights,  and question why estimates of $\vec{\theta}$ might be different from the true parameters 
 (sampling error).
@@ -817,13 +817,15 @@ modeling. The first is regularization: how does regularization help with unseen 
 to play with the regularization coefficient $C$ and how it affects the model; specifically, changing the amount 
 of data enables exploration of $\ell_1$ vs. $\ell_2$ regularization.
 
-Lessons \textbf{11}--\textbf{13} introduce conditional models. We have designed these lessons such that the 
-observed counts are in different proportions, thus providing a clear distinction between maximizing the conditional 
-vs. joint log-likelihoods.
+Lessons \textbf{11}--\textbf{13} introduce conditional models and convey some of the basic differences between 
+conditional and globally normalized models. Students use a conditional model with shared features to model 
+heavily skewed data, which illustrates how both the matching and log-likelihood games differ under conditional vs. 
+joint models. We explain, via modeling syntactic parses, how shared conditional features can help more accurately 
+model a context-specific outcome $\mathcal{Y}(x)$.
 
-Lessons \textbf{14}--\textbf{15} re-introduce the importance of informed feature design in conditional models. 
+Lessons \textbf{14}--\textbf{15} further explore the importance of informed feature design in conditional models. 
 Specifically in lesson \textbf{14}, we add a feature for each context and the students are asked what happens 
-when we solve and why (i.e., why don't the context-only features move from their initial 0 values). 
+when we solve and why; that is, why context-only features do not move from their initial 0 values. 
 In lesson \textbf{15}, we consider conjoined features (e.g., bigram features) as a way to successfully incorporate 
 contextual information into the model. We retain the original ``unigram'' (outcome) features, and explore
 how the regularizer breaks parameter setting ties.
