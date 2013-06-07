@@ -422,21 +422,20 @@ features.
 %  larger image and larger-font text, which you can shrink back again
 %  in the PDF.}  }
 
-Each shape $y$ is sized proportionately to its model
-probability $p_{\vec{\theta}}(y \mid x)$ (defined as in
-\eqref{eqn:loglin}), so it grows or shrinks as the user changes
+Each shape $y$ is sized proportionately to its {\em model
+probability} $p_{\vec{\theta}}(y \mid x)$ (equation~\eqref{eqn:loglin}), so it grows or shrinks as the user changes
 $\vec{\theta}$.  
-In contrast, the {\em empirical probability} or {\em count ratio}
+In contrast, the {\em empirical probability} 
 \begin{equation}
-\empirical\left(y\ \mid\ x\right) = \frac{N(x,y)}{N(x)},
+\empirical\left(y\ \mid\ x\right) = \frac{\text{count}(x,y)}{\text{count}(x)} 
 \label{eqn:empirical_distr}
 \end{equation} 
 is shown by a gray outline.
 
 The size and color of $y$ indicate how $p_{\vec{\theta}}(y\mid x)$ compares to 
 this empirical probability (Figure~\ref{fig:colorsize_inventory}).  
-Reinforcing this, the observed count $N(x,y)$ is shown at the upper
-left of $y$, while the expected count $N(x)\cdot
+Reinforcing this, the observed $\text{count}(x,y)$ is shown at the upper
+left of $y$, while the expected $\text{count}(x)\cdot
 p_{\vec{\theta}}(y\mid x)$ is shown at the upper right (Figure
 \ref{fig:lesson1}).
 
@@ -483,7 +482,7 @@ long as possible.\footnote{Once the gradient is introduced in a later lesson, kn
 %As shown in \NoteFF{fix} Figure \ref{fig:llbar}, we also represent the regularization penalty
 %, and the objective under the ``true'' (generating) model parameters, when known.
 
-These games are not disjoint, nor are they the only ones that can be played.
+\NoteJE{this exposition is odd}These games are not disjoint,  nor are they the only ones that can be played.
 For instance, when playing the log-likelihood game, the students can think about how well 
 the shapes match, particularly when more advanced concepts such as regularization and 
 conjoined features are introduced. If a given set of features does not allow 
