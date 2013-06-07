@@ -362,7 +362,7 @@ of the tool. We encourage you to play with it, available at
 
 \subsection{Student Interface}
 
-The applications is centered around lessons designed to isolate particular 
+The application is centered around lessons designed to isolate particular 
 challenges or intricacies of log-linear models. No matter the complexity, the main
 premise behind a lesson is to play a ``matching
 game'' or a ``log-likelihood game'' on a provided dataset \Data{}. The
@@ -431,15 +431,17 @@ taking into account any regularization penalty.
 An alternative game to play is the \textit{log-likelihood game}, where the goal is to
 maximize the (regularized) training log-likelihood. The log-likelihood bar adapts to 
 changes to $\vec{\theta}$, just like the shapes. The game is to make the bar as 
-long as possible.\footnote{``Winning'' may not be immediately clear, but the concept should be 
-as more advanced topics, such as the gradient, are introduced.}
+long as possible.\footnote{``Winning'' may not be immediately clear. As more advanced 
+topics, such as the gradient, are introduced, knowing when you have won should become 
+clear.}
 %As shown in \NoteFF{fix} Figure \ref{fig:llbar}, we also represent the regularization penalty
 %, and the objective under the ``true'' (generating) model parameters, when known.
 
-Note that these games are not disjoint, nor are they the only ones that can be played.
+These games are not disjoint, nor are they the only ones that can be played.
 For instance, when playing the log-likelihood game, the students can think about how well 
 the shapes match, particularly when more advanced concepts such as regularization and 
-conjoined features are introduced. Further, because not every distribution can be matched, 
+conjoined features are introduced. If a given set of features does not allow 
+a particular dataset to be matched, 
 the student can play a variant of the matching game, where the goal
 is to match the observed and expected feature counts. 
 
@@ -488,9 +490,8 @@ $-\nabla_{\vec{\theta}} F$
 & \includegraphics[scale=.25]{images/goldilocks-gradient-large.PNG}\\ \\ 
 
 \end{tabular}
-
-\caption{Colors and area indicate differences betwen the model and empirical distributions. For each 
-observations, count or weight, red/small objects signify the proposed model under-predicts;  
+\caption{Colors and area indicate differences betwen the model and empirical distributions (gray outlines, when applicable). For each 
+observation, description or weight, red/small objects signify the proposed model under-predicts;  
 blue/large objects signify it over-predicts.}
 \label{fig:colorsize_inventory}
 \end{figure}
@@ -502,13 +503,15 @@ the system follow the gradient.
 
 Once the student is comfortable with the provided model and data, he
 or she can begin to play around with the dataset and model options. These utilities, such as
-generating a new random challenge and experimenting with regularizaiton, 
+generating a new random challenge and experimenting with regularization, 
 are described more in Section \ref{sec:lessons}.
 
-The particular game being played in each lesson is described in the
-instruction area, which the student should read carefully, since this
-may explain what the data and particular task are, justify modeling
-choices, and ask lesson-specific questions.
+The particular game being played in a lesson is described in the
+instruction area. The instructions explain what the data and task are, justify modeling
+choices, introduce new functionality and ask lesson-specific questions. For more technical 
+explanations and derivations, or for additional practice questions, 
+they may direct the student to auxiliary material provided with the code; it is designed to explain 
+the physical intuitions gained, and as a self-check on one's understanding. 
 
 \NoteJE{Describe how tooltips encourage constructive play, perhaps
   ignoring the current lesson or going beyond it.  They provide
@@ -520,6 +523,7 @@ choices, and ask lesson-specific questions.
   sense of how the different concepts fit together---several of the
   tooltips reference one another (LL, regularization, gradient, step,
   solve).}
+\NoteFF{tooltips help bridge intuition (reviewer's comment)}
 
 \subsection{The Instructor Interface: Creating and Tailoring Lessons}\label{sec:tailoring}
 
@@ -564,24 +568,22 @@ an instructor may want to hide the ``solve'' button in early lessons, add new to
 ones to provide lesson-specific information.
 
 \subsection{Back-End Implementation}
-Broadly, the virtual manipulative is designed to be widely available and have no start-up cost. 
-Aside from reading the lesson data and instruction files from the web server, the manipulative is fully 
-client-side. The back-end is written in Javascript, and uses common and well-supported open-source 
-libraries to help with visualization and cross-browser compatibility.\footnote{Specifically and in order, 
+The virtual manipulative is designed to be widely available and have no start-up cost. 
+Aside from reading the data, model and instructions from the web server, it is fully 
+client-side. The Javascript back-end uses common and well-supported open-source 
+libraries for cross-browser compatibility and visualization.\footnote{Specifically and in order, 
 \texttt{d3} (\url{d3js.org/}),
 \texttt{jQuery} (\url{jquery.com/}), 
 \texttt{jQuery UI} (\url{jqueryui.com}),
 \texttt{jQuery Tools} (\url{jquerytools.org/}), and
 \texttt{qTip} (\url{craigsworks.com/projects/qtip/}).}
-
-% That being said, eventually the buck must stop somewhere and 
-The manipulative does rely on certain capabilities from the HTML5
-standard. Unfortunately, not all current browsers support these
+The manipulative relies on certain capabilities from the HTML5
+standard; unfortunately, not all current browsers support these
 capabilities.
 %\NoteJE{which browsers don't?}  
 %\NoteFF{Internet Explorer; annoyingly, IE $< 10$ doesn't work though
 %most users who use IE fall into that category.}
-However, the manipulative works with recent versions of Firefox, Chrome and Safari and 
+The tool works with recent versions of Firefox, Chrome and Safari and 
 our students did not have trouble running it on them.
 %\NoteJE{true?}
 %\NoteFF{I don't have numbers to back it up, but generally I'd say yes.
@@ -714,11 +716,11 @@ The maximizer is the $\vec{\theta^*}$ that solves equation \eqref{eqn:grad}:
 %\end{split}
 \end{aligned}
 \end{equation}
-Many important concepts are introduced in these two equations. Some are new to the student, in that he or
-she was not exposed to them when considering feature design; others provide an alternative view
-on concepts already introduced. It is important to highlight these connections.
+Many important concepts are encapsulated in \eqref{eqn:reg_ll} and \eqref{eqn:grad}. 
+Some are new while others provide an alternative view
+on concepts already introduced. We highlight these connections when possible.
 
-We believe the most important concept is that the gradient of
+We believe the most important concept is that the gradient of (unregularized)
 maximum likelihood is the \textbf{difference 
 between observed and expected feature counts}:
 \begin{equation}
@@ -767,7 +769,7 @@ use of backoff features and not just fine-grained features, thereby resulting
 in \textit{backoff smoothing}. These concepts are connected to the expressiveness 
 considerations introduced in feature modeling.
 
-We should note that we are \textit{not} concerned with computational issues here, e.g., that of 
+We should note that we are \textit{not} concerned with computational issues here, i.e., that of 
 tractably computing the normalization factors $Z(x)$. While efficiently computing the normalization 
 factor is a crucial component to practical log-linear models, our primary concern is to provide a virtual 
 manipulative that imparts a near-physical, intuitive understanding of log-linear models. See fn. \ref{fn:compute_partition_fn} 
@@ -786,9 +788,10 @@ walk through the tutorial to attempt the activities and read all the questions.
 Lessons \textbf{1}--\textbf{5} provide the basic introduction to log-linear modeling. To keep 
 the models simple and incrementally build intution, we only consider joint models over shapes and focus 
 on feature modeling. We start off with two features over four shapes but the lessons 
-become progressively complex. We consider model mismatch by hiding certain 
-features from the student, a possible way to handle this, and non-binary features. We play both the 
-matching and log-likelihood games.
+become progressively complex. Next we hide certain generating features from the students: they 
+consider what is going on in this model mismatch exercise, and a possible way to handle it. We play both the 
+matching and log-likelihood games, comparing and contrasting them. Students also explore 
+non-binary features and what it means for each game. 
 
 Having begun to develop the appropriate intuition, lessons \textbf{6}--\textbf{8} introduce 
 additional outcomes, and as a result, larger models. To deal with this complexity, we describe the convex 
