@@ -133,6 +133,7 @@ configuration files (see section~\ref{sec:tailoring}).
   other people's NLP homework assignments or practical exercises that
   use maxent.  I bet you could find a few good assignments on the web,
   including in the NLTK book.}
+\NoteFF{NLTK: Select one of the classification tasks described in this chapter, such as name gender detection, document classification, part-of-speech tagging, or dialog act classification. Using the same training and test data, and the same feature extractor, build three classifiers for the task: a decision tree, a naive Bayes classifier, and a Maximum Entropy classifier. Compare the performance of the three classifiers on your selected task. How do you think that your results might be different if you used a different feature extractor?; Berkeley  maxent for proper noun classification, or POS tagging} \url{http://www.cs.berkeley.edu/~klein/cs288/}
 
 \section{Why Teach With Log-Linear Models?}
 
@@ -729,8 +730,8 @@ Students have already been introduced to this when considering the difference be
 feature counts, and how expectation proportions affect how much one needs to change a given feature weight: 
 now, with the gradient, they can better understand why, and thus justify and strengthen their developing intuitions.
 
-For those students limited-to-no prior experience with numerical optimization, the next 
-important idea is what it means to ``follow'' the gradient, and that doing so will 
+For students with limited-to-no prior numerical optimization experience, the next 
+important idea is what it means to ``follow'' the gradient up the convex ``hill,'' and that doing so will 
 \begin{inparaenum}[i)]
 \item actually yield a solution, even though a closed-form solution is not generally available, and
 \item not decrease the objective.
@@ -790,13 +791,15 @@ features from the student, a possible way to handle this, and non-binary feature
 matching and log-likelihood games.
 
 Having begun to develop the appropriate intuition, lessons \textbf{6}--\textbf{8} introduce 
-additional outcomes, and as a result, larger models. To deal with this complexity, we discuss the gradient 
+additional outcomes, and as a result, larger models. To deal with this complexity, we describe the convex 
+objective and its gradient 
 (Figure \ref{fig:gradients}), 
-automatically solving for $\vec{\theta}$ and how a larger partial derivative means the objective is more 
+automatically solving for $\vec{\theta}$ via gradient ascent, and how a larger partial derivative means the objective is more 
 sensitive to changing that feature. We connect the gradient, specifically computing observed and expected feature 
 counts, with the previous lessons involving model mismatch; this allows students to better understand what the 
 model was learning and why. 
-We bring up the importance of convexity and its implications for our model's estimator.
+Students can use the gradient hints and solver to watch $\vec{\theta}$ climb up the objective ``hill'' to the global maximum, 
+partly illustrating the implications of a convex objective for our model's estimator.
 %\footnote{There is with caveat of possibly stopping prematurely---``circling up'' the bowl.
 
 \begin{figure}[t]
@@ -881,8 +884,8 @@ A version is available at \WhereToFind{}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
 \paragraph*{Acknowledgements}
-Thank you to the four anonymous reviewers for their helpful feedback and suggestions. 
-We would also like to thank the entire Fall 2012 Natural Language Processing course at 
+We would like to thank the anonymous reviewers for their helpful feedback and suggestions 
+and the entire Fall 2012 Natural Language Processing course at 
 Johns Hopkins.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -890,7 +893,7 @@ Johns Hopkins.
 
 %
 %\Commented{
-%\section{History and Applications}
+\section{History and Applications}
 %\NoteFF{RETITLE}
 %
 %\NoteJE{move to an appendix?}%
@@ -910,44 +913,44 @@ Johns Hopkins.
 %already there.}
 %}
 %
-%Conditional log-linear models were first popularized in computational
-%linguistics by a group of researchers associated with the IBM speech
-%and language group, who called them ``maximum entropy models,'' after
-%a principle that can be used to motivate their form
-%\cite{jaynes-1957}.  They applied the method to various binary or
-%multiclass classification problems in NLP, such as prepositional
-%phrase attachment \cite{ratnaparkhi-1994}, text categorization
-%\cite{nigam-lafferty-mccallum-1999}, and boundary prediction
-%\cite{beeferman-berger-lafferty-1999}.
-%
-%Of particular importance for NLP, these models can be also used for
-%structured prediction problems such as tagging, parsing, chunking,
-%segmentation, and language modeling.  A simple strategy is to reduce
-%structured prediction to a sequence of multiclass log-linear
-%predictions \cite{ratnaparkhi-1998}.  A more global approach---used in
-%the original ``maximum entropy'' papers---is to use \eqref{eqn:loglin}
-%to define the conditional probabilities of the steps in a generative
-%process that gradually produces the structure
-%\cite{rosenfeld-1994,berger-dellapietra-dellapietra-1996}.  This idea
-%remains popular today and can be used to embed rich distributions
-%into a variety of generative models \cite{bergkirkpatrick-et-al-2010}.
-%For example, a PCFG that uses richly annotated nonterminals involves a
-%large number of context-free rules.  Rather than estimating their
-%probabilities separately, or with traditional backoff smoothing, a
-%simpler approach is to use \eqref{eqn:loglin} to model the probability
-%of all rules given their left-hand sides, based on features that
-%consider subsets of the nonterminal annotations.\footnote{E.g., case,
-%  number, gender, tense, aspect, mood, lexical head.  In the case of a
-%  terminal rule, the spelling or morphology of the terminal symbol can
-%  be considered.}  A final approach to structured prediction is to
-%simply predict the structured output all at once, so that $y$ is a
-%large structured object.  Since it is hard to enumerate
-%a large set of possible outputs ${\cal Y}(x)$ (see footnote
-%\ref{fn:bigY}), one can either restrict ${\cal Y}(x)$ before training
-%\cite{johnson-et-al-1999}, or else use techniques such as dynamic
-%programming or sampling, as in linear-chain conditional random fields
-%\cite{lafferty-mccallum-pereira-2001} and whole-sentence language
-%modeling \cite{rosenfeld-chen-zhu-2001}.
+Conditional log-linear models were first popularized in computational
+linguistics by a group of researchers associated with the IBM speech
+and language group, who called them ``maximum entropy models,'' after
+a principle that can be used to motivate their form
+\cite{jaynes-1957}.  They applied the method to various binary or
+multiclass classification problems in NLP, such as prepositional
+phrase attachment \cite{ratnaparkhi-1994}, text categorization
+\cite{nigam-lafferty-mccallum-1999}, and boundary prediction
+\cite{beeferman-berger-lafferty-1999}.
+
+Of particular importance for NLP, these models can be also used for
+structured prediction problems such as tagging, parsing, chunking,
+segmentation, and language modeling.  A simple strategy is to reduce
+structured prediction to a sequence of multiclass log-linear
+predictions \cite{ratnaparkhi-1998}.  A more global approach---used in
+the original ``maximum entropy'' papers---is to use \eqref{eqn:loglin}
+to define the conditional probabilities of the steps in a generative
+process that gradually produces the structure
+\cite{rosenfeld-1994,berger-dellapietra-dellapietra-1996}.  This idea
+remains popular today and can be used to embed rich distributions
+into a variety of generative models \cite{bergkirkpatrick-et-al-2010}.
+For example, a PCFG that uses richly annotated nonterminals involves a
+large number of context-free rules.  Rather than estimating their
+probabilities separately, or with traditional backoff smoothing, a
+simpler approach is to use \eqref{eqn:loglin} to model the probability
+of all rules given their left-hand sides, based on features that
+consider subsets of the nonterminal annotations.\footnote{E.g., case,
+  number, gender, tense, aspect, mood, lexical head.  In the case of a
+  terminal rule, the spelling or morphology of the terminal symbol can
+  be considered.}  A final approach to structured prediction is to
+simply predict the structured output all at once, so that $y$ is a
+large structured object.  Since it is hard to enumerate
+a large set of possible outputs ${\cal Y}(x)$ (see footnote
+\ref{fn:bigY}), one can either restrict ${\cal Y}(x)$ before training
+\cite{johnson-et-al-1999}, or else use techniques such as dynamic
+programming or sampling, as in linear-chain conditional random fields
+\cite{lafferty-mccallum-pereira-2001} and whole-sentence language
+modeling \cite{rosenfeld-chen-zhu-2001}.
 
 \bibliography{tnlp}
 \bibliographystyle{acl}
