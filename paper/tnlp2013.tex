@@ -107,9 +107,6 @@ and $n$-gram models.
 \begin{figure*}
 \centering
 \includegraphics[scale=.49]{images/lesson1-051313-intro-zoom-instmore.PNG}
-\NoteJE{in final version, possibly take a new screenshot
-   since I've edited the instructions a bit?  Although the old
-   instructions might fit better.}
 \caption{The first lesson; the lower half is larger on the actual
   application.}
 \label{fig:lesson1}
@@ -356,10 +353,10 @@ Members of the NLP and speech communities have previously explored manipulatives
 \newcite{eisner-2002-tnlp} implemented HMM posterior inference and
 forward-backward training on a spreadsheet, so that editing the data or initial parameters
 changed the numerical computations and the resulting graphs.  
-\newcite{nouza1999teaching} explored\NoteJE{developed?} VISPER, an applied educational tool that wrapped various speech technologies and 
+\newcite{nouza1999teaching} developed and explored VISPER, an applied educational tool that wrapped various speech technologies and 
 was also targeted toward understanding the acoustics and overall recognition pipeline. 
 \newcite{light-tnlp-2005} developed web interfaces for a number of core NLP technologies and systems, such as parsers, part-of-speech 
-taggers, and finite-state transducers.\NoteJE{Matt Post's stack decoder?}
+taggers, and finite-state transducers, and Matt Post created a Model 1 stack decoder visualization for a recent machine translation class \cite{lopez2013learning}.\footnote{\url{github.com/mjpost/stack-decoder}}
 Most manipulatives/interfaces targeted at NLP have been virtual, but a notable exception is \newcite{halteren-tnlp-2002}, 
 who created a (physical) board game for parsing. 
 
@@ -475,18 +472,18 @@ taking into account any regularization penalty.
 %outline, and use colors and shading to make $p_{\vec{\theta}}$ salient. 
 
 An alternative is to play the \textit{log-likelihood game}, where the goal is to
-maximize the (regularized) training log-likelihood. The log-likelihood
-bar (Figure~\ref{fig:lesson1}) adapts to changes to $\vec{\theta}$,
+maximize the (regularized) log-likelihood. The log-likelihood
+bar (Figure~\ref{fig:lesson1}) adapts to changes in $\vec{\theta}$,
 just like the shapes. The game is to make the bar as 
 long as possible.\footnote{Once the gradient is introduced in a later lesson, knowing when you have ``won'' becomes clearer.}
 %As shown in \NoteFF{fix} Figure \ref{fig:llbar}, we also represent the regularization penalty
 %, and the objective under the ``true'' (generating) model parameters, when known.
 
-\NoteJE{this exposition is odd}These games are not disjoint,  nor are they the only ones that can be played.
-For instance, when playing the log-likelihood game, the students can think about how well 
-the shapes match, particularly when more advanced concepts such as regularization and 
-conjoined features are introduced. If a given set of features does not allow 
-a particular dataset to be matched, 
+These games do not have to be played in isolation: when playing the log-likelihood game, the 
+students can think about how well the shapes match (and vice versa).
+This is particularly true as more advanced concepts such as regularization and 
+conjoined features are introduced.
+If a given set of features does not allow a particular dataset to be matched, 
 the student can play a variant of the matching game, where the goal
 is to match the observed and expected feature counts. 
 
@@ -496,14 +493,6 @@ is to match the observed and expected feature counts.
 %difference between observed and expected counts, while the size (area) of the shapes 
 %indicates the type's mass differences.
 
-%What the student interfaces with must reliably allow us to achieve the goals
-%laid out in Section \ref{sec:aims}. Figure \ref{fig:lesson1} illustrates the basic 
-%blocked interface a user encounters. The two block areas at the top of the 
-%page serve basic navigation and instructional needs while the bottom five provide 
-%the requiste interactions with the model. \NoteFF{add refs to Fig {\ref{fig:lesson1}} 
-%overlay.} 
-%The student should read carefully the instructions, dragging the instruction 
-%area larger if necessary, since this is where the instructor may explain 
 
 \begin{figure}[t]
 \centering
@@ -524,9 +513,9 @@ $\empirical{} -p_{\vec{\theta}}$& \includegraphics[scale=.25]{images/goldilocks-
 $\mathbb{E}_{\empirical{}}\left[\vec{f}\right] 
 - \mathbb{E}_{{p_{\vec{\theta}}}}\left[\vec{f}\right]$
 %, and $\nabla_{\vec{\theta}} F$
-& {\bf \color{red} \texttransparent{.5}{ red text} }
-& {\bf \color{gray}\texttransparent{.55}{ gray text } }
-& {\bf \color{blue} \texttransparent{.55}{ blue text } }\\  \\
+& {\bf \color{red} \texttransparent{.55}{ red } }
+& {\bf \color{gray}\texttransparent{.6}{ gray } }
+& {\bf \color{blue} \texttransparent{.6}{ blue } }\\  \\
 \vspace{.5em}
 
 $\nabla_{\vec{\theta}} F$ 
@@ -535,8 +524,6 @@ $\nabla_{\vec{\theta}} F$
 & \includegraphics[scale=.25]{images/goldilocks-gradient-large.PNG}\\ \\ 
 
 \end{tabular}
-\NoteJE{what is line 2 about?  I don't see the feature names changing
-  color.}
 \caption{Color and area indicate differences betwen the empirical
   distribution (gray outline) and model distribution. Red (or blue)
   indicates a model probability or parameter that should be
@@ -546,9 +533,9 @@ $\nabla_{\vec{\theta}} F$
 
 Winning either game with more complex models becomes instructively
 difficult and tedious. 
-The student may then make use of \textit{hints}, such as
-viewing components of the gradient (Figure~\ref{fig:gradients}), or simply clicking a button to have
-the system follow the gradient.  
+The student may use \textit{hints}, such as
+viewing components of the gradient (Figure~\ref{fig:gradients}), or 
+clicking a button to havethe system follow the gradient.  
 
 A main tenet of this manipulative is the benefit of ``learning-by-playing.'' 
 Once comfortable with the provided model and data, the student can begin to play 
