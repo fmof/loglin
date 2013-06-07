@@ -646,7 +646,7 @@ The first features we might consider are contrasting indicator functions for whe
 is a circle or is solid as in Figure \ref{fig:lesson1}. For what datasets can the student ``win'' either or both games with this two feature model? 
 Will adding additional features always help? Why might partitioning (binary) 
 features, such as solid vs. striped above, be redundant in some 
-cases, yet insufficient in others?\footnote{Advanced students with knowledge of statistics might benefit 
+cases, yet insufficient in others?\footnote{Those with knowledge of statistics might benefit 
 from a discussion of the importance of rank in exponential families.}
 
 The empirical distribution deals with \textit{type} counts, but because log-linear models 
@@ -723,23 +723,21 @@ between observed and expected feature counts}:
 - \mathbb{E}_{p_{\vec{\theta}}}\left[\vec{f}(X,Y)\right].
 \label{eqn:obsexp} 
 \end{equation}
-Students should already have been introduced to this when considering the difference between type and 
+Students have already been introduced to this when considering the difference between type and 
 feature counts, and how expectation proportions affect how much one needs to change a given feature weight: 
 now, with the gradient, they can better understand why, and thus justify and strengthen their developing intuitions.
 
-While a number of students may have prior experience with numerical optimization, for those that haven't, the next 
-important ideas are that ``following'' the gradient will
+For those students limited-to-no prior experience with numerical optimization, the next 
+important idea is what it means to ``follow'' the gradient, and that doing so will 
 \begin{inparaenum}[i)]
 \item actually yield a solution, even though a closed-form solution is not generally available, and
 \item not decrease the objective.
 \end{inparaenum}
-The importance of the convexity of \eqref{eqn:reg_ll} generalizes these two observations, 
-notably that we will always find a unique $\vec{\theta^*}$ that solves 
-\eqref{eqn:reg_ll}.\footnote{Advanced students may find it interesting to see what happens 
-when you ``break'' convexity, e.g., what happens when $C < 0$?}
+The importance of the convexity of \eqref{eqn:reg_ll} generalizes these two observations.\footnote{Advanced 
+students might try ``breaking'' convexity, e.g., what happens when $C < 0$?}
+% $\vec{\theta^*}$ that solves \eqref{eqn:reg_ll}.
 Students should understand that matching the empirical distribution will generally maximize the (unregularized) log-likelihood, 
 though that overfitting is possible and may result in a larger log-likelihood than the true generating distribution yields.
-%Here, Regardless of what regularization is applied, we will generally refer to the \textbf{full model} as that of \eqref{eqn:conditional_loglin} with objective \eqref{eqn:reg_ll}.\footnote{We consider models where $R(\vec{\theta}) = \vec{0}$ (no regularization), $R(\vec{\theta}) = \|\vec\theta\|_1$, and $R(\vec{\theta}) = \|\vec{\theta}\|_2^2$. See Section \ref{sec:overview} for more on regularization.}
 
 We may use the gradient to further illustrate feature modeling considerations. The most obvious is to show how 
 minimizing a single isolated $|\frac{\partial}{\partial \theta_k} F|$ might adversely affect another partial 
