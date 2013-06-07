@@ -1,0 +1,8 @@
+count	position	context	features	visualization
+4	0,0	triangle	solid	shape=image,value="lessons/parses/mdr1.png"
+5	0,1	triangle	striped	shape=image,value="lessons/parses/mdr2.png"
+6	0,2	triangle	hollow	shape=image,value="lessons/parses/mdr3.png"
+100	0,0	circle	solid	shape=circle,fill=solid
+0	0,0	square	solid	shape=square,fill=solid
+0	0,1	square	striped	shape=square,fill=striped
+0	0,2	square	hollow	shape=square,fill=hollow

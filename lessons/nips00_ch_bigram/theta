@@ -1,0 +1,109 @@
+context	feature	value
+	C	0
+	C & C	0
+	ed	0
+	C & ed	0
+	UNCOMMON	0
+	C & UNCOMMON	0
+	st	0
+	C & st	0
+	th	0
+	C & th	0
+	V	0
+	C & V	0
+	_	0
+	C & _	0
+	er	0
+	C & er	0
+	C	0
+	ed & C	0
+	ed	0
+	ed & ed	0
+	UNCOMMON	0
+	ed & UNCOMMON	0
+	st	0
+	ed & st	0
+	V	0
+	ed & V	0
+	_	0
+	ed & _	0
+	C	0
+	UNCOMMON & C	0
+	ed	0
+	UNCOMMON & ed	0
+	UNCOMMON	0
+	UNCOMMON & UNCOMMON	0
+	st	0
+	UNCOMMON & st	0
+	th	0
+	UNCOMMON & th	0
+	V	0
+	UNCOMMON & V	0
+	_	0
+	UNCOMMON & _	0
+	er	0
+	UNCOMMON & er	0
+	C	0
+	st & C	0
+	ed	0
+	st & ed	0
+	UNCOMMON	0
+	st & UNCOMMON	0
+	V	0
+	st & V	0
+	_	0
+	st & _	0
+	er	0
+	st & er	0
+	C	0
+	th & C	0
+	V	0
+	th & V	0
+	_	0
+	th & _	0
+	er	0
+	th & er	0
+	C	0
+	V & C	0
+	ed	0
+	V & ed	0
+	UNCOMMON	0
+	V & UNCOMMON	0
+	st	0
+	V & st	0
+	th	0
+	V & th	0
+	V	0
+	V & V	0
+	_	0
+	V & _	0
+	er	0
+	V & er	0
+	C	0
+	_ & C	0
+	ed	0
+	_ & ed	0
+	UNCOMMON	0
+	_ & UNCOMMON	0
+	st	0
+	_ & st	0
+	th	0
+	_ & th	0
+	V	0
+	_ & V	0
+	er	0
+	_ & er	0
+	C	0
+	er & C	0
+	ed	0
+	er & ed	0
+	UNCOMMON	0
+	er & UNCOMMON	0
+	st	0
+	er & st	0
+	th	0
+	er & th	0
+	V	0
+	er & V	0
+	_	0
+	er & _	0

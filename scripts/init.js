@@ -672,6 +672,11 @@ function init(){
 
     jQuery('#show_gradient').click(function(){
     	SHOW_GRADIENTS=this.checked;
+	if(SHOW_GRADIENTS){
+	    jQuery('#gradient_hinting_div').removeClass('novis');
+	} else{
+	    jQuery('#gradient_hinting_div').addClass('novis');
+	}
 	if(!in_solving){
     	    if(SHOW_GRADIENTS){
     		recompute_partition_function();

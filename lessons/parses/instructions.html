@@ -1,0 +1,22 @@
+<div id="p1" class="showable_instructions">
+  <p>This example shows one way that maximizing conditional likelihood is
+    different from maximizing joint likelihood.</p>
+
+  <p>In the English (circle) context, it is now <i>only</i> possible
+    to talk about <code>solid</code>.  Since English is popular, this
+    means there are <i>lots</i> of solid shapes in our training data.
+    Yet what are the weights that maxmize the conditional
+    log-likelihood?  Discuss why this is.</p>
+
+  <p><b>Remark.</b> Did the format of this example surprise you?  Why
+    should different contexts have to choose among different outcome
+    sets?  Because different situations present different choices!
+    Consider estimating p(parse tree | sentence).  Each <i>n</i>-word
+    sentence presents a choice among many possible parse
+    trees&mdash;whose <i>n</i> leaves are labeled with the words of
+    the sentence, so they are parses of <i>that sentence only</i>.  So
+    how can we parse novel sentences at test time?  More generally,
+    how can we generalize to new contexts and outcomes?  Because a
+    (context,outcome) pair we've never seen in training data may still
+    have many <i>features</i> that we've seen in training data.</p>
+</div>
