@@ -143,7 +143,7 @@ concepts or applications.
 Section \ref{sec:history} provides some history and applications of log-linear
 modeling, as well as assignment ideas.
 
-\section{Why Teach With Log-Linear Models?}
+\section{Why Teach With Log-Linear Models?}\label{sec:whyloglin}
 
 Log-linear models are very handy in NLP.  They can be used {\em throughout} 
 a course, when one needs 
@@ -222,12 +222,15 @@ model {\em probabilities}.  These can be
   expected loss (risk).
 \end{itemize}
 The training procedure also takes a probabilistic view.  Equation
-\eqref{eqn:reg_ll} helps illustrate important statistical principles such as maximum
-likelihood, regularization (the bias-variance tradeoff), and cross-validation, as well as
-optimization principles such as gradient ascent.\footnote{In an
-  advanced class, this objective can also be regarded as the
-  optimization dual of a maximum entropy problem.  We have considered
-  adding a dual view to our manipulative.\label{fn:dual}}
+\eqref{eqn:reg_ll} helps illustrate important statistical principles
+such as maximum likelihood,\footnote{\label{fn:dual}Historically, this
+  objective has been regarded as the optimization dual of a maximum
+  entropy problem \cite{berger-dellapietra-dellapietra-1996},
+  motivating the log-linear form of \eqref{eqn:reg_ll}.
+  We have considered adding a maximum entropy view 
+  to our manipulative.} regularization (the bias-variance
+tradeoff), and cross-validation, as well as optimization principles
+such as gradient ascent.
 
 Log-linear models also provide natural extensions of commonly taught
 NLP methods.  For example, under a probabilistic context-free
@@ -823,10 +826,11 @@ in \textit{backoff smoothing}. These concepts are connected to the expressivenes
 considerations introduced in feature modeling.
 
 We should note that we are \textit{not} concerned with efficiency issues, e.g.,  
-tractably computing the normalizers $Z(x)$. Efficiently computing the normalization 
-factor is a crucial component to practical log-linear models, but our primary concern is to provide a virtual 
+tractably computing the normalizers $Z(x)$. Efficient normalization
+is a crucial component of practical log-linear models, but our primary concern is to provide a virtual 
 manipulative that imparts a near-physical intuitive understanding of log-linear models. See Section 
-\ref{sec:history} or \newcite{smith-2011} for strategies on computing the partition function. 
+\ref{sec:history} or \newcite{smith-2011} for strategies on computing
+the normalizer.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -918,20 +922,23 @@ of a phrase (e.g., as \texttt{spam}, \texttt{work}, or \texttt{fun}).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
-\section{Select Applications and Extensions} \label{sec:history}
-We designed the tool to be extended and adapted to various needs. 
-The following summary of log-linear applications serves to inspire 
-further improvements in log-linear modeling education.
+\section{Graduating to Real Applications}\label{sec:history}
 
-Conditional log-linear models were first popularized in computational
-linguistics by a group of researchers associated with the IBM speech
-and language group, who called them ``maximum entropy models,'' after
-a principle that can be used to motivate their form
-\cite{jaynes-1957}.  They applied the method to various binary or
-multiclass classification problems in NLP, such as prepositional
-phrase attachment \cite{ratnaparkhi-1994}, text categorization
-\cite{nigam-lafferty-mccallum-1999}, and boundary prediction
-\cite{beeferman-berger-lafferty-1999}.
+At the time of writing, 3266 papers in the ACL Anthology mention
+log-linear models, with 137 using ``log-linear,'' ``maximum entropy''
+or ``maxent'' in the paper title.  These cover a wide range of
+applications that can be considered for teaching.
+
+Early papers may cover the most fundamental applications and the
+clearest motivation.  Conditional log-linear models were first
+popularized in computational linguistics by a group of researchers
+associated with the IBM speech and language group, who called them
+``maximum entropy models,'' after a principle that can be used to
+motivate their form \cite{jaynes-1957}.  They applied the method to
+various binary or multiclass classification problems in NLP, such as
+prepositional phrase attachment \cite{ratnaparkhi-1994}, text
+categorization \cite{nigam-lafferty-mccallum-1999}, and boundary
+prediction \cite{beeferman-berger-lafferty-1999}.
 
 Of particular importance for NLP, these models can be also used for
 structured prediction problems such as tagging, parsing, chunking,
@@ -954,28 +961,42 @@ consider subsets of the nonterminal annotations.\footnote{E.g., case,
   terminal rule, the spelling or morphology of the terminal symbol can
   be considered.}  
 
-A final approach to structured prediction is to
-simply predict the structured output all at once, so that $y$ is a
-large structured object. One can restrict ${\cal Y}(x)$ before training
-\cite{johnson-et-al-1999}, or use techniques such as dynamic
-programming or sampling, as in linear-chain conditional random fields
-\cite{lafferty-mccallum-pereira-2001} and whole-sentence language
-modeling \cite{rosenfeld-chen-zhu-2001}. 
+The most direct approach to structured prediction is to simply predict
+the structured output all at once, so that $y$ is a large structured
+object with many features.  This is conceptually natural but means
+that the normalizer $Z(x)$ involves summing over a large space ${\cal
+  Y}(x)$ (footnote~\ref{fn:bigY}).  One can restrict ${\cal Y}(x)$
+before training \cite{johnson-et-al-1999}, or sum efficiently by
+dynamic programming or sampling, as is typical in linear-chain
+conditional random fields \cite{lafferty-mccallum-pereira-2001},
+whole-sentence language modeling \cite{rosenfeld-chen-zhu-2001}, and
+CRF CFGs \cite{finkel2008efficient}.  This topic is properly deferred
+until those algorithmic techniques are introduced later in an NLP
+class, for example in a unit on parsing (see discussion in
+section~\ref{sec:whyloglin}).  We prepare students for it by
+mentioning this point in our final lesson.\footnote{This material can
+  also be connected to other topics in machine learning.  Dynamic
+  programming and sampling are also used for exact or approximate
+  computation of normalizers in undirected graphical models (Markov
+  random fields or conditional random fields), which are really just
+  log-linear models for structured prediction of tuples.}
 
-The above brief history of log-linear models and applications (among others) may inspire 
-extensions to the manipulative, additional lessons and instruction. It might be valuable to 
-add a dual representation and directly maximize the entropy subject to expectation 
-constraints---see footnote \ref{fn:dual}. 
-To be general and remain focused on our pedagogical aims, the manipulative is limited in the complexity of 
-the structured prediction it can currently handle. While one could change the backend to handle 
-some of the solutions discussed above, students interested in structured prediction might find the manipulative 
-more valuable if it includes examples that motivate those solutions.
+% It might be valuable to add a dual representation and directly
+% maximize the entropy subject to expectation constraints---see footnote
+% \ref{fn:dual}.  To be general and remain focused on our pedagogical
+% aims, the manipulative is limited in the complexity of the structured
+% prediction it can currently handle. While one could change the backend
+% to handle some of the solutions discussed above, students interested
+% in structured prediction might find the manipulative more valuable if
+% it includes examples that motivate those solutions.
 
-While many of the above applications present interesting models, some may be 
-too ambitious for class assignments, especially if students are seeing log-linear 
-modeling for the first time. 
-\NoteFF{NLTK: Select one of the classification tasks described in this chapter, such as name gender detection, document classification, part-of-speech tagging, or dialog act classification. Using the same training and test data, and the same feature extractor, build three classifiers for the task: a decision tree, a naive Bayes classifier, and a Maximum Entropy classifier. Compare the performance of the three classifiers on your selected task. How do you think that your results might be different if you used a different feature extractor?; Berkeley  maxent for proper noun classification, or POS tagging} \url{http://www.cs.berkeley.edu/~klein/cs288/}
+% While many of the above applications present interesting models, some may be 
+% too ambitious for class assignments, especially if students are seeing log-linear 
+% modeling for the first time. 
 
+Our final lesson also leads to a web page where we link to software
+and to various homework problems, projects, and readings that an
+instructor may consider assigning.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
