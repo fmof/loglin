@@ -1,5 +1,7 @@
 \documentclass[11pt,letterpaper]{article}
 \usepackage{acl2013}
+\usepackage[lowtilde]{url}
+\usepackage[colorlinks]{hyperref}
 \usepackage{times}
 \usepackage{latexsym}
 \usepackage{amsmath}
@@ -8,8 +10,6 @@
 \usepackage{enumerate,paralist,enumitem}
 \usepackage{verbatim}
 \usepackage{mathtools}
-
-\usepackage{url}
 
 \usepackage{array}
 
@@ -64,12 +64,23 @@ Baltimore, MD, USA
 \maketitle
 
 \begin{abstract}
-We present an open-source virtual manipulative for regularized conditional 
-log-linear models. The online application adapts in real-time to user-directed 
-changes in the model parameters, providing instant feedback to develop 
-students' intuitions. Included with our system are auxiliary instructional materials 
-and questions usable for assignments. A live version is available at
-\WhereToFind{}.
+  We present an open-source virtual manipulative for conditional
+  log-linear models. This web-based interactive visualization lets
+  the user tune the probabilities of various shapes---which grow and
+  shrink accordingly---by dragging sliders that correspond to feature
+  weights.  The visualization displays a regularized training
+  objective; it supports gradient ascent by optionally displaying
+  gradients on the sliders and providing ``step'' and ``solve''
+  buttons.  The user can sample parameters and datasets of
+  different sizes and compare their own parameters to the truth.  Our
+  website, \WhereToFind{}, guides the user through a series of
+  interactive lessons.%
+  % and also provides a handout with a more formal
+  % treatment.
+  \NoteJE{mention associated homework exercises if we are
+    definitely going to provide them}
+  % Included with our system are auxiliary instructional
+  % materials and questions usable for assignments. 
 \end{abstract}
 
 \section{Introduction}\label{sec:intro}
@@ -97,39 +108,41 @@ and $n$-gram models.
 \centering
 \includegraphics[scale=.49]{images/lesson1-051313-intro-zoom-instmore.PNG}
 \caption{The first lesson; the lower half is larger on the actual
-  application.
-%\NoteJE{in final version, possibly take a new screenshot
-%    since I've edited the instructions a bit?  Although the old
-%    instructions might fit better.}
-}
+  application.\NoteJE{in final version, possibly take a new screenshot
+   since I've edited the instructions a bit?  Although the old
+   instructions might fit better.}}
 \label{fig:lesson1}
 \end{figure*}
 
-We have used the tool in our class and received very positive feedback on it. 
-Students were excited by it, with some saying the tool helped develop their 
-``physical intuition'' for log-linear models.
+We used the tool in our Natural Language Processing (NLP) class and received
+very positive feedback.  Students were excited by it, with some saying
+the tool helped develop their ``physical intuition'' for log-linear
+models.
 %\NoteJE{they did? who?}  
 %\NoteFF{Students, either through email, comments in homework assignments 
 %or one-on-one discussions. I can send names via email if you like.}
-Users with no statistical, computational or technical backgrounds found the tool helpful 
-as well: they began to understand the models after working through the introductory 
-lessons.
+Other test users with no 
+% statistical, computational, or
+technical background also enjoyed working
+through the introductory lessons and found that they began to understand 
+the model.
 
-The code includes \NumLessons{} ready-to-use lessons that can be used
-for individual or small-group study.  Each lesson, e.g. Figure \ref{fig:lesson1}, guides the student
-through a manipulative exercise that centers on fitting a model
-$p_{\vec{\theta}}(y \mid x)$, where $y$ is from a collection ${\cal Y}(x)$ of
-shapes, words, or images such as parse trees.  Each lesson is peppered
-with questions; students can be asked to answer some of these
-questions in writing.\footnote{There are approximately six questions per
-lesson. We found that answering {\em all} the
-  questions took our students about 2300 words, or just under 23 words per question, which
-  was probably both unreasonable and unnecessary.}
-Other instructors can add new lessons or edit existing ones by writing 
-configuration files (see section~\ref{sec:tailoring}). This is useful for emphasizing specific concepts, 
-considerations and applications; instructors may also 
-use it to prepare students for any upcoming assignments. Section \ref{sec:history} provides  
-some history and applications of log-linear modeling, as well as assignment ideas.
+The app includes \NumLessons{} ready-to-use lessons for individual or
+small-group study or classroom use.  Each lesson, e.g. Figure
+\ref{fig:lesson1}, guides the student to fit a probability model $p_{\vec{\theta}}(y \mid
+x)$ over some collection ${\cal Y}$ of shapes, words, or other images
+such as parse trees.  Each lesson is peppered with questions; students
+can be asked to answer some of these questions in
+writing.\footnote{There are approximately 6 questions per lesson. We
+  found that answering {\em all} the questions took our students about
+  2300 words, or just under 23 words per question, which was probably
+  both unreasonable and unnecessary.}  Ambitious instructors can add new
+lessons or edit existing ones by writing configuration files (see
+section~\ref{sec:tailoring}). This is useful for emphasizing specific
+concepts or applications.
+% ; instructors may also use it to prepare students for any upcoming assignments.  
+Section \ref{sec:history} provides some history and applications of log-linear
+modeling, as well as assignment ideas.
 
 \section{Why Teach With Log-Linear Models?}
 
@@ -141,10 +154,10 @@ a course, when one needs
 \item a local classifier for structure annotation,
   such as tags or segment boundaries;
 \item a local classifier to be applied repeatedly in sequential decision-making;
-\item a conditional probability within some generative process, such
+\item a local conditional probability within some generative process, such
   as an $n$-gram model, HMM, PCFG, probabilistic FSA or FST, noisy-channel MT model,
   or Bayes net;
-\item a global structured prediction method---here $y$ is a complete
+\item a global structured prediction method.  Here $y$ is a complete
   structured object such as a tagging, segmentation, parse, alignment, or translation.  Then $p(y
   \mid x)$ is a Markov random field or a conditional random field,
   depending on whether $x$ is empty or not.
@@ -152,8 +165,8 @@ a course, when one needs
 
 Log-linear models over discrete variables are also sufficiently
 expressive for an NLP course.  Students may experiment freely with
-adding their own creative model \textit{features} that capture interesting 
-\textit{attributes} or \textit{properties} of the data, 
+adding their own creative model \textit{features} that refer to 
+salient \textit{attributes} or \textit{properties} of the data, 
 since the probability \eqref{eqn:loglin} may consider any number of
 informative features of the $(x,y)$ pair.
 
