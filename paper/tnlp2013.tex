@@ -962,10 +962,18 @@ programming or sampling, as in linear-chain conditional random fields
 \cite{lafferty-mccallum-pereira-2001} and whole-sentence language
 modeling \cite{rosenfeld-chen-zhu-2001}. 
 
-\NoteJE{list
-  other people's NLP homework assignments or practical exercises that
-  use maxent.  I bet you could find a few good assignments on the web,
-  including in the NLTK book.}
+The above brief history of log-linear models and applications (among others) may inspire 
+extensions to the manipulative, additional lessons and instruction. It might be valuable to 
+add a dual representation and directly maximize the entropy subject to expectation 
+constraints---see footnote \ref{fn:dual}. 
+To be general and remain focused on our pedagogical aims, the manipulative is limited in the complexity of 
+the structured prediction it can currently handle. While one could change the backend to handle 
+some of the solutions discussed above, students interested in structured prediction might find the manipulative 
+more valuable if it includes examples that motivate those solutions.
+
+While many of the above applications present interesting models, some may be 
+too ambitious for class assignments, especially if students are seeing log-linear 
+modeling for the first time. 
 \NoteFF{NLTK: Select one of the classification tasks described in this chapter, such as name gender detection, document classification, part-of-speech tagging, or dialog act classification. Using the same training and test data, and the same feature extractor, build three classifiers for the task: a decision tree, a naive Bayes classifier, and a Maximum Entropy classifier. Compare the performance of the three classifiers on your selected task. How do you think that your results might be different if you used a different feature extractor?; Berkeley  maxent for proper noun classification, or POS tagging} \url{http://www.cs.berkeley.edu/~klein/cs288/}
 
 
