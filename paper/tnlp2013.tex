@@ -649,10 +649,6 @@ features, such as solid vs. striped above, be redundant in some
 cases, yet insufficient in others?\footnote{Advanced students with knowledge of statistics might benefit 
 from a discussion of the importance of rank in exponential families.}
 
-\NoteJE{One point we want to get across is that if you have one
-  feature for each $(x,y)$ pair, then you can fit the data perfectly
-  and in fact you will do so if unregularized (MLE).}
-
 The empirical distribution deals with \textit{type} counts, but because log-linear models 
 deal with descriptions of type, we can instead talk about \textbf{feature counts}. Our 
 manipulative allows exploration of these two different counts and how they affect the 
@@ -663,9 +659,12 @@ isolation may reduce or reverse the need to raise other weights. How can you mit
 adverse effects and get to the solution quickly?
 
 Generally, both the number and range of features affect the expressive 
-power of the model. But this expressiveness has a cost, as too many features can lead to overfitting. 
+power of the model, as with enough features you can fit any distribution. But this expressiveness 
+has a cost, as too many features can lead to overfitting. 
+In one particularly important case, a feature for each $(x,y)$ pair allows an unregularized model to fit the 
+data perfectly. 
 Similarly, defining features that everything (or nothing) has can make the weights 
-take extreme values (go to $\pm \infty$). Further, though $f_k$ is commonly designed to be binary, 
+take extreme values (go to $\pm \infty$). Further, though features are commonly binary, 
 this is not a strict requirement: defining non-binary feature functions, such as one that fires in 
 proportion to some property of the datum (e.g., the number of sides of a shape) can affect the
 proportions of feature counts. How does this interact with the amount of training data?
