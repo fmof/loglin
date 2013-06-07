@@ -223,6 +223,26 @@ omit $x$.  We now have a simple distribution over possible $y$ values,
   Z &\defeq \sum_y u(y)
 \end{align}
 
+\subsection{Features versus Attributes}
+
+In practical settings, the outcome $y$ and the context $x$ are
+characterized by their {\em attributes} (or {\em properties}).  Each
+feature's value is then computed from one or more of these attributes.
+$f_4$ and $f_5$ from section~\ref{sec:featfuncs} would be defined more formally as
+\begin{align}
+f_4(x,y) & \defeq (\textsc{fill}(y)=\text{striped}) \wedge (\textsc{shape}(y)=\text{square})
+             & \text{\small\it ``$y$ is a striped square''} \\
+f_5(x,y) & \defeq |\textsc{brightness}(y)-\textsc{brightness}(x)|/100
+             & \text{\small\it ``$y$ contrasts with background $x$''}
+\end{align}
+which refer to the \textsc{fill}, \textsc{shape}, and \textsc{brightness} attributes
+of $y$ and/or $x$. 
+
+You will sometimes hear people refer to individual attributes as the
+``features'' or ``basic features'' of $x$ and $y$.  That's confusing.
+I recommend that you use ``features'' only to refer to feature
+functions or to the feature values that they return.
+
 \subsection{Remark: Named Features and Efficient Dot Products}
 
 In the notation above, we assigned numbers $1,2,\ldots,K$ to the
