@@ -107,10 +107,11 @@ and $n$-gram models.
 \begin{figure*}
 \centering
 \includegraphics[scale=.49]{images/lesson1-051313-intro-zoom-instmore.PNG}
-\caption{The first lesson; the lower half is larger on the actual
-  application.\NoteJE{in final version, possibly take a new screenshot
+\NoteJE{in final version, possibly take a new screenshot
    since I've edited the instructions a bit?  Although the old
-   instructions might fit better.}}
+   instructions might fit better.}
+\caption{The first lesson; the lower half is larger on the actual
+  application.}
 \label{fig:lesson1}
 \end{figure*}
 
@@ -176,7 +177,7 @@ convex optimization problem.  Maximizing the regularized maximum
 likelihood
 \begin{equation}\label{eqn:reg_ll}
 % \argmax_{\vec{\theta}} \sum_i \log p_{\vec{\theta}}(y_i \mid x_i) - C\cdot R\left(\vec{\theta}\right)
-  F\left(\vec{\theta}\right) = \sum_{i=1}^N \log{p_{\vec{\theta}}\left(y_i\ \mid\ x_i\right)} - C \cdot R\left(\vec{\theta}\right)
+  F(\vec{\theta}) = \sum_{i=1}^N \log{p_{\vec{\theta}}\left(y_i\ \mid\ x_i\right)} - C \cdot R(\vec{\theta})
 \end{equation}
 is a simple, uniform training principle that can be used throughout
 the course.  The scaled regularizer $C\cdot R(\vec{\theta})$
@@ -211,7 +212,8 @@ family, including globally normalized joint or conditional
 distributions over trees and sequences.
 
 One reason that log-linear models are both versatile and pedagogically
-useful is that they explicitly model {\em probabilities}.  These can be 
+useful is that they do not just make predictions, but explicitly 
+model {\em probabilities}.  These can be 
 \begin{itemize}
 \item combined with other probabilities using the usual rules of probability;
 \item marginalized at test time to obtain the probability that the outcome 
@@ -222,22 +224,40 @@ useful is that they explicitly model {\em probabilities}.  These can be
   expected loss (risk).
 \end{itemize}
 The training procedure also takes a probabilistic view.  Equation
-\eqref{eqn:reg_ll} illustrates important statistical principles such as maximum
-likelihood, regularization, and cross-validation, as well as
+\eqref{eqn:reg_ll} helps illustrate important statistical principles such as maximum
+likelihood, regularization (the bias-variance tradeoff), and cross-validation, as well as
 optimization principles such as gradient ascent.\footnote{In an
   advanced class, this objective can also be regarded as the
-  optimization dual of a maximum entropy problem.}
+  optimization dual of a maximum entropy problem.  We have considered
+  adding a dual view to our manipulative.}
 
-Further, underlying concepts of log-linear models may tie in nicely with known 
-NLP algorithms. For instance, log-linear models can help teach weighted grammars and 
-sequence models. Consider either ordinary probabilistic CKY (HMMs). The joint probabilities 
-over a sentence and some proposed \texttt{structure} are simply products of individual probabilities 
-(which of course could themselves be modeled by conditional log-linear distributions); 
-normalizing results in $p(\texttt{structure} | \textrm{sentence})$. 
-Next, using properties of logarithms and exponents we can replace the \textit{log probabilities} 
-in the above conditional distribution with arbitrary weights or sums of weights. We can still use the well-known
-inside-outside (forward-backward) algorithms, but now use non-stationary features that look 
-at the entire sentence (i.e., CRF parsing \cite{finkel2008efficient}).
+Log-linear models also provide natural extensions of commonly taught
+NLP methods.  For example, under a probabilistic context-free
+grammar (PCFG),\footnote{Likewise for Markov or hidden Markov models.}  $p(\text{parse tree}\mid\text{sentence})$ is proportional to
+a product of rule {\em probabilities}.  Simply replacing each rule
+probability with an arbitrary non-negative {\em potential}---an
+exponentiated weight, or sum of weights of features of that
+rule---gives an instance of \eqref{eqn:loglin}.  The same parsing
+algorithms still apply without modification, as does the same
+inside-outside approach to computing the posterior expectation of rule counts and 
+feature counts.  Immediate variants include CRF CFGs
+\cite{finkel2008efficient}, in which the rule features are
+position-dependent and sentence-dependent, and log-linear PCFGs
+\cite{bergkirkpatrick-et-al-2010}, in which the feature-rich rule
+potentials are locally renormalized into rule probabilities via
+\eqref{eqn:loglin}.
+
+% OLD VERSION
+% Further, underlying concepts of log-linear models may tie in nicely with known 
+% NLP algorithms. For instance, log-linear models can help teach weighted grammars and 
+% sequence models. Consider either ordinary probabilistic CKY (HMMs). The joint probabilities 
+% over a sentence and some proposed \texttt{structure} are simply products of individual probabilities 
+% (which of course could themselves be modeled by conditional log-linear distributions); 
+% normalizing results in $p(\texttt{structure} | \textrm{sentence})$. 
+% Next, using properties of logarithms and exponents we can replace the \textit{log probabilities} 
+% in the above conditional distribution with arbitrary weights or sums of weights. We can still use the well-known
+% inside-outside (forward-backward) algorithms, but now use non-stationary features that look 
+% at the entire sentence (i.e., CRF parsing ).
 
 For all these reasons, we recommend log-linear models as one's
 ``go-to'' machine learning technique when teaching.  Other linear
@@ -253,8 +273,8 @@ Further reading includes \cite{smith-2011}.
 Unfortunately, there is a difficulty with introducing log-linear
 models early in a course.  Once grasped, they seem very simple.  But
 they are not so easy to grasp for a student who has not had any
-experience with high-dimensional parametric functions or with
-statistical estimation.  The interaction among the parameters can be
+experience with high-dimensional parametric functions, feature
+design, or statistical estimation.  The interaction among the parameters can be
 bewildering.  Log-likelihood, gradient ascent, and overfitting may also
 be new ideas.
 
@@ -267,7 +287,7 @@ understanding how the weights of these features interact to define a
 distribution.  We will discuss some of the necessary intuitions in
 sections \ref{sec:aims} and \ref{sec:lessons}.
 
-We would like equations \eqref{eqn:loglin}, \eqref{eqn:reg_ll} and the
+We would like equations \eqref{eqn:loglin}, \eqref{eqn:reg_ll}, and the
 gradient formula to be more than just recipes.  The student should
 regard them as {\em familiar objects with predictable behavior}.  Like
 computer science, pedagogy proceeds by layering new ideas on top of
