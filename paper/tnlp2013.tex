@@ -734,7 +734,12 @@ For students with limited-to-no prior numerical optimization experience, the nex
 important idea is what it means to ``follow'' the gradient up the convex ``hill,'' and that doing so will 
 \begin{inparaenum}[i)]
 \item actually yield a solution, even though a closed-form solution is not generally available, and
-\item not decrease the objective.
+\item not decrease the objective.\footnote{We focus on gradient ascent but other parameter estimation methods 
+exist, such as variants of iterative scaling, and first- and second-order gradient algorithms. The most popular 
+methods have relied on quantities similar to \eqref{eqn:obsexp}, which, as shown in Figure \ref{fig:colorsize_inventory} 
+and discussed above (\S\ref{sec:aims}), is 
+one of the most important concepts we illustrate. See 
+\newcite{berger-dellapietra-dellapietra-1996} and \newcite{malouf2002comparison}. }
 \end{inparaenum}
 The importance of the convexity of \eqref{eqn:reg_ll} generalizes these two observations.\footnote{Advanced 
 students might try ``breaking'' convexity, e.g., what happens when $C < 0$?}
@@ -767,11 +772,11 @@ use of backoff features and not just fine-grained features, thereby resulting
 in \textit{backoff smoothing}. These concepts are connected to the expressiveness 
 considerations introduced in feature modeling.
 
-We should note that we are \textit{not} concerned with computational issues here, i.e., that of 
-tractably computing the normalization factors $Z(x)$. While efficiently computing the normalization 
-factor is a crucial component to practical log-linear models, our primary concern is to provide a virtual 
-manipulative that imparts a near-physical, intuitive understanding of log-linear models. See fn. \ref{sec:history} 
-or \newcite{smith-2011} for computing the partition function.
+We should note that we are \textit{not} concerned with efficiency issues, e.g.,  
+tractably computing the normalizers $Z(x)$. Efficiently computing the normalization 
+factor is a crucial component to practical log-linear models, but our primary concern is to provide a virtual 
+manipulative that imparts a near-physical intuitive understanding of log-linear models. See Section 
+\ref{sec:history} or \newcite{smith-2011} for strategies on computing the partition function. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
