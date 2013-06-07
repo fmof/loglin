@@ -669,11 +669,15 @@ this is not a strict requirement: defining non-binary feature functions, such as
 proportion to some property of the datum (e.g., the number of sides of a shape) can affect the
 proportions of feature counts. How does this interact with the amount of training data?
 
-Our manipulative must generalize the above points to conditional models. In particular, students should 
-understand the effect the amount of data (per context) has on what features are appropriate to define 
-(e.g., that frequent conditions are more influential). It is also important to introduce backoff features 
-and smoothing, and why defining those coarser features are useful. Finally, students need to know that 
-features that only fire on conditions have no effect on conditional distribution.
+Our manipulative must generalize the above points to conditional models. Students should 
+understand the effect the amount of data (per context) has on what features are appropriate to define. 
+In particular, how do the marginal counts affect the resulting distributions, feature 
+weights and the results of the matching and log-likelihood games? 
+While exploring what backoff features , and how and why they are useful, is important in its own right, 
+it is important to connect them to smoothing, a topic with which some students may have previous experience. 
+Understanding what features influence 
+what conditional distributions, e.g., that features defined on conditions have no effect on conditional distributions, 
+helps unite previously introduced concepts such as feature definition and model expressiveness considerations.
 
 % defined over \Data{} , we are interested in estimating distributions 
 %\begin{equation}
