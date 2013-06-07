@@ -281,18 +281,21 @@ successfully ground and link the \textit{language} (symbols, mathematical notati
 object; for more, see the classic and recent analyses from
 \newcite{sowell1989effects} and \newcite{carbonneau2013meta}.
 
-Research has shown concrete manipulatives to be effective, but widespread use of them presents certain 
-problems, including sufficient procurement of necessary materials, replicability,\NoteJE{is this a problem
-  with using concrete manipulatives or only a problem in doing
-  research on them?} \NoteFF{using them; virtual manipulatives encourage practical, inexpensive systematic 
-deployment} and applicability to certain concepts and group of students. These issues, among others, have 
+Research has shown concrete manipulatives to be effective, but practical widespread use of them presents certain 
+problems, including sufficient procurement of necessary materials, replicability,
+%\NoteJE{is this a problem
+%  with using concrete manipulatives or only a problem in doing
+%  research on them?} \NoteFF{using them; virtual manipulatives encourage practical, inexpensive systematic 
+%deployment} 
+and applicability to certain concepts and group of students. These issues, among others, have 
 resulted in increased interest over the past two decades into \textit{virtual manipulatives}, including the creation of 
 the National Library of Virtual Manipulatives.\footnote{\url{nlvm.usu.edu/en/nav/vlibrary.html} and 
 \url{enlvm.usu.edu/ma/nav/doc/intro.jsp}} 
 Both \newcite{clements1996concrete} and \newcite{moyer2002virtual} provide accessible overviews of 
-virtual manipulatives in early math education; briefly, they are the software analogue of concrete manipulatives. Virtual manipulatives give students the 
-ability to effect some change upon a system and thus learn underlying properties \cite{moyer2002virtual}.
-This latter point is particularly applicable for log-linear models, given the difficulties they present.
+virtual manipulatives in early math education; briefly, they are the software analogue of concrete manipulatives. 
+Virtual manipulatives give students the ability to effect some change upon a system and thus learn underlying 
+properties \cite{moyer2002virtual}. This latter point is particularly applicable for log-linear models, given the 
+difficulties they present.
 
 %"Clements and Sarama
 %(2005) cite six categories of math that emerge through
@@ -327,7 +330,8 @@ who created a (physical) board game for parsing.
 In machine learning, there is a plethora of virtual manipulatives demonstrating central concepts such 
 as decision boundaries and kernel methods.\footnote{\url{cs.cmu.edu/~ggordon/SVMs/svm-applet.html}, i.a.} 
 There are also several systems for teaching artificial intelligence: these tend to to consist of controlling 
-virtual robots\footnote{E.g., \url{http://www-inst.eecs.berkeley.edu/~cs188/pacman/pacman.html}}
+virtual robots\footnote{E.g., \url{http://www-inst.eecs.berkeley.edu/~cs188/pacman/pacman.html} and 
+\url{http://www.cs.rochester.edu/trac/quagents}}
 %, or \url{http://www.cs.rochester.edu/trac/quagents}} 
 or physical ones \cite{tokic2012robot}.
 Overall, manipulatives for math, NLP and ML have been successful in teaching their core concepts. 
@@ -459,34 +463,34 @@ is to match the observed and expected feature counts.
 \begin{tabular}{
 >{\centering\arraybackslash}m{.18\columnwidth} 
 >{\centering\arraybackslash}m{.18\columnwidth}
->{\centering\arraybackslash}m{.18\columnwidth}
+>{\centering\arraybackslash}m{.20\columnwidth}
 >{\centering\arraybackslash}m{.18\columnwidth}}
 
 \textbf{Quantity of Interest} & $\mathbf{<0}$ 
 & $\mathbf{= 0}$ & $\mathbf{> 0}$\\ \\
 
-$ \mathbb{E}_{\empirical{}}\left[\vec{f}\right] 
-- \mathbb{E}_{{p_{\vec{\theta}}}}\left[\vec{f}\right]$, and 
-$\nabla_{\vec{\theta}} F$
-& {\bf \color{red} \texttransparent{.5}{ red } }
-& {\bf \color{gray}\texttransparent{.55}{ gray } }
-& {\bf \color{blue} \texttransparent{.55}{ blue } }\\  \\
-\vspace{.5em}
-%
-%$\nabla_{\vec{\theta}} F$ visualization
-%& \includegraphics[scale=.25]{images/goldilocks-gradient-small.PNG}
-%& \includegraphics[scale=.25]{images/goldilocks-gradient-justright.PNG}
-%& \includegraphics[scale=.25]{images/goldilocks-gradient-large.PNG}\\ \\ 
-
-
-%& $<0$ & $= 0$ & $> 0$\\\hline\hline \\
-$\empirical{} - p_{\vec{\theta}} $& \includegraphics[scale=.25]{images/goldilocks-circle-small.PNG}
+$ p_{\vec{\theta}} -\empirical{} $& \includegraphics[scale=.25]{images/goldilocks-circle-small.PNG}
 & \includegraphics[scale=.25]{images/goldilocks-circle-justright.PNG}
-& \includegraphics[scale=.25]{images/goldilocks-circle-large.PNG}\\
+& \includegraphics[scale=.25]{images/goldilocks-circle-large.PNG}\\ \\
+
+$ \mathbb{E}_{{p_{\vec{\theta}}}}\left[\vec{f}\right] 
+ - \mathbb{E}_{\empirical{}}\left[\vec{f}\right] $
+%, and $\nabla_{\vec{\theta}} F$
+& {\bf \color{red} \texttransparent{.5}{ red text} }
+& {\bf \color{gray}\texttransparent{.55}{ gray text } }
+& {\bf \color{blue} \texttransparent{.55}{ blue text } }\\  \\
+\vspace{.5em}
+
+$-\nabla_{\vec{\theta}} F$ 
+& \includegraphics[scale=.25]{images/goldilocks-gradient-small.PNG}
+& \includegraphics[scale=.25]{images/goldilocks-gradient-justright.PNG}
+& \includegraphics[scale=.25]{images/goldilocks-gradient-large.PNG}\\ \\ 
+
 \end{tabular}
 
-\caption{Colors indicate the sign of \eqref{eqn:obsexp}; area indicates 
-differences betwen the model and empirical probability (gray outline).}
+\caption{Colors and area indicate differences betwen the model and empirical distributions. For each 
+observations, count or weight, red/small objects signify the proposed model under-predicts;  
+blue/large objects signify it over-predicts.}
 \label{fig:colorsize_inventory}
 \end{figure}
 
@@ -517,8 +521,6 @@ choices, and ask lesson-specific questions.
   solve).}
 
 \subsection{The Instructor Interface: Creating and Tailoring Lessons}\label{sec:tailoring}
-
-\NoteJE{mention tooltips somewhere}
 
 To support a wide-range of lessons, the manipulative has support for twelve predefined shape and fill combinations.
 As seen in Figure \ref{fig:shape_inventory}, the available shapes are circles, triangles, squares and pentagons,
@@ -556,8 +558,9 @@ important: aligning objects by orthogonal descriptions, e.g., circles vs. triang
 can make feature contrasts stand out more.
 
 Finally, the configuration file can be used to turn off certain
-features on a per-lesson basis (without programming) .  For example, 
-an instructor may want to hide the ``solve'' button in early lessons.
+features on a per-lesson basis (without programming).  For example, 
+an instructor may want to hide the ``solve'' button in early lessons, add new tooltips or adapt existing 
+ones to provide lesson-specific information.
 
 \subsection{Back-End Implementation}
 Broadly, the virtual manipulative is designed to be widely available and have no start-up cost. 
@@ -573,19 +576,21 @@ libraries to help with visualization and cross-browser compatibility.\footnote{S
 % That being said, eventually the buck must stop somewhere and 
 The manipulative does rely on certain capabilities from the HTML5
 standard. Unfortunately, not all current browsers support these
-capabilities.\NoteJE{which browsers don't?}  
-\NoteFF{Internet Explorer; annoyingly, IE $< 10$ doesn't work though
-most users who use IE fall into that category.}
-However, the manipulative works 
-with recent versions of Firefox, Chrome and Safari, 
-so our students had no trouble running it.\NoteJE{true?}
-\NoteFF{I don't have numbers to back it up, but generally I'd say yes.
-A couple people had issues with earlier versions of Firefox, but that was FF $< 11$. 
-Once I told them to upgrade it worked.
+capabilities.
+%\NoteJE{which browsers don't?}  
+%\NoteFF{Internet Explorer; annoyingly, IE $< 10$ doesn't work though
+%most users who use IE fall into that category.}
+However, the manipulative works with recent versions of Firefox, Chrome and Safari and 
+our students did not have trouble running it on them.
+%\NoteJE{true?}
+%\NoteFF{I don't have numbers to back it up, but generally I'd say yes.
+%A couple people had issues with earlier versions of Firefox, but that was FF $< 11$. 
+%Once I told them to upgrade it worked.
+%
+%More strongly, I can say that I've tested it in recent versions of the above
+%three browsers. Some work better than others (e.g., Chrome is ``smoother'' 
+%than FF), but nothing is broken.}
 
-More strongly, I can say that I've tested it in recent versions of the above
-three browsers. Some work better than others (e.g., Chrome is ``smoother'' 
-than FF), but nothing is broken.}
 % so we do not believe this restriction to be unreasonable, 
 % especially as all browers adopt widely used standards.
 
@@ -633,16 +638,16 @@ that must be understood. For instance, conditional models can share
 features across conditions, helping generalize to unseen context-outcome 
 pairs and maximizing the regularized objective.
 
-The modeler has the onus of proper \textbf{feature design}. When defining $K$ 
-appropriate features $f_k$, there are a number of at-times complex interactions 
-to consider: what are useful discriminative features? Say we define a globally 
+The modeler has the onus of proper \textbf{feature design}. Broadly, what discriminative features 
+help model undelrying data attribues? There are a number of at-times complex interactions 
+to consider. Say we define a globally 
 normalized model over solid circles, striped circles, solid triangles and striped triangles. 
 The first features we might consider are contrasting indicator functions for whether a shape
-is a circle or is solid. For what datasets can the student ``win'' with this two feature model? 
-Will adding additional features always help? That is, why might including (binary) 
-features that completely partition the space, such as solid vs. striped, be redundant in some 
-cases, yet insufficient in others?
-\NoteFF{mention exp. families with/without full rank?}
+is a circle or is solid as in Figure \ref{fig:lesson1}. For what datasets can the student ``win'' either or both games with this two feature model? 
+Will adding additional features always help? Why might partitioning (binary) 
+features, such as solid vs. striped above, be redundant in some 
+cases, yet insufficient in others?\footnote{Advanced students with knowledge of statistics might benefit 
+from a discussion of the importance of rank in exponential families.}
 
 \NoteJE{One point we want to get across is that if you have one
   feature for each $(x,y)$ pair, then you can fit the data perfectly
