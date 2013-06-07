@@ -241,7 +241,7 @@ rule---gives an instance of \eqref{eqn:loglin}.  The same parsing
 algorithms still apply without modification, as does the same
 inside-outside approach to computing the posterior expectation of rule counts and 
 feature counts.  Immediate variants include CRF CFGs
-\cite{finkel2008efficient}, in which the rule features are
+\cite{finkel2008efficient}, in which the rule features become
 position-dependent and sentence-dependent, and log-linear PCFGs
 \cite{bergkirkpatrick-et-al-2010}, in which the feature-rich rule
 potentials are locally renormalized into rule probabilities via
@@ -305,12 +305,14 @@ log-linear models is prerequisite to
 \section{(Virtual) Manipulatives}
 The idea of making abstract mathematical concepts intuitive and recognizable as familiar objects 
 has been explored successfully for many years in other disciplines. Specifically within early 
-math education, researchers have found using \textit{manipulatives}---some concrete (tangible) 
-objects --- to be an effective teaching strategy. Examples of manipulatives include using groups of 
-sticks to represent natural numbers, or geoboards\footnote{A geoboard uses nail (generally) to represent 
-the 2D integral plane.} to explore (planar) geometric properties, such as area. The key idea is to 
+math education, researchers have found \textit{manipulatives}---tactile
+objects---to be effective teaching tools. Examples of manipulatives include groups of 
+sticks that represent natural numbers, or geoboards\footnote{A board
+  representing the plane, with pegs at the integral points.  A rubber
+  band is stretched around selected pegs to define a polygon.}
+to explore geometric concepts like area and perimeter. The key idea is to 
 successfully ground and link the \textit{language} (symbols, mathematical notation) to a well-known physical 
-object; for more, see the classic and recent analyses from
+object.  For more, see the classic and recent analyses from
 \newcite{sowell1989effects} and \newcite{carbonneau2013meta}.
 
 Research has shown concrete manipulatives to be effective, but practical widespread use of them presents certain 
@@ -350,17 +352,21 @@ difficulties they present.
 
 Members of the NLP and speech communities have previously explored manipulatives and the idea of
 ``learning by doing.''
-\newcite{eisner-2002-tnlp} presented a spreadsheet-based posterior- and Viterbi-decoding Hidden Markov Models 
-on provided synthetic data, allowing students to develop intuitions for the underlying statistical properties; 
-\newcite{nouza1999teaching} explored VISPER, an applied educational tool that wrapped various speech technologies and 
+\newcite{eisner-2002-tnlp} implemented HMM posterior inference and
+forward-backward training on a spreadsheet, so that editing the data or initial parameters
+changed the numerical computations and the resulting graphs.  
+\newcite{nouza1999teaching} explored\NoteJE{developed?} VISPER, an applied educational tool that wrapped various speech technologies and 
 was also targeted toward understanding the acoustics and overall recognition pipeline. 
 \newcite{light-tnlp-2005} developed web interfaces for a number of core NLP technologies and systems, such as parsers, part-of-speech 
 taggers, and finite-state transducers. 
-Most manipulatives/interfaces targeted at NLP have been virtual but a notable exception is \newcite{halteren-tnlp-2002}, 
+Most manipulatives/interfaces targeted at NLP have been virtual, but a notable exception is \newcite{halteren-tnlp-2002}, 
 who created a (physical) board game for parsing. 
 
 In machine learning, there is a plethora of virtual manipulatives demonstrating central concepts such 
-as decision boundaries and kernel methods.\footnote{\url{cs.cmu.edu/~ggordon/SVMs/svm-applet.html}, i.a.} 
+as decision boundaries and kernel
+methods.\footnote{E.g.,
+  \url{http://cs.cmu.edu/~ggordon/SVMs/svm-applet.html}.\NoteJE{looking
+  for Caron's applet instead}}
 There are also several systems for teaching artificial intelligence: these tend to to consist of controlling 
 virtual robots\footnote{E.g., \url{http://www-inst.eecs.berkeley.edu/~cs188/pacman/pacman.html} and 
 \url{http://www.cs.rochester.edu/trac/quagents}}
@@ -370,8 +376,9 @@ Overall, manipulatives for math, NLP and ML have been successful in teaching the
 
 Next, we present our main contribution, a virtual manipulative that teaches log-linear models. We ground 
 the models in simple objects such as circles and regular polygons, in order to appeal to the 
-students' physical intuitions. Note that once this link has been established, we can use text and images to 
-provide area/task-specific examples.
+students' physical intuitions.  Later lessons can move on 
+from shapes, instead using words or images from a particular
+application of interest.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -380,8 +387,8 @@ provide area/task-specific examples.
 \section{Our Log-Linear Virtual Manipulative}\label{sec:overview}
 
 Recall Figure \ref{fig:lesson1} for the general interface and an overview 
-of the tool. We encourage you to play with it, available at 
-\WhereToFind{}, as you read.
+of the tool, available at 
+\WhereToFind{}. We encourage you to play with it as you read.
 
 %While our primary goal was to teach log-linear models within the context of NLP, 
 %we thought it myopic to outright limit users to those interested or experienced 
