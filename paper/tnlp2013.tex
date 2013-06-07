@@ -91,7 +91,7 @@ through playing with log-linear models and their estimation. This open-source
 tool, available at \WhereToFind{}, is intended to develop intuitions, so that basic
 log-linear models can be then taken for granted in future lectures.  It can be used near
 the start of a course, perhaps after introducing probability notation
-and $n$-gram models. 
+and $n$-gram models.
 
 \begin{figure*}
 \centering
@@ -126,14 +126,10 @@ lesson. We found that answering {\em all} the
   questions took our students about 2300 words, or just under 23 words per question, which
   was probably both unreasonable and unnecessary.}
 Other instructors can add new lessons or edit existing ones by writing 
-configuration files (see section~\ref{sec:tailoring}).
-
-\NoteJE{However, I
-  think it would be helpful (maybe in the final version?) to list
-  other people's NLP homework assignments or practical exercises that
-  use maxent.  I bet you could find a few good assignments on the web,
-  including in the NLTK book.}
-\NoteFF{NLTK: Select one of the classification tasks described in this chapter, such as name gender detection, document classification, part-of-speech tagging, or dialog act classification. Using the same training and test data, and the same feature extractor, build three classifiers for the task: a decision tree, a naive Bayes classifier, and a Maximum Entropy classifier. Compare the performance of the three classifiers on your selected task. How do you think that your results might be different if you used a different feature extractor?; Berkeley  maxent for proper noun classification, or POS tagging} \url{http://www.cs.berkeley.edu/~klein/cs288/}
+configuration files (see section~\ref{sec:tailoring}). This is useful for emphasizing specific concepts, 
+considerations and applications; instructors may also 
+use it to prepare students for any upcoming assignments. Section \ref{sec:history} provides  
+some history and applications of log-linear modeling, as well as assignment ideas.
 
 \section{Why Teach With Log-Linear Models?}
 
@@ -156,8 +152,8 @@ a course, when one needs
 
 Log-linear models over discrete variables are also sufficiently
 expressive for an NLP course.  Students may experiment freely with
-adding model \textit{features} of their own devising to capture interesting 
-linguistic \textit{attributes} or \textit{properties}, 
+adding their own creative model \textit{features} that capture interesting 
+\textit{attributes} or \textit{properties} of the data, 
 since the probability \eqref{eqn:loglin} may consider any number of
 informative features of the $(x,y)$ pair.
 
@@ -843,14 +839,6 @@ together and ask open-ended questions that cause students to ponder estimation i
 models even when there is no model mismatch.
 %Even though the data were generated from the ``true'' model, how well does the model fit the observed data sample, and how well can the model recover the ``true'' weights? Should regularization be used to answer these questions? What should you do if you need a very good estimate of those weights?
 
-%\begin{figure}[t]
-%\centering
-%\small
-%\includegraphics[scale=.75]{images/genspam.PNG}
-%\caption{A portion of the real email/spam text classification task.}
-%\label{fig:spam}
-%\end{figure}
-
 Finally, we apply log-linear modeling to the task of text categorization (spam detection). This lesson demonstrates to students how to encode logistic regression in our framework, and so 
 we first ask some simpler questions to make sure they understand what is going on and what the conditional models actually mean.
 Then, we can ask particular questions and make sure they understand how the feature modeling experience gained in 
@@ -865,14 +853,6 @@ of a phrase (e.g., as \texttt{spam},\texttt{work}, or \texttt{fun}).
 %Is the feature 'yada' a binary feature, or a counting feature? That is, does fyada return 1 or 3 on yada yada yada? How did you find out?
 %Which of the non-spam messages does your trained model think is spammiest? How do you know?
 
-%For instance, the student can 
-%pick some new secret weights, generate a new training dataset,
-%and re-estimate the weights given the new data ("New random 
-%challenge"). Or 
-
-%\item[``New Counts'' button] The other use is to help the user experiment with datasets of different sizes, by changing N to scale the counts and then clicking "New counts."
-%\item[``Peek at true'']
-%Regularization: We consider models where $R(\vec{\theta}) = \vec{0}$ (no regularization), $R(\vec{\theta}) = \|\vec\theta\|_1$, and $R(\vec{\theta}) = \|\vec{\theta}\|_2^2$: we special-case the optimizer to handle the non-differentiable $\ell_1$ regularization, thus providing a friendly educational environment in which the student may explore the differences between $\ell_1$ and $\ell_2$ regularization.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -896,26 +876,7 @@ Johns Hopkins.
 
 %
 %\Commented{
-\section{History and Applications}
-%\NoteFF{RETITLE}
-%
-%\NoteJE{move to an appendix?}%
-%\NoteFF{I like this in here. We might want to comment out some initially
-%  but add it back in if any camera-ready allows for additional spaces}%
-%\NoteJE{It's just that I don't want to keep the reader from getting to
-%  the fresh stuff that we are presenting in the paper.  Possibly YOU found this 
-%  more interesting than the visualization because you were already 
-%  overly familiar with the visualization.  But the reader hasn't seen 
-%  the visualization before and is presumably impatient to get to it.
-%  It's true that the section is not that long, so I dunno.  But it's not that
-%  important either, even though it was slow to write.}
-%\NoteFF{Perhaps move this to the end, as a ``future works'' or 
-%``possible extensions'' section... we motivate the section by providing
-%something that teachers can use to motivate students to use log-linear models
-%in actual projects (not just homeworks), or as ways to extend the lessons
-%already there.}
-%}
-%
+\section{History and Applications} \label{sec:history}
 Conditional log-linear models were first popularized in computational
 linguistics by a group of researchers associated with the IBM speech
 and language group, who called them ``maximum entropy models,'' after
@@ -954,6 +915,13 @@ a large set of possible outputs ${\cal Y}(x)$ (see footnote
 programming or sampling, as in linear-chain conditional random fields
 \cite{lafferty-mccallum-pereira-2001} and whole-sentence language
 modeling \cite{rosenfeld-chen-zhu-2001}.
+
+\NoteJE{However, I
+  think it would be helpful (maybe in the final version?) to list
+  other people's NLP homework assignments or practical exercises that
+  use maxent.  I bet you could find a few good assignments on the web,
+  including in the NLTK book.}
+\NoteFF{NLTK: Select one of the classification tasks described in this chapter, such as name gender detection, document classification, part-of-speech tagging, or dialog act classification. Using the same training and test data, and the same feature extractor, build three classifiers for the task: a decision tree, a naive Bayes classifier, and a Maximum Entropy classifier. Compare the performance of the three classifiers on your selected task. How do you think that your results might be different if you used a different feature extractor?; Berkeley  maxent for proper noun classification, or POS tagging} \url{http://www.cs.berkeley.edu/~klein/cs288/}
 
 \bibliography{tnlp}
 \bibliographystyle{acl}
