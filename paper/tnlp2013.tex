@@ -106,7 +106,8 @@ and $n$-gram models.
 
 \begin{figure*}
 \centering
-\includegraphics[scale=.49]{images/lesson1-051313-intro-zoom-instmore.PNG}
+%\includegraphics[scale=.49]{images/lesson1-051313-intro-zoom-instmore.PNG}
+\includegraphics[scale=.49]{images/lesson1-060713-intro-zoom-1.PNG}
 \caption{The first lesson; the lower half is larger on the actual
   application.}
 \label{fig:lesson1}
@@ -226,7 +227,7 @@ likelihood, regularization (the bias-variance tradeoff), and cross-validation, a
 optimization principles such as gradient ascent.\footnote{In an
   advanced class, this objective can also be regarded as the
   optimization dual of a maximum entropy problem.  We have considered
-  adding a dual view to our manipulative.}
+  adding a dual view to our manipulative.\label{fn:dual}}
 
 Log-linear models also provide natural extensions of commonly taught
 NLP methods.  For example, under a probabilistic context-free
@@ -326,8 +327,8 @@ the National Library of Virtual Manipulatives.\footnote{\url{nlvm.usu.edu/en/nav
 \url{enlvm.usu.edu/ma/nav/doc/intro.jsp}} 
 Both \newcite{clements1996concrete} and \newcite{moyer2002virtual} provide accessible overviews of 
 virtual manipulatives in early math education. 
-Virtual manipulatives give students the ability to effect changes on a complex system and thus learn its underlying 
-properties \cite{moyer2002virtual}.  This last point is particularly applicable for log-linear models.
+Virtual manipulatives give students the ability to effect changes on a complex system and learn its underlying 
+properties \cite{moyer2002virtual}. This last point is particularly applicable for log-linear models.
 
 %"Clements and Sarama
 %(2005) cite six categories of math that emerge through
@@ -364,8 +365,10 @@ who created a (physical) board game for parsing.
 In machine learning, there is a plethora of virtual manipulatives demonstrating central concepts such 
 as decision boundaries and kernel
 methods.\footnote{E.g.,
-  \url{http://cs.cmu.edu/~ggordon/SVMs/svm-applet.html}.\NoteJE{looking
-  for Caron's applet instead.  I sent an email.}}
+  \url{http://cs.cmu.edu/~ggordon/SVMs/svm-applet.html}.
+%\NoteJE{looking
+%  for Caron's applet instead.  I sent an email.}
+}
 There are also several systems for teaching artificial intelligence: these tend to to involve controlling 
 virtual robots\footnote{E.g., \url{http://www-inst.eecs.berkeley.edu/~cs188/pacman/pacman.html} and 
 \url{http://www.cs.rochester.edu/trac/quagents}.}
@@ -430,12 +433,12 @@ In contrast, the {\em empirical probability}
 \end{equation} 
 is shown by a gray outline.
 
-The size and color of $y$ indicate how $p_{\vec{\theta}}(y\mid x)$ compares to 
+The size and color of $y$  indicate how $p_{\vec{\theta}}(y\mid x)$ compares to 
 this empirical probability (Figure~\ref{fig:colorsize_inventory}).  
-Reinforcing this, the observed $\text{count}(x,y)$ is shown at the upper
-left of $y$, while the expected $\text{count}(x)\cdot
-p_{\vec{\theta}}(y\mid x)$ is shown at the upper right (Figure
-\ref{fig:lesson1}).
+Reinforcing this, the observed count $\text{c}(x,y)$ is shown at the upper
+left of $y$, while the expected count $\text{c}(x)\cdot
+p_{\vec{\theta}}(y\mid x)$ is shown at the upper right, following the same color 
+scheme (Figure \ref{fig:lesson1}). 
 
 % NOW REDUNDANT
 % Each datum has an outline and shape associated with it; the size (area) of
@@ -875,8 +878,8 @@ weights,  and question why estimates of $\vec{\theta}$ might be different from t
 
 Having explored the gradient, lessons \textbf{8}--\textbf{10} consider more advanced topics in joint 
 modeling. The first is regularization: how does regularization help with unseen data? Students are encouraged 
-to play with the regularization coefficient $C$ and how it affects the model; specifically, changing the amount 
-of data enables exploration of $\ell_1$ vs. $\ell_2$ regularization.
+to play with the regularization coefficient, the amount of data and both $\ell_1$ and $\ell_2$ regularizers to 
+explore the effects on model quality.
 
 Lessons \textbf{11}--\textbf{13} introduce conditional models and convey some of the basic differences between 
 conditional and globally normalized models. Students use a conditional model with shared features to model 
@@ -901,7 +904,7 @@ Finally, we apply log-linear modeling to the task of text categorization (spam d
 we first ask some simpler questions to make sure they understand what is going on and what the conditional models actually mean.
 Then, we can ask particular questions and make sure they understand how the feature modeling experience gained in 
 prior lessons should be applied in practice. We also ask them to think about how to extend the approach to do three-way classification 
-of a phrase (e.g., as \texttt{spam},\texttt{work}, or \texttt{fun}).
+of a phrase (e.g., as \texttt{spam}, \texttt{work}, or \texttt{fun}).
 %What kind of information below indicates that a particular training phrase has been labeled as spam?
 %Which are the two test phrases included below? How do you know?
 %If you train this model without regularization, what happens to the log-likelihood and the weights? Why?
@@ -916,9 +919,9 @@ of a phrase (e.g., as \texttt{spam},\texttt{work}, or \texttt{fun}).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
 \section{Select Applications and Extensions} \label{sec:history}
-Though the tool comes with \NumLessons{} lessons, it was designed to be extended 
-and adapted to various needs. The following summary of log-linear applications should 
-serve to further improve log-linear modeling education.
+We designed the tool to be extended and adapted to various needs. 
+The following summary of log-linear applications serves to inspire 
+further improvements in log-linear modeling education.
 
 Conditional log-linear models were first popularized in computational
 linguistics by a group of researchers associated with the IBM speech
@@ -949,13 +952,15 @@ of all rules given their left-hand sides, based on features that
 consider subsets of the nonterminal annotations.\footnote{E.g., case,
   number, gender, tense, aspect, mood, lexical head.  In the case of a
   terminal rule, the spelling or morphology of the terminal symbol can
-  be considered.}  A final approach to structured prediction is to
+  be considered.}  
+
+A final approach to structured prediction is to
 simply predict the structured output all at once, so that $y$ is a
-large structured object. One can either restrict ${\cal Y}(x)$ before training
-\cite{johnson-et-al-1999}, or else use techniques such as dynamic
+large structured object. One can restrict ${\cal Y}(x)$ before training
+\cite{johnson-et-al-1999}, or use techniques such as dynamic
 programming or sampling, as in linear-chain conditional random fields
 \cite{lafferty-mccallum-pereira-2001} and whole-sentence language
-modeling \cite{rosenfeld-chen-zhu-2001}.
+modeling \cite{rosenfeld-chen-zhu-2001}. 
 
 \NoteJE{list
   other people's NLP homework assignments or practical exercises that
