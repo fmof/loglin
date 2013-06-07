@@ -733,12 +733,11 @@ important idea is what it means to ``follow'' the gradient, and that doing so wi
 \item actually yield a solution, even though a closed-form solution is not generally available, and
 \item not decrease the objective.
 \end{inparaenum}
-For exponential families of full rank, the importance of the convexity of \eqref{eqn:reg_ll} generalizes these two observations, 
-notably that we will always find a unique $\vec{\theta^*}$ that solves 
-\eqref{eqn:reg_ll}.\footnote{Advanced students might try ``breaking'' convexity, e.g., what happens when $C < 0$?}
+The importance of the convexity of \eqref{eqn:reg_ll} generalizes these two observations.\footnote{Advanced 
+students might try ``breaking'' convexity, e.g., what happens when $C < 0$?}
+% $\vec{\theta^*}$ that solves \eqref{eqn:reg_ll}.
 Students should understand that matching the empirical distribution will generally maximize the (unregularized) log-likelihood, 
 though that overfitting is possible and may result in a larger log-likelihood than the true generating distribution yields.
-%Here, Regardless of what regularization is applied, we will generally refer to the \textbf{full model} as that of \eqref{eqn:conditional_loglin} with objective \eqref{eqn:reg_ll}.\footnote{We consider models where $R(\vec{\theta}) = \vec{0}$ (no regularization), $R(\vec{\theta}) = \|\vec\theta\|_1$, and $R(\vec{\theta}) = \|\vec{\theta}\|_2^2$. See Section \ref{sec:overview} for more on regularization.}
 
 We may use the gradient to further illustrate feature modeling considerations. The most obvious is to show how 
 minimizing a single isolated $|\frac{\partial}{\partial \theta_k} F|$ might adversely affect another partial 
