@@ -560,12 +560,16 @@ one context and be globally normalized. Note that the visual positioning informa
 important: aligning objects by orthogonal descriptions, e.g., circles vs. triangles or solid vs. striped, 
 can make feature contrasts stand out more.
 
-Finally, the configuration file can be used to turn off certain
-features on a per-lesson basis (without programming).  For example, 
-an instructor may want to hide the ``solve'' button in early lessons, add new tooltips or adapt existing 
-ones to provide lesson-specific information.
+The configuration files can turn off certain features on a per-lesson basis (without programming).  This is 
+useful for, e.g, hiding the ``solve'' button in early lessons, adding new tooltips or adapting existing 
+ones to provide lesson-specific information.\footnote{It is theoretically possible to provide more targeted 
+feedback, such as configuration-dependent explanations and hints. Code included in a particular lesson's instructions 
+may suffice for one-off explanations but a more general solution should consider extending the back-end 
+(Section \ref{sec:backend}). As our focus was on developing a general, wide-reaching tool, and such state-dependent 
+hints would have impeded our goal, the manipulative currently has neither functionality. Under its open-source terms, 
+instructors are free to extend it.}
 
-\subsection{Back-End Implementation}
+\subsection{Back-End Implementation}\label{sec:backend}
 The virtual manipulative is designed to be widely available and have no start-up cost. 
 Aside from reading the data, model and instructions from the web server, it is fully 
 client-side. The Javascript back-end uses common and well-supported open-source 
