@@ -613,7 +613,7 @@ our students did not have trouble running it on them.
 
 \subsection{Feature Design and Modeling Considerations}
 
-Given data $\Data{} = \{( x_i, y_i)\ \mid\ 1 \le i \le N\}$, one of the initial decisions 
+Given a dataset $\Data{}$ of $N$ $(x, y)$ pairs, one of the initial decisions 
 to make is \textbf{choosing an appropriate model} and distribution family. 
 As argued above, for this manipulative we focus on contrasting exponential families 
 \eqref{eqn:loglin} with what students may initially posit, the empirical 
@@ -643,20 +643,22 @@ help model undelrying data attribues? There are a number of at-times complex int
 to consider. Say we define a globally 
 normalized model over solid circles, striped circles, solid triangles and striped triangles. 
 The first features we might consider are contrasting indicator functions for whether a shape
-is a circle or is solid as in Figure \ref{fig:lesson1}. For what datasets can the student ``win'' either or both games with this two feature model? 
-Will adding additional features always help? Why might partitioning (binary) 
-features, such as solid vs. striped above, be redundant in some 
-cases, yet insufficient in others?\footnote{Those with knowledge of statistics might benefit 
-from a discussion of the importance of rank in exponential families.}
+is a circle or is solid, as in Figure \ref{fig:lesson1}. Which of the two games can the student 
+``win'' using this two feature model and how might the empirical distribution affect the result? 
+Will more features always help? Why might partitioning binary 
+features be redundant in some cases (definining both circle and triangle features for the above example), 
+yet insufficient in others?
+%\footnote{Those with knowledge of statistics might benefit 
+%from a discussion of the importance of rank in exponential families.}
 
-The empirical distribution deals with \textit{type} counts, but because log-linear models 
-deal with descriptions of type, we can instead talk about \textbf{feature counts}. Our 
+The empirical distribution is concerned with \textit{type} counts, but log-linear models 
+deal with descriptions of types; thus we can instead talk about \textbf{feature counts}. Our 
 manipulative allows exploration of these two different counts and how they affect the 
-feature weights. For example, we should raise the weight of the “solid” feature if it is 
-predicted to occur less often than it actually does. But raising that weight 
+feature weights. For example, if a feature is predicted to occur less often than it actually does, 
+we should raise its weight. But raising that weight 
 may affect the quality of all the other weights, so fitting one weight in
-isolation may reduce or reverse the need to raise other weights. How can you mitigate any 
-adverse effects and get to the solution quickly?
+isolation may reduce or reverse the need to raise other weights. How can you mitigate  
+adverse effects and get to the solution quickly, even in complex models?
 
 Generally, both the number and range of features affect the expressive 
 power of the model, as with enough features you can fit any distribution. But this expressiveness 
@@ -673,9 +675,9 @@ Our manipulative must generalize the above points to conditional models. Student
 understand the effect the amount of data (per context) has on what features are appropriate to define. 
 In particular, how do the marginal counts affect the resulting distributions, feature 
 weights and the results of the matching and log-likelihood games? 
-While exploring what backoff features , and how and why they are useful, is important in its own right, 
+While exploring what backoff features are, and how and why they are useful, is important in its own right, 
 it is important to connect them to smoothing, a topic with which some students may have previous experience. 
-Understanding what features influence 
+Understanding which features influence 
 what conditional distributions, e.g., that features defined on conditions have no effect on conditional distributions, 
 helps unite previously introduced concepts such as feature definition and model expressiveness considerations.
 
@@ -741,30 +743,33 @@ though that overfitting is possible and may result in a larger log-likelihood th
 
 We may use the gradient to further illustrate feature modeling considerations. The most obvious is to show how 
 minimizing a single isolated $|\frac{\partial}{\partial \theta_k} F|$ might adversely affect another partial 
-$\frac{\partial}{\partial \theta_{k'}}F$, but one should also make the additional connections to type vs. feature counts 
-and that even if distributions do not full match, expected counts should.
+$\frac{\partial}{\partial \theta_{k'}}F$. Additional connections to differences in type and feature counts should be 
+made: even if the model distribution does not fully match the empirical, expected and observed feature 
+counts should match.
 
 When we include regularization, we consider $R(\vec{\theta}) = \|\vec\theta\|_1$, and 
 $R(\vec{\theta}) = \|\vec{\theta}\|_2^2$. This contrasts encouraging sparsity vs.  
-heavily preferencing away from large feature weights.\footnote{We special-case the optimizer 
-to handle the non-differentiable $\ell_1$ regularization, but inform the students of this difficulty.} 
-Related to this is exploring how does  penalty coefficient $C$ affects the overall solution?
+heavily preferencing away from large feature weights.\footnote{Our optimizer special-cases 
+the non-differentiable $\ell_1$ regularization, but we inform the students of this difficulty.} 
+Related exploration involves how the penalty coefficient $C$ affects the overall solution and game outcomes.
 
 Underlying the above concepts is \textbf{general machine learning} and 
-\textbf{statistical knowledge}. This includes the quality of estimators, 
-which can be affected by different data or model configurations, such 
-as a small sample size leads to estimators with 
-higher variance; regularization can mitigate that (at the expense of 
-the \textit{training} log-likelihood). 
-Regularization can be considered a form of smoothing that fits the data 
-imperfectly, but why? The model might has fewer parameters than 
+\textbf{statistical knowledge}. These include what estimators are,  how different data or model configurations 
+affect their quality, and how to limit adverse or prevent lower quality estimators. For example, 
+a small sample size leads to estimators with higher variance; regularization is a way to mitigate that, albeit at the expense of 
+the training log-likelihood. 
+Similarly, why can regularization be considered a form of smoothing that fits the data 
+imperfectly? The model might have fewer parameters than 
 outcomes, or it might forgo many parameters to avoid being penalized by 
 the regularizer.  Further, to limit regularization penalty, the model can make 
 use of backoff features and not just fine-grained features, thereby resulting 
 in \textit{backoff smoothing}. These concepts are connected to the expressiveness 
 considerations introduced in feature modeling.
 
-We should note that we are \textit{not} concerned with computational issues here, e.g., that of tractably computing the normalization factors $Z(x_i)$. While efficiently computing the normalization factor is a crucial component to practical log-linear models, our primary concern is to provide a virtual manipulative that imparts a near-physical, intuitive understanding of log-linear models. 
+We should note that we are \textit{not} concerned with computational issues here, e.g., that of 
+tractably computing the normalization factors $Z(x)$. While efficiently computing the normalization 
+factor is a crucial component to practical log-linear models, our primary concern is to provide a virtual 
+manipulative that imparts a near-physical, intuitive understanding of log-linear models. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
