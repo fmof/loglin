@@ -215,6 +215,17 @@ optimization principles such as gradient ascent.\footnote{In an
   advanced class, this objective can also be regarded as the
   optimization dual of a maximum entropy problem.}
 
+Further, underlying concepts of log-linear models may tie in nicely with known 
+NLP algorithms. For instance, log-linear models can help teach weighted grammars and 
+sequence models. Consider either ordinary probabilistic CKY (HMMs). The joint probabilities 
+over a sentence and some proposed \texttt{structure} are simply products of individual probabilities 
+(which of course could themselves be modeled by conditional log-linear distributions); 
+normalizing results in $p(\texttt{structure} | \textrm{sentence})$. 
+Next, using properties of logarithms and exponents we can replace the \textit{log probabilities} 
+in the above conditional distribution with arbitrary weights or sums of weights. We can still use the well-known
+inside-outside (forward-backward) algorithms, but now use non-stationary features that look 
+at the entire sentence (i.e., CRF parsing \cite{finkel2008efficient}).
+
 For all these reasons, we recommend log-linear models as one's
 ``go-to'' machine learning technique when teaching.  Other linear
 classifiers, such as perceptrons and SVMs, similarly choose $y$ given
@@ -257,17 +268,6 @@ log-linear models is prerequisite to
   and \eqref{eqn:reg_ll} to settings where one cannot easily enumerate
   ${\cal Y}$.
 \end{itemize}
-
-\NoteJE{following a question from a reviewer, we should give a
-  recommendation for teaching weighted grammars and sequence models.
-  My recommendation: start with ordinary probabilistic CKY and HMMs,
-  which multiply probs (possibly themselves modeled by conditional
-  log-lin models) to get p(parse), and normalize to get p(parse |
-  sentence).  Once this is understood, replace the log-probs with
-  arbitrary weights or sums of weights.  Nothing about the algorithm
-  or the family of distributions changes, but now we can use
-  non-stationary features that look at the entire sentence (i.e., CRF
-  parsing).}
   
 \section{(Virtual) Manipulatives}
 The idea of making abstract mathematical concepts intuitive and recognizable as familiar objects 
@@ -533,7 +533,7 @@ To support a wide-range of lessons, the manipulative has support for twelve pred
 As seen in Figure \ref{fig:shape_inventory}, the available shapes are circles, triangles, squares and pentagons,
 where each can be solid, striped or hollow.
 
-However, it is important for the instructor to be able to tailor lessons to his or her students' needs, 
+The instructor must be able to tailor lessons to his or her students' needs, 
 interests, and abilities. For instance, it may be appropriate to reason about different types of shapes
 when introducing students to log-linear models, but eventually NLP students will want to think about 
 NLP problems, whereas vision students will want to think about vision problems: we have designed the manipulative to handle text
@@ -565,9 +565,9 @@ important: aligning objects by orthogonal descriptions, e.g., circles vs. triang
 can make feature contrasts stand out more.
 
 The configuration files can turn off certain features on a per-lesson basis (without programming).  This is 
-useful for, e.g, hiding the ``solve'' button in early lessons, adding new tooltips or adapting existing 
-ones to provide lesson-specific information.\footnote{It is theoretically possible to provide more targeted 
-feedback, such as configuration-dependent explanations and hints. Code included in a particular lesson's instructions 
+useful for, e.g., hiding the ``solve'' button in early lessons, adding new tooltips or adapting existing 
+ones to emphasize different concepts in different lessons.\footnote{It is theoretically possible to provide arbitrarily targeted 
+feedback, such as hints that depend on $\vec{\theta}$ and observed data counts. Code included in a particular lesson's instructions 
 may suffice for one-off explanations but a more general solution should consider extending the back-end 
 (Section \ref{sec:backend}). As our focus was on developing a general, wide-reaching tool, and such state-dependent 
 hints would have impeded our goal, the manipulative currently has neither functionality. Under its open-source terms, 
