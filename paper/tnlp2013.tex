@@ -181,14 +181,16 @@ and NLTK \cite{bird2009natural}.\footnote{\label{fn:bigY}A caveat is that generi
   \eqref{eqn:loglin} and to compute the constant of proportionality
   in \eqref{eqn:loglin} and the gradient of
   \eqref{eqn:reg_ll}.  This is impractical when ${\cal Y}(x)$ is large, as in
-  language modeling or structured prediction.  One will do better to
- either restrict ${\cal Y}(x)$ before training
-\cite{johnson-et-al-1999}, or else use techniques such as dynamic
-programming or sampling, e.g., 
-\cite{lafferty-mccallum-pereira-2001} and \cite{rosenfeld-chen-zhu-2001}. 
-These often exploit special
-structure in the feature set; students will have to use other tools or 
-write their own code.\label{fn:compute_partition_fn}}
+  language modeling or structured prediction.  See Section \ref{sec:history}.
+%One will do better to
+% either restrict ${\cal Y}(x)$ before training
+%\cite{johnson-et-al-1999}, or else use techniques such as dynamic
+%programming or sampling, e.g., 
+%\cite{lafferty-mccallum-pereira-2001} and \cite{rosenfeld-chen-zhu-2001}. 
+%These often exploit special
+%structure in the feature set; students will have to use other tools or 
+%write their own code.\label{fn:compute_partition_fn}
+}
 
 Formally, log-linear models are a good gateway to a more general
 understanding of undirected graphical models and the exponential
@@ -726,7 +728,7 @@ between observed and expected feature counts}:
 \end{equation}
 Students have already been introduced to this when considering the difference between type and 
 feature counts, and how expectation proportions affect how much one needs to change a given feature weight: 
-now, with the gradient, they can better understand why, and thus justify and strengthen their developing intuitions.
+now, with the gradient, they can better understand why, and thus justify and strengthen their developing intuitions. 
 
 For students with limited-to-no prior numerical optimization experience, the next 
 important idea is what it means to ``follow'' the gradient up the convex ``hill,'' and that doing so will 
@@ -768,7 +770,7 @@ considerations introduced in feature modeling.
 We should note that we are \textit{not} concerned with computational issues here, i.e., that of 
 tractably computing the normalization factors $Z(x)$. While efficiently computing the normalization 
 factor is a crucial component to practical log-linear models, our primary concern is to provide a virtual 
-manipulative that imparts a near-physical, intuitive understanding of log-linear models. See fn. \ref{fn:compute_partition_fn} 
+manipulative that imparts a near-physical, intuitive understanding of log-linear models. See fn. \ref{sec:history} 
 or \newcite{smith-2011} for computing the partition function.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -787,7 +789,8 @@ on feature modeling. We start off with two features over four shapes but the les
 become progressively complex. Next we hide certain generating features from the students: they 
 consider what is going on in this model mismatch exercise, and a possible way to handle it. We play both the 
 matching and log-likelihood games, comparing and contrasting them. Students also explore 
-non-binary features and what it means for each game. 
+non-binary features and what it means for each game.\footnote{Students had difficulty with non-binary features; 
+we have since improved the lessons to explore \eqref{eqn:obsexp} in greater depth.} 
 
 Having begun to develop the appropriate intuition, lessons \textbf{6}--\textbf{8} introduce 
 additional outcomes, and as a result, larger models. To deal with this complexity, we describe the convex 
@@ -855,28 +858,13 @@ of a phrase (e.g., as \texttt{spam},\texttt{work}, or \texttt{fun}).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{Conclusion}
-We have introduced an open-source log-linear virtual manipulative. Included with the code are
-\NumLessons{} lessons, with possible assignment questions, and an auxiliary handout that 
-gives a formal treatment of the necessary derivations.
-A version is available at \WhereToFind{}.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
-\paragraph*{Acknowledgements}
-We would like to thank the anonymous reviewers for their helpful feedback and suggestions 
-and the entire Fall 2012 Natural Language Processing course at 
-Johns Hopkins.
+\section{Select Applications and Extensions} \label{sec:history}
+Though the tool comes with \NumLessons{} lessons, it was designed to be extended 
+and adapted to various needs. The following summary of log-linear applications should 
+serve to further improve log-linear modeling education.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-
-%
-%\Commented{
-\section{History and Applications} \label{sec:history}
 Conditional log-linear models were first popularized in computational
 linguistics by a group of researchers associated with the IBM speech
 and language group, who called them ``maximum entropy models,'' after
@@ -908,20 +896,36 @@ consider subsets of the nonterminal annotations.\footnote{E.g., case,
   terminal rule, the spelling or morphology of the terminal symbol can
   be considered.}  A final approach to structured prediction is to
 simply predict the structured output all at once, so that $y$ is a
-large structured object.  Since it is hard to enumerate
-a large set of possible outputs ${\cal Y}(x)$ (see footnote
-\ref{fn:bigY}), one can either restrict ${\cal Y}(x)$ before training
+large structured object. One can either restrict ${\cal Y}(x)$ before training
 \cite{johnson-et-al-1999}, or else use techniques such as dynamic
 programming or sampling, as in linear-chain conditional random fields
 \cite{lafferty-mccallum-pereira-2001} and whole-sentence language
 modeling \cite{rosenfeld-chen-zhu-2001}.
 
-\NoteJE{However, I
-  think it would be helpful (maybe in the final version?) to list
+\NoteJE{list
   other people's NLP homework assignments or practical exercises that
   use maxent.  I bet you could find a few good assignments on the web,
   including in the NLTK book.}
 \NoteFF{NLTK: Select one of the classification tasks described in this chapter, such as name gender detection, document classification, part-of-speech tagging, or dialog act classification. Using the same training and test data, and the same feature extractor, build three classifiers for the task: a decision tree, a naive Bayes classifier, and a Maximum Entropy classifier. Compare the performance of the three classifiers on your selected task. How do you think that your results might be different if you used a different feature extractor?; Berkeley  maxent for proper noun classification, or POS tagging} \url{http://www.cs.berkeley.edu/~klein/cs288/}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Conclusion}
+We have introduced an open-source log-linear virtual manipulative. Included with the code are
+\NumLessons{} lessons, with possible assignment questions, and an auxiliary handout that 
+gives a formal treatment of the necessary derivations.
+A version is available at \WhereToFind{}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\paragraph*{Acknowledgements}
+We would like to thank the anonymous reviewers for their helpful feedback and suggestions 
+and the entire Fall 2012 Natural Language Processing course at 
+Johns Hopkins.
+
 
 \bibliography{tnlp}
 \bibliographystyle{acl}
