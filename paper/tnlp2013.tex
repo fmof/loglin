@@ -499,8 +499,9 @@ The student may then make use of \textit{hints}, such as
 viewing components of the gradient (Figure~\ref{fig:gradients}), or simply clicking a button to have
 the system follow the gradient.  
 
-Once the student is comfortable with the provided model and data, he
-or she can begin to play around with the dataset and model options. These utilities, such as
+A main tenet of this manipulative is the benefit of ``learning-by-playing.'' 
+Once comfortable with the provided model and data, the student can begin to play 
+around with the dataset and model options. These utilities, such as
 generating a new random challenge and experimenting with regularization, 
 are described more in Section \ref{sec:lessons}.
 
@@ -509,19 +510,22 @@ instruction area. The instructions explain what the data and task are, justify m
 choices, introduce new functionality and ask lesson-specific questions. For more technical 
 explanations and derivations, or for additional practice questions, 
 they may direct the student to auxiliary material provided with the code; it is designed to explain 
-the physical intuitions gained, and as a self-check on one's understanding. 
+the physical intuitions gained and act as a self-check on one's understanding. 
 
-\NoteJE{Describe how tooltips encourage constructive play, perhaps
-  ignoring the current lesson or going beyond it.  They provide
-  guidance about whatever the student is thinking about right
-  then. Much easier than struggling through a huge block of text and
-  trying to remember it all for later. Seeing the tooltips repeatedly
-  can help to reinforce concepts. Students who like to learn by
-  browsing and experimenting can point to various tooltips and get a
-  sense of how the different concepts fit together---several of the
-  tooltips reference one another (LL, regularization, gradient, step,
-  solve).}
-\NoteFF{tooltips help bridge intuition (reviewer's comment)}
+The instructions and auxiliary material can help a student explore, but sometimes the 
+student may just need to roam freely. To encourage this, the student can utilize any number of 
+\textit{tooltips}, or hints/information that appear when a student hovers the cursor over an item. 
+Tooltips are important because they provide guidance about whatever the student is thinking about \textit{right then}.
+Many of them that come preloaded transcend individual lessons: some are static (e.g., what is the 
+log-likelihood bar showing), while others 
+dynamically update with changes to the model (e.g., the tooltips on the feature sliders show the 
+observed and expected counts for that feature).  
+This means students see the tooltips repeatedly, which can help them absorb and reinforce concepts over an extended 
+period of time. Mutually referring tooltips (e.g., the log-likelihood score, regularization, and the 
+gradient) both solidify growing intuition and encourage constructive play. Students who like to learn by
+browsing and experimenting can point to various tooltips and get a sense of how the different 
+concepts fit together. This allows those so inclined to go beyond the current lesson and make conceptual 
+connections.
 
 \subsection{The Instructor Interface: Creating and Tailoring Lessons}\label{sec:tailoring}
 
@@ -790,12 +794,15 @@ manipulative that imparts a near-physical intuitive understanding of log-linear 
 \section{Provided Lessons}\label{sec:lessons}
 Here we provide an overview of the \NumLessons{} available lessons. This is intended as a 
 summary of the major concepts from the previous sections; we encourage the reader to 
-walk through the tutorial to attempt the activities and read all the questions.
+walk through the tutorial to attempt the activities and read all the questions. We have tried to 
+separate the lessons that build intuition from the ones focused on specific tasks or problems; this helps 
+the student solidify the fundamentals and facilitates future development by providing what might be considered 
+``core'' and ``auxiliary'' sets of lessons.
 
-Lessons \textbf{1}--\textbf{5} provide the basic introduction to log-linear modeling. To keep 
-the models simple and incrementally build intution, we only consider joint models over shapes and focus 
-on feature modeling. We start off with two features over four shapes but the lessons 
-become progressively complex. Next we hide certain generating features from the students: they 
+These core lessons start with \textbf{1}--\textbf{5}, which provide the basic introduction to log-linear modeling. We keep 
+the models simple and incrementally build intution, and only consider joint models over shapes. The focus is 
+on feature design. We start by comparing models over four shapes with two and four features. 
+Next we hide certain generating features from the students: they 
 consider what is going on in this model mismatch exercise, and a possible way to handle it. We play both the 
 matching and log-likelihood games, comparing and contrasting them. Students also explore 
 non-binary features and what it means for each game.\footnote{Students had difficulty with non-binary features; 
@@ -838,17 +845,17 @@ heavily skewed data, which illustrates how both the matching and log-likelihood 
 joint models. We explain, via modeling syntactic parses, how shared conditional features can help more accurately 
 model a context-specific outcome $\mathcal{Y}(x)$.
 
-Lessons \textbf{14}--\textbf{15} further explore the importance of informed feature design in conditional models. 
+Lessons \textbf{14}--\textbf{15} further explore informed feature design in conditional models. 
 Specifically in lesson \textbf{14}, we add a feature for each context and the students are asked what happens 
 when we solve and why; that is, why context-only features do not move from their initial 0 values. 
 In lesson \textbf{15}, we consider conjoined ``bigram'' features as a way to successfully incorporate 
 contextual information into the model. We retain the original ``unigram'' (outcome) features, and explore
 how the regularizer breaks parameter setting ties.
 
-Lesson \textbf{16} extends the ``unigram'' and ``bigram'' concepts from the previous lesson to create a ``bigram 
-language model.'' We step through the design of three general features that look at the event and the context 
-together and ask open-ended questions that cause students to ponder estimation issues in conditional sequence 
-models even when there is no model mismatch.
+Lesson \textbf{16} begins the application-driven lessons. It extends the ``unigram'' and ``bigram'' concepts 
+from the previous lesson to create a ``bigram language model.'' We step through the design of three general 
+features that look at the event and the context together and ask open-ended questions that cause students 
+to ponder estimation issues in conditional sequence models even when there is no model mismatch.
 %Even though the data were generated from the ``true'' model, how well does the model fit the observed data sample, and how well can the model recover the ``true'' weights? Should regularization be used to answer these questions? What should you do if you need a very good estimate of those weights?
 
 Finally, we apply log-linear modeling to the task of text categorization (spam detection). This lesson demonstrates to students how to encode logistic regression in our framework, and so 
