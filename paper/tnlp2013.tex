@@ -1,7 +1,7 @@
 \documentclass[11pt,letterpaper]{article}
 \usepackage{acl2013}
 \usepackage[lowtilde]{url}
-\usepackage[colorlinks]{hyperref}
+%\usepackage[colorlinks]{hyperref}  % messes up our bib format, and doesn't work with Author (Year) citations
 \usepackage{times}
 \usepackage{latexsym}
 \usepackage{amsmath}
@@ -969,7 +969,8 @@ modeling \cite{rosenfeld-chen-zhu-2001}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Conclusion}
-We have introduced an open-source log-linear virtual manipulative. Included with the code are
+We have introduced an open-source, web-based virtual manipulative for
+log-linear models. Included with the code are
 \NumLessons{} lessons, with possible assignment questions, and an auxiliary handout that 
 gives a formal treatment of the necessary derivations.
 A version is available at \WhereToFind{}.
@@ -983,7 +984,7 @@ and the entire Fall 2012 Natural Language Processing course at
 Johns Hopkins.
 
 
-\bibliography{tnlp}
 \bibliographystyle{acl}
+\bibliography{tnlp}
 
 \end{document}
