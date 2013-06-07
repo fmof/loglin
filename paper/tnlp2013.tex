@@ -307,29 +307,30 @@ The idea of making abstract mathematical concepts intuitive and recognizable as 
 has been explored successfully for many years in other disciplines. Specifically within early 
 math education, researchers have found \textit{manipulatives}---tactile
 objects---to be effective teaching tools. Examples of manipulatives include groups of 
-sticks that represent natural numbers, or geoboards\footnote{A board
-  representing the plane, with pegs at the integral points.  A rubber
-  band is stretched around selected pegs to define a polygon.}
+sticks that represent natural numbers, or geoboards\footnote{A
+  geoboard is a board representing the plane, with pegs at the integral points.  A rubber
+  band can be stretched around selected pegs to define a polygon.}
 to explore geometric concepts like area and perimeter. The key idea is to 
-successfully ground and link the \textit{language} (symbols, mathematical notation) to a well-known physical 
-object.  For more, see the classic and recent analyses from
+successfully ground and link the mathematical \textit{language} to a well-known physical 
+object that can be inspected and manipulated.  For more, see the classic and recent analyses from
 \newcite{sowell1989effects} and \newcite{carbonneau2013meta}.
 
 Research has shown concrete manipulatives to be effective, but practical widespread use of them presents certain 
-problems, including sufficient procurement of necessary materials, replicability,
+problems, including procurement of necessary materials, replicability,
 %\NoteJE{is this a problem
 %  with using concrete manipulatives or only a problem in doing
 %  research on them?} \NoteFF{using them; virtual manipulatives encourage practical, inexpensive systematic 
 %deployment} 
-and applicability to certain concepts and group of students. These issues, among others, have 
-resulted in increased interest over the past two decades into \textit{virtual manipulatives}, including the creation of 
+and applicability to certain groups of students and to concepts
+that have no simple physical realization. These issues, among others, have 
+resulted in increased interest over the past two decades into
+\textit{virtual manipulatives} implemented in software, including the creation of 
 the National Library of Virtual Manipulatives.\footnote{\url{nlvm.usu.edu/en/nav/vlibrary.html} and 
 \url{enlvm.usu.edu/ma/nav/doc/intro.jsp}} 
 Both \newcite{clements1996concrete} and \newcite{moyer2002virtual} provide accessible overviews of 
-virtual manipulatives in early math education; briefly, they are the software analogue of concrete manipulatives. 
-Virtual manipulatives give students the ability to effect some change upon a system and thus learn underlying 
-properties \cite{moyer2002virtual}. This latter point is particularly applicable for log-linear models, given the 
-difficulties they present.
+virtual manipulatives in early math education. 
+Virtual manipulatives give students the ability to effect changes on a complex system and thus learn its underlying 
+properties \cite{moyer2002virtual}.  This last point is particularly applicable for log-linear models.
 
 %"Clements and Sarama
 %(2005) cite six categories of math that emerge through
@@ -358,7 +359,7 @@ changed the numerical computations and the resulting graphs.
 \newcite{nouza1999teaching} explored\NoteJE{developed?} VISPER, an applied educational tool that wrapped various speech technologies and 
 was also targeted toward understanding the acoustics and overall recognition pipeline. 
 \newcite{light-tnlp-2005} developed web interfaces for a number of core NLP technologies and systems, such as parsers, part-of-speech 
-taggers, and finite-state transducers. 
+taggers, and finite-state transducers.\NoteJE{Matt Post's stack decoder?}
 Most manipulatives/interfaces targeted at NLP have been virtual, but a notable exception is \newcite{halteren-tnlp-2002}, 
 who created a (physical) board game for parsing. 
 
@@ -366,13 +367,14 @@ In machine learning, there is a plethora of virtual manipulatives demonstrating 
 as decision boundaries and kernel
 methods.\footnote{E.g.,
   \url{http://cs.cmu.edu/~ggordon/SVMs/svm-applet.html}.\NoteJE{looking
-  for Caron's applet instead}}
-There are also several systems for teaching artificial intelligence: these tend to to consist of controlling 
+  for Caron's applet instead.  I sent an email.}}
+There are also several systems for teaching artificial intelligence: these tend to to involve controlling 
 virtual robots\footnote{E.g., \url{http://www-inst.eecs.berkeley.edu/~cs188/pacman/pacman.html} and 
-\url{http://www.cs.rochester.edu/trac/quagents}}
+\url{http://www.cs.rochester.edu/trac/quagents}.}
 %, or \url{http://www.cs.rochester.edu/trac/quagents}} 
 or physical ones \cite{tokic2012robot}.
-Overall, manipulatives for math, NLP and ML have been successful in teaching their core concepts. 
+Overall, manipulatives for NLP and ML seem to be a successful
+pedagogical direction that we hope will continue.
 
 Next, we present our main contribution, a virtual manipulative that teaches log-linear models. We ground 
 the models in simple objects such as circles and regular polygons, in order to appeal to the 
@@ -386,7 +388,7 @@ application of interest.
 
 \section{Our Log-Linear Virtual Manipulative}\label{sec:overview}
 
-Recall Figure \ref{fig:lesson1} for the general interface and an overview 
+Figure \ref{fig:lesson1} shows a screenshot
 of the tool, available at 
 \WhereToFind{}. We encourage you to play with it as you read.
 
@@ -400,23 +402,13 @@ of the tool, available at
 
 \subsection{Student Interface}
 
-The application is centered around lessons designed to isolate particular 
-challenges or intricacies of log-linear models. No matter the complexity, the main
-premise behind a lesson is to play a ``matching
-game'' or a ``log-likelihood game'' on a provided dataset \Data{}. The
-data, grouped by context and presented visually at the type-level as
-different shapes, images, or raw text, are modeled by two
-distributions of interest: the empirical $\tilde{p}$
-\eqref{eqn:empirical_distr}
-\begin{equation}
-\empirical\left(y\ \mid\ x\right) = \frac{c(x,y)}{c(x)},
-\label{eqn:empirical_distr}
-\end{equation} 
-and an appropriately defined log-linear
-model $p_{\vec{\theta}}$ \eqref{eqn:loglin}. You control $p_{\vec{\theta}}$ 
-via sliders, ``physically'' manipulating the parameters. These physical 
-manipulations are projected in real time on the expected observations as the 
-shapes shrink, grow and change color according to the new distribution. 
+Successive lessons introduce particular challenges or intricacies of
+log-linear models.  In each lesson, the user is playing a ``matching
+game'' or a ``log-likelihood game'' on some provided dataset \Data{}.
+For each context $x$, a group of outcomes $y \in {\cal Y}(x)$ are
+shown as shapes (or images or words).  Sliders allow the user to
+manipulate the weights $\theta_1, \theta_2, \ldots$ of a fixed set of
+features.  
 
 %\Commented{\NoteJE{I'd
 %  lead with this.  In fact, I think the text shown in Fig. 1 is
@@ -430,14 +422,32 @@ shapes shrink, grow and change color according to the new distribution.
 %  larger image and larger-font text, which you can shrink back again
 %  in the PDF.}  }
 
-Note in particular the data area (``Type Counts''), the
-feature weight sliders, and the log-likelihood score. 
-Each datum has an outline and shape associated with it; the size (area) of
-each is proportional to its probability mass, while its color
-indicates whether the observed or expected count is larger.  The
-number above and to the left of a shape is its empirical
-count, while the number above and to the right is its expected count.
-For instance, in Figure \ref{fig:lesson1}, the data---30 solid
+Each shape $y$ is sized proportionately to its model
+probability $p_{\vec{\theta}}(y \mid x)$ (defined as in
+\eqref{eqn:loglin}), so it grows or shrinks as the user changes
+$\vec{\theta}$.  
+In contrast, the {\em empirical probability} or {\em count ratio}
+\begin{equation}
+\empirical\left(y\ \mid\ x\right) = \frac{N(x,y)}{N(x)},
+\label{eqn:empirical_distr}
+\end{equation} 
+is shown by a gray outline.
+
+The size and color of $y$ indicate how $p_{\vec{\theta}}(y\mid x)$ compares to 
+this empirical probability (Figure~\ref{fig:colorsize_inventory}).  
+Reinforcing this, the observed count $N(x,y)$ is shown at the upper
+left of $y$, while the expected count $N(x)\cdot
+p_{\vec{\theta}}(y\mid x)$ is shown at the upper right (Figure
+\ref{fig:lesson1}).
+
+% NOW REDUNDANT
+% Each datum has an outline and shape associated with it; the size (area) of
+% each is proportional to its probability mass, while its color
+% indicates whether the observed or expected count is larger.  
+% The number above and to the left of a shape is its empirical
+% count, while the number above and to the right is its expected count.
+We begin with globally normalized models (only one 
+context $x$).  For example, the data in Figure \ref{fig:lesson1}---30 solid
 circles, 15 striped circles, 10 solid triangles, and 5 striped
 triangles---are modeled by the two indicator features
 $f_{\textrm{circle}}$ and $f_{\textrm{solid}}$. With $\vec{\theta} =
@@ -447,12 +457,11 @@ p_{\vec{\theta}}(\textrm{solid circle})$), the striped triangle
 contains its gray outline ($\empirical{}(\textrm{striped triangle}) <
 p_{\vec{\theta}}(\textrm{striped triangle})$), and the striped
 circle and gray outline are coincident ($\empirical{}(\textrm{striped
-  circle}) = p_{\vec{\theta}}(\textrm{striped circle})$).
-\footnote{We start off with globally normalized models (only one 
-context). See \S\ref{sec:lessons} for conditional models.}  
-See Figure \ref{fig:colorsize_inventory}
-for a summary of how we use size and color to indicate salient
-information.
+  circle}) = p_{\vec{\theta}}(\textrm{striped circle})$).%
+% NOW REDUNDANT
+% See Figure \ref{fig:colorsize_inventory}
+% for a summary of how we use size and color to indicate salient
+% information.
 
 In the \textit{matching game}, the student tries to match $p_{\vec{\theta}}$\ to  $\tilde{p}$. 
 %--- find $\vec{\theta}$ such that $p_{\vec{\theta}}(y\mid x) 
@@ -466,12 +475,11 @@ taking into account any regularization penalty.
 %under either distribution. We represent $\tilde{p}$ by a gray 
 %outline, and use colors and shading to make $p_{\vec{\theta}}$ salient. 
 
-An alternative game to play is the \textit{log-likelihood game}, where the goal is to
-maximize the (regularized) training log-likelihood. The log-likelihood bar adapts to 
-changes to $\vec{\theta}$, just like the shapes. The game is to make the bar as 
-long as possible.\footnote{``Winning'' may not be immediately clear. As more advanced 
-topics, such as the gradient, are introduced, knowing when you have won should become 
-clear.}
+An alternative is to play the \textit{log-likelihood game}, where the goal is to
+maximize the (regularized) training log-likelihood. The log-likelihood
+bar (Figure~\ref{fig:lesson1}) adapts to changes to $\vec{\theta}$,
+just like the shapes. The game is to make the bar as 
+long as possible.\footnote{Once the gradient is introduced in a later lesson, knowing when you have ``won'' becomes clearer.}
 %As shown in \NoteFF{fix} Figure \ref{fig:llbar}, we also represent the regularization penalty
 %, and the objective under the ``true'' (generating) model parameters, when known.
 
@@ -507,34 +515,38 @@ is to match the observed and expected feature counts.
 >{\centering\arraybackslash}m{.20\columnwidth}
 >{\centering\arraybackslash}m{.18\columnwidth}}
 
-\textbf{Quantity of Interest} & $\mathbf{<0}$ 
-& $\mathbf{= 0}$ & $\mathbf{> 0}$\\ \\
+\textbf{Quantity of Interest} & $\mathbf{>0}$ 
+& $\mathbf{= 0}$ & $\mathbf{<0}$\\ \\
 
-$ p_{\vec{\theta}} -\empirical{} $& \includegraphics[scale=.25]{images/goldilocks-circle-small.PNG}
+$\empirical{} -p_{\vec{\theta}}$& \includegraphics[scale=.25]{images/goldilocks-circle-small.PNG}
 & \includegraphics[scale=.25]{images/goldilocks-circle-justright.PNG}
 & \includegraphics[scale=.25]{images/goldilocks-circle-large.PNG}\\ \\
 
-$ \mathbb{E}_{{p_{\vec{\theta}}}}\left[\vec{f}\right] 
- - \mathbb{E}_{\empirical{}}\left[\vec{f}\right] $
+$\mathbb{E}_{\empirical{}}\left[\vec{f}\right] 
+- \mathbb{E}_{{p_{\vec{\theta}}}}\left[\vec{f}\right]$
 %, and $\nabla_{\vec{\theta}} F$
 & {\bf \color{red} \texttransparent{.5}{ red text} }
 & {\bf \color{gray}\texttransparent{.55}{ gray text } }
 & {\bf \color{blue} \texttransparent{.55}{ blue text } }\\  \\
 \vspace{.5em}
 
-$-\nabla_{\vec{\theta}} F$ 
+$\nabla_{\vec{\theta}} F$ 
 & \includegraphics[scale=.25]{images/goldilocks-gradient-small.PNG}
 & \includegraphics[scale=.25]{images/goldilocks-gradient-justright.PNG}
 & \includegraphics[scale=.25]{images/goldilocks-gradient-large.PNG}\\ \\ 
 
 \end{tabular}
-\caption{Colors and area indicate differences betwen the model and empirical distributions (gray outlines, when applicable). For each 
-observation, description or weight, red/small objects signify the proposed model under-predicts;  
-blue/large objects signify it over-predicts.}
+\NoteJE{what is line 2 about?  I don't see the feature names changing
+  color.}
+\caption{Color and area indicate differences betwen the empirical
+  distribution (gray outline) and model distribution. Red (or blue)
+  indicates a model probability or parameter that should be
+  increased (or decreased) to fit the data.}
 \label{fig:colorsize_inventory}
 \end{figure}
 
-Winning either game with more complex models may be too tedious or difficult. 
+Winning either game with more complex models becomes instructively
+difficult and tedious. 
 The student may then make use of \textit{hints}, such as
 viewing components of the gradient (Figure~\ref{fig:gradients}), or simply clicking a button to have
 the system follow the gradient.  
