@@ -663,13 +663,12 @@ For instance, a benefit of conditional models is they can share
 features across conditions, which helps in generalizing to unseen context-outcome 
 pairs and maximizing the regularized objective.
 
-The modeler has the onus of proper \textbf{feature design}. Broadly, what discriminative features 
-help model the underlying data attributes? There are a number of at-times complex interactions 
-to consider. Say we define a globally 
+The modeler has the onus of proper \textbf{feature design}: what discriminative features 
+help model the underlying data attributes? Say we define a globally 
 normalized model over solid circles, striped circles, solid triangles and striped triangles. 
-The first features we might consider are contrasting indicator functions for whether a shape
+We might first consider the contrasting indicator feature functions for whether a shape
 is a circle or is solid, as in Figure \ref{fig:lesson1}. Which of the games can the student 
-``win'' using this two feature model and how might the empirical distribution affect the result? 
+``win'' using this two feature model? How might the empirical distribution affect the result? 
 Will more features always help? Why might partitioning binary 
 features be redundant in some cases (definining both circle and triangle features for the above example), 
 yet insufficient in others?
