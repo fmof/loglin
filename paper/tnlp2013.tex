@@ -534,12 +534,20 @@ $\nabla_{\vec{\theta}} F$
 Winning any of these games with more complex models becomes difficult
 or at least tedious, so that automatic methods come as a relief.  The
 student may view {\em hints} on the sliders, showing which way each
-slider should be nudged (Figure~\ref{fig:gradients}).  These hints 
-correspond to components of the log-likelihood gradient.  Further automation
-is offered by the ``Step'' button, which automatically nudges all
-parameters by taking a step of gradient ascent, and even more by the
-``Solve'' button, which steps all the way to the maximum (using an
-Armijo line search to adapt the stepsize).
+slider should be nudged (Figure~\ref{fig:gradients}).  These hints
+correspond to components of the log-likelihood gradient.  Further
+automation is offered by the ``Step'' button, which automatically
+nudges all parameters by taking a step of gradient
+ascent,\footnote{When $\ell_1$ regularization is used, the optimal
+  $\vec{\theta}$ often contains many 0 weights, and a step
+  is not permitted to jump over a (possibly optimal) weight of
+  0.\NoteJE{Is this needed for correctness or just efficiency?  I
+    can't think anymore why nondifferentiability is a problem.  Isn't
+    Armijo enough?}  It stops at 0, though if warranted, it can
+  continue past 0 on the next step.} and even more by the ``Solve''
+button, which steps all the way to the maximum.\footnote{The ``Solve''
+  button adapts the stepsize at each step, using a backtracking line
+  search with the Armijo condition.  This ensures convergence.}
 
 Our lessons guide the student to appreciate the relationship
 among the three activities.  First, feature matching is a weaker,
@@ -874,15 +882,14 @@ Many important concepts are visible in \eqref{eqn:reg_ll} and \eqref{eqn:grad}.
 % %We highlight these connections, e.g., through 
 % %tooltips and consistent color semantics, when possible.
 %
-As discussed earlier, \eqref{eqn:reg_ll} is just the \textbf{difference between observed and
+As discussed earlier, \eqref{eqn:grad} includes the \textbf{difference between observed and
   expected feature counts}, 
 \begin{equation}
 \ \mathbb{E}_{\empirical{}}\left[\vec{f}(X,Y)\right] 
 - \mathbb{E}_{p_{\vec{\theta}}}\left[\vec{f}(X,Y)\right].
 \label{eqn:obsexp} 
 \end{equation}
-minus a \textbf{weight decay} term for regularization.  Students must
-internalize this concept and the computation of the two counts above.
+Students must internalize this concept and the meaning of the two counts above.
 This prepares them to understand the extension to structured prediction,
 where these counts can be more difficult to compute (see Section
 \ref{sec:history}).  It also prepares them to generalize to training
@@ -898,47 +905,75 @@ expectation under the model, conditioned on the partial training data.
 % distribution will generally maximize the (unregularized) log-likelihood. Of course, overfitting is possible and 
 % may result in a larger log-likelihood than the true generating distribution yields.
 
-Once we can compute the gradient, we can ``follow'' it along the
-surface not only to yield a solution, but to yield a solution
-guaranteed never to decrease our objective value.\footnote{We focus on
-  gradient ascent but other parameter estimation methods exist, such
-  as variants of iterative scaling, and first- and second-order
-  gradient algorithms. The most popular methods have relied on
-  quantities similar to \eqref{eqn:obsexp}, which, as shown in Figure
-  \ref{fig:colorsize_inventory} and discussed above
-  (\S\ref{sec:aims}), is one of the most important concepts we
-  illustrate. See \newcite{berger-dellapietra-dellapietra-1996} and
-  \newcite{malouf2002comparison}. }
+\eqref{eqn:grad} also includes a \textbf{weight decay} term for
+regularization.  We allow both $\ell_1$ and $\ell_2$ regularization:
+$R(\vec{\theta}) = \|\vec\theta\|_1$, and $R(\vec{\theta}) =
+\|\vec{\theta}\|_2^2$.  One can see that strong $\ell_1$
+regularization tries to use a few larger weights and leave the rest at
+0, while strong $\ell_2$ regularization tries to share the work among
+many smaller weights.  One can observe how for a given $C$, the
+regularization term is important for small datasets, but for large
+datasets is dominated by the log-likelihood.
+
+% NOW MENTIONED EARLIER
+% \footnote{Our  optimizer special-cases the non-differentiable
+% $\ell_1$ regularization, 
+%
+% NO WE DON'T, AS FAR AS I CAN SEE!
+% but we inform the students of this difficulty.}
+
+Once one can compute the gradient, one can ``follow'' it along the
+surface, in a way that is guaranteed to increase the convex objective
+function up to its global maximum.  The ``Solve'' button does this and
+indeed one can watch the log-likelihood bar continually increase.  Yet
+one should observe what might go wrong here as well.  Gradient
+ascent can oscillate if a {\em fixed} stepsize is used (by clicking
+``Step'' repeatedly).  One may also notice that ``Solve'' is somewhat
+slow to converge on some problems, which motivates considering
+alternative optimization algorithms \cite{malouf2002comparison}.
+
+% if the current weights are
+% strongly coupled (the Hessian is ill-conditioned) 
+
+% \footnote{We focus on
+%   gradient ascent but other parameter estimation methods exist, such
+%   as variants of iterative scaling, and first- and second-order
+%   gradient algorithms. The most popular methods have relied on
+%   quantities similar to \eqref{eqn:obsexp}, which, as shown in Figure
+%   \ref{fig:colorsize_inventory} and discussed above
+%   (\S\ref{sec:aims}), is one of the most important concepts we
+%   illustrate. See \newcite{berger-dellapietra-dellapietra-1996} and
+%   \newcite{malouf2002comparison}. }
+%
 %Convexity explains these two facts.\footnote{Advanced 
-%students might try ``breaking'' convexity, e.g., what happens when $C < 0$?}
-We find the canonical landscape-inspired convexity metaphor useful, and we partially reflect 
-the metaphor in the the adaptable log-likelihood bar. Rather than just \textit{imagining} walking up a hill, 
-students can ``actually'' do it.
+%students might try ``breaking'' convexity, e.g., what happens when $C
+%< 0$?}
 
-We use the gradient to further illustrate feature modeling considerations. The most obvious is to show how 
-minimizing a single isolated $|\frac{\partial}{\partial \theta_k} F|$ might adversely affect another partial 
-$\frac{\partial}{\partial \theta_{k'}}F$. Additional connections to differences in type and feature counts should be 
-made: even if the model distribution does not fully match the empirical, expected and observed feature 
-counts should match.
+% NAH, THERE AIN'T NO HILL IN SIGHT
+% We find the canonical landscape-inspired convexity metaphor useful, and we partially reflect 
+% the metaphor in the the adaptable log-likelihood bar. Rather than just \textit{imagining} walking up a hill, 
+% students can ``actually'' do it.
 
-When we include regularization, we consider $R(\vec{\theta}) = \|\vec\theta\|_1$, and 
-$R(\vec{\theta}) = \|\vec{\theta}\|_2^2$. This contrasts encouraging sparsity vs.  
-heavily preferencing away from large feature weights.\footnote{Our optimizer special-cases 
-the non-differentiable $\ell_1$ regularization, but we inform the students of this difficulty.} 
-Related exploration involves how the penalty coefficient $C$ affects the overall solution and game outcomes.
+% REDUNDANT
+% We use the gradient to further illustrate feature modeling considerations. The most obvious is to show how 
+% minimizing a single isolated $|\frac{\partial}{\partial \theta_k} F|$ might adversely affect another partial 
+% $\frac{\partial}{\partial \theta_{k'}}F$. Additional connections to differences in type and feature counts should be 
+% made: even if the model distribution does not fully match the empirical, expected and observed feature 
+% counts should match.
 
-Underlying the above concepts is \textbf{general machine learning} and 
-\textbf{statistical knowledge}. These include what estimators are,  how different data or model configurations 
-affect their quality, and how to limit adverse or prevent lower quality estimators. For example, 
-a small sample size leads to estimators with higher variance; regularization is a way to mitigate that, albeit at the expense of 
-the training log-likelihood. 
-Similarly, why can regularization be considered a form of smoothing that fits the data 
-imperfectly? The model might have fewer parameters than 
-outcomes, or it might forgo many parameters to avoid being penalized by 
-the regularizer.  Further, to limit regularization penalty, the model can make 
-use of backoff features and not just fine-grained features, thereby resulting 
-in \textit{backoff smoothing}. These concepts are connected to the expressiveness 
-considerations introduced in feature modeling.
+% REDUNDANT
+% Underlying the above concepts is \textbf{general machine learning} and 
+% \textbf{statistical knowledge}. These include what estimators are,  how different data or model configurations 
+% affect their quality, and how to limit adverse or prevent lower quality estimators. For example, 
+% a small sample size leads to estimators with higher variance; regularization is a way to mitigate that, albeit at the expense of 
+% the training log-likelihood. 
+% Similarly, why can regularization be considered a form of smoothing that fits the data 
+% imperfectly? The model might have fewer parameters than 
+% outcomes, or it might forgo many parameters to avoid being penalized by 
+% the regularizer.  Further, to limit regularization penalty, the model can make 
+% use of backoff features and not just fine-grained features, thereby resulting 
+% in \textit{backoff smoothing}. These concepts are connected to the expressiveness 
+% considerations introduced in feature modeling.
 
 We should note that we are \textit{not} concerned with efficiency issues, e.g.,  
 tractably computing the normalizers $Z(x)$. Efficient normalization
@@ -954,14 +989,16 @@ $Z(x)$.
 
 
 \section{Provided Lessons}\label{sec:lessons}
-Here we provide an overview of the \NumLessons{} available lessons. This is intended as a 
-summary of the major concepts from the previous sections; we encourage the reader to 
-walk through the tutorial to attempt the activities and read all the questions. We have tried to 
-separate the lessons that build intuition from the ones focused on
-specific tasks or problems.  This helps the student solidify the fundamentals and facilitates future development by providing what might be considered 
-``core'' and ``auxiliary'' sets of lessons.
+Here we provide an overview of the \NumLessons{} available
+lessons. This is intended as a summary of the major concepts from the
+previous sections; we encourage the reader to walk through the
+tutorial to attempt the activities and read all the questions. We have
+tried to separate the ``core'' lessons that build intuition from the
+``applied'' lessons focused on specific tasks or problems.  An
+instructor should feel especially free to replace or reorder the
+``applied'' lessons.
 
-These core lessons start with \textbf{1}--\textbf{5}, which provide the basic introduction to log-linear modeling. We keep 
+The core lessons start with \textbf{1}--\textbf{5}, which provide the basic introduction to log-linear modeling. We keep 
 the models simple and incrementally build intution, and only consider joint models over shapes. The focus is 
 on feature design. We start by comparing models over four shapes with two and four features. 
 Next we hide certain generating features from the students: they 
