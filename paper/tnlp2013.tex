@@ -837,12 +837,12 @@ between observed and expected feature counts}:
 \label{eqn:obsexp} 
 \end{equation}
 This difference of expectations, present in the feature matching activity and consideration of expectation 
-proportions, is a recurring quantity. Though our system encourages students to infer that the feature 
-matching and log-likelihood activities are really just the same thing, focusing on this difference as part 
+proportions, is a recurring quantity. We encourage students to infer the feature 
+matching and log-likelihood activities are really just the same thing, and focusing on this difference as part 
 of a larger exploration into the gradient confirms the physical intuitions with mathematical justification.
-This difference also shows that, when the outcome matching activity is feasible, matching the empirical 
-distribution will generally maximize the (unregularized) log-likelihood. 
-though that overfitting is possible and may result in a larger log-likelihood than the true generating distribution yields.
+This difference also shows that, when outcome matching is feasible, matching the empirical 
+distribution will generally maximize the (unregularized) log-likelihood. Of course, overfitting is possible and 
+may result in a larger log-likelihood than the true generating distribution yields.
 
 We can ``follow'' the gradient along the surface not only to yield a solution, but to yield a solution guaranteed 
 never to decrease our objective value.\footnote{We focus on gradient ascent but other parameter estimation methods 
