@@ -74,13 +74,8 @@ Baltimore, MD, USA
   buttons.  The user can sample parameters and datasets of
   different sizes and compare their own parameters to the truth.  Our
   website, \WhereToFind{}, guides the user through a series of
-  interactive lessons.%
-  % and also provides a handout with a more formal
-  % treatment.
-  \NoteJE{mention associated homework exercises if we are
-    definitely going to provide them}
-  % Included with our system are auxiliary instructional
-  % materials and questions usable for assignments. 
+  interactive lessons and provides auxiliary readings, explanations, 
+practice problems and resources.
 \end{abstract}
 
 \section{Introduction}\label{sec:intro}
@@ -107,7 +102,7 @@ and $n$-gram models.
 \begin{figure*}
 \centering
 %\includegraphics[scale=.49]{images/lesson1-051313-intro-zoom-instmore.PNG}
-\includegraphics[scale=.435]{images/lesson1-060713-intro-zoom-3.PNG}
+\includegraphics[scale=.47]{images/lesson1-060713-intro-zoom-with18.PNG}
 \caption{The first lesson; the lower half is larger on the actual
   application.}
 \label{fig:lesson1}
@@ -248,18 +243,6 @@ position-dependent and sentence-dependent, and log-linear PCFGs
 potentials are locally renormalized into rule probabilities via
 \eqref{eqn:loglin}.
 
-% OLD VERSION
-% Further, underlying concepts of log-linear models may tie in nicely with known 
-% NLP algorithms. For instance, log-linear models can help teach weighted grammars and 
-% sequence models. Consider either ordinary probabilistic CKY (HMMs). The joint probabilities 
-% over a sentence and some proposed \texttt{structure} are simply products of individual probabilities 
-% (which of course could themselves be modeled by conditional log-linear distributions); 
-% normalizing results in $p(\texttt{structure} | \textrm{sentence})$. 
-% Next, using properties of logarithms and exponents we can replace the \textit{log probabilities} 
-% in the above conditional distribution with arbitrary weights or sums of weights. We can still use the well-known
-% inside-outside (forward-backward) algorithms, but now use non-stationary features that look 
-% at the entire sentence (i.e., CRF parsing ).
-
 For all these reasons, we recommend log-linear models as one's
 ``go-to'' machine learning technique when teaching.  Other linear
 classifiers, such as perceptrons and SVMs, similarly choose $y$ given
@@ -308,12 +291,12 @@ The idea of making abstract mathematical concepts intuitive and recognizable as 
 has been explored successfully for many years in other disciplines. Specifically within early 
 math education, researchers have found \textit{manipulatives}---tactile
 objects---to be effective teaching tools. Examples of manipulatives include groups of 
-sticks that represent natural numbers, or geoboards\footnote{A
+sticks that represent natural numbers, or geoboards
+to explore geometric concepts like area and perimeter.\footnote{A
   geoboard is a board representing the plane, with pegs at the integral points.  A rubber
-  band can be stretched around selected pegs to define a polygon.}
-to explore geometric concepts like area and perimeter. The key idea is to 
-successfully ground and link the mathematical \textit{language} to a well-known physical 
-object that can be inspected and manipulated.  For more, see the classic and recent analyses from
+  band can be stretched around selected pegs to define a polygon.} The key idea is to 
+ground and link the mathematical \textit{language} to a well-known \textit{physical 
+object} that can be inspected and manipulated.  For more, see the classic and recent analyses from
 \newcite{sowell1989effects} and \newcite{carbonneau2013meta}.
 
 Research has shown concrete manipulatives to be effective, but practical widespread use of them presents certain 
@@ -407,10 +390,10 @@ of the tool, available at
 \subsection{Student Interface}
 
 Successive lessons introduce particular challenges or intricacies of
-log-linear models.  In each lesson, the user is playing a ``matching
-game'' or a ``log-likelihood game'' on some provided dataset \Data{}.
+log-linear models.  In each lesson, the user plays a model matching
+game, a feature matching game or a log-likelihood game on some provided dataset \Data{}.
 For each context $x$, a group of outcomes $y \in {\cal Y}(x)$ are
-shown as shapes (or images or words).  Sliders allow the user to
+shown as shapes, images or words.  Sliders allow the user to
 manipulate the weights $\theta_1, \theta_2, \ldots$ of a fixed set of
 features.  
 
@@ -443,12 +426,6 @@ left of $y$, while the expected count $\text{c}(x)\cdot
 p_{\vec{\theta}}(y\mid x)$ is shown at the upper right, following the same color 
 scheme (Figure \ref{fig:lesson1}). 
 
-% NOW REDUNDANT
-% Each datum has an outline and shape associated with it; the size (area) of
-% each is proportional to its probability mass, while its color
-% indicates whether the observed or expected count is larger.  
-% The number above and to the left of a shape is its empirical
-% count, while the number above and to the right is its expected count.
 We begin with globally normalized models (only one 
 context $x$).  For example, the data in Figure \ref{fig:lesson1}---30 solid
 circles, 15 striped circles, 10 solid triangles, and 5 striped
@@ -460,25 +437,22 @@ p_{\vec{\theta}}(\textrm{solid circle})$), the striped triangle
 contains its gray outline ($\empirical{}(\textrm{striped triangle}) <
 p_{\vec{\theta}}(\textrm{striped triangle})$), and the striped
 circle and gray outline are coincident ($\empirical{}(\textrm{striped
-  circle}) = p_{\vec{\theta}}(\textrm{striped circle})$).%
-% NOW REDUNDANT
-% See Figure \ref{fig:colorsize_inventory}
-% for a summary of how we use size and color to indicate salient
-% information.
+  circle}) = p_{\vec{\theta}}(\textrm{striped circle})$).
 
-In the \textit{matching game}, the student tries to match $p_{\vec{\theta}}$\ to  $\tilde{p}$. 
+In the \textit{model matching game}, the student tries to match $p_{\vec{\theta}}$\ to  $\tilde{p}$. 
 %--- find $\vec{\theta}$ such that $p_{\vec{\theta}}(y\mid x) 
 %= \tilde{p}(y\mid x)$, for all $(x,y)$. 
-The game is to try to make all of the salient log-linear objects 
+The game is to try to make all of the log-linear objects 
 equal in size (and color) to their corresponding gray outline. 
 The student ``wins'' once the maximum number of objects turn gray, 
 taking into account any regularization penalty.
-%Rather than force students to numerically compare the
-%two distributions, we scale the shape's size to indicate its type's probability
-%under either distribution. We represent $\tilde{p}$ by a gray 
-%outline, and use colors and shading to make $p_{\vec{\theta}}$ salient. 
 
-An alternative is to play the \textit{log-likelihood game}, where the goal is to
+Alternatively in the \textit{feature matching game}, the student tries to match the empirical and 
+model feature counts (which for binary features is just the number of times a feature fires).
+This is useful when a given set of features prevents the student from winning the model 
+matching game with a particular dataset.
+
+Third, the student can play the \textit{log-likelihood game}, where the goal is to
 maximize the (regularized) log-likelihood. The log-likelihood
 bar (Figure~\ref{fig:lesson1}) adapts to changes in $\vec{\theta}$,
 just like the shapes. The game is to make the bar as 
@@ -486,20 +460,11 @@ long as possible.\footnote{Once the gradient is introduced in a later lesson, kn
 %As shown in \NoteFF{fix} Figure \ref{fig:llbar}, we also represent the regularization penalty
 %, and the objective under the ``true'' (generating) model parameters, when known.
 
-These games do not have to be played in isolation: when playing the log-likelihood game, the 
-students can think about how well the shapes match (and vice versa).
-This is particularly true as more advanced concepts such as regularization and 
-conjoined features are introduced.
-If a given set of features does not allow a particular dataset to be matched, 
-the student can play a variant of the matching game, where the goal
-is to match the observed and expected feature counts. 
-
-%How we indicate salience is important. As already mentioned, we 
-%As documented in Figure \ref{fig:colorsize_inventory}, we utilize both size and color to 
-%convey these distribution changes: the three colors red, gray and blue illustrate the 
-%difference between observed and expected counts, while the size (area) of the shapes 
-%indicates the type's mass differences.
-
+These games are not played in isolation. When playing either the log-likelihood or 
+feature matching games, we encourage the student to think how the two games are related: what 
+does each game try to accomplish, and how does it differ from what the other game achieves?
+%This is particularly true as more advanced concepts such as regularization and 
+%conjoined features are introduced.
 
 \begin{figure}[t]
 \centering
@@ -521,7 +486,7 @@ $\mathbb{E}_{\empirical{}}\left[\vec{f}\right]
 - \mathbb{E}_{{p_{\vec{\theta}}}}\left[\vec{f}\right]$
 %, and $\nabla_{\vec{\theta}} F$
 & {\bf \color{red} \texttransparent{.55}{ red } }
-& {\bf \color{gray}\texttransparent{.6}{ gray } }
+& {\bf \color{gray}\texttransparent{.65}{ gray } }
 & {\bf \color{blue} \texttransparent{.6}{ blue } }\\  \\
 \vspace{.5em}
 
@@ -538,13 +503,21 @@ $\nabla_{\vec{\theta}} F$
 \label{fig:colorsize_inventory}
 \end{figure}
 
-Winning either game with more complex models becomes instructively
+\begin{figure}[t]
+\centering
+\small
+\includegraphics[scale=.65]{images/gradient-lesson7.PNG}
+\caption{Gradient components use the same color coding as given in Figure \ref{fig:colorsize_inventory}. The length of each component indicates its potential effect on the objective, and not its magnitude.}
+\label{fig:gradients}
+\end{figure}
+
+Winning any of the games with more complex models becomes instructively
 difficult and tedious. 
 The student may use \textit{hints}, such as
 viewing components of the gradient (Figure~\ref{fig:gradients}), or 
-clicking a button to havethe system follow the gradient.  
+clicking a button to have the system follow the gradient.  
 
-A main tenet of this manipulative is the benefit of ``learning-by-playing.'' 
+A main tenet of this manipulative is the benefit of ``learning by playing.'' 
 Once comfortable with the provided model and data, the student can begin to play 
 around with the dataset and model options. These utilities, such as
 generating a new random challenge and experimenting with regularization, 
@@ -579,7 +552,7 @@ As seen in Figure \ref{fig:shape_inventory}, the available shapes are circles, t
 where each can be solid, striped or hollow.
 
 The instructor must be able to tailor lessons to his or her students' needs, 
-interests, and abilities. For instance, it may be appropriate to reason about different types of shapes
+interests, and abilities. It is appropriate to reason about different types of shapes
 when introducing students to log-linear models, but eventually NLP students will want to think about 
 NLP problems, whereas vision students will want to think about vision problems: we have designed the manipulative to handle text
 and arbitrary images as well.
@@ -606,8 +579,8 @@ These simple requirements allow one to describe some rather involved models. For
 the features may be marked as ``hidden'' to the student, thereby allowing the student to experience 
 model mismatch. If the set of contexts is missing, the model is assumed to contain only 
 one context and be globally normalized. Note that the visual positioning information is pedagogically 
-important: aligning objects by orthogonal descriptions, e.g., circles vs. triangles or solid vs. striped, 
-can make feature contrasts stand out more.
+important: aligning objects by orthogonal descriptions can make feature contrasts stand out more, 
+e.g., circles vs. triangles or solid vs. striped
 
 The configuration files can turn off certain features on a per-lesson basis (without programming).  This is 
 useful for, e.g., hiding the ``solve'' button in early lessons, adding new tooltips or adapting existing 
@@ -667,13 +640,12 @@ our students did not have trouble running it on them.
 
 \subsection{Feature Design and Modeling Considerations}
 
-Given a dataset $\Data{}$ of $N$ $(x, y)$ pairs, one of the initial decisions 
+Given a dataset $\Data{}$ of $(x, y)$ pairs, one of the initial decisions 
 to make is \textbf{choosing an appropriate model} and distribution family. 
 As argued above, for this manipulative we focus on contrasting exponential families 
-\eqref{eqn:loglin} with what students may initially posit, the empirical 
-distribution \eqref{eqn:empirical_distr}. While pragmatically the most important 
-consequence of this modeling decision is that of proper feature design, one should 
-understand certain underlying statistical properties of the model: what estimators 
+\eqref{eqn:loglin} with the empirical distribution \eqref{eqn:empirical_distr}. While pragmatically the most important 
+consequence of this modeling decision is that of proper feature design, we can ask about 
+certain underlying statistical properties of the model: what estimators 
 exist and how ``good'' are they? How does \eqref{eqn:loglin} generalize other 
 distributions: $\vec{\theta} = 0$ yields the uniform distribution, but can you match 
 the empirical? What constraints does the model satisfy and what practical implications
@@ -682,9 +654,8 @@ are there?
 % (if any; eg., maxent formulation or empirical
 %MLE?)
  
-We contrast conditional models and globally normalized ones
-$p_{\vec{\theta}}\left(y\right)$. Although
-these context-unaware models allow students to focus on
+We contrast conditional models and globally normalized ones. 
+These context-unaware models allow students to focus on
 understanding some of the core underlying mathematical concepts of
 exponential models, such as feature interations and weight tradeoffs,
 there are important differences between global and conditional models
@@ -693,11 +664,11 @@ features across conditions, helping generalize to unseen context-outcome
 pairs and maximizing the regularized objective.
 
 The modeler has the onus of proper \textbf{feature design}. Broadly, what discriminative features 
-help to model underlying data attributes? There are a number of at-times complex interactions 
+help model the underlying data attributes? There are a number of at-times complex interactions 
 to consider. Say we define a globally 
 normalized model over solid circles, striped circles, solid triangles and striped triangles. 
 The first features we might consider are contrasting indicator functions for whether a shape
-is a circle or is solid, as in Figure \ref{fig:lesson1}. Which of the two games can the student 
+is a circle or is solid, as in Figure \ref{fig:lesson1}. Which of the games can the student 
 ``win'' using this two feature model and how might the empirical distribution affect the result? 
 Will more features always help? Why might partitioning binary 
 features be redundant in some cases (definining both circle and triangle features for the above example), 
@@ -849,9 +820,10 @@ These core lessons start with \textbf{1}--\textbf{5}, which provide the basic in
 the models simple and incrementally build intution, and only consider joint models over shapes. The focus is 
 on feature design. We start by comparing models over four shapes with two and four features. 
 Next we hide certain generating features from the students: they 
-consider what is going on in this model mismatch exercise, and a possible way to handle it. We play both the 
-matching and log-likelihood games, comparing and contrasting them. Students also explore 
-non-binary features and what it means for each game.\footnote{Students had difficulty with non-binary features; 
+consider what is going on in this model mismatch exercise, and a possible way to handle it. We play all three games, 
+starting with model matching but progressing to feature matching and the log-likelihood game; we compare and 
+constrast these latter two to show that they are really just doing the same thing. Students explore 
+non-binary features too.\footnote{Students had difficulty with non-binary features; 
 we have since improved the lessons to explore \eqref{eqn:obsexp} in greater depth.} 
 
 Having begun to develop the appropriate intuition, lessons \textbf{6}--\textbf{8} introduce 
@@ -864,15 +836,6 @@ counts, with the previous lessons involving model mismatch; this allows students
 model was learning and why. 
 Students can use the gradient hints and solver to watch $\vec{\theta}$ climb up the objective ``hill'' to the global maximum, 
 partly illustrating the implications of a convex objective for our model's estimator.
-%\footnote{There is with caveat of possibly stopping prematurely---``circling up'' the bowl.
-
-\begin{figure}[t]
-\centering
-\small
-\includegraphics[scale=.65]{images/gradient-lesson7.PNG}
-\caption{Gradient components use the same color coding as given in Figure \ref{fig:colorsize_inventory}. The length of each component indicates its potential effect on the objective, and not its magnitude.}
-\label{fig:gradients}
-\end{figure}
 
 We also introduce additional manipulative functionality and encourage their use to 
 explore log-linear models. For instance, students can generate secret oracle weights and 
@@ -881,15 +844,15 @@ weights,  and question why estimates of $\vec{\theta}$ might be different from t
 (sampling error).
 
 Having explored the gradient, lessons \textbf{8}--\textbf{10} consider more advanced topics in joint 
-modeling. The first is regularization: how does regularization help with unseen data? Students are encouraged 
-to play with the regularization coefficient, the amount of data and both $\ell_1$ and $\ell_2$ regularizers to 
-explore the effects on model quality.
+modeling. Students explore what affects model quality, such as which regularizer is used, the 
+regularization coefficient, and the amount of \textit{training} data. How does regularization help with 
+unseen (``test'') data? 
 
 Lessons \textbf{11}--\textbf{13} introduce conditional models and convey some of the basic differences between 
-conditional and globally normalized models. Students use a conditional model with shared features to model 
-heavily skewed data, which illustrates how both the matching and log-likelihood games differ under conditional vs. 
-joint models. We explain, via modeling syntactic parses, how shared conditional features can help more accurately 
-model a context-specific outcome $\mathcal{Y}(x)$.
+conditional and global models. Students use a conditional model with shared features to model 
+heavily skewed data, which illustrates how the matching and log-likelihood games differ under the two types of 
+models. We illustrate how shared conditional features can help more accurately model a context-specific 
+outcome $\mathcal{Y}(x)$.
 
 Lessons \textbf{14}--\textbf{15} further explore informed feature design in conditional models. 
 Specifically in lesson \textbf{14}, we add a feature for each context and the students are asked what happens 
@@ -1005,8 +968,9 @@ suggested additions to this page.
 \section{Conclusion}
 We have introduced an open-source, web-based virtual manipulative for
 log-linear models. Included with the code are
-\NumLessons{} lessons, with possible assignment questions, and an auxiliary handout that 
-gives a formal treatment of the necessary derivations.
+\NumLessons{} lessons, with possible assignment questions, and auxiliary 
+information including a handout that gives a formal treatment of the necessary 
+derivations, further reading and practice problems, and additional resources.
 A version is available at \WhereToFind{}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
