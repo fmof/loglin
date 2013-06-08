@@ -541,7 +541,7 @@ parameters by taking a step of gradient ascent, and even more by the
 ``Solve'' button, which steps all the way to the maximum (using an
 Armijo line search to adapt the stepsize).
 
-Our lessons guide the student to feel and understand the relationship
+Our lessons guide the student to appreciate the relationship
 among the three activities.  First, feature matching is a weaker,
 attainable version of outcome matching (when outcome matching is
 possible it certainly achieves feature matching as well).  Second,
@@ -564,6 +564,8 @@ to train log-linear models.
 % % This is particularly true as more advanced concepts such as regularization and 
 % % conjoined features are introduced.
 
+\subsection{Guided Exploration}
+
 % TRUE FOR ALL MANIPULATIVES
 % A main tenet of this manipulative is the benefit of ``learning by playing.'' 
 We expect students to ``learn by playing.''  The user can experiment
@@ -577,18 +579,19 @@ in Section \ref{sec:lessons}.
 % student may just need to roam freely. 
 
 We encourage experimentation by providing \textit{tooltips} that
-appear whenever a student hovers the mouse pointer over an item.
-Tooltips provide guidance about whatever the student is looking at
-\textit{right then}.  Some are static explanations (e.g., what does
-this gray bar represent?).  Others dynamically update with changes to
-the parameters (e.g., the tooltips on the feature sliders show the
-observed and expected counts for that feature).  Students see the
-tooltips repeatedly, which can help them absorb and reinforce concepts
-over an extended period of time.  Students who like to learn by
-browsing and experimenting can point to various tooltips and get a
-sense of how the different concepts fit together.  Some tooltips
-explicitly refer to one another, linking elements such as the
-training objective, the regularization choices, and the gradient.
+appear whenever a student hovers the mouse pointer over a element of
+the GUI.  Tooltips provide guidance about whatever the student is
+looking at \textit{right then}.  Some are static explanations (e.g.,
+what does this gray bar represent?).  Others dynamically update with
+changes to the parameters (e.g., the tooltips on the feature sliders
+show the observed and expected counts for that feature).
+
+Students see the tooltips repeatedly, which can help them absorb and
+reinforce concepts over an extended period of time.  Students who like
+to learn by browsing and experimenting can point to various tooltips
+and get a sense of how the different concepts fit together.  Some
+tooltips explicitly refer to one another, linking GUI elements such as
+the training objective, the regularization choices, and the gradient.
 
 % This allows those so inclined to
 % go beyond the current lesson and make conceptual connections.
@@ -631,7 +634,7 @@ combinations shown in Figure \ref{fig:shape_inventory}.
 \end{figure}
 
 Tailoring lessons to the students' needs is as simple as editing a
-couple of text files. These must detail:
+couple of text files. These must specify
 \begin{inparaenum}[(1)]
 \item a set of features, 
 \item a set of contexts,\footnote{The set of contexts may be omitted
@@ -642,7 +645,7 @@ couple of text files. These must detail:
 %\NoteFF{no two outcomes can have the same feature vector. This is an unfortunate consequence of an early design decision that considered the data to be featurized type occurrences. Fixing it shouldn't be *that* difficult... I'll remove the word uniquely}
 featurized events, including counts and visual positions.
 \end{inparaenum}
-These simple requirements allow one to describe some rather involved
+This simple format allows one to describe some rather involved
 models.  Some of the features may be ``hidden'' from the student, thereby allowing the student to experience 
 model mismatch.  Note that the visual positioning information is pedagogically 
 important: aligning objects by orthogonal descriptions can make feature contrasts stand out more, 
@@ -652,7 +655,7 @@ The configuration files can turn off certain features on a per-lesson basis (wit
 useful for, e.g., hiding the ``Solve'' button in early lessons, adding new tooltips, or specializing
 the existing tooltips on a per-lesson basis.
 
-However, being a manipulative object rather than a tutoring system, our
+However, being a manipulative rather than a tutoring system, our
 software does not monitor the user's progress through a lesson and
 provide guidance via lesson-specific hints, warnings, questions, or
 feedback.  (The software is open-source, so others are free to extend
@@ -736,15 +739,16 @@ Why does their hypothesis space include the uniform distribution?  For
 what feature sets does it include {\em every} distribution?  
 
 One should also understand statistical \textbf{estimation}.  How do
-features interact?  When estimating their weights, can raising one
+the features interact?  When estimating their weights, can raising one
 weight alter or reverse the desired changes to other weights?  How can
 parameter estimation go wrong statistically (overfitting, perhaps
 driving parameters to $\pm\infty$)?  What might happen if we have a
 very large feature set?  Can we design regularized estimators that
-prevent overfitting?  What is the effect of the regularization
-constant on small and large datasets?  On rare and frequent contexts?
-On rare and frequent features?  On useful features (including features
-that always or never fire) and useless ones?
+prevent overfitting (the bias-variance tradeoff)?  What is the effect
+of the regularization constant on small and large datasets?  On rare
+and frequent contexts?  On rare and frequent features?  On useful
+features (including features that always or never fire) and useless
+ones?
 
 % What estimators exist and how ``good'' are they? How does
 % \eqref{eqn:loglin} generalize other distributions: $\vec{\theta} = 0$
@@ -861,40 +865,50 @@ The best choice is the $\vec{\theta}$ that solves equation \eqref{eqn:grad}:
 %\end{split}
 \end{aligned}
 \end{equation}
-Many important concepts are encapsulated in \eqref{eqn:reg_ll} and \eqref{eqn:grad}. 
+where because our model is conditional, $p_{\vec{\theta}}(x,y)$ denotes the hybrid distribution
+$\empirical{}(x) \cdot p_{\vec{\theta}}(y\mid x)$.
+
+Many important concepts are visible in \eqref{eqn:reg_ll} and \eqref{eqn:grad}.
 % Some are new while others provide an alternative view
 % on concepts already introduced. 
 % %We highlight these connections, e.g., through 
 % %tooltips and consistent color semantics, when possible.
-
-We believe the most important concept is that the gradient of (unregularized)
-maximum likelihood is the \textbf{difference 
-between observed and expected feature counts}:
+%
+As discussed earlier, \eqref{eqn:reg_ll} is just the \textbf{difference between observed and
+  expected feature counts}, 
 \begin{equation}
 \ \mathbb{E}_{\empirical{}}\left[\vec{f}(X,Y)\right] 
 - \mathbb{E}_{p_{\vec{\theta}}}\left[\vec{f}(X,Y)\right].
 \label{eqn:obsexp} 
 \end{equation}
-This difference of expectations, present in the feature matching activity and consideration of expectation 
-proportions, is a recurring quantity. We encourage students to infer the feature 
-matching and log-likelihood activities are really just the same thing, and focusing on this difference as part 
-of a larger exploration into the gradient confirms the physical intuitions with mathematical justification.
-This difference also shows that, when outcome matching is feasible, matching the empirical 
-distribution will generally maximize the (unregularized) log-likelihood. Of course, overfitting is possible and 
-may result in a larger log-likelihood than the true generating distribution yields.
+minus a \textbf{weight decay} term for regularization.  Students must
+internalize this concept and the computation of the two counts above.
+This prepares them to understand the extension to structured prediction,
+where these counts can be more difficult to compute (see Section
+\ref{sec:history}).  It also prepares them to generalize to training
+latent-variable models \cite{petrov-klein-2008}.  In that setting, the
+observed count can no longer be observed but is replaced by another
+expectation under the model, conditioned on the partial training data.
 
-computationally (slow convergence of gradient
-ascent in some circumstances, or non-convergence if a fixed stepsize
-is used)?  How can it go wrong 
+% This difference of expectations, present in the feature matching activity and consideration of expectation 
+% proportions, is a recurring quantity. We encourage students to infer the feature 
+% matching and log-likelihood activities are really just the same thing, and focusing on this difference as part 
+% of a larger exploration into the gradient confirms the physical intuitions with mathematical justification.
+% This difference also shows that, when outcome matching is feasible, matching the empirical 
+% distribution will generally maximize the (unregularized) log-likelihood. Of course, overfitting is possible and 
+% may result in a larger log-likelihood than the true generating distribution yields.
 
-
-We can ``follow'' the gradient along the surface not only to yield a solution, but to yield a solution guaranteed 
-never to decrease our objective value.\footnote{We focus on gradient ascent but other parameter estimation methods 
-exist, such as variants of iterative scaling, and first- and second-order gradient algorithms. The most popular 
-methods have relied on quantities similar to \eqref{eqn:obsexp}, which, as shown in Figure \ref{fig:colorsize_inventory} 
-and discussed above (\S\ref{sec:aims}), is 
-one of the most important concepts we illustrate. See 
-\newcite{berger-dellapietra-dellapietra-1996} and \newcite{malouf2002comparison}. }
+Once we can compute the gradient, we can ``follow'' it along the
+surface not only to yield a solution, but to yield a solution
+guaranteed never to decrease our objective value.\footnote{We focus on
+  gradient ascent but other parameter estimation methods exist, such
+  as variants of iterative scaling, and first- and second-order
+  gradient algorithms. The most popular methods have relied on
+  quantities similar to \eqref{eqn:obsexp}, which, as shown in Figure
+  \ref{fig:colorsize_inventory} and discussed above
+  (\S\ref{sec:aims}), is one of the most important concepts we
+  illustrate. See \newcite{berger-dellapietra-dellapietra-1996} and
+  \newcite{malouf2002comparison}. }
 %Convexity explains these two facts.\footnote{Advanced 
 %students might try ``breaking'' convexity, e.g., what happens when $C < 0$?}
 We find the canonical landscape-inspired convexity metaphor useful, and we partially reflect 
