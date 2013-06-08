@@ -265,7 +265,7 @@ function record_data(rows,already_created){
     svg_loaded=1;
     //compute expected counts
     recompute_expected_counts(); 
-    compute_max_prob(get_prob, MAX_EXP_EMP_PROB, MAX_EXP_EMP_PROB_TYPE, MAX_EXP_EMP_AREA, get_model_partition_function);
+    compute_max_prob(get_prob, MAX_EXP_EMP_PROB, MAX_EXP_EMP_PROB_TYPE, MAX_EXP_EMP_AREA, get_model_partition_function, true);
     //so that we can draw in the expected images
     redrawAllExpected();
     //and, more importantly, the loglikelihood score bar

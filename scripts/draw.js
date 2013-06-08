@@ -66,7 +66,7 @@ function redraw_all(){
     if(!svg_loaded){return;}
     recompute_partition_function();
     recompute_expected_counts();    
-    compute_max_prob(get_prob,MAX_EXP_EMP_PROB,MAX_EXP_EMP_PROB_TYPE,MAX_EXP_EMP_AREA, get_model_partition_function);
+    compute_max_prob(get_prob,MAX_EXP_EMP_PROB,MAX_EXP_EMP_PROB_TYPE,MAX_EXP_EMP_AREA, get_model_partition_function, true);
     redrawAllExpected();
     update_all_qtip_counts();
     updateSVGTitles();
@@ -748,14 +748,13 @@ function updateSVGTitles(){
 
 //container needs to be acquired via a d3.select operation!!
 function drawExpectedData(context, i, container){
-    var group;		
+    var group;
     var vis = VISUALS[context][i];
     var fill=vis['fill'];
     var shapen = vis['shape'];
     var obs_count = COUNTS[context][i];
     var exp_count = EXPECTED_COUNTS[context][i];	    
     var color = determine_color(get_empirical_prob(context,i),get_prob(context,i)/Z_THETA[context], context);
-    //var color=determine_color(obs_count,exp_count);
     //scale by the max observed count...
     var max_count=-1;
     for(var other in COUNTS[context]){

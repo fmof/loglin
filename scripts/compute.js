@@ -284,13 +284,16 @@ function get_prob(context,id_num,log,theta){
     var theta = theta || THETA;
     var data= DATA_BY_CONTEXT[context][id_num];
     for(var i=0;i<data.length;i++){
+	//for conditional models, first try to include ``bigram'' features
 	var ifl=INVERSE_FEATURE_LOOKUP(context,data[i]);
 	if(ifl>=0){
 	    ret += theta[ifl]*THETA_STRENGTH[ifl];
 	} 
+	//then unigram features
 	if(CONTEXTS[context]!='' && (ifl=INVERSE_FEATURE_LIST[['',data[i]]])!=undefined){
 	    ret += theta[ifl]*THETA_STRENGTH[ifl];
 	}
+	//and backoff
 	if((ifl=INVERSE_FEATURE_LIST[[CONTEXTS[context],'']])!=undefined){
 	    ret += theta[ifl]*THETA_STRENGTH[ifl];
 	}
@@ -298,12 +301,13 @@ function get_prob(context,id_num,log,theta){
     return log?ret:Math.exp(ret);
 }
 
-function compute_max_prob(unnormalized,mep,mept,mea,norm){
+function compute_max_prob(unnormalized,mep,mept,mea,norm, is_for_expected){
     var minmaxareas=[];
+    is_for_expected = is_for_expected || false;
     //first, find the maximum probability per context
     for(var c=0;c<CONTEXTS.length;c++){
 	minmaxareas[c]=SVG_WIDTH*SVG_HEIGHT;
-	if(NUM_TOKENS_C[c]==0){
+	if(!is_for_expected && NUM_TOKENS_C[c]==0){
 	    mep[c]=1;
 	    continue;
 	}
