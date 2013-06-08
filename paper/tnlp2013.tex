@@ -310,14 +310,16 @@ problems, including procurement of necessary materials, replicability,
 %  research on them?} \NoteFF{using them; virtual manipulatives encourage practical, inexpensive systematic 
 %deployment} 
 and applicability to certain groups of students and to concepts
-that have no simple physical realization. These issues, among others, have 
-resulted in increased interest over the past two decades into
+that have no simple physical realization. These issues
+% , among others,
+have spurred interest over the past two decades in
 \textit{virtual manipulatives} implemented in software, including the creation of 
 the National Library of Virtual Manipulatives.\footnote{\url{nlvm.usu.edu/en/nav/vlibrary.html} and 
 \url{enlvm.usu.edu/ma/nav/doc/intro.jsp}} 
 Both \newcite{clements1996concrete} and \newcite{moyer2002virtual} provide accessible overviews of 
 virtual manipulatives in early math education. 
-Virtual manipulatives give students the ability to effect changes on a complex system and learn its underlying 
+Virtual manipulatives give students the ability to effect changes on a
+complex system and so learn its underlying 
 properties \cite{moyer2002virtual}. This last point is particularly applicable for log-linear models.
 
 %"Clements and Sarama
@@ -522,7 +524,10 @@ $\nabla_{\vec{\theta}} F$
 \centering
 \small
 \includegraphics[scale=.65]{images/gradient-lesson7.PNG}
-\caption{Gradient components use the same color coding as given in Figure \ref{fig:colorsize_inventory}. The length of each component indicates its potential effect on the objective, and not its magnitude.}
+\caption{Gradient components use the same color coding as given in
+  Figure \ref{fig:colorsize_inventory}. The length of each component
+  indicates its potential effect on the objective.  Note that the
+  sliders use a nonlinear scale from $-\infty$ to $+\infty$.}
 \label{fig:gradients}
 \end{figure}
 
@@ -547,7 +552,7 @@ log-likelihood is 0.  In fact, the current feature mismatch {\em
 the sliders in the direction of the gradient hints can be viewed as a
 correct strategy for {\em either} the feature matching game {\em or}
 the log-likelihood game.  This connection shows how to maximize
-log-likelihood: its gradient can easily be computed by counting up the
+log-likelihood, as its gradient can easily be computed by counting up the
 observed and currently predicted features.  After understanding this
 and playing with the ``Step'' and ``Solve'' buttons, the student
 should be able to imagine writing code to train log-linear models.
@@ -559,98 +564,135 @@ should be able to imagine writing code to train log-linear models.
 % % This is particularly true as more advanced concepts such as regularization and 
 % % conjoined features are introduced.
 
-A main tenet of this manipulative is the benefit of ``learning by playing.'' 
-Once comfortable with the provided model and data, the student can begin to play 
-around with the dataset and model options. These utilities, such as
-generating a new random challenge and experimenting with regularization, 
-are described more in Section \ref{sec:lessons}.
+% TRUE FOR ALL MANIPULATIVES
+% A main tenet of this manipulative is the benefit of ``learning by playing.'' 
+We expect students to ``learn by playing.''  The user can experiment
+at any time with the sliders, with gradient ascent and its stepsize,
+with the type and strength of regularization, and with the size of the
+dataset.  The user can also sample new data or new parameters, and can
+peek at the true parameters.  These options are described further
+in Section \ref{sec:lessons}.
 
-The particular game being played in a lesson is described in the
-instruction area. The instructions explain what the data and task are, justify modeling
-choices, introduce new functionality and ask lesson-specific questions. For more technical 
-explanations and derivations, or for additional practice questions, 
-they may direct the student to auxiliary material provided with the code; it is designed to explain 
-the physical intuitions gained and act as a self-check on one's understanding. 
+% The instructions and auxiliary material can help a student explore, but sometimes the 
+% student may just need to roam freely. 
 
-The instructions and auxiliary material can help a student explore, but sometimes the 
-student may just need to roam freely. To encourage this, the student can utilize any number of 
-\textit{tooltips}, or hints/information that appear when a student hovers the cursor over an item. 
-Tooltips are important because they provide guidance about whatever the student is thinking about \textit{right then}.
-Many of them that come preloaded transcend individual lessons: some are static (e.g., what is the 
-log-likelihood bar showing), while others 
-dynamically update with changes to the model (e.g., the tooltips on the feature sliders show the 
-observed and expected counts for that feature).  
-This means students see the tooltips repeatedly, which can help them absorb and reinforce concepts over an extended 
-period of time. Mutually referring tooltips (e.g., the log-likelihood score, regularization, and the 
-gradient) both solidify growing intuition and encourage constructive play. Students who like to learn by
-browsing and experimenting can point to various tooltips and get a sense of how the different 
-concepts fit together. This allows those so inclined to go beyond the current lesson and make conceptual 
-connections.
+We encourage experimentation by providing \textit{tooltips} that
+appear whenever a student hovers the mouse pointer over an item.
+Tooltips provide guidance about whatever the student is looking at
+\textit{right then}.  Some are static explanations (e.g., what does
+this gray bar represent?).  Others dynamically update with changes to
+the parameters (e.g., the tooltips on the feature sliders show the
+observed and expected counts for that feature).  Students see the
+tooltips repeatedly, which can help them absorb and reinforce concepts
+over an extended period of time.  Students who like to learn by
+browsing and experimenting can point to various tooltips and get a
+sense of how the different concepts fit together.  Some tooltips
+explicitly refer to one another, linking elements such as the
+training objective, the regularization choices, and the gradient.
 
-\subsection{The Instructor Interface: Creating and Tailoring Lessons}\label{sec:tailoring}
+% This allows those so inclined to
+% go beyond the current lesson and make conceptual connections.
 
-To support a wide-range of lessons, the manipulative has support for twelve predefined shape and fill combinations.
-As seen in Figure \ref{fig:shape_inventory}, the available shapes are circles, triangles, squares and pentagons,
-where each can be solid, striped or hollow.
+Though the user is welcome to play, we also provide some guidance.
+Each lesson displays instructions that explain the current dataset,
+justify modeling choices, introduce new functionality, lead the user
+through a few activities, and ask lesson-specific questions.  The
+first lesson also links to a handout with a more formal textbook-style
+treatment.  The last lesson links to further reading and exercises.
 
-The instructor must be able to tailor lessons to his or her students' needs, 
-interests, and abilities. It is appropriate to reason about different types of shapes
-when introducing students to log-linear models, but eventually NLP students will want to think about 
-NLP problems, whereas vision students will want to think about vision problems: we have designed the manipulative to handle text
-and arbitrary images as well.
+% For more technical explanations and
+% derivations, or for additional practice questions, they may direct the
+% student to auxiliary material provided with the code; it is designed
+% to explain the physical intuitions gained and act as a self-check on
+% one's understanding.
+
+
+\subsection{Instructor Interface: Creating and Tailoring Lessons}\label{sec:tailoring}
+
+An instructor may optionally wish to tailor lessons to his or her
+students' needs, interests, and abilities.  Shapes provide a nice
+introduction to log-linear models, but eventually NLP students will
+want to think about NLP problems, whereas vision students will want to
+think about vision problems.  Thus, we have designed the manipulative
+to handle text and arbitrary images, as well as the 12 shape-fill
+combinations shown in Figure \ref{fig:shape_inventory}.
 
 \begin{figure}[t]
 \begin{center}
 \centering
 \includegraphics[scale=.5]{images/different_shapes_fills3x4.PNG}
-\caption{Inventory of available shapes and fills. Normally color is indicative of 
-the sign of \eqref{eqn:obsexp}, but here they are solely provided as example. 
-Text and images (not shown) may also be included.}
+\caption{Inventory of available shapes
+  (circle/triangle/square/pentagon) and fills (solid/striped/hollow).
+  Color is reserved to indicate the sign of \eqref{eqn:obsexp}.  Text
+  and arbitrary images may be used instead of shapes.}
 \label{fig:shape_inventory}
 \label{fig:inventory}
 \end{center}
 \end{figure}
 
-Tailoring lessons to the students' needs is as simple as editing a couple text files. These must detail:
+Tailoring lessons to the students' needs is as simple as editing a
+couple of text files. These must detail:
 \begin{inparaenum}[(1)]
 \item a set of features, 
-\item a set of contexts, and
-\item for each context, a set of uniquely featurized events, including counts and visual positions.
+\item a set of contexts,\footnote{The set of contexts may be omitted
+    when there is only one context (i.e., an unconditioned model).}
+  and
+\item for each context, a set of uniquely\NoteJE{what does this mean?} featurized events, including counts and visual positions.
 \end{inparaenum}
-These simple requirements allow one to describe some rather involved models. For example, some of 
-the features may be marked as ``hidden'' to the student, thereby allowing the student to experience 
-model mismatch. If the set of contexts is missing, the model is assumed to contain only 
-one context and be globally normalized. Note that the visual positioning information is pedagogically 
+These simple requirements allow one to describe some rather involved
+models.  Some of the features may be ``hidden'' from the student, thereby allowing the student to experience 
+model mismatch.  Note that the visual positioning information is pedagogically 
 important: aligning objects by orthogonal descriptions can make feature contrasts stand out more, 
-e.g., circles vs. triangles or solid vs. striped
+e.g., circles vs.\@ triangles or solid vs.\@ striped.
 
 The configuration files can turn off certain features on a per-lesson basis (without programming).  This is 
-useful for, e.g., hiding the ``solve'' button in early lessons, adding new tooltips or adapting existing 
-ones to emphasize different concepts in different lessons.\footnote{It is theoretically possible to provide arbitrarily targeted 
-feedback, such as hints that depend on $\vec{\theta}$ and observed data counts. Code included in a particular lesson's instructions 
-may suffice for one-off explanations but a more general solution should consider extending the back-end 
-(Section \ref{sec:backend}). As our focus was on developing a general, wide-reaching tool, and such state-dependent 
-hints would have impeded our goal, the manipulative currently has neither functionality. Under its open-source terms, 
-instructors are free to extend it.}
+useful for, e.g., hiding the ``Solve'' button in early lessons, adding new tooltips, or specializing
+the existing tooltips on a per-lesson basis.
+
+However, being a manipulative object rather than a tutoring system, our
+software does not monitor the user's progress through a lesson and
+provide guidance via lesson-specific hints, warnings, questions, or
+feedback.  (The software is open-source, so others are free to extend
+it in this way.)
+
+% OLD
+% \footnote{An interesting extension would be to provide
+%   even more specific hints that depend on the user's behavior
+% It is theoretically possible to provide arbitrarily targeted 
+% feedback, such as hints that depend on $\vec{\theta}$ and observed data counts. Code included in a particular lesson's instructions 
+% may suffice for one-off explanations but a more general solution should consider extending the back-end 
+% (Section \ref{sec:backend}). As our focus was on developing a general, wide-reaching tool, and such state-dependent 
+% hints would have impeded our goal, the manipulative currently has neither functionality. Under its open-source terms, 
+% instructors are free to extend it.}
 
 \subsection{Back-End Implementation}\label{sec:backend}
-The virtual manipulative is designed to be widely available and have no start-up cost. 
+Anyone can use our virtual manipulative simply by visiting its website.
+% designed to be widely available and have no start-up cost. 
+There is no start-up cost.
 Aside from reading the data, model and instructions from the web server, it is fully 
 client-side. The Javascript back-end uses common and well-supported open-source 
-libraries for cross-browser compatibility and visualization.\footnote{Specifically and in order, 
+libraries 
+% for cross-browser compatibility and visualization.
+that provide a consistent experience across browsers.\footnote{Specifically and in order, 
 \texttt{d3} (\url{d3js.org/}),
 \texttt{jQuery} (\url{jquery.com/}), 
 \texttt{jQuery UI} (\url{jqueryui.com}),
 \texttt{jQuery Tools} (\url{jquerytools.org/}), and
 \texttt{qTip} (\url{craigsworks.com/projects/qtip/}).}
 The manipulative relies on certain capabilities from the HTML5
-standard; unfortunately, not all current browsers support these
-capabilities.
+standard.  Not all browsers in current use support these
+capabilities, 
 %\NoteJE{which browsers don't?}  
 %\NoteFF{Internet Explorer; annoyingly, IE $< 10$ doesn't work though
 %most users who use IE fall into that category.}
-The tool works with recent versions of Firefox, Chrome and Safari and 
-our students did not have trouble running it on them.
+but the tool works with recent versions of Firefox, Chrome and Safari,
+as well as Internet Explorer versions $\geq 10$.\NoteJE{you've tested
+  it with version 10, yes?  I can't be positive from your comments
+  below.  But we need to make a precise statement about IE
+  so that instructors can warn their students not to use IE 9.  I just
+  tried it on IE 10: the True LL bar appears everywhere, but if that
+  bug can be fixed, it looks ok.}
+% and our students did not have trouble running it on them.
 %\NoteJE{true?}
 %\NoteFF{I don't have numbers to back it up, but generally I'd say yes.
 %A couple people had issues with earlier versions of Firefox, but that was FF $< 11$. 
