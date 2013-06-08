@@ -735,12 +735,10 @@ models appropriate?
 Why does their hypothesis space include the uniform distribution?  For
 what feature sets does it include {\em every} distribution?  
 
-One must also understand \textbf{estimation}.  How do features
-interact?  When estimating their weights, can raising one weight alter
-or reverse the desired changes to other weights?  How can parameter
-estimation go wrong computationally (slow convergence of gradient
-ascent in some circumstances, or non-convergence if a fixed stepsize
-is used)?  How can it go wrong statistically (overfitting, perhaps
+One should also understand statistical \textbf{estimation}.  How do
+features interact?  When estimating their weights, can raising one
+weight alter or reverse the desired changes to other weights?  How can
+parameter estimation go wrong statistically (overfitting, perhaps
 driving parameters to $\pm\infty$)?  What might happen if we have a
 very large feature set?  Can we design regularized estimators that
 prevent overfitting?  What is the effect of the regularization
@@ -758,7 +756,7 @@ that always or never fire) and useless ones?
 % (if any; eg., maxent formulation or empirical
 %MLE?)
 
-One is responsible for \textbf{feature design}.  Which
+Finally, one is responsible for \textbf{feature design}.  Which
 features usefully distinguish among the events?  How do non-binary
 features work and when are they appropriate?  When can a feature
 safely be omitted because it provides no additional modeling power?
@@ -844,30 +842,30 @@ traditional smoothing techniques in NLP \cite{chen-goodman-1996}?
 
 %Therefore, we also 
 
-\subsection{Importance of the Objective and Parameter Estimation} % and Evaluating the Model}
+\subsection{Training Algorithm} 
 
-We summarize the model's quality via the regularized conditional
-log-likelihood \eqref{eqn:reg_ll}.  
-The maximizer is the $\vec{\theta^*}$ that solves equation \eqref{eqn:grad}:
+We also aim to convey intuitions about a specific training algorithm.
+We use the regularized conditional log-likelihood \eqref{eqn:reg_ll}
+to define the quality of a parameter vector $\vec{\theta}$.
+The best choice is the $\vec{\theta}$ that solves equation \eqref{eqn:grad}:
 \begin{equation}
 \begin{aligned}
 %\begin{split}
-\nabla_{\vec{\theta}} F
+0 = \nabla_{\vec{\theta}} F
  = &
 \ \mathbb{E}_{\empirical{}}\left[\vec{f}(X,Y)\right] 
 - \mathbb{E}_{{p_{\vec{\theta}}}}\left[\vec{f}(X,Y)\right]\\
  & - C \nabla_{\vec{\theta}}R(\vec{\theta})
-\label{eqn:grad} \\
+\label{eqn:grad} 
 %= &\ \mathcal{C}(\empirical{}, p_{\vec{\theta}}) - C \nabla_{\vec{\theta}} R(\vec{\theta})\\
- = &\ 0.
 %\end{split}
 \end{aligned}
 \end{equation}
 Many important concepts are encapsulated in \eqref{eqn:reg_ll} and \eqref{eqn:grad}. 
-Some are new while others provide an alternative view
-on concepts already introduced. 
-%We highlight these connections, e.g., through 
-%tooltips and consistent color semantics, when possible.
+% Some are new while others provide an alternative view
+% on concepts already introduced. 
+% %We highlight these connections, e.g., through 
+% %tooltips and consistent color semantics, when possible.
 
 We believe the most important concept is that the gradient of (unregularized)
 maximum likelihood is the \textbf{difference 
@@ -884,6 +882,11 @@ of a larger exploration into the gradient confirms the physical intuitions with 
 This difference also shows that, when outcome matching is feasible, matching the empirical 
 distribution will generally maximize the (unregularized) log-likelihood. Of course, overfitting is possible and 
 may result in a larger log-likelihood than the true generating distribution yields.
+
+computationally (slow convergence of gradient
+ascent in some circumstances, or non-convergence if a fixed stepsize
+is used)?  How can it go wrong 
+
 
 We can ``follow'' the gradient along the surface not only to yield a solution, but to yield a solution guaranteed 
 never to decrease our objective value.\footnote{We focus on gradient ascent but other parameter estimation methods 
@@ -940,8 +943,8 @@ $Z(x)$.
 Here we provide an overview of the \NumLessons{} available lessons. This is intended as a 
 summary of the major concepts from the previous sections; we encourage the reader to 
 walk through the tutorial to attempt the activities and read all the questions. We have tried to 
-separate the lessons that build intuition from the ones focused on specific tasks or problems; this helps 
-the student solidify the fundamentals and facilitates future development by providing what might be considered 
+separate the lessons that build intuition from the ones focused on
+specific tasks or problems.  This helps the student solidify the fundamentals and facilitates future development by providing what might be considered 
 ``core'' and ``auxiliary'' sets of lessons.
 
 These core lessons start with \textbf{1}--\textbf{5}, which provide the basic introduction to log-linear modeling. We keep 
@@ -1097,7 +1100,7 @@ suggested additions to this page.
 \section{Conclusion}
 We have introduced an open-source, web-based virtual manipulative for
 log-linear models. Included with the code are
-\NumLessons{} lessons, with possible assignment questions, and auxiliary 
+\NumLessons{} lessons peppered with questions, and auxiliary 
 information including a handout that gives a formal treatment of the necessary 
 derivations, further reading and practice problems, and additional resources.
 A version is available at \WhereToFind{}.
