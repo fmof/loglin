@@ -794,28 +794,28 @@ between observed and expected feature counts}:
 - \mathbb{E}_{p_{\vec{\theta}}}\left[\vec{f}(X,Y)\right].
 \label{eqn:obsexp} 
 \end{equation}
-Students have already been introduced to this when considering the difference between type and 
-feature counts, and how expectation proportions affect how much one needs to change a given feature weight: 
-now, with the gradient, they can better understand why, and thus justify and strengthen their developing intuitions. 
+This difference of expectations, present in the feature matching activity and consideration of expectation 
+proportions, is a recurring quantity. Though our system encourages students to infer that the feature 
+matching and log-likelihood activities are really just the same thing, focusing on this difference as part 
+of a larger exploration into the gradient confirms the physical intuitions with mathematical justification.
+This difference also shows that, when the outcome matching activity is feasible, matching the empirical 
+distribution will generally maximize the (unregularized) log-likelihood. 
+though that overfitting is possible and may result in a larger log-likelihood than the true generating distribution yields.
 
-For students with limited-to-no prior numerical optimization experience, the next 
-important idea is what it means to ``follow'' the gradient up the convex ``hill,'' and that doing so will 
-\begin{inparaenum}[i)]
-\item actually yield a solution, even though a closed-form solution is not generally available, and
-\item not decrease the objective.\footnote{We focus on gradient ascent but other parameter estimation methods 
+We can ``follow'' the gradient along the surface not only to yield a solution, but to yield a solution guaranteed 
+never to decrease our objective value.\footnote{We focus on gradient ascent but other parameter estimation methods 
 exist, such as variants of iterative scaling, and first- and second-order gradient algorithms. The most popular 
 methods have relied on quantities similar to \eqref{eqn:obsexp}, which, as shown in Figure \ref{fig:colorsize_inventory} 
 and discussed above (\S\ref{sec:aims}), is 
 one of the most important concepts we illustrate. See 
 \newcite{berger-dellapietra-dellapietra-1996} and \newcite{malouf2002comparison}. }
-\end{inparaenum}
-The importance of the convexity of \eqref{eqn:reg_ll} generalizes these two observations.\footnote{Advanced 
+Convexity explains these two facts.\footnote{Advanced 
 students might try ``breaking'' convexity, e.g., what happens when $C < 0$?}
-% $\vec{\theta^*}$ that solves \eqref{eqn:reg_ll}.
-Students should understand that matching the empirical distribution will generally maximize the (unregularized) log-likelihood, 
-though that overfitting is possible and may result in a larger log-likelihood than the true generating distribution yields.
+We find the canonical landscape-inspired convexity metaphor useful, and we partially reflect 
+the metaphor in the the adaptable log-likelihood bar. Rather than just \textit{imagining} walking up a hill, 
+students can ``actually'' do it.
 
-We may use the gradient to further illustrate feature modeling considerations. The most obvious is to show how 
+We use the gradient to further illustrate feature modeling considerations. The most obvious is to show how 
 minimizing a single isolated $|\frac{\partial}{\partial \theta_k} F|$ might adversely affect another partial 
 $\frac{\partial}{\partial \theta_{k'}}F$. Additional connections to differences in type and feature counts should be 
 made: even if the model distribution does not fully match the empirical, expected and observed feature 
