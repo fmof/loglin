@@ -725,19 +725,28 @@ The tool works with recent versions of Firefox, Chrome and Safari.
 
 \section{Pedagogical Aims}\label{sec:aims}
 
-\subsection{Feature Design and Modeling Considerations}
+\subsection{Modeling and Estimation}
 
 When faced with a dataset $\Data{}$ of $(x, y)$ pairs, one often hopes
 to \textbf{choose an appropriate model}.  When are log-linear
 models appropriate?
 % contrast with the empirical distribution \eqref{eqn:empirical_distr}.  While pragmatically the most important
 % consequence of this modeling decision is that of proper feature design, we can ask about 
-Does their hypothesis space include the uniform distribution?  Does it
-include every distribution?  How does the answer depend on the
-selection of features?  When estimating the parameters, what can go
-wrong?  \NoteJE{move the following to next section? }Can we design
-regularized estimators that prevent overfitting?  What is the effect
-of the regularization constant on large and small datasets?  What
+Why does their hypothesis space include the uniform distribution?  For
+what feature sets does it include {\em every} distribution?  
+
+One must also understand \textbf{estimation}.  How do features
+interact?  When estimating their weights, can raising one weight alter
+or reverse the desired changes to other weights?  How can parameter
+estimation go wrong computationally (slow convergence of gradient
+ascent in some circumstances, or non-convergence if a fixed stepsize
+is used)?  How can it go wrong statistically (overfitting, perhaps
+driving parameters to $\pm\infty$)?  What might happen if we have a
+very large feature set?  Can we design regularized estimators that
+prevent overfitting?  What is the effect of the regularization
+constant on small and large datasets?  On rare and frequent contexts?
+On rare and frequent features?  On useful features (including features
+that always or never fire) and useless ones?
 
 % What estimators exist and how ``good'' are they? How does
 % \eqref{eqn:loglin} generalize other distributions: $\vec{\theta} = 0$
@@ -749,12 +758,14 @@ of the regularization constant on large and small datasets?  What
 % (if any; eg., maxent formulation or empirical
 %MLE?)
 
-The modeler has the onus of proper \textbf{feature design}.  Which
-features usefully distinguish among the events?  When can a feature be
-omitted because it provides no additional modeling power?  How does
-the choice of features affect generalization, particularly if the
-objective is regularized?
-
+One is responsible for \textbf{feature design}.  Which
+features usefully distinguish among the events?  How do non-binary
+features work and when are they appropriate?  When can a feature
+safely be omitted because it provides no additional modeling power?
+How does the choice of features affect generalization, particularly if
+the objective is regularized?
+%
+% TOO SPECIFIC FOR THIS SECTION; NOW SUMMARIZED ABOVE
 % Say we define a globally normalized model over solid circles, striped
 % circles, solid triangles and striped triangles.  We might first
 % consider the contrasting indicator feature functions for whether a
@@ -766,46 +777,59 @@ objective is regularized?
 % for the above example), yet insufficient in others?
 % %\footnote{Those with knowledge of statistics might benefit 
 % %from a discussion of the importance of rank in exponential families.}
+% 
+% DOESN'T ADD ANY CONTENT
+% We contrast conditional models and globally normalized ones. 
+% These context-unaware models allow students to focus on
+% understanding some of the core underlying mathematical concepts of
+% exponential models, such as feature interations and weight tradeoffs,
+% and important differences between global and conditional models. 
+In particular, how does sharing features allow a conditional model to
+generalize to novel contexts and outcomes (or rare ones)?  How do the
+resulting patterns of generalization relate qualitatively to
+traditional smoothing techniques in NLP \cite{chen-goodman-1996}?
+% REPHRASED ABOVE
+% For instance, a benefit of conditional models is they can share 
+% features across conditions, which helps in generalizing to unseen context-outcome 
+% pairs and maximizing the regularized objective.
 
-We contrast conditional models and globally normalized ones. 
-These context-unaware models allow students to focus on
-understanding some of the core underlying mathematical concepts of
-exponential models, such as feature interations and weight tradeoffs,
-and important differences between global and conditional models. 
-For instance, a benefit of conditional models is they can share 
-features across conditions, which helps in generalizing to unseen context-outcome 
-pairs and maximizing the regularized objective.
+% REDUNDANT
+% The empirical distribution is concerned with \textit{type} counts, but log-linear models 
+% deal with descriptions of types; thus we can instead talk about \textbf{feature counts}. Our 
+% manipulative allows exploration of these two different counts and how they affect the 
+% feature weights. For example, if a feature is predicted to occur less often than it actually does, 
+% we should raise its weight. But raising that weight 
+% may affect the quality of all the other weights, so fitting one weight in
+% isolation may reduce or reverse the need to raise other weights. How can you mitigate  
+% adverse effects and get to the solution quickly, even in complex models?
 
-The empirical distribution is concerned with \textit{type} counts, but log-linear models 
-deal with descriptions of types; thus we can instead talk about \textbf{feature counts}. Our 
-manipulative allows exploration of these two different counts and how they affect the 
-feature weights. For example, if a feature is predicted to occur less often than it actually does, 
-we should raise its weight. But raising that weight 
-may affect the quality of all the other weights, so fitting one weight in
-isolation may reduce or reverse the need to raise other weights. How can you mitigate  
-adverse effects and get to the solution quickly, even in complex models?
+% MENTIONED ABOVE
+% Generally, both the number and range of features affect the expressive 
+% power of the model, as with enough features you can fit any distribution. But this expressiveness 
+% has a cost, as too many features can lead to overfitting. 
+% MENTIONED ABOVE
+% In one particularly important case, a feature for each $(x,y)$ pair allows an unregularized model to fit the 
+% data perfectly. 
+% Similarly, defining features that everything (or nothing) has can make the weights 
+% take extreme values (go to $\pm \infty$). 
+% I DON'T KNOW, AND OUR LESSONS DON'T COVER IT
+% Further, though features are commonly binary, 
+% this is not a strict requirement: defining non-binary feature functions, such as one that fires in 
+% proportion to some property of the datum (e.g., the number of sides of a shape) can affect the
+% proportions of feature counts. 
+% How does this interact with the amount of training data and what is its 
+% effect on model quality?
 
-Generally, both the number and range of features affect the expressive 
-power of the model, as with enough features you can fit any distribution. But this expressiveness 
-has a cost, as too many features can lead to overfitting. 
-In one particularly important case, a feature for each $(x,y)$ pair allows an unregularized model to fit the 
-data perfectly. 
-Similarly, defining features that everything (or nothing) has can make the weights 
-take extreme values (go to $\pm \infty$). Further, though features are commonly binary, 
-this is not a strict requirement: defining non-binary feature functions, such as one that fires in 
-proportion to some property of the datum (e.g., the number of sides of a shape) can affect the
-proportions of feature counts. How does this interact with the amount of training data and what is its 
-effect on model quality?
-
-Our manipulative must generalize the above points to conditional models. Students should 
-understand the effect the amount of data (per context) has on what features are appropriate to define. 
-In particular, how do the marginal counts affect the resulting distributions, feature 
-weights and the results of the matching and log-likelihood games? 
-While exploring what backoff features are, and how and why they are useful, is important in its own right, 
-it is important to connect them to smoothing, a topic with which some students may have previous experience. 
-Understanding which features influence 
-what conditional distributions, e.g., that features defined on conditions have no effect on conditional distributions, 
-helps unite previously introduced concepts.% such as feature definition and model expressiveness considerations.
+% ALL COVERED ABOVE NOW
+% Our manipulative must generalize the above points to conditional models. Students should 
+% understand the effect the amount of data (per context) has on what features are appropriate to define. 
+% In particular, how do the marginal counts affect the resulting distributions, feature 
+% weights and the results of the matching and log-likelihood games? 
+% While exploring what backoff features are, and how and why they are useful, is important in its own right, 
+% it is important to connect them to smoothing, a topic with which some students may have previous experience. 
+% Understanding which features influence 
+% what conditional distributions, e.g., that features defined on conditions have no effect on conditional distributions, 
+% helps unite previously introduced concepts.% such as feature definition and model expressiveness considerations.
 
 % defined over \Data{} , we are interested in estimating distributions 
 %\begin{equation}
