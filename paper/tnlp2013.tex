@@ -310,14 +310,16 @@ problems, including procurement of necessary materials, replicability,
 %  research on them?} \NoteFF{using them; virtual manipulatives encourage practical, inexpensive systematic 
 %deployment} 
 and applicability to certain groups of students and to concepts
-that have no simple physical realization. These issues, among others, have 
-resulted in increased interest over the past two decades into
+that have no simple physical realization. These issues
+% , among others,
+have spurred interest over the past two decades in
 \textit{virtual manipulatives} implemented in software, including the creation of 
 the National Library of Virtual Manipulatives.\footnote{\url{nlvm.usu.edu/en/nav/vlibrary.html} and 
 \url{enlvm.usu.edu/ma/nav/doc/intro.jsp}} 
 Both \newcite{clements1996concrete} and \newcite{moyer2002virtual} provide accessible overviews of 
 virtual manipulatives in early math education. 
-Virtual manipulatives give students the ability to effect changes on a complex system and learn its underlying 
+Virtual manipulatives give students the ability to effect changes on a
+complex system and so learn its underlying 
 properties \cite{moyer2002virtual}. This last point is particularly applicable for log-linear models.
 
 %"Clements and Sarama
@@ -522,7 +524,10 @@ $\nabla_{\vec{\theta}} F$
 \centering
 \small
 \includegraphics[scale=.65]{images/gradient-lesson7.PNG}
-\caption{Gradient components use the same color coding as given in Figure \ref{fig:colorsize_inventory}. The length of each component indicates its potential effect on the objective, and not its magnitude.}
+\caption{Gradient components use the same color coding as given in
+  Figure \ref{fig:colorsize_inventory}. The length of each component
+  indicates its potential effect on the objective.  Note that the
+  sliders use a nonlinear scale from $-\infty$ to $+\infty$.}
 \label{fig:gradients}
 \end{figure}
 
@@ -547,7 +552,7 @@ log-likelihood is 0.  In fact, the current feature mismatch {\em
 the sliders in the direction of the gradient hints can be viewed as a
 correct strategy for {\em either} the feature matching game {\em or}
 the log-likelihood game.  This connection shows how to maximize
-log-likelihood: its gradient can easily be computed by counting up the
+log-likelihood, as its gradient can easily be computed by counting up the
 observed and currently predicted features.  After understanding this
 and playing with the ``Step'' and ``Solve'' buttons, the student
 should be able to imagine writing code to train log-linear models.
@@ -559,33 +564,48 @@ should be able to imagine writing code to train log-linear models.
 % % This is particularly true as more advanced concepts such as regularization and 
 % % conjoined features are introduced.
 
-A main tenet of this manipulative is the benefit of ``learning by playing.'' 
-Once comfortable with the provided model and data, the student can begin to play 
-around with the dataset and model options. These utilities, such as
-generating a new random challenge and experimenting with regularization, 
-are described more in Section \ref{sec:lessons}.
+% TRUE FOR ALL MANIPULATIVES
+% A main tenet of this manipulative is the benefit of ``learning by playing.'' 
+We expect students to ``learn by playing.''  The user can experiment
+at any time with the sliders, with gradient ascent and its stepsize,
+with the type and strength of regularization, and with the size of the
+dataset.  The user can also sample new data or new parameters, and can
+peek at the true parameters.  These options are described further
+in Section \ref{sec:lessons}.
 
-The particular game being played in a lesson is described in the
-instruction area. The instructions explain what the data and task are, justify modeling
-choices, introduce new functionality and ask lesson-specific questions. For more technical 
-explanations and derivations, or for additional practice questions, 
-they may direct the student to auxiliary material provided with the code; it is designed to explain 
-the physical intuitions gained and act as a self-check on one's understanding. 
+% The instructions and auxiliary material can help a student explore, but sometimes the 
+% student may just need to roam freely. 
 
-The instructions and auxiliary material can help a student explore, but sometimes the 
-student may just need to roam freely. To encourage this, the student can utilize any number of 
-\textit{tooltips}, or hints/information that appear when a student hovers the cursor over an item. 
-Tooltips are important because they provide guidance about whatever the student is thinking about \textit{right then}.
-Many of them that come preloaded transcend individual lessons: some are static (e.g., what is the 
-log-likelihood bar showing), while others 
-dynamically update with changes to the model (e.g., the tooltips on the feature sliders show the 
-observed and expected counts for that feature).  
-This means students see the tooltips repeatedly, which can help them absorb and reinforce concepts over an extended 
-period of time. Mutually referring tooltips (e.g., the log-likelihood score, regularization, and the 
-gradient) both solidify growing intuition and encourage constructive play. Students who like to learn by
-browsing and experimenting can point to various tooltips and get a sense of how the different 
-concepts fit together. This allows those so inclined to go beyond the current lesson and make conceptual 
-connections.
+We encourage experimentation by providing \textit{tooltips} that
+appear whenever a student hovers the mouse pointer over an item.
+Tooltips provide guidance about whatever the student is looking at
+\textit{right then}.  Some are static explanations (e.g., what does
+this gray bar represent?).  Others dynamically update with changes to
+the parameters (e.g., the tooltips on the feature sliders show the
+observed and expected counts for that feature).  Students see the
+tooltips repeatedly, which can help them absorb and reinforce concepts
+over an extended period of time.  Students who like to learn by
+browsing and experimenting can point to various tooltips and get a
+sense of how the different concepts fit together.  Some tooltips
+explicitly refer to one another, linking elements such as the
+training objective, the regularization choices, and the gradient.
+
+% This allows those so inclined to
+% go beyond the current lesson and make conceptual connections.
+
+Though the user is welcome to play, we also provide some guidance.
+Each lesson displays instructions that explain the current dataset,
+justify modeling choices, introduce new functionality, lead the user
+through a few activities, and ask lesson-specific questions.  The
+first lesson also links to a handout with a more formal textbook-style
+treatment.  The last lesson links to further reading and exercises.
+
+% For more technical explanations and
+% derivations, or for additional practice questions, they may direct the
+% student to auxiliary material provided with the code; it is designed
+% to explain the physical intuitions gained and act as a self-check on
+% one's understanding.
+
 
 \subsection{The Instructor Interface: Creating and Tailoring Lessons}\label{sec:tailoring}
 
@@ -593,7 +613,7 @@ To support a wide-range of lessons, the manipulative has support for twelve pred
 As seen in Figure \ref{fig:shape_inventory}, the available shapes are circles, triangles, squares and pentagons,
 where each can be solid, striped or hollow.
 
-The instructor must be able to tailor lessons to his or her students' needs, 
+An instructor may wish to tailor lessons to his or her students' needs, 
 interests, and abilities. It is appropriate to reason about different types of shapes
 when introducing students to log-linear models, but eventually NLP students will want to think about 
 NLP problems, whereas vision students will want to think about vision problems: we have designed the manipulative to handle text
@@ -605,7 +625,7 @@ and arbitrary images as well.
 \includegraphics[scale=.5]{images/different_shapes_fills3x4.PNG}
 \caption{Inventory of available shapes and fills. Normally color is indicative of 
 the sign of \eqref{eqn:obsexp}, but here they are solely provided as example. 
-Text and images (not shown) may also be included.}
+Text and arbitrary images may be used instead of shapes.}
 \label{fig:shape_inventory}
 \label{fig:inventory}
 \end{center}
