@@ -534,8 +534,8 @@ $\nabla_{\vec{\theta}} F$
 Winning any of these games with more complex models becomes difficult
 or at least tedious, so that automatic methods come as a relief.  The
 student may view {\em hints} on the sliders, showing which way each
-slider should be nudged (Figure~\ref{fig:gradients}).  These hints are
-really components of the log-likelihood gradient.  Further automation
+slider should be nudged (Figure~\ref{fig:gradients}).  These hints 
+correspond to components of the log-likelihood gradient.  Further automation
 is offered by the ``Step'' button, which automatically nudges all
 parameters by taking a step of gradient ascent, and even more by the
 ``Solve'' button, which steps all the way to the maximum (using an
@@ -547,15 +547,15 @@ attainable version of outcome matching (when outcome matching is
 possible it certainly achieves feature matching as well).  Second,
 feature matching is equivalent to maximizing the (unregularized)
 log-likelihood.  Thus the mismatch is 0 iff the gradient of
-log-likelihood is 0.  In fact, the current feature mismatch {\em
-  equals} the current gradient of the log-likelihood!  Thus, dragging
-the sliders in the direction of the gradient hints can be viewed as a
-correct strategy for {\em either} the feature matching game {\em or}
-the log-likelihood game.  This connection shows how to maximize
-log-likelihood, as its gradient can easily be computed by counting up the
-observed and currently predicted features.  After understanding this
-and playing with the ``Step'' and ``Solve'' buttons, the student
-should be able to imagine writing code to train log-linear models.
+log-likelihood is 0.  In fact, the mismatch equals the gradient even
+when they are {\em not} 0!  Thus, dragging the sliders in the
+direction of the gradient hints can be viewed as a correct strategy
+for {\em either} the feature matching game {\em or} the log-likelihood
+game.  This connection shows that the current gradient of log-likelihood can
+easily be computed by summing up the observed and currently predicted
+counts of each feature.  After understanding this and playing with the ``Step'' and
+``Solve'' buttons, the student should be able to imagine writing code
+to train log-linear models.
 
 % OLD 
 % These games are not played in isolation. When playing either the log-likelihood or 
@@ -724,20 +724,46 @@ as well as Internet Explorer versions $\geq 10$.\NoteJE{you've tested
 
 \subsection{Feature Design and Modeling Considerations}
 
-Given a dataset $\Data{}$ of $(x, y)$ pairs, one of the initial decisions 
-to make is \textbf{choosing an appropriate model} and distribution family. 
-As argued above, for this manipulative we focus on contrasting exponential families 
-\eqref{eqn:loglin} with the empirical distribution \eqref{eqn:empirical_distr}. While pragmatically the most important 
-consequence of this modeling decision is that of proper feature design, we can ask about 
-certain underlying statistical properties of the model: what estimators 
-exist and how ``good'' are they? How does \eqref{eqn:loglin} generalize other 
-distributions: $\vec{\theta} = 0$ yields the uniform distribution, but can you match 
-the empirical? What constraints does the model satisfy and what practical implications
-are there?
+When faced with a dataset $\Data{}$ of $(x, y)$ pairs, one often hopes
+to \textbf{choose an appropriate model}.  When are log-linear
+models appropriate?
+% contrast with the empirical distribution \eqref{eqn:empirical_distr}.  While pragmatically the most important
+% consequence of this modeling decision is that of proper feature design, we can ask about 
+Does their hypothesis space include the uniform distribution?  Does it
+include every distribution?  How does the answer depend on the
+selection of features?  When estimating the parameters, what can go
+wrong?  \NoteJE{move the following to next section? }Can we design
+regularized estimators that prevent overfitting?  What is the effect
+of the regularization constant on large and small datasets?  What
+
+% What estimators exist and how ``good'' are they? How does
+% \eqref{eqn:loglin} generalize other distributions: $\vec{\theta} = 0$
+% yields the uniform distribution, but can you match the empirical? What
+% constraints does the model satisfy and what practical implications are
+% there?
+
 %How does this relate to the maximum entropy view?
 % (if any; eg., maxent formulation or empirical
 %MLE?)
- 
+
+The modeler has the onus of proper \textbf{feature design}.  Which
+features usefully distinguish among the events?  When can a feature be
+omitted because it provides no additional modeling power?  How does
+the choice of features affect generalization, particularly if the
+objective is regularized?
+
+% Say we define a globally normalized model over solid circles, striped
+% circles, solid triangles and striped triangles.  We might first
+% consider the contrasting indicator feature functions for whether a
+% shape is a circle or is solid, as in Figure \ref{fig:lesson1}. Which
+% of the games can the student ``win'' using this two feature model? How
+% might the empirical distribution affect the result?  Will more
+% features always help? Why might partitioning binary features be
+% redundant in some cases (definining both circle and triangle features
+% for the above example), yet insufficient in others?
+% %\footnote{Those with knowledge of statistics might benefit 
+% %from a discussion of the importance of rank in exponential families.}
+
 We contrast conditional models and globally normalized ones. 
 These context-unaware models allow students to focus on
 understanding some of the core underlying mathematical concepts of
@@ -746,18 +772,6 @@ and important differences between global and conditional models.
 For instance, a benefit of conditional models is they can share 
 features across conditions, which helps in generalizing to unseen context-outcome 
 pairs and maximizing the regularized objective.
-
-The modeler has the onus of proper \textbf{feature design}: what discriminative features 
-help model the underlying data attributes? Say we define a globally 
-normalized model over solid circles, striped circles, solid triangles and striped triangles. 
-We might first consider the contrasting indicator feature functions for whether a shape
-is a circle or is solid, as in Figure \ref{fig:lesson1}. Which of the games can the student 
-``win'' using this two feature model? How might the empirical distribution affect the result? 
-Will more features always help? Why might partitioning binary 
-features be redundant in some cases (definining both circle and triangle features for the above example), 
-yet insufficient in others?
-%\footnote{Those with knowledge of statistics might benefit 
-%from a discussion of the importance of rank in exponential families.}
 
 The empirical distribution is concerned with \textit{type} counts, but log-linear models 
 deal with descriptions of types; thus we can instead talk about \textbf{feature counts}. Our 
