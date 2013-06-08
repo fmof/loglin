@@ -39,6 +39,7 @@
 \newcommand{\Data}[0]{\ensuremath{\mathcal{D}}}
 
 \newcommand{\WhereToFind}[0]{\url{http://cs.jhu.edu/~jason/tutorials/loglin/}}
+\newcommand{\les}[1]{\textbf{#1}}
 
 %%%%%%%%%%%%%%%%%5
 %CHANGE THIS!!!
@@ -89,7 +90,7 @@ p_{\vec{\theta}}(y \mid x) \propto \exp{\left(\vec{\theta} \cdot \vec{f}\left(x,
 where $\vec{f}$ extracts a feature vector from context $x$ and
 outcome $y \in \mathcal{Y}(x)$.  The set of possible
 outcomes $\mathcal{Y}(x)$ might depend on the context
-$x$.\footnote{The model is equivalent to logistic regression
+$x$.\footnote{\label{fn:logistic}The model is equivalent to logistic regression
   when $y$ is a binary variable, that is, when $\mathcal{Y}(x)=\{0,1\}$.}
 
 We then present an interactive web visualization that guides students
@@ -989,81 +990,193 @@ $Z(x)$.
 
 
 \section{Provided Lessons}\label{sec:lessons}
-Here we provide an overview of the \NumLessons{} available
-lessons. This is intended as a summary of the major concepts from the
-previous sections; we encourage the reader to walk through the
-tutorial to attempt the activities and read all the questions. We have
-tried to separate the ``core'' lessons that build intuition from the
-``applied'' lessons focused on specific tasks or problems.  An
-instructor should feel especially free to replace or reorder the
+In this section we provide an overview of the \NumLessons{} currently
+available lessons.  (Of course, you can work through the lessons
+yourself for further details.)  ``Core'' lessons that build intuition
+precede the ``applied'' lessons focused on NLP tasks or problems.
+Instructors should feel especially free to replace or reorder the
 ``applied'' lessons.
 
-The core lessons start with \textbf{1}--\textbf{5}, which provide the basic introduction to log-linear modeling. We keep 
-the models simple and incrementally build intution, and only consider joint models over shapes. The focus is 
-on feature design. We start by comparing models over four shapes with two and four features. 
-Next we hide certain generating features from the students: they 
-consider what is going on in this model mismatch exercise, and a possible way to handle it. We play all three games, 
-starting with model matching but progressing to feature matching and the log-likelihood game; we compare and 
-constrast these latter two to show that they are really just doing the same thing. Students explore 
-non-binary features too.\footnote{Students had difficulty with non-binary features; 
-we have since improved the lessons to explore \eqref{eqn:obsexp} in greater depth.} 
+Core lessons \les{1}--\les{5} provide a basic
+\textbf{introduction} to log-linear modeling, using unconditioned
+distributions over only four shapes as shown in Figure
+\ref{fig:lesson1}.  We begin by matching outcomes using just
+``circle'' and ``solid'' features.  We discover in lesson \les{2}
+that it is redundant to add ``triangle'' and ``striped'' features.  In
+lesson \les{3} we encounter a dataset which these features cannot
+fit, because the shape and fill attributes are not statistically
+independent.  We remedy this in lesson \les{4} with a conjunctive
+``striped triangle'' feature.  
 
-Having begun to develop the appropriate intuition, lessons \textbf{6}--\textbf{8} introduce 
-additional outcomes, and as a result, larger models. To deal with this complexity, we describe the convex 
-objective and its gradient 
-(Figure \ref{fig:gradients}), 
-automatically solving for $\vec{\theta}$ via gradient ascent, and how a larger partial derivative means the objective is more 
-sensitive to changing that feature. We connect the gradient, specifically computing observed and expected feature 
-counts, with the previous lessons involving model mismatch; this allows students to better understand what the 
-model was learning and why. 
-Students can use the gradient hints and solver to watch $\vec{\theta}$ climb up the objective ``hill'' to the global maximum, 
-partly illustrating the implications of a convex objective for our model's estimator.
+Because outcome matching fails in lesson \les{3}, lessons
+\les{3}--\les{4} introduce feature matching and log-likelihood
+as suitable alternatives.  Lesson \les{5} briefly illustrates a
+non-binary feature function, ``number of sides'' (taking values 3, 4,
+and 5 on triangles, squares, and pentagons).  This clarifies the
+matching of feature counts: here we are trying to predict the total
+number of sides in the dataset.
 
-We also introduce additional manipulative functionality and encourage their use to 
-explore log-linear models. For instance, students can generate secret oracle weights and 
-fit a model to data sampled from those new weights. Students can also ``cheat'' and look at the true 
-weights,  and question why estimates of $\vec{\theta}$ might be different from the true parameters 
-(sampling error).
+% \footnote{Students had trouble with non-binary features, so
+%   we improved our explanation of expected and observed counts
+%  \eqref{eqn:obsexp} in this context.}
 
-Having explored the gradient, lessons \textbf{8}--\textbf{10} consider more advanced topics in joint 
-modeling. Students explore what affects model quality, such as which regularizer is used, the 
-regularization coefficient, and the amount of \textit{training} data.\footnote{Advanced 
-students might try ``breaking'' convexity, e.g., by setting $C < 0$.} How does regularization help with 
-unseen (``test'') data? 
+% We keep 
+% the models simple and incrementally build intution, and only consider joint models over shapes. The focus is 
+% on feature design. We start by comparing models over four shapes with two and four features. 
+% Next we hide certain generating features from the students: they 
+% consider what is going on in this model mismatch exercise, and a possible way to handle it. We play all three games, 
+% starting with model matching but progressing to feature matching and the log-likelihood game; we compare and 
+% constrast these latter two to show that they are really just doing the same thing. Students explore 
+% non-binary features too.
 
-Lessons \textbf{11}--\textbf{13} introduce conditional models and convey some of the basic differences between 
-conditional and global models. Students use a conditional model with shared features to model 
-heavily skewed data, which illustrates how the matching and log-likelihood games differ under the two types of 
-models. We illustrate how shared conditional features can help more accurately model a context-specific 
-outcome $\mathcal{Y}(x)$.
+% Having begun to develop the appropriate intuition, 
+Lessons \les{6}--\les{8} focus on \textbf{optimization}.  They
+move up to the harder setting of 9 shapes with 6 features, so we tell
+students how to turn on the gradient ``hints'' on the sliders.  We
+explain how these hints relate to feature matching and log-likelihood.
+We invite the students to try using the hints on earlier lessons---and
+on new random datasets that they can generate by clicking.  In Lesson
+\les{7}, we introduce the ``Step'' and ``Solve'' buttons to help
+even more with a difficult dataset.  Students use all these GUI
+elements to climb the convex objective and increase the log-likelihood
+bar.
 
-Lessons \textbf{14}--\textbf{15} further explore informed feature design in conditional models. 
-Specifically in lesson \textbf{14}, we add a feature for each context and the students are asked what happens 
-when we solve and why; that is, why context-only features do not move from their initial 0 values. 
-In lesson \textbf{15}, we consider conjoined ``bigram'' features as a way to successfully incorporate 
-contextual information into the model. We retain the original ``unigram'' (outcome) features, and explore
-how the regularizer breaks parameter setting ties.
+At this point we introduce \textbf{regularization}.  Lesson \les{6}
+invited students to generate {\em small} random datasets and observe
+their high variance and the tendency to overfit them.  Lesson
+\les{8} gives a more dramatic illustration of overfitting: with no
+observed pentagons, the solver sends $\theta_{\textrm{pentagon}}
+\rightarrow -\infty$ to make $p_{\vec{\theta}}(\textrm{pentagon})
+\rightarrow 0$.  We prevent this by adding a regularization penalty,
+which reserves some probability for pentagons.  Striped pentagons turn out
+to be the least likely pentagons, because stripes were observed to be
+uncommon on {\em other} shapes (so $\theta_{\textrm{striped}} < 0$).
+Thus we see that our choice of features allows this ``smoothing
+method'' to make useful generalizations about novel outcomes.
 
-Lesson \textbf{16} begins the application-driven lessons. It extends the ``unigram'' and ``bigram'' concepts 
-from the previous lesson to create a ``bigram language model.'' We step through the design of three general 
-features that look at the event and the context together and ask open-ended questions that cause students 
-to ponder estimation issues in conditional sequence models even when there is no model mismatch.
-%Even though the data were generated from the ``true'' model, how well does the model fit the observed data sample, and how well can the model recover the ``true'' weights? Should regularization be used to answer these questions? What should you do if you need a very good estimate of those weights?
+% additional outcomes, and as a result, larger models. To deal with this complexity, we describe the convex 
+% objective and its gradient 
+% (Figure \ref{fig:gradients}), 
+% automatically solving for $\vec{\theta}$ via gradient ascent, and how a larger partial derivative means the objective is more 
+% sensitive to changing that feature. We connect the gradient, specifically computing observed and expected feature 
+% counts, with the previous lessons involving model mismatch; this allows students to better understand what the 
+% model was learning and why. 
+% Students can use the gradient hints and solver to watch $\vec{\theta}$ climb up the objective ``hill'' to the global maximum, 
+% partly illustrating the implications of a convex objective for our model's estimator.
+ 
+% We also introduce additional manipulative functionality and encourage their use to 
+% explore log-linear models. For instance, students can generate secret oracle weights and 
+% fit a model to data sampled from those new weights. 
 
-Finally, we apply log-linear modeling to the task of text categorization (spam detection). This lesson demonstrates to students how to encode logistic regression in our framework, and so 
-we first ask some simpler questions to make sure they understand what is going on and what the conditional models actually mean.
-Then, we can ask particular questions and make sure they understand how the feature modeling experience gained in 
-prior lessons should be applied in practice. We also ask them to think about how to extend the approach to do three-way classification 
-of a phrase (e.g., as \texttt{spam}, \texttt{work}, or \texttt{fun}).
-%What kind of information below indicates that a particular training phrase has been labeled as spam?
-%Which are the two test phrases included below? How do you know?
-%If you train this model without regularization, what happens to the log-likelihood and the weights? Why?
-%If you train this model with regularization, how does it classify the two test phrases? Look at the weights: what features helped it make this classification?
-%You might think that 'fortune' fires on any phrase that contains the word 'fortune'. But lesson 14 suggests that can't quite work. Let's be precise: what (context,outcome) pairs is 'fortune' really defined to fire on?
-%mentions money is a binary feature. What are some words that cause it to fire? How did you find out?
-%Is the feature 'yada' a binary feature, or a counting feature? That is, does fyada return 1 or 3 on yada yada yada? How did you find out?
-%Which of the non-spam messages does your trained model think is spammiest? How do you know?
+% Students can also ``cheat'' and look at the true 
+% weights,  and question why estimates of $\vec{\theta}$ might be different from the true parameters 
+% (sampling error).
 
+Lessons \les{9}--\les{10} consider the effect of $\ell_1$ versus
+$\ell_2$ regularization, and the competition between the regularizer
+(scaled by the constant $C$) and the log-likelihood (scaled by the
+dataset size $N$).\footnote{Clever students may think to try setting
+  $C < 0$, which breaks convexity of the objective function.}
+
+% modeling. Students explore what affects model quality, such as which regularizer is used, the 
+% regularization coefficient, and the amount of \textit{training} data.\footnote{Advanced 
+% students might try ``breaking'' convexity, e.g., by setting $C < 0$.} How does regularization help with 
+% unseen (``test'') data? 
+
+Lessons \les{11}--\les{13} introduce \textbf{conditional models},
+showing how features are shared among three contexts.  The third
+context is unobserved, yet our trained model makes plausible
+predictions about it.  The {\em conditional} probabilities of
+unobserved shapes are positive even without regularization, in
+contrast to the {\em joint} probabilities in lesson \les{9}.
+
+We see that a frequent context $x$ generally has more influence on the
+parameters.  But this need not be true if the parameters do not help
+to distinguish among the particular outcomes ${\cal Y}(x)$.
+
+% conditional and global models. Students use a conditional model with shared features to model 
+% heavily skewed data, which illustrates how the matching and log-likelihood games differ under the two types of 
+% models. We illustrate how shared conditional features can help more accurately model a context-specific 
+% outcome $\mathcal{Y}(x)$.
+
+Lessons \les{14}--\les{15} explore feature design in conditional
+models.  We model conditional probabilities of the form $p(\text{fill}
+\mid \text{shape})$.  ``Unigram'' features can favor certain fills $y$
+regardless of the shape.  ``Bigram'' features that look at $y$ and $x$
+together can favor different fills for each shape type.  We see that
+features that depend {\em only} on the shape $x$ cannot distinguish
+among fills $y$, and so have no effect on the conditional
+probabilities $p(y\mid x)$.
+
+% Specifically in lesson \les{14}, we add a feature for each context and the students are asked what happens 
+% when we solve and why; that is, why context-only features do not move from their initial 0 values. 
+
+Lesson \les{15} illustrates how regularization promotes
+generalization and feature selection.  Once we have a full set of
+bigram features, the unigram features are redundant.  We never have to
+put a high weight on ``solid'': we can accomplish the same thing by
+putting high weights on ``solid triangle'' and ``solid circle''
+separately.  Yet this misses a generalization because it does not
+predict that ``solid'' is also likely for pentagons.  Fortunately,
+regularization encourages us to avoid too many high weights.  So
+we prefer to put a single high weight on ``solid,'' and use
+the ``solid triangle'' and ``solid circle'' features only to model
+smaller shape-specific deviations from that generalization.  As a
+result, we will indeed extrapolate that pentagons tend to be
+solid as well.
+
+% In lesson \les{15}, we consider conjoined ``bigram'' features as a way to successfully incorporate 
+% contextual information into the model. We retain the original ``unigram'' (outcome) features, and explore
+% how the regularizer breaks parameter setting ties.
+
+Lesson \les{16} begins the application-driven lessons:
+
+One lesson builds on the ``unigram'' and ``bigram'' concepts to create
+a ``bigram language model''---a model of shape {\em sequences} over a
+vocabulary of 9 shapes.  A shape's probability depends not only on its
+attributes but also on the attributes that it shares with the previous
+shape.  What is the probability of a striped square given that the
+previous shape was also striped, or a square, or a striped square?
+
+% We
+% step through the design of three general features that look at the
+% event and the context together and ask open-ended questions that cause
+% students to ponder estimation issues in conditional sequence models
+% even when there is no model mismatch.
+% %Even though the data were generated from the ``true'' model, how well does the model fit the observed data sample, and how well can the model recover the ``true'' weights? Should regularization be used to answer these questions? What should you do if you need a very good estimate of those weights?
+
+We also apply log-linear modeling to the task of text categorization
+(spam detection).  We challenge the students to puzzle out how this
+model is set up and how to generalize it to three-way classification.
+Our contexts in this case are documents---actually very short phrases.
+Most contexts are seen only once, with an outcome of either ``mail''
+or ``spam.''  Our feature set implements logistic regression
+(footnote~\ref{fn:logistic}): each feature conjoins 
+$y=\textrm{spam}$ with some property of the text $x$, 
+such as ``contains 'parents'{},'' ``has boldface,'' or ``mentions money.''
+
+% , and so 
+% we first ask some simpler questions to make sure they understand what is going on and what the conditional models actually mean.
+% Then, we can ask particular questions and make sure they understand how the feature modeling experience gained in 
+% prior lessons should be applied in practice. We also ask them to think about how to extend the approach to do three-way classification 
+% of a phrase (e.g., as \texttt{spam}, \texttt{work}, or \texttt{fun}).
+% 
+% %What kind of information below indicates that a particular training phrase has been labeled as spam?
+% %Which are the two test phrases included below? How do you know?
+% %If you train this model without regularization, what happens to the log-likelihood and the weights? Why?
+% %If you train this model with regularization, how does it classify the two test phrases? Look at the weights: what features helped it make this classification?
+% %You might think that 'fortune' fires on any phrase that contains the word 'fortune'. But lesson 14 suggests that can't quite work. Let's be precise: what (context,outcome) pairs is 'fortune' really defined to fire on?
+% %mentions money is a binary feature. What are some words that cause it to fire? How did you find out?
+% %Is the feature 'yada' a binary feature, or a counting feature? That is, does fyada return 1 or 3 on yada yada yada? How did you find out?
+% %Which of the non-spam messages does your trained model think is spammiest? How do you know?
+
+Additional linguistic application lessons may be added in the near
+future---e.g., modeling the relative probability of grammar rules or
+parse trees.
+
+The final lesson summarizes what has been learned, mentions connections
+to other ideas in machine learning, and points the student to further
+resources.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
@@ -1073,7 +1186,7 @@ of a phrase (e.g., as \texttt{spam}, \texttt{work}, or \texttt{fun}).
 At the time of writing, 3266 papers in the ACL Anthology mention
 log-linear models, with 137 using ``log-linear,'' ``maximum entropy''
 or ``maxent'' in the paper title.  These cover a wide range of
-applications that can be considered for teaching.
+applications that can be considered in lectures or homework projects.
 
 Early papers may cover the most fundamental applications and the
 clearest motivation.  Conditional log-linear models were first
@@ -1086,39 +1199,44 @@ prepositional phrase attachment \cite{ratnaparkhi-1994}, text
 categorization \cite{nigam-lafferty-mccallum-1999}, and boundary
 prediction \cite{beeferman-berger-lafferty-1999}.
 
-Of particular importance for NLP, these models can be also used for
-structured prediction problems such as tagging, parsing, chunking,
-segmentation, and language modeling.  A simple strategy is to reduce
-structured prediction to a sequence of multiclass log-linear
-predictions \cite{ratnaparkhi-1998}.  A more global approach---used in
-the original ``maximum entropy'' papers---is to use \eqref{eqn:loglin}
-to define the conditional probabilities of the steps in a generative
-process that gradually produces the structure
-\cite{rosenfeld-1994,berger-dellapietra-dellapietra-1996}.  This idea
-remains popular today and can be used to embed rich distributions
-into a variety of generative models \cite{bergkirkpatrick-et-al-2010}.
-For example, a PCFG that uses richly annotated nonterminals involves a
+Log-linear models can be also used for structured prediction problems
+in NLP such as tagging, parsing, chunking, segmentation, and language
+modeling.  A simple strategy is to reduce structured prediction to a
+sequence of multiclass predictions, which can be individually made
+with a conditional log-linear model \cite{ratnaparkhi-1998}.  A more
+fully probabilistic approach---used in the original ``maximum
+entropy'' papers---is to use \eqref{eqn:loglin} to define the
+conditional probabilities of the steps in a generative process that
+gradually produces the structure
+\cite{rosenfeld-1994,berger-dellapietra-dellapietra-1996}.\footnote{Even
+  predicting the single next word in a sentence can be broken down into a
+  sequence of binary decisions in this way.  This avoids normalizing over the
+  large vocabulary \cite{mnih-hinton-2008}.}  This idea
+remains popular today and can be used to embed rich distributions into
+a variety of generative models \cite{bergkirkpatrick-et-al-2010}.  For
+example, a PCFG that uses richly annotated nonterminals involves a
 large number of context-free rules.  Rather than estimating their
 probabilities separately, or with traditional backoff smoothing, a
-simpler approach is to use \eqref{eqn:loglin} to model the probability
+better approach is to use \eqref{eqn:loglin} to model the probability
 of all rules given their left-hand sides, based on features that
-consider subsets of the nonterminal annotations.\footnote{E.g., case,
-  number, gender, tense, aspect, mood, lexical head.  In the case of a
+consider attributes of the nonterminals.\footnote{E.g., case, number,
+  gender, tense, aspect, mood, lexical head.  In the case of a
   terminal rule, the spelling or morphology of the terminal symbol can
-  be considered.}  
+  be considered.}
 
 The most direct approach to structured prediction is to simply predict
 the structured output all at once, so that $y$ is a large structured
 object with many features.  This is conceptually natural but means
 that the normalizer $Z(x)$ involves summing over a large space ${\cal
   Y}(x)$ (footnote~\ref{fn:bigY}).  One can restrict ${\cal Y}(x)$
-before training \cite{johnson-et-al-1999}, or sum efficiently by
-dynamic programming or sampling, as is typical in linear-chain
-conditional random fields \cite{lafferty-mccallum-pereira-2001},
-whole-sentence language modeling \cite{rosenfeld-chen-zhu-2001}, and
-CRF CFGs \cite{finkel2008efficient}.  This topic is properly deferred
-until those algorithmic techniques are introduced later in an NLP
-class, for example in a unit on parsing (see discussion in
+before training \cite{johnson-et-al-1999}.  More common is to sum {\em
+  efficiently} by dynamic programming or sampling, as is typical in
+linear-chain conditional random fields
+\cite{lafferty-mccallum-pereira-2001}, whole-sentence language
+modeling \cite{rosenfeld-chen-zhu-2001}, and CRF CFGs
+\cite{finkel2008efficient}.  This topic is properly deferred until
+such algorithmic techniques are introduced later in an NLP class, for
+example in a unit on parsing (see discussion in
 section~\ref{sec:whyloglin}).  We prepare students for it by
 mentioning this point in our final lesson.\footnote{This material can
   also be connected to other topics in machine learning.  Dynamic
@@ -1150,11 +1268,11 @@ suggested additions to this page.
 
 \section{Conclusion}
 We have introduced an open-source, web-based virtual manipulative for
-log-linear models. Included with the code are
-\NumLessons{} lessons peppered with questions, and auxiliary 
-information including a handout that gives a formal treatment of the necessary 
-derivations, further reading and practice problems, and additional resources.
-A version is available at \WhereToFind{}.
+log-linear models. Included with the code are \NumLessons{} lessons
+peppered with questions, a handout that gives a formal treatment of
+the necessary derivations, and auxiliary information including
+further reading, practice problems, and recommended software.  A
+version is available at \WhereToFind{}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
