@@ -607,70 +607,92 @@ treatment.  The last lesson links to further reading and exercises.
 % one's understanding.
 
 
-\subsection{The Instructor Interface: Creating and Tailoring Lessons}\label{sec:tailoring}
+\subsection{Instructor Interface: Creating and Tailoring Lessons}\label{sec:tailoring}
 
-To support a wide-range of lessons, the manipulative has support for twelve predefined shape and fill combinations.
-As seen in Figure \ref{fig:shape_inventory}, the available shapes are circles, triangles, squares and pentagons,
-where each can be solid, striped or hollow.
-
-An instructor may wish to tailor lessons to his or her students' needs, 
-interests, and abilities. It is appropriate to reason about different types of shapes
-when introducing students to log-linear models, but eventually NLP students will want to think about 
-NLP problems, whereas vision students will want to think about vision problems: we have designed the manipulative to handle text
-and arbitrary images as well.
+An instructor may optionally wish to tailor lessons to his or her
+students' needs, interests, and abilities.  Shapes provide a nice
+introduction to log-linear models, but eventually NLP students will
+want to think about NLP problems, whereas vision students will want to
+think about vision problems.  Thus, we have designed the manipulative
+to handle text and arbitrary images, as well as the 12 shape-fill
+combinations shown in Figure \ref{fig:shape_inventory}.
 
 \begin{figure}[t]
 \begin{center}
 \centering
 \includegraphics[scale=.5]{images/different_shapes_fills3x4.PNG}
-\caption{Inventory of available shapes and fills. Normally color is indicative of 
-the sign of \eqref{eqn:obsexp}, but here they are solely provided as example. 
-Text and arbitrary images may be used instead of shapes.}
+\caption{Inventory of available shapes
+  (circle/triangle/square/pentagon) and fills (solid/striped/hollow).
+  Color is reserved to indicate the sign of \eqref{eqn:obsexp}.  Text
+  and arbitrary images may be used instead of shapes.}
 \label{fig:shape_inventory}
 \label{fig:inventory}
 \end{center}
 \end{figure}
 
-Tailoring lessons to the students' needs is as simple as editing a couple text files. These must detail:
+Tailoring lessons to the students' needs is as simple as editing a
+couple of text files. These must detail:
 \begin{inparaenum}[(1)]
 \item a set of features, 
-\item a set of contexts, and
-\item for each context, a set of uniquely featurized events, including counts and visual positions.
+\item a set of contexts,\footnote{The set of contexts may be omitted
+    when there is only one context (i.e., an unconditioned model).}
+  and
+\item for each context, a set of uniquely\NoteJE{what does this mean?} featurized events, including counts and visual positions.
 \end{inparaenum}
-These simple requirements allow one to describe some rather involved models. For example, some of 
-the features may be marked as ``hidden'' to the student, thereby allowing the student to experience 
-model mismatch. If the set of contexts is missing, the model is assumed to contain only 
-one context and be globally normalized. Note that the visual positioning information is pedagogically 
+These simple requirements allow one to describe some rather involved
+models.  Some of the features may be ``hidden'' from the student, thereby allowing the student to experience 
+model mismatch.  Note that the visual positioning information is pedagogically 
 important: aligning objects by orthogonal descriptions can make feature contrasts stand out more, 
-e.g., circles vs. triangles or solid vs. striped
+e.g., circles vs.\@ triangles or solid vs.\@ striped.
 
 The configuration files can turn off certain features on a per-lesson basis (without programming).  This is 
-useful for, e.g., hiding the ``solve'' button in early lessons, adding new tooltips or adapting existing 
-ones to emphasize different concepts in different lessons.\footnote{It is theoretically possible to provide arbitrarily targeted 
-feedback, such as hints that depend on $\vec{\theta}$ and observed data counts. Code included in a particular lesson's instructions 
-may suffice for one-off explanations but a more general solution should consider extending the back-end 
-(Section \ref{sec:backend}). As our focus was on developing a general, wide-reaching tool, and such state-dependent 
-hints would have impeded our goal, the manipulative currently has neither functionality. Under its open-source terms, 
-instructors are free to extend it.}
+useful for, e.g., hiding the ``Solve'' button in early lessons, adding new tooltips, or specializing
+the existing tooltips on a per-lesson basis.
+
+However, being a manipulative object rather than a tutoring system, our
+software does not monitor the user's progress through a lesson and
+provide guidance via lesson-specific hints, warnings, questions, or
+feedback.  (The software is open-source, so others are free to extend
+it in this way.)
+
+% OLD
+% \footnote{An interesting extension would be to provide
+%   even more specific hints that depend on the user's behavior
+% It is theoretically possible to provide arbitrarily targeted 
+% feedback, such as hints that depend on $\vec{\theta}$ and observed data counts. Code included in a particular lesson's instructions 
+% may suffice for one-off explanations but a more general solution should consider extending the back-end 
+% (Section \ref{sec:backend}). As our focus was on developing a general, wide-reaching tool, and such state-dependent 
+% hints would have impeded our goal, the manipulative currently has neither functionality. Under its open-source terms, 
+% instructors are free to extend it.}
 
 \subsection{Back-End Implementation}\label{sec:backend}
-The virtual manipulative is designed to be widely available and have no start-up cost. 
+Anyone can use our virtual manipulative simply by visiting its website.
+% designed to be widely available and have no start-up cost. 
+There is no start-up cost.
 Aside from reading the data, model and instructions from the web server, it is fully 
 client-side. The Javascript back-end uses common and well-supported open-source 
-libraries for cross-browser compatibility and visualization.\footnote{Specifically and in order, 
+libraries 
+% for cross-browser compatibility and visualization.
+that provide a consistent experience across browsers.\footnote{Specifically and in order, 
 \texttt{d3} (\url{d3js.org/}),
 \texttt{jQuery} (\url{jquery.com/}), 
 \texttt{jQuery UI} (\url{jqueryui.com}),
 \texttt{jQuery Tools} (\url{jquerytools.org/}), and
 \texttt{qTip} (\url{craigsworks.com/projects/qtip/}).}
 The manipulative relies on certain capabilities from the HTML5
-standard; unfortunately, not all current browsers support these
-capabilities.
+standard.  Not all browsers in current use support these
+capabilities, 
 %\NoteJE{which browsers don't?}  
 %\NoteFF{Internet Explorer; annoyingly, IE $< 10$ doesn't work though
 %most users who use IE fall into that category.}
-The tool works with recent versions of Firefox, Chrome and Safari and 
-our students did not have trouble running it on them.
+but the tool works with recent versions of Firefox, Chrome and Safari,
+as well as Internet Explorer versions $\geq 10$.\NoteJE{you've tested
+  it with version 10, yes?  I can't be positive from your comments
+  below.  But we need to make a precise statement about IE
+  so that instructors can warn their students not to use IE 9.  I just
+  tried it on IE 10: the True LL bar appears everywhere, but if that
+  bug can be fixed, it looks ok.}
+% and our students did not have trouble running it on them.
 %\NoteJE{true?}
 %\NoteFF{I don't have numbers to back it up, but generally I'd say yes.
 %A couple people had issues with earlier versions of Firefox, but that was FF $< 11$. 
