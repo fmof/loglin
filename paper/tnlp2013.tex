@@ -70,7 +70,7 @@ Baltimore, MD, USA
   shrink accordingly---by dragging sliders that correspond to feature
   weights.  The visualization displays a regularized training
   objective; it supports gradient ascent by optionally displaying
-  gradients on the sliders and providing ``step'' and ``solve''
+  gradients on the sliders and providing ``Step'' and ``Solve''
   buttons.  The user can sample parameters and datasets of
   different sizes and compare their own parameters to the truth.  Our
   website, \WhereToFind{}, guides the user through a series of
@@ -287,16 +287,20 @@ log-linear models is prerequisite to
 \end{itemize}
   
 \section{(Virtual) Manipulatives}
-The idea of making abstract mathematical concepts intuitive and recognizable as familiar objects 
-has been explored successfully for many years in other disciplines. Specifically within early 
-math education, researchers have found \textit{manipulatives}---tactile
-objects---to be effective teaching tools. Examples of manipulatives include groups of 
-sticks that represent natural numbers, or geoboards
-to explore geometric concepts like area and perimeter.\footnote{A
-  geoboard is a board representing the plane, with pegs at the integral points.  A rubber
-  band can be stretched around selected pegs to define a polygon.} The key idea is to 
-ground and link the mathematical \textit{language} to a well-known \textit{physical 
-object} that can be inspected and manipulated.  For more, see the classic and recent analyses from
+
+Familiar concrete concepts have often been invoked to help develop
+intuitions about abstract mathematical concepts.  Specifically within
+early math education, \textit{manipulatives}---tactile objects---have
+been shown to be effective hands-on teaching tools. Examples include
+Cuisenaire rods for exploring arithmetic concepts like sums, ratios,
+and place value, or geoboards for exploring geometric concepts like
+area and perimeter.\footnote{Cuisenaire rods are color-coded blocks
+  with lengths from 1 to 10.  A geoboard is a board representing the
+  plane, with pegs at the integral points.  A rubber band can be
+  stretched around selected pegs to define a polygon.} The key idea is
+to ground and link the mathematical \textit{language} to a well-known
+\textit{physical object} that can be inspected and manipulated.  For
+more, see the classic and recent analyses from
 \newcite{sowell1989effects} and \newcite{carbonneau2013meta}.
 
 Research has shown concrete manipulatives to be effective, but practical widespread use of them presents certain 
@@ -389,13 +393,14 @@ of the tool, available at
 
 \subsection{Student Interface}
 
-Successive lessons introduce particular challenges or intricacies of
-log-linear models.  In each lesson, the user plays a model matching
-game, a feature matching game or a log-likelihood game on some provided dataset \Data{}.
-For each context $x$, a group of outcomes $y \in {\cal Y}(x)$ are
-shown as shapes, images or words.  Sliders allow the user to
-manipulate the weights $\theta_1, \theta_2, \ldots$ of a fixed set of
-features.  
+Successive lessons introduce various challenges or subleties.  In each lesson, the user 
+% plays a model matching
+% game, a feature matching game or a log-likelihood game on 
+experiments with modeling some given dataset \Data{} using some
+given set of $K$ features.  
+Dataset: For each context $x$, the outcomes $y \in {\cal Y}(x)$ are
+displayed as shapes, images or words.
+Features: For each feature $f_i$, there is a slider to manipulate $\theta_i$.
 
 %\Commented{\NoteJE{I'd
 %  lead with this.  In fact, I think the text shown in Fig. 1 is
@@ -414,22 +419,22 @@ probability} $p_{\vec{\theta}}(y \mid x)$ (equation~\eqref{eqn:loglin}), so it g
 $\vec{\theta}$.  
 In contrast, the {\em empirical probability} 
 \begin{equation}
-\empirical\left(y\ \mid\ x\right) = \frac{\text{count}(x,y)}{\text{count}(x)} 
+\empirical\left(y\ \mid\ x\right) = \frac{c(x,y)}{c(x)} \ \ \text{\it (= ratio of counts)}
 \label{eqn:empirical_distr}
 \end{equation} 
-is shown by a gray outline.
+is constant and is shown by a gray outline.
 
 The size and color of $y$  indicate how $p_{\vec{\theta}}(y\mid x)$ compares to 
 this empirical probability (Figure~\ref{fig:colorsize_inventory}).  
-Reinforcing this, the observed count $\text{c}(x,y)$ is shown at the upper
-left of $y$, while the expected count $\text{c}(x)\cdot
-p_{\vec{\theta}}(y\mid x)$ is shown at the upper right, following the same color 
-scheme (Figure \ref{fig:lesson1}). 
+Reinforcing this, the observed count $c(x,y)$ is shown at the upper
+left of $y$, while the expected count $c(x)\cdot p_{\vec{\theta}}(y\mid x)$ 
+is shown at the upper right, following the same color 
+scheme (Figure \ref{fig:lesson1}).  
 
 We begin with globally normalized models (only one 
 context $x$).  For example, the data in Figure \ref{fig:lesson1}---30 solid
 circles, 15 striped circles, 10 solid triangles, and 5 striped
-triangles---are modeled by the two indicator features
+triangles---are to be modeled with the two indicator features
 $f_{\textrm{circle}}$ and $f_{\textrm{solid}}$. With $\vec{\theta} =
 0$ we have the uniform distribution, so the solid circle is contained
 in its gray outline ($\empirical{}(\textrm{solid circle}) >
@@ -439,32 +444,42 @@ p_{\vec{\theta}}(\textrm{striped triangle})$), and the striped
 circle and gray outline are coincident ($\empirical{}(\textrm{striped
   circle}) = p_{\vec{\theta}}(\textrm{striped circle})$).
 
-In the \textit{model matching game}, the student tries to match $p_{\vec{\theta}}$\ to  $\tilde{p}$. 
+A student can try various activities:
+
+In the \textit{outcome matching activity}, the goal is to match the
+model $p_{\vec{\theta}}$\ to $\tilde{p}$.
 %--- find $\vec{\theta}$ such that $p_{\vec{\theta}}(y\mid x) 
 %= \tilde{p}(y\mid x)$, for all $(x,y)$. 
-The game is to try to make all of the log-linear objects 
-equal in size (and color) to their corresponding gray outline. 
-The student ``wins'' once the maximum number of objects turn gray, 
-taking into account any regularization penalty.
+The game is to make all of the outcomes match their corresponding
+gray outlines in size (and color).  The student ``wins'' once the
+maximum number of objects turn gray.
+% DOESN'T MAKE SENSE: JUST IGNORE REGULARIZATION FOR NOW
+% taking into account any regularization penalty.
 
-Alternatively in the \textit{feature matching game}, the student tries to match the empirical and 
-model feature counts (which for binary features is just the number of times a feature fires).
-This is useful when a given set of features prevents the student from winning the model 
-matching game with a particular dataset.
+In the \textit{feature matching activity}, the goal is to match the
+expected feature vector $\mathbb{E}_{p_{\vec{\theta}}}[\vec{f}]$ to
+the observed feature vector $\mathbb{E}_{\tilde{p}}[\vec{f}]$.  In
+Figure \ref{fig:lesson1}, the student would seek a model that
+correctly predicts the total number of circles and the total number of
+solid objects---even if the specific number of solid circles is
+predicted wrong.  (The predicted and observed counts for a {\em
+  feature} can easily be found by adding up the displayed counts of
+individual {\em outcomes} having that feature.  For convenience, they
+are also displayed in a tooltip on the feature's slider.)  This game
+can always be won, even if the given features are not adequately
+expressive to succeed at outcome matching on the given dataset.
 
-Third, the student can play the \textit{log-likelihood game}, where the goal is to
-maximize the (regularized) log-likelihood. The log-likelihood
-bar (Figure~\ref{fig:lesson1}) adapts to changes in $\vec{\theta}$,
-just like the shapes. The game is to make the bar as 
-long as possible.\footnote{Once the gradient is introduced in a later lesson, knowing when you have ``won'' becomes clearer.}
+In the \textit{log-likelihood activity}, the goal is to maximize the
+log-likelihood.  The log-likelihood bar (Figure~\ref{fig:lesson1})
+adapts to changes in $\vec{\theta}$, just like the shapes. The game is
+to make the bar as long as possible.\footnote{Once the gradient is
+  introduced in a later lesson, knowing when you have ``won'' becomes
+  clearer.}
 %As shown in \NoteFF{fix} Figure \ref{fig:llbar}, we also represent the regularization penalty
 %, and the objective under the ``true'' (generating) model parameters, when known.
-
-These games are not played in isolation. When playing either the log-likelihood or 
-feature matching games, we encourage the student to think how the two games are related: what 
-does each game try to accomplish, and how does it differ from what the other game achieves?
-%This is particularly true as more advanced concepts such as regularization and 
-%conjoined features are introduced.
+In later lessons, the student instead tries to maximize a {\em regularized}
+version of the log-likelihood bar, which is visibly shortened by a penalty for 
+large weights (to prevent overfitting).
 
 \begin{figure}[t]
 \centering
@@ -511,11 +526,38 @@ $\nabla_{\vec{\theta}} F$
 \label{fig:gradients}
 \end{figure}
 
-Winning any of the games with more complex models becomes instructively
-difficult and tedious. 
-The student may use \textit{hints}, such as
-viewing components of the gradient (Figure~\ref{fig:gradients}), or 
-clicking a button to have the system follow the gradient.  
+Winning any of these games with more complex models becomes difficult
+or at least tedious, so that automatic methods come as a relief.  The
+student may view {\em hints} on the sliders, showing which way each
+slider should be nudged (Figure~\ref{fig:gradients}).  These hints are
+really components of the log-likelihood gradient.  Further automation
+is offered by the ``Step'' button, which automatically nudges all
+parameters by taking a step of gradient ascent, and even more by the
+``Solve'' button, which steps all the way to the maximum (using an
+Armijo line search to adapt the stepsize).
+
+Our lessons guide the student to feel and understand the relationship
+among the three activities.  First, feature matching is a weaker,
+attainable version of outcome matching (when outcome matching is
+possible it certainly achieves feature matching as well).  Second,
+feature matching is equivalent to maximizing the (unregularized)
+log-likelihood.  Thus the mismatch is 0 iff the gradient of
+log-likelihood is 0.  In fact, the current feature mismatch {\em
+  equals} the current gradient of the log-likelihood!  Thus, dragging
+the sliders in the direction of the gradient hints can be viewed as a
+correct strategy for {\em either} the feature matching game {\em or}
+the log-likelihood game.  This connection shows how to maximize
+log-likelihood: its gradient can easily be computed by counting up the
+observed and currently predicted features.  After understanding this
+and playing with the ``Step'' and ``Solve'' buttons, the student
+should be able to imagine writing code to train log-linear models.
+
+% OLD 
+% These games are not played in isolation. When playing either the log-likelihood or 
+% feature matching games, we encourage the student to think how the two games are related: what 
+% does each game try to accomplish, and how does it differ from what the other game achieves?
+% % This is particularly true as more advanced concepts such as regularization and 
+% % conjoined features are introduced.
 
 A main tenet of this manipulative is the benefit of ``learning by playing.'' 
 Once comfortable with the provided model and data, the student can begin to play 
