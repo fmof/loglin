@@ -637,7 +637,10 @@ couple of text files. These must detail:
 \item a set of contexts,\footnote{The set of contexts may be omitted
     when there is only one context (i.e., an unconditioned model).}
   and
-\item for each context, a set of uniquely\NoteJE{what does this mean?} featurized events, including counts and visual positions.
+\item for each context, a set of 
+%\NoteJE{what does this mean?} 
+%\NoteFF{no two outcomes can have the same feature vector. This is an unfortunate consequence of an early design decision that considered the data to be featurized type occurrences. Fixing it shouldn't be *that* difficult... I'll remove the word uniquely}
+featurized events, including counts and visual positions.
 \end{inparaenum}
 These simple requirements allow one to describe some rather involved
 models.  Some of the features may be ``hidden'' from the student, thereby allowing the student to experience 
@@ -681,17 +684,17 @@ that provide a consistent experience across browsers.\footnote{Specifically and 
 \texttt{qTip} (\url{craigsworks.com/projects/qtip/}).}
 The manipulative relies on certain capabilities from the HTML5
 standard.  Not all browsers in current use support these
-capabilities, 
+capabilities, notably Internet Explorer 9 and under.
 %\NoteJE{which browsers don't?}  
 %\NoteFF{Internet Explorer; annoyingly, IE $< 10$ doesn't work though
 %most users who use IE fall into that category.}
-but the tool works with recent versions of Firefox, Chrome and Safari,
-as well as Internet Explorer versions $\geq 10$.\NoteJE{you've tested
-  it with version 10, yes?  I can't be positive from your comments
-  below.  But we need to make a precise statement about IE
-  so that instructors can warn their students not to use IE 9.  I just
-  tried it on IE 10: the True LL bar appears everywhere, but if that
-  bug can be fixed, it looks ok.}
+The tool works with recent versions of Firefox, Chrome and Safari.
+%as well as Internet Explorer versions $\geq 10$.\NoteJE{you've tested
+%  it with version 10, yes?  I can't be positive from your comments
+%  below.  But we need to make a precise statement about IE
+%  so that instructors can warn their students not to use IE 9.  I just
+%  tried it on IE 10: the True LL bar appears everywhere, but if that
+%  bug can be fixed, it looks ok.}
 % and our students did not have trouble running it on them.
 %\NoteJE{true?}
 %\NoteFF{I don't have numbers to back it up, but generally I'd say yes.
@@ -851,8 +854,8 @@ methods have relied on quantities similar to \eqref{eqn:obsexp}, which, as shown
 and discussed above (\S\ref{sec:aims}), is 
 one of the most important concepts we illustrate. See 
 \newcite{berger-dellapietra-dellapietra-1996} and \newcite{malouf2002comparison}. }
-Convexity explains these two facts.\footnote{Advanced 
-students might try ``breaking'' convexity, e.g., what happens when $C < 0$?}
+%Convexity explains these two facts.\footnote{Advanced 
+%students might try ``breaking'' convexity, e.g., what happens when $C < 0$?}
 We find the canonical landscape-inspired convexity metaphor useful, and we partially reflect 
 the metaphor in the the adaptable log-likelihood bar. Rather than just \textit{imagining} walking up a hill, 
 students can ``actually'' do it.
@@ -887,7 +890,8 @@ tractably computing the normalizers $Z(x)$. Efficient normalization
 is a crucial component of practical log-linear models, but our primary concern is to provide a virtual 
 manipulative that imparts a near-physical intuitive understanding of log-linear models. See Section 
 \ref{sec:history} or \newcite{smith-2011} for strategies on computing
-the normalizer.
+%the normalizer. %to remove dangle
+$Z(x)$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -931,7 +935,8 @@ weights,  and question why estimates of $\vec{\theta}$ might be different from t
 
 Having explored the gradient, lessons \textbf{8}--\textbf{10} consider more advanced topics in joint 
 modeling. Students explore what affects model quality, such as which regularizer is used, the 
-regularization coefficient, and the amount of \textit{training} data. How does regularization help with 
+regularization coefficient, and the amount of \textit{training} data.\footnote{Advanced 
+students might try ``breaking'' convexity, e.g., by setting $C < 0$.} How does regularization help with 
 unseen (``test'') data? 
 
 Lessons \textbf{11}--\textbf{13} introduce conditional models and convey some of the basic differences between 
