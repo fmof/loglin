@@ -672,15 +672,7 @@ function init(){
 
     jQuery('#show_gradient').click(function(){
     	SHOW_GRADIENTS=this.checked;
-	if(SHOW_GRADIENTS){
-	    jQuery('#gradient_hinting_div').show();
-	} else{
-	    if((LESSON_SETTINGS!={} || LESSON_SETTINGS!=null) &&
-	       LESSON_SETTINGS.hide!=null &&
-	       "#gradient_hinting_div" in LESSON_SETTINGS.hide.list){
-		jQuery('#gradient_hinting_div').hide();
-	    }
-	}
+	display_gradient_hints_portions();
 	if(!in_solving){
     	    if(SHOW_GRADIENTS){
     		recompute_partition_function();

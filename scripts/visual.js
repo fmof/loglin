@@ -26,6 +26,18 @@ function show_data_portion(){
     j_hide_data().show();
 }
 
+function display_gradient_hints_portions(){
+    if(SHOW_GRADIENTS){
+	jQuery('#gradient_hinting_div').show();
+    } else{
+	if((LESSON_SETTINGS!={} || LESSON_SETTINGS!=null) &&
+	   LESSON_SETTINGS.hide!=null &&
+	   "#gradient_hinting_div" in LESSON_SETTINGS.hide.list){
+	    jQuery('#gradient_hinting_div').hide();
+	}
+    }
+}
+
 function show_loader(box,id){
     var i = document.createElement('img');
     i.src=loader_bar_img;
