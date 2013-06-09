@@ -465,3 +465,7 @@ ul #data_options_area{
 #regularization_header{
     display:inline-block;
 }
+
+svg#ll_bars{
+    overflow:hidden;
+}

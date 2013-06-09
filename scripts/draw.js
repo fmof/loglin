@@ -384,8 +384,10 @@ function draw_gradient(){
 
 
 function addLLBar(){
-    var svg = d3.select("#ll_area").append("svg").attr('height',20*LOG_LIKELIHOOD.length - 1).attr('width',DIV_LL_WIDTH+RESERVE_LL_WIDTH);
-    svg.attr('id','ll_bars');
+    var svg = d3.select("#ll_area").append("svg")
+	.attr('height',20*LOG_LIKELIHOOD.length - 1)
+	.attr('width',DIV_LL_WIDTH+RESERVE_LL_WIDTH)
+	.attr('id','ll_bars');
     var ll = LOG_LIKELIHOOD.map(function(d,i){return d+REGULARIZATION[i];});
     var tll=TRUE_LOG_LIKELIHOOD.map(function(d,i){return d+TRUE_REGULARIZATION[i];});
     //the user distribution LL
@@ -489,8 +491,6 @@ function addLLBar(){
 	    return "gray";
 	});
     lltext.attr('class','ll_text');
-    //console.log(lltext.style('font-size'));
-    //console.log(lltext[0][0].getBBox());
     var tlltext=svg.selectAll(".true_ll_text").data(TRUE_LOG_LIKELIHOOD).enter().append("text");
     tlltext.text(function(d){
 	    return d.toFixed(3);
@@ -507,7 +507,6 @@ function addLLBar(){
 		return TRUE_MODEL_COLOR;
 	    })
 	.attr('class','true_ll_text');
-
 }
 
 function addLLRegBars(svg,ll,unregged,cname,regdata,yfn,resizer){
