@@ -27,7 +27,7 @@
 \usepackage{transparent}
 \usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
 \newcommand{\Note}[1]{}
-\renewcommand{\Note}[1]{\hl{[#1]}}  % comment this out to remove notes
+%\renewcommand{\Note}[1]{\hl{[#1]}}  % comment this out to remove notes
 \newcommand{\FIXME}{\Note{FIXME}}
 \newcommand{\NoteSigned}[3]{{\sethlcolor{#2}\Note{#1: #3}}}
 \newcommand{\RemoveFF}[1]{\NoteSigned{Remove (FF)}{Crimson}{#1}}
@@ -167,11 +167,11 @@ informative features of the $(x,y)$ pair.
 
 How about training?  Estimation of the parameter weights
 $\vec{\theta}$ from a set of fully observed $(x,y)$ pairs is simply a
-convex optimization problem.  Maximizing the regularized maximum
-likelihood
+convex optimization problem.  Maximizing the regularized conditional
+log-likelihood
 \begin{equation}\label{eqn:reg_ll}
 % \argmax_{\vec{\theta}} \sum_i \log p_{\vec{\theta}}(y_i \mid x_i) - C\cdot R\left(\vec{\theta}\right)
-  F(\vec{\theta}) = \sum_{i=1}^N \log{p_{\vec{\theta}}\left(y_i\ \mid\ x_i\right)} - C \cdot R(\vec{\theta})
+  F(\vec{\theta}) = \left( \sum_{i=1}^N \log{p_{\vec{\theta}}\left(y_i\ \mid\ x_i\right)} \right) - C \cdot R(\vec{\theta})
 \end{equation}
 is a simple, uniform training principle that can be used throughout
 the course.  The scaled regularizer $C\cdot R(\vec{\theta})$
@@ -321,7 +321,8 @@ Both \newcite{clements1996concrete} and \newcite{moyer2002virtual} provide acces
 virtual manipulatives in early math education. 
 Virtual manipulatives give students the ability to effect changes on a
 complex system and so learn its underlying 
-properties \cite{moyer2002virtual}. This last point is particularly applicable for log-linear models.
+properties \cite{moyer2002virtual}. This last point is particularly
+relevant to log-linear models.
 
 %"Clements and Sarama
 %(2005) cite six categories of math that emerge through
@@ -351,7 +352,7 @@ VISPER, an applied educational tool that wrapped various speech technologies,
 was targeted toward understanding the acoustics and overall recognition pipeline 
 \cite{nouza1997educational}. 
 \newcite{light-tnlp-2005} developed web interfaces for a number of core NLP technologies and systems, such as parsers, part-of-speech 
-taggers, and finite-state transducers, and Matt Post created a Model 1 stack decoder visualization for a recent machine translation class \cite{lopez2013learning}.\footnote{\url{github.com/mjpost/stack-decoder}}
+taggers, and finite-state transducers.  Matt Post created a Model 1 stack decoder visualization for a recent machine translation class \cite{lopez2013learning}.\footnote{\url{github.com/mjpost/stack-decoder}}
 Most manipulatives/interfaces targeted at NLP have been virtual, but a notable exception is \newcite{halteren-tnlp-2002}, 
 who created a (physical) board game for parsing. 
 
@@ -533,7 +534,7 @@ $\nabla_{\vec{\theta}} F$
 \end{figure}
 
 Winning any of these games with more complex models becomes difficult
-or at least tedious, so that automatic methods come as a relief.  The
+or at least tedious, so automatic methods come as a relief.  The
 student may view {\em hints} on the sliders, showing which way each
 slider should be nudged (Figure~\ref{fig:gradients}).  These hints
 correspond to components of the log-likelihood gradient.  Further
@@ -542,12 +543,10 @@ nudges all parameters by taking a step of gradient
 ascent,\footnote{When $\ell_1$ regularization is used, the optimal
   $\vec{\theta}$ often contains many 0 weights, and a step
   is not permitted to jump over a (possibly optimal) weight of
-  0.
-%\NoteJE{Is this needed for correctness or just efficiency?  I
-%    can't think anymore why nondifferentiability is a problem.  Isn't
-%    Armijo enough?}  
-It stops at 0, though if warranted, it can
- continue past 0 on the next step.} 
+  0.\NoteJE{Is this needed for correctness or just efficiency?  I
+    can't think anymore why nondifferentiability is a problem.  Isn't
+    Armijo enough?}  
+  It stops at 0, though if warranted, it can continue past 0 on the next step.} 
 and even more by the ``Solve''
 button, which steps all the way to the maximum.\footnote{The ``Solve''
   button adapts the stepsize at each step, using a backtracking line
@@ -596,7 +595,7 @@ the GUI.  Tooltips provide guidance about whatever the student is
 looking at \textit{right then}.  Some are static explanations (e.g.,
 what does this gray bar represent?).  Others dynamically update with
 changes to the parameters (e.g., the tooltips on the feature sliders
-show the observed and expected counts for that feature).
+show the observed and expected counts of that feature).
 
 Students see the tooltips repeatedly, which can help them absorb and
 reinforce concepts over an extended period of time.  Students who like
@@ -798,7 +797,7 @@ the objective is regularized?
 % understanding some of the core underlying mathematical concepts of
 % exponential models, such as feature interations and weight tradeoffs,
 % and important differences between global and conditional models. 
-In particular, how does sharing features allow a conditional model to
+In particular, how do shared features and backoff features allow a model to
 generalize to novel contexts and outcomes (or rare ones)?  How do the
 resulting patterns of generalization relate qualitatively to
 traditional smoothing techniques in NLP \cite{chen-goodman-1996}?
@@ -862,8 +861,8 @@ traditional smoothing techniques in NLP \cite{chen-goodman-1996}?
 
 We also aim to convey intuitions about a specific training algorithm.
 We use the regularized conditional log-likelihood \eqref{eqn:reg_ll}
-to define the quality of a parameter vector $\vec{\theta}$.
-The best choice is the $\vec{\theta}$ that solves equation \eqref{eqn:grad}:
+to define the goodness of a parameter vector $\vec{\theta}$.
+The best choice is then the $\vec{\theta}$ that solves equation \eqref{eqn:grad}:
 \begin{equation}
 \begin{aligned}
 %\begin{split}
@@ -911,13 +910,13 @@ expectation under the model, conditioned on the partial training data.
 
 \eqref{eqn:grad} also includes a \textbf{weight decay} term for
 regularization.  We allow both $\ell_1$ and $\ell_2$ regularization:
-$R(\vec{\theta}) = \|\vec\theta\|_1$, and $R(\vec{\theta}) =
-\|\vec{\theta}\|_2^2$.  One can see that strong $\ell_1$
+$R(\vec{\theta}) = \|\vec\theta\|_1$ versus $R(\vec{\theta}) =
+\|\vec{\theta}\|_2^2$.  One can see experimentally that strong $\ell_1$
 regularization tries to use a few larger weights and leave the rest at
 0, while strong $\ell_2$ regularization tries to share the work among
 many smaller weights.  One can observe how for a given $C$, the
-regularization term is important for small datasets, but for large
-datasets is dominated by the log-likelihood.
+regularization term is more important for small datasets, since for larger
+datasets it is dominated by the log-likelihood.
 
 % NOW MENTIONED EARLIER
 % \footnote{Our  optimizer special-cases the non-differentiable
@@ -981,11 +980,10 @@ alternative optimization algorithms \cite{malouf2002comparison}.
 
 We should note that we are \textit{not} concerned with efficiency issues, e.g.,  
 tractably computing the normalizers $Z(x)$. Efficient normalization
-is a crucial component of practical log-linear models, but our primary concern is to provide a virtual 
-manipulative that imparts a near-physical intuitive understanding of log-linear models. See Section 
-\ref{sec:history} or \newcite{smith-2011} for strategies on computing
-%the normalizer. %to remove dangle
-$Z(x)$.
+is a crucial practical ingredient in {\em using} log-linear models,
+but our primary concern is to impart a near-physical intuitive
+understanding of the models themselves. See Section \ref{sec:history}
+or \newcite{smith-2011} for strategies on computing the normalizer.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1150,7 +1148,7 @@ previous shape was also striped, or a square, or a striped square?
 
 We also apply log-linear modeling to the task of text categorization
 (spam detection).  We challenge the students to puzzle out how this
-model is set up and how to generalize it to three-way classification.
+model is set up and how to generalize it to three-way categorization.
 Our contexts in this case are documents---actually very short phrases.
 Most contexts are seen only once, with an outcome of either ``mail''
 or ``spam.''  Our feature set implements logistic regression
