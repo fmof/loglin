@@ -1,0 +1,8 @@
+{
+    "hide" : {
+	"list" :{
+	    "#gradient_hinting_div" : ""
+	},
+	"reverse" : true
+    }
+}

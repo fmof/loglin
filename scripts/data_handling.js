@@ -33,6 +33,7 @@ function createKnownUserActions(){
 	},
 	"hide" : {
 	    do_action : function(jqobj){
+		console.log('hi');
 		jqobj.hide();
 	    },
 	    do_inverse : function(jqobj){

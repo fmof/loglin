@@ -1,6 +1,7 @@
 {
     "hide" : {
-	"list" : {
+	"list" :{
+	    "#gradient_hinting_div" : "",
 	    "#new_challenge" : ""
 	},
 	"reverse" : true

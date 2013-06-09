@@ -673,9 +673,9 @@ function init(){
     jQuery('#show_gradient').click(function(){
     	SHOW_GRADIENTS=this.checked;
 	if(SHOW_GRADIENTS){
-	    jQuery('#gradient_hinting_div').removeClass('novis');
+	    jQuery('#gradient_hinting_div').show();
 	} else{
-	    jQuery('#gradient_hinting_div').addClass('novis');
+	    jQuery('#gradient_hinting_div').hide();
 	}
 	if(!in_solving){
     	    if(SHOW_GRADIENTS){

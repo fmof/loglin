@@ -1,4 +1,10 @@
 {
+    "hide" : {
+	"list" :{
+	    "#gradient_hinting_div" : ""
+	},
+	"reverse" : true
+    },
     "tooltips" : {
 	"attr" : "title", 
 	"list": {
