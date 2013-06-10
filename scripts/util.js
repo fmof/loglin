@@ -14,6 +14,23 @@ function sortWithIndeces(toSort) {
     return toSort;
 }
 
+function display_no_support(){
+    jQuery('#button_navigation_area').prepend('<div id="no_support_message"><p>This browser may not work correctly on this site. Please consider using Chrome, Firefox, Safari or Internet Explorer &ge; 10.</p></div><br/><br/>');
+    jQuery('#no_support_message').append('<button id="close_support_button">Okay! Close this message.</button>');
+    jQuery('#close_support_button').click(function(){
+	jQuery('#no_support_message').hide();
+    });
+}
+
+function detect_support(){
+    var history_good = !!(window.history && history.pushState);
+    if(!history_good ||
+       (jQuery.browser && jQuery.browser.msie &&
+	parseInt(jQuery.browser.version, 10) < 10)){
+	display_no_support(!history_good);
+    }
+}
+
 function print_loading_error(jqXHR, textStatus, errorThrown){
 }
 

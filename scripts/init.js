@@ -423,6 +423,7 @@ window.onload = function(){
 }
 
 function init(){
+    detect_support();
     var group;
     jQuery('#ll_area').css("width", DIV_LL_WIDTH+RESERVE_LL_WIDTH);
     jQuery('.of_total_lessons').each(function(i){jQuery(this).html(MAX_LESSONS);});

@@ -469,3 +469,15 @@ ul #data_options_area{
 svg#ll_bars{
     overflow:hidden;
 }
+
+#no_support_message{
+    width:50%;
+    margin-left:auto;
+    margin-right:auto;
+    text-align:center;
+    font-size:16pt;
+    border-color:red;
+    border-style:solid;
+    padding:12px;
+}
+
