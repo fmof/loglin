@@ -483,11 +483,12 @@ function init(){
 	    if(USED_CONTEXTS[c]){
 		var v = jQuery('#num_tokens_context_'+c).val();
 		v= isNumber(v)?parseFloat(v):-1;
+		console.log("v = " + v);
 		//don't do the following when v == NUM_TOKENS_C[c]
-		console.log("v = "+v);
-		if(LAST_UPDATED_TOKEN_COUNT[c] || 
-		   LAST_UPDATED_TOKEN_COUNT == {})
-		    generate_new_counts_context(c,v);
+		//why again?
+		// if(LAST_UPDATED_TOKEN_COUNT[c] || 
+		//    LAST_UPDATED_TOKEN_COUNT == {})
+		generate_new_counts_context(c,v);
 	    }
 	}
 	jQuery('.num_tokens_context_input').css('background-color','');
@@ -617,7 +618,6 @@ function init(){
     jQuery('#step_button').click(function(){
     	step_gradient();
     });
-
 
     jQuery('#stop_solving').click(function(){
 	clearInterval(SOLVE_TIMEOUT_ID);

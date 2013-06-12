@@ -97,6 +97,11 @@ do_all_loading = function(){
 	    display_gradient_hints_portions();
 	    update_all_qtip_counts();
 	    redraw_all();
+	    //maybe highlight counts (something *like* this, but
+	    //not exactly... the red is hideous and was only for
+	    //experimenting
+	    //jQuery('#draw_area_fieldset .observed_counts_text').mouseover(function(){jQuery('.observed_count_text').css('font-weight','bold').css('background-color','red');}).mouseout(function(){jQuery('.observed_count_text').css('font-weight','normal').css('background-color','white');})
+	    //jQuery('#draw_area_fieldset .expected_counts_text').mouseover(function(){jQuery('.expected_count_text').css('font-weight','bold');}).mouseout(function(){jQuery('.expected_count_text').css('font-weight','normal');})
 	}
     };
 
