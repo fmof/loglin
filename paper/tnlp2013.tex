@@ -543,9 +543,7 @@ nudges all parameters by taking a step of gradient
 ascent,\footnote{When $\ell_1$ regularization is used, the optimal
   $\vec{\theta}$ often contains many 0 weights, and a step
   is not permitted to jump over a (possibly optimal) weight of
-  0.\NoteJE{Is this needed for correctness or just efficiency?  I
-    can't think anymore why nondifferentiability is a problem.  Isn't
-    Armijo enough?}  
+  0.
   It stops at 0, though if warranted, it can continue past 0 on the next step.} 
 and even more by the ``Solve''
 button, which steps all the way to the maximum.\footnote{The ``Solve''
