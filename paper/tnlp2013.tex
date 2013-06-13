@@ -55,7 +55,8 @@
 Francis Ferraro \and Jason Eisner\\
 Department of Computer Science\\
 Johns Hopkins University\\
-Baltimore, MD, USA
+Baltimore, MD, USA\\
+{\tt \{ferraro, jason\}@cs.jhu.edu}
 }
   
 \date{}
@@ -494,19 +495,25 @@ large weights (to prevent overfitting).
 >{\centering\arraybackslash}m{.20\columnwidth}
 >{\centering\arraybackslash}m{.18\columnwidth}}
 
-\textbf{Quantity of Interest} & $\mathbf{>0}$ 
-& $\mathbf{= 0}$ & $\mathbf{<0}$\\ \\
-
+\multirow{2}{ .18\columnwidth }{\textbf{Quantity of Interest}} 
+& $\mathbf{>0}$ 
+& $\mathbf{= 0}$ & $\mathbf{<0}$\\ 
+& {\bf \color{red} \texttransparent{.55}{ red } }
+& {\bf \color{gray}\texttransparent{.65}{ gray } }
+& {\bf \color{blue} \texttransparent{.6}{ blue } }\\  \\ \\
+%\vspace{.75em}
 $\empirical{} -p_{\vec{\theta}}$& \includegraphics[scale=.25]{images/goldilocks-circle-small.PNG}
 & \includegraphics[scale=.25]{images/goldilocks-circle-justright.PNG}
 & \includegraphics[scale=.25]{images/goldilocks-circle-large.PNG}\\ \\
 
-$\mathbb{E}_{\empirical{}}\left[\vec{f}\right] 
-- \mathbb{E}_{{p_{\vec{\theta}}}}\left[\vec{f}\right]$
+$\mathbb{E}_{\empirical{}}\left[\cdot\right] 
+- \mathbb{E}_{{p_{\vec{\theta}}}}\left[\cdot\right]$
+%$\mathbb{E}_{\empirical{}}\left[\vec{f}\right] 
+%- \mathbb{E}_{{p_{\vec{\theta}}}}\left[\vec{f}\right]$
 %, and $\nabla_{\vec{\theta}} F$
-& {\bf \color{red} \texttransparent{.55}{ red } }
-& {\bf \color{gray}\texttransparent{.65}{ gray } }
-& {\bf \color{blue} \texttransparent{.6}{ blue } }\\  \\
+& {\bf \color{red} \texttransparent{.55}{ 15 } }
+& {\bf \color{gray}\texttransparent{.65}{ 30 } }
+& {\bf \color{blue} \texttransparent{.6}{ 60 } }\\  \\
 \vspace{.5em}
 
 $\nabla_{\vec{\theta}} F$ 
@@ -632,11 +639,13 @@ combinations shown in Figure \ref{fig:shape_inventory}.
 \begin{figure}[t]
 \begin{center}
 \centering
-\includegraphics[scale=.5]{images/different_shapes_fills3x4.PNG}
+\includegraphics[scale=.5]{images/different_shapes_fills3x4-allgray.PNG}
 \caption{Inventory of available shapes
   (circle/triangle/square/pentagon) and fills (solid/striped/hollow).
-  Color is reserved to indicate the sign of \eqref{eqn:obsexp}.  Text
-  and arbitrary images may be used instead of shapes.}
+  %Color is reserved to indicate the sign of \eqref{eqn:obsexp}.  
+ Color is reserved to indicate differences of expectations, e.g., 
+ the sign of \eqref{eqn:obsexp}---see Figure \ref{fig:colorsize_inventory}.
+  Text  and arbitrary images may be used instead of shapes.}
 \label{fig:shape_inventory}
 \label{fig:inventory}
 \end{center}
