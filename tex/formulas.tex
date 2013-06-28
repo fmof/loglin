@@ -39,23 +39,24 @@ two parameters that you can control with the sliders.
 % I should really define boxes for the summands and use the width of the boxes.
 
 \begin{align}
-p(\text{solid circle}) & \defeq \frac{\exp\ (\theta_{\textrm{circle}}+\theta_{\textrm{solid}})\hspace{60mm}}{\exp\ (\theta_{\textrm{circle}} + \theta_{\textrm{solid}}) + \exp\ (\theta_{\textrm{circle}}) + \exp\ (\theta_{\textrm{solid}}) + \exp\ 0} \\
+p(\text{solid circle}) & \defeq \frac{\exp (\theta_{\textrm{circle}}+\theta_{\textrm{solid}})\hspace{57mm}}{\exp (\theta_{\textrm{circle}} + \theta_{\textrm{solid}}) + \exp (\theta_{\textrm{circle}}) + \exp (\theta_{\textrm{solid}}) + \exp 0} \label{eqn:solidcircle}\\
 \rule{0in}{1.5\baselineskip}
-p(\text{striped circle}) & \defeq \frac{\exp\ (\theta_{\textrm{circle}})\hspace{1mm}}{\exp\ (\theta_{\textrm{circle}} + \theta_{\textrm{solid}}) + \exp\ (\theta_{\textrm{circle}}) + \exp\ (\theta_{\textrm{solid}}) + \exp\ 0} \\
+p(\text{striped circle}) & \defeq \frac{\exp (\theta_{\textrm{circle}})\hspace{0mm}}{\exp (\theta_{\textrm{circle}} + \theta_{\textrm{solid}}) + \exp (\theta_{\textrm{circle}}) + \exp (\theta_{\textrm{solid}}) + \exp 0} \\
 \rule{0in}{1.5\baselineskip}
-p(\text{solid triangle}) & \defeq \frac{\hspace{46mm}\exp\ (\theta_{\textrm{solid}})}{\exp\ (\theta_{\textrm{circle}} + \theta_{\textrm{solid}}) + \exp\ (\theta_{\textrm{circle}}) + \exp\ (\theta_{\textrm{solid}}) + \exp\ 0} \\
+p(\text{solid triangle}) & \defeq \frac{\hspace{44mm}\exp (\theta_{\textrm{solid}})}{\exp (\theta_{\textrm{circle}} + \theta_{\textrm{solid}}) + \exp (\theta_{\textrm{circle}}) + \exp (\theta_{\textrm{solid}}) + \exp 0} \label{eqn:solidtriangle}\\
 \rule{0in}{1.5\baselineskip}
-p(\text{striped triangle}) & \defeq \frac{\hspace{82mm}\exp\ 0}{\exp\ (\theta_{\textrm{circle}} + \theta_{\textrm{solid}}) + \exp\ (\theta_{\textrm{circle}}) + \exp\ (\theta_{\textrm{solid}}) + \exp\ 0}
+p(\text{striped triangle}) & \defeq \frac{\hspace{79mm}\exp 0}{\exp (\theta_{\textrm{circle}} + \theta_{\textrm{solid}}) + \exp (\theta_{\textrm{circle}}) + \exp (\theta_{\textrm{solid}}) + \exp 0}
 \end{align}
 
-``$\exp$'' denotes the exponential function.  Recall that $\exp\ x$ means
+``$\exp$'' denotes the exponential function.  Recall that $\exp x$ means
 $e^x$ where $e$ is a constant (namely $e=2.71828\ldots$, the base of
 natural logarithms).\footnote{If $y=e^x$, then $x=\log y$.  That's the
   definition of $\log y$ (sometimes written as $\log_e y$ or $\ln y$),
-  the natural logarithm.}
+  the natural logarithm.}  From the graph of $y=e^x$ you can see:
 
 \includegraphics[height=2.25in]{exp}
 \begin{minipage}[b]{4in}
+\vspace{4pt}
 \begin{itemize}
 
 \item $\exp x$ is always positive (except that $\exp
@@ -64,14 +65,16 @@ natural logarithms).\footnote{If $y=e^x$, then $x=\log y$.  That's the
 
 \item As $x$ gets bigger, so does $\exp x$.  So raising
   $\theta_{\textrm{solid}}$ with your slider will raise the numerators
-  of ``solid circle'' and ``solid triangle''.  To be precise, each
-  time you increase $\theta_{\textrm{solid}}$ by 1, you multiply those
-  numerators by $e$.  Subtracting 1 will divide them by $e$.
+  of $p(\text{solid circle})$ \eqref{eqn:solidcircle} and $p(\text{solid triangle})$
+  \eqref{eqn:solidtriangle}.  To be precise, each time you increase
+  $\theta_{\textrm{solid}}$ by 1, you multiply those numerators by
+  $e$.  (And decreasing $\theta_{\textrm{solid}}$ by 1 divides them by $e$.)
 
 \item Finally, notice that the 4 probabilities sum up to 1, which is
   required because these are the only 4 possible outcomes:
 \end{itemize}
 \end{minipage}
+\vspace{-6pt}
 \begin{equation}
   p(\text{solid circle}) + p(\text{striped circle}) + p(\text{solid circle}) + p(\text{striped triangle}) = 1
 \end{equation}
@@ -84,13 +87,13 @@ go up, the striped probabilities must go down to compensate.
 Now every shape has exactly two features (whereas in lesson 1, some had fewer):
 
 \begin{align*}
-\hspace{-12mm}p(\text{solid circle}) & \defeq \frac{\exp\ (\theta_{\textrm{circle}}+\theta_{\textrm{solid}})\hspace{121mm}}{\exp\ (\theta_{\textrm{circle}} + \theta_{\textrm{solid}}) + \exp\ (\theta_{\textrm{circle}} + \theta_{\textrm{striped}}) + \exp\ (\theta_{\textrm{triangle}} + \theta_{\textrm{solid}}) + \exp\ (\theta_{\textrm{triangle}} + \theta_{\textrm{striped}})} \\
+\hspace{-12mm}p(\text{solid circle}) & \defeq \frac{\exp (\theta_{\textrm{circle}}+\theta_{\textrm{solid}})\hspace{118mm}}{\exp (\theta_{\textrm{circle}} + \theta_{\textrm{solid}}) + \exp (\theta_{\textrm{circle}} + \theta_{\textrm{striped}}) + \exp (\theta_{\textrm{triangle}} + \theta_{\textrm{solid}}) + \exp (\theta_{\textrm{triangle}} + \theta_{\textrm{striped}})} \\
 \rule{0in}{1.5\baselineskip}
-\hspace{-12mm}p(\text{striped circle}) & \defeq \frac{\exp\ (\theta_{\textrm{circle}}+\theta_{\textrm{striped}})\hspace{46mm}}{\exp\ (\theta_{\textrm{circle}} + \theta_{\textrm{solid}}) + \exp\ (\theta_{\textrm{circle}} + \theta_{\textrm{striped}}) + \exp\ (\theta_{\textrm{triangle}} + \theta_{\textrm{solid}}) + \exp\ (\theta_{\textrm{triangle}} + \theta_{\textrm{striped}})} \\
+\hspace{-12mm}p(\text{striped circle}) & \defeq \frac{\exp (\theta_{\textrm{circle}}+\theta_{\textrm{striped}})\hspace{44mm}}{\exp (\theta_{\textrm{circle}} + \theta_{\textrm{solid}}) + \exp (\theta_{\textrm{circle}} + \theta_{\textrm{striped}}) + \exp (\theta_{\textrm{triangle}} + \theta_{\textrm{solid}}) + \exp (\theta_{\textrm{triangle}} + \theta_{\textrm{striped}})} \\
 \rule{0in}{1.5\baselineskip}
-\hspace{-12mm}p(\text{solid triangle}) & \defeq \frac{\hspace{33mm}\exp\ (\theta_{\textrm{triangle}}+\theta_{\textrm{solid}})}{\exp\ (\theta_{\textrm{circle}} + \theta_{\textrm{solid}}) + \exp\ (\theta_{\textrm{circle}} + \theta_{\textrm{striped}}) + \exp\ (\theta_{\textrm{triangle}} + \theta_{\textrm{solid}}) + \exp\ (\theta_{\textrm{triangle}} + \theta_{\textrm{striped}})} \\
+\hspace{-12mm}p(\text{solid triangle}) & \defeq \frac{\hspace{32mm}\exp (\theta_{\textrm{triangle}}+\theta_{\textrm{solid}})}{\exp (\theta_{\textrm{circle}} + \theta_{\textrm{solid}}) + \exp (\theta_{\textrm{circle}} + \theta_{\textrm{striped}}) + \exp (\theta_{\textrm{triangle}} + \theta_{\textrm{solid}}) + \exp (\theta_{\textrm{triangle}} + \theta_{\textrm{striped}})} \\
 \rule{0in}{1.5\baselineskip}
-\hspace{-12mm}p(\text{striped triangle}) & \defeq \frac{\hspace{115mm}\exp\ (\theta_{\textrm{triangle}}+\theta_{\textrm{striped}})}{\exp\ (\theta_{\textrm{circle}} + \theta_{\textrm{solid}}) + \exp\ (\theta_{\textrm{circle}} + \theta_{\textrm{striped}}) + \exp\ (\theta_{\textrm{triangle}} + \theta_{\textrm{solid}}) + \exp\ (\theta_{\textrm{triangle}} + \theta_{\textrm{striped}})} 
+\hspace{-12mm}p(\text{striped triangle}) & \defeq \frac{\hspace{111mm}\exp (\theta_{\textrm{triangle}}+\theta_{\textrm{striped}})}{\exp (\theta_{\textrm{circle}} + \theta_{\textrm{solid}}) + \exp (\theta_{\textrm{circle}} + \theta_{\textrm{striped}}) + \exp (\theta_{\textrm{triangle}} + \theta_{\textrm{solid}}) + \exp (\theta_{\textrm{triangle}} + \theta_{\textrm{striped}})} 
 \end{align*}
 
 \section{Why We Need Log-Linear Models {\em [read after lesson 2]}}
