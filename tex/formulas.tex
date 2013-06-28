@@ -16,7 +16,7 @@
 \newcommand{\diffk}{\frac{\partial}{\partial \theta_k}}
 
 \begin{document}
-\title{Log-Linear Models}
+\title{\vspace{-2cm}Log-Linear Models}
 \author{Jason Eisner (Johns Hopkins University)}
 \date{}
 \maketitle
@@ -27,7 +27,9 @@
   \hspace*{\fill} \url{http://cs.jhu.edu/~jason/tutorials/loglin/}. \hspace*{\fill}}}
 \end{center}
 
-\section{Starting out Concretely {\em [read with lessons 1 and 2]}}
+\section{Starting out Concretely}\label{sec:concrete}
+
+\subsection{Formulas for Lesson 1}
 
 The four shape probabilities in lesson 1 are computed as follows,
 where $\theta_{\textrm{circle}}$ and $\theta_{\textrm{solid}}$ are the
@@ -39,23 +41,47 @@ two parameters that you can control with the sliders.
 \begin{align}
 p(\text{solid circle}) & \defeq \frac{\exp\ (\theta_{\textrm{circle}}+\theta_{\textrm{solid}})\hspace{60mm}}{\exp\ (\theta_{\textrm{circle}} + \theta_{\textrm{solid}}) + \exp\ (\theta_{\textrm{circle}}) + \exp\ (\theta_{\textrm{solid}}) + \exp\ 0} \\
 \rule{0in}{1.5\baselineskip}
-p(\text{striped circle}) & \defeq \frac{\exp\ (\theta_{\textrm{circle}})\hspace{3mm}}{\exp\ (\theta_{\textrm{circle}} + \theta_{\textrm{solid}}) + \exp\ (\theta_{\textrm{circle}}) + \exp\ (\theta_{\textrm{solid}}) + \exp\ 0} \\
+p(\text{striped circle}) & \defeq \frac{\exp\ (\theta_{\textrm{circle}})\hspace{1mm}}{\exp\ (\theta_{\textrm{circle}} + \theta_{\textrm{solid}}) + \exp\ (\theta_{\textrm{circle}}) + \exp\ (\theta_{\textrm{solid}}) + \exp\ 0} \\
 \rule{0in}{1.5\baselineskip}
-p(\text{solid triangle}) & \defeq \frac{\hspace{45mm}\exp\ (\theta_{\textrm{solid}})}{\exp\ (\theta_{\textrm{circle}} + \theta_{\textrm{solid}}) + \exp\ (\theta_{\textrm{circle}}) + \exp\ (\theta_{\textrm{solid}}) + \exp\ 0} \\
+p(\text{solid triangle}) & \defeq \frac{\hspace{46mm}\exp\ (\theta_{\textrm{solid}})}{\exp\ (\theta_{\textrm{circle}} + \theta_{\textrm{solid}}) + \exp\ (\theta_{\textrm{circle}}) + \exp\ (\theta_{\textrm{solid}}) + \exp\ 0} \\
 \rule{0in}{1.5\baselineskip}
 p(\text{striped triangle}) & \defeq \frac{\hspace{82mm}\exp\ 0}{\exp\ (\theta_{\textrm{circle}} + \theta_{\textrm{solid}}) + \exp\ (\theta_{\textrm{circle}}) + \exp\ (\theta_{\textrm{solid}}) + \exp\ 0}
 \end{align}
 
-\noindent All of these fractions have the same denominator, called $Z$.  It was chosen to make
+Recall that $\exp\ x$ means $e^x$ where $e$ is a constant (namely
+$e=2.71828\ldots$, the base of natural logarithms).\footnote{If
+  $y=e^x$, then $x=\log y$.  That's the definition of $\log y$
+  (sometimes written as $\log_e y$ or $\ln y$), 
+  the natural logarithm.} 
+
+\includegraphics[height=2.25in]{exp}
+\begin{minipage}[b]{4in}
+\begin{itemize}
+
+\item $\exp x$ is always positive (except that $\exp(-\infty)=0$).  So
+  all of the numerators and denominators above are $\geq 0$.  This
+  makes all the probabilities $\geq 0$, as required.
+
+\item As $x$ gets bigger, so does $\exp x$.  So raising
+  $\theta_{\textrm{solid}}$ with your slider will raise the numerators
+  of ``solid circle'' and ``solid triangle''.  To be precise, each
+  time you increase $\theta_{\textrm{solid}}$ by 1, you multiply those
+  numerators by $e$.  Subtracting 1 will divide them by $e$.
+
+\item Finally, notice that the 4 probabilities sum up to 1, which is
+  required because these are the only 4 possible outcomes:
+\end{itemize}
+\end{minipage}
 \begin{equation}
-p(\text{solid circle}) + p(\text{striped circle}) + p(\text{solid circle}) + p(\text{striped triangle}) = 1
+  p(\text{solid circle}) + p(\text{striped circle}) + p(\text{solid circle}) + p(\text{striped triangle}) = 1
 \end{equation}
+(This was arranged by choosing a common denominator as shown---later
+we'll call it ``$Z$.'')  So when the two solid probabilities
+go up, the striped probabilities must go down to compensate.
 
-\noindent {\em Reminder:} $\exp v$ means $e^v$ where $e$ is a certain constant
-(namely $e=2.71828\ldots$, the base of natural logarithms).  In
-particular, $\exp 0=1$.
+\subsection{Formulas for Lesson 2}
 
-In lesson 1, some shapes have fewer than two features.  In lesson 2, every shape has two features:
+Now every shape has exactly two features (whereas in lesson 1, some had fewer):
 
 \begin{align*}
 \hspace{-12mm}p(\text{solid circle}) & \defeq \frac{\exp\ (\theta_{\textrm{circle}}+\theta_{\textrm{solid}})\hspace{121mm}}{\exp\ (\theta_{\textrm{circle}} + \theta_{\textrm{solid}}) + \exp\ (\theta_{\textrm{circle}} + \theta_{\textrm{striped}}) + \exp\ (\theta_{\textrm{triangle}} + \theta_{\textrm{solid}}) + \exp\ (\theta_{\textrm{triangle}} + \theta_{\textrm{striped}})} \\
@@ -204,8 +230,8 @@ defined by
          &= \exp \left(\vtheta \cdot \vec{f}(x,y)\right) > 0
 \end{align}
 Here $\vtheta \in \Real^K$ is a vector of feature {\bf weights}, which
-are the adjustable parameters of the model.  You will control these
-with sliders in the interactive visualization.
+are the adjustable parameters of the model.  You control these
+with sliders in the interactive visualization.  
 
 The unnormalized probabilities $u(x,y)$ are always positive (because of the $\exp$).
 Equation~(\ref{eqn:loglin}) has to scale them, in order to get proper
@@ -258,10 +284,12 @@ The initial lessons in the interactive visualization deal with the
 simple case where there is no information about context.  So we can
 omit $x$.  We now have a simple distribution over possible $y$ values,
 \begin{align}
-  \ph(y) &\defeq \frac{u(y)}{Z} \\
+  \ph(y) &\defeq \frac{u(y)}{Z} \label{eqn:unconditioned} \\
   u(y) &\defeq \exp \left(\vtheta \cdot \vec{f}(y)\right) > 0 \\
   Z &\defeq \sum_y u(y)
 \end{align}
+Section~\ref{sec:concrete} of this handout shows what \eqref{eqn:unconditioned}
+turns out to be for each $y \in {\cal Y}$ in the first two lessons.
 
 \subsection{Features versus Attributes}
 
