@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PUBLIC_OBSERVABLES=( index.html scripts imgs tex lessons styles LICENSE )
+PUBLIC_OBSERVABLES=( index.html further.html scripts imgs tex lessons styles LICENSE )
 
 FILE_PERM=644
 DIR_PERM=755
