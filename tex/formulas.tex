@@ -16,7 +16,7 @@
 \newcommand{\diffk}{\frac{\partial}{\partial \theta_k}}
 
 \begin{document}
-\title{Log-Linear Models}
+\title{\vspace{-2cm}Log-Linear Models}
 \author{Jason Eisner (Johns Hopkins University)}
 \date{}
 \maketitle
@@ -27,7 +27,80 @@
   \hspace*{\fill} \url{http://cs.jhu.edu/~jason/tutorials/loglin/}. \hspace*{\fill}}}
 \end{center}
 
-\section{The Problem {\em [read with lesson 1]}}
+\section{Starting out Concretely}\label{sec:concrete}
+
+\subsection{Formulas for Lesson 1}
+
+The four shape probabilities in lesson 1 are computed as follows,
+where $\theta_{\textrm{circle}}$ and $\theta_{\textrm{solid}}$ are the
+two parameters that you can control with the sliders.
+
+% Note: My typesetting with \hspace here is awfully hacky.
+% I should really define boxes for the summands and use the width of the boxes.
+
+\begin{align}
+p(\text{solid circle}) & \defeq \frac{\exp (\theta_{\textrm{circle}}+\theta_{\textrm{solid}})\hspace{57mm}}{\exp (\theta_{\textrm{circle}} + \theta_{\textrm{solid}}) + \exp (\theta_{\textrm{circle}}) + \exp (\theta_{\textrm{solid}}) + \exp 0} \label{eqn:solidcircle}\\
+\rule{0in}{1.5\baselineskip}
+p(\text{striped circle}) & \defeq \frac{\exp (\theta_{\textrm{circle}})\hspace{0mm}}{\exp (\theta_{\textrm{circle}} + \theta_{\textrm{solid}}) + \exp (\theta_{\textrm{circle}}) + \exp (\theta_{\textrm{solid}}) + \exp 0} \label{eqn:stripedcircle}\\
+\rule{0in}{1.5\baselineskip}
+p(\text{solid triangle}) & \defeq \frac{\hspace{44mm}\exp (\theta_{\textrm{solid}})}{\exp (\theta_{\textrm{circle}} + \theta_{\textrm{solid}}) + \exp (\theta_{\textrm{circle}}) + \exp (\theta_{\textrm{solid}}) + \exp 0} \label{eqn:solidtriangle}\\
+\rule{0in}{1.5\baselineskip}
+p(\text{striped triangle}) & \defeq \frac{\hspace{79mm}\exp 0}{\exp (\theta_{\textrm{circle}} + \theta_{\textrm{solid}}) + \exp (\theta_{\textrm{circle}}) + \exp (\theta_{\textrm{solid}}) + \exp 0} \label{eqn:stripedtriangle}
+\end{align}
+
+``$\exp$'' denotes the exponential function.  Recall that $\exp x$ means
+$e^x$ where $e$ is a constant (namely $e=2.71828\ldots$, the base of
+natural logarithms).\footnote{If $y=e^x$, then $x=\log y$.  That's the
+  definition of $\log y$ (sometimes written as $\log_e y$ or $\ln y$),
+  the natural logarithm.}  From the graph of $y=e^x$ you can see:
+
+\includegraphics[height=2.25in]{exp}
+\begin{minipage}[b]{4in}
+\vspace{4pt}
+\begin{itemize}
+
+\item $\exp x$ is always positive (except that $\exp
+  -\infty=0$).  So all of the numerators and denominators in \eqref{eqn:solidcircle}--\eqref{eqn:stripedtriangle} are
+  $\geq 0$.  This makes all the probabilities $\geq 0$, as required.
+
+\item As $x$ gets bigger, so does $\exp x$.  So raising
+  $\theta_{\textrm{solid}}$ with your slider will raise the numerators
+  of $p(\text{solid circle})$ \eqref{eqn:solidcircle} and $p(\text{solid triangle})$
+  \eqref{eqn:solidtriangle}.  To be precise, each time you increase
+  $\theta_{\textrm{solid}}$ by 1, you multiply those numerators by
+  $e$.  (And decreasing $\theta_{\textrm{solid}}$ by 1 divides them by $e$.)
+
+\item Finally, the four probabilities
+  \eqref{eqn:solidcircle}--\eqref{eqn:stripedtriangle} always sum to 1
+  (thanks to their common denominator $Z$).  That's required because
+  those are the four possible outcomes:
+\end{itemize}
+\end{minipage}
+\vspace{-6pt}
+\begin{equation}
+  p(\text{solid circle}) + p(\text{striped circle}) + p(\text{solid circle}) + p(\text{striped triangle}) = 1
+\end{equation}
+Hence, when raising $\theta_{\textrm{solid}}$ makes the solid
+probabilities \eqref{eqn:solidcircle} and \eqref{eqn:solidtriangle} go
+up, the striped probabilities \eqref{eqn:stripedcircle} and
+\eqref{eqn:stripedtriangle} must go down to compensate.  \hspace{-2pt}This keeps the sum at 1.  
+\hspace{-2pt}(Lowering $\theta_{\textrm{solid}}$ does the reverse.)
+
+\subsection{Formulas for Lesson 2}
+
+Now every shape has exactly two features (whereas in lesson 1, some shapes had fewer):
+
+\begin{align*}
+\hspace{-12mm}p(\text{solid circle}) & \defeq \frac{\exp (\theta_{\textrm{circle}}+\theta_{\textrm{solid}})\hspace{118mm}}{\exp (\theta_{\textrm{circle}} + \theta_{\textrm{solid}}) + \exp (\theta_{\textrm{circle}} + \theta_{\textrm{striped}}) + \exp (\theta_{\textrm{triangle}} + \theta_{\textrm{solid}}) + \exp (\theta_{\textrm{triangle}} + \theta_{\textrm{striped}})} \\
+\rule{0in}{1.5\baselineskip}
+\hspace{-12mm}p(\text{striped circle}) & \defeq \frac{\exp (\theta_{\textrm{circle}}+\theta_{\textrm{striped}})\hspace{44mm}}{\exp (\theta_{\textrm{circle}} + \theta_{\textrm{solid}}) + \exp (\theta_{\textrm{circle}} + \theta_{\textrm{striped}}) + \exp (\theta_{\textrm{triangle}} + \theta_{\textrm{solid}}) + \exp (\theta_{\textrm{triangle}} + \theta_{\textrm{striped}})} \\
+\rule{0in}{1.5\baselineskip}
+\hspace{-12mm}p(\text{solid triangle}) & \defeq \frac{\hspace{32mm}\exp (\theta_{\textrm{triangle}}+\theta_{\textrm{solid}})}{\exp (\theta_{\textrm{circle}} + \theta_{\textrm{solid}}) + \exp (\theta_{\textrm{circle}} + \theta_{\textrm{striped}}) + \exp (\theta_{\textrm{triangle}} + \theta_{\textrm{solid}}) + \exp (\theta_{\textrm{triangle}} + \theta_{\textrm{striped}})} \\
+\rule{0in}{1.5\baselineskip}
+\hspace{-12mm}p(\text{striped triangle}) & \defeq \frac{\hspace{111mm}\exp (\theta_{\textrm{triangle}}+\theta_{\textrm{striped}})}{\exp (\theta_{\textrm{circle}} + \theta_{\textrm{solid}}) + \exp (\theta_{\textrm{circle}} + \theta_{\textrm{striped}}) + \exp (\theta_{\textrm{triangle}} + \theta_{\textrm{solid}}) + \exp (\theta_{\textrm{triangle}} + \theta_{\textrm{striped}})} 
+\end{align*}
+
+\section{Why We Need Log-Linear Models {\em [read after lesson 2]}}
 
 Often we make use of conditional probabilities like $p(y \mid x)$, where
 $y$ and $x$ are discrete outcomes:
@@ -86,7 +159,7 @@ independently of the others.\footnote{Though ``backoff smoothing'' does jointly
 % $x_1 \approx x_2$ are similar and have small counts,
 %  but not in a very flexible way.
 
-\section{Log-linear models {\em [read with lesson 1]}}
+\section{Log-linear models {\em [read after lesson 2]}}
 
 Log-linear modeling is a very popular and flexible technique for
 addressing this problem.  It has the advantage that it considers {\em
@@ -164,8 +237,8 @@ defined by
          &= \exp \left(\vtheta \cdot \vec{f}(x,y)\right) > 0
 \end{align}
 Here $\vtheta \in \Real^K$ is a vector of feature {\bf weights}, which
-are the adjustable parameters of the model.  You will control these
-with sliders in the interactive visualization.
+are the adjustable parameters of the model.  You control these
+with sliders in the interactive visualization.  
 
 The unnormalized probabilities $u(x,y)$ are always positive (because of the $\exp$).
 Equation~(\ref{eqn:loglin}) has to scale them, in order to get proper
@@ -218,10 +291,12 @@ The initial lessons in the interactive visualization deal with the
 simple case where there is no information about context.  So we can
 omit $x$.  We now have a simple distribution over possible $y$ values,
 \begin{align}
-  \ph(y) &\defeq \frac{u(y)}{Z} \\
+  \ph(y) &\defeq \frac{u(y)}{Z} \label{eqn:unconditioned} \\
   u(y) &\defeq \exp \left(\vtheta \cdot \vec{f}(y)\right) > 0 \\
   Z &\defeq \sum_y u(y)
 \end{align}
+Section~\ref{sec:concrete} of this handout shows what \eqref{eqn:unconditioned}
+turns out to be for each $y \in {\cal Y}$ in the first two lessons.
 
 \subsection{Features versus Attributes}
 

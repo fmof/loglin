@@ -55,7 +55,8 @@
 Francis Ferraro \and Jason Eisner\\
 Department of Computer Science\\
 Johns Hopkins University\\
-Baltimore, MD, USA
+Baltimore, MD, USA\\
+{\tt \{ferraro, jason\}@cs.jhu.edu}
 }
   
 \date{}
@@ -549,9 +550,7 @@ nudges all parameters by taking a step of gradient
 ascent,\footnote{When $\ell_1$ regularization is used, the optimal
   $\vec{\theta}$ often contains many 0 weights, and a step
   is not permitted to jump over a (possibly optimal) weight of
-  0.\NoteJE{Is this needed for correctness or just efficiency?  I
-    can't think anymore why nondifferentiability is a problem.  Isn't
-    Armijo enough?}  
+  0.
   It stops at 0, though if warranted, it can continue past 0 on the next step.} 
 and even more by the ``Solve''
 button, which steps all the way to the maximum.\footnote{The ``Solve''
@@ -640,13 +639,13 @@ combinations shown in Figure \ref{fig:shape_inventory}.
 \begin{figure}[t]
 \begin{center}
 \centering
-\includegraphics[scale=.5]{images/different_shapes_fills3x4.PNG}
+\includegraphics[scale=.5]{images/different_shapes_fills3x4-allgray.PNG}
 \caption{Inventory of available shapes
   (circle/triangle/square/pentagon) and fills (solid/striped/hollow).
+  Text and arbitrary images may be used instead of shapes.
   %Color is reserved to indicate the sign of \eqref{eqn:obsexp}.  
- Color is reserved to indicate differences of expectations, e.g., 
- the sign of \eqref{eqn:obsexp}---see Figure \ref{fig:colorsize_inventory}.
-  Text  and arbitrary images may be used instead of shapes.}
+  Color and size are reserved to indicate how the current model's predictions of outcome counts or
+  feature counts compare to the empirical values---see Figure \ref{fig:colorsize_inventory}.}
 \label{fig:shape_inventory}
 \label{fig:inventory}
 \end{center}

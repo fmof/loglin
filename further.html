@@ -1,21 +1,81 @@
-FURTHER MATERIALS WILL GO HERE
-(link back to main assignment)
-(say that we welcome suggestions)
+<head>
+<Title>Further Resources on Log-Linear Models</Title>
+</head>
 
-(add this to bin/ensure_permissions)
-(link to it from near top of final lesson)
+<body text="#000000" bgcolor="#FFFFFF">
+
+<H1>Further Resources on Log-Linear Models</H1>
+
+<H4>by <A HREF="http://cs.jhu.edu/~jason">Jason Eisner</A> and <A HREF="http://cs.jhu.edu/~jason">Frank Ferraro</A> (2013)</H4>
+
+<p>This page points to some resources on log-linear modeling.  They
+accompany the <A HREF=".">interactive visualization</A>
+described in Ferraro & Eisner
+(2013), <A HREF="http://cs.jhu.edu/~jason/papers/#ferraro-eisner-2013">A
+virtual manipulative for learning log-linear models</A>.  Suggested
+additions are welcome.</p>
 
 <H3>Log-Linear Software</H3>
 
-(GIS/IIS, Malouf, Goodman, and other people with specialized training methods)
+Here's some recommended open-source software you can use to build
+log-linear models for your own use.  
+
+<ul>
+  <li><p>NLTK is a Python toolkit for natural language processing,
+    intended particularly for pedagogical use.  
+    <A HREF="http://nltk.org/book/ch06.html">Chapter 6</A> of the NLTK
+    book (Bird, Klein & Loper 2009) walks you through using machine
+    learning classifiers on natural language data.  They refer to
+    log-linear models as "maximum entropy models"
+    (<A HREF="http://nltk.org/book/ch06.html#maximum-entropy-classifiers">section
+    6.6</A>).  The use of NLTK's
+    <A HREF="http://nltk.googlecode.com/svn/trunk/doc/api/nltk.classify.maxent-module.html">maxent
+    module</A> is illustrated
+    in <A HREF="http://nltk.org/book/ch07.html#developing-and-evaluating-chunkers">section
+    7.3</A> of the book.</p>
+
+  <li><p><A HREF="http://www.umiacs.umd.edu/~hal/megam/">MegaM</A> by Hal
+    Daum&eacute; III is an efficient program for training log-linear
+    models.  You give it a file of training data, and it prints out
+    the learned weights.  Once you have the weights in a file, you can
+    run the program again in a different mode, as a filter, where it
+    prints the probability distribution <i>p</i>(<i>y</i> | <i>x</i>)
+    for each test input <i>x</i> that it reads, one by one.  NLTK
+    provides
+    an <A HREF="http://nltk.googlecode.com/svn/trunk/doc/api/nltk.classify.megam-module.html">interface
+    to MegaM</A> so you can call it from Python.</p>
+
+  <li><p><A HREF="http://hunch.net/~vw/">Vowpal Wabbit</A> (VW) is a
+    super-fast program that can learn linear models with billions of
+    features, using thousands of computers in parallel if you've got
+    'em.  Use the argument <tt>--loss_function logistic</tt> to use
+    the log-linear training objective, adding &ell;<sub>1</sub> or
+    &ell;<sub>2</sub> regularization with <tt>--l1 1.0</tt>
+    or <tt>--l2 1.0</tt> (for <i>C</i> = 1.0).  VW focuses on
+    prediction, so I am not sure whether it will
+    print <i>p</i>(<i>y</i> | <i>x</i>) or just tell you the
+    best <i>y</i> for each <i>x</i>.</p>
+</ul>
+
+<p><i>[We may add step-by-step instructions for replicating our
+<A HREF="./#1">lesson 1</A> with each piece of software.]</i></p>
+
+<!-- (GIS/IIS, Malouf, Goodman, and other people with specialized training methods) -->
 
 <H3>Pencil-and-Paper Exercises</H3>
 
-(our practice problems, plus 3 from 2012)
+<i>[We will place some practice problems here from Jason's NLP class.
+  We would also be happy to link to exercises from other NLP classes.]</i>
+
+<!-- (our practice problems, plus 3 from 2012) -->
 
 <H3>Homework Projects</H3>
 
-\NoteFF{NLTK says: ``Select one of the classification tasks described in this
+<i>[We will link here to an assignment from Jason's NLP class.  We
+  would also be happy to link to projects from other NLP
+  classes.]</i>
+
+<!-- \NoteFF{NLTK says: ``Select one of the classification tasks described in this
   chapter, such as name gender detection, document classification,
   part-of-speech tagging, or dialog act classification. Using the same
   training and test data, and the same feature extractor, build three
@@ -24,34 +84,98 @@ FURTHER MATERIALS WILL GO HERE
   three classifiers on your selected task. How do you think that your
   results might be different if you used a different feature
   extractor?'' Berkeley  maxent for proper noun classification, or POS
-  tagging\protect{\url{http://www.cs.berkeley.edu/~klein/cs288/}}}
+  tagging\protect{\url{http://www.cs.berkeley.edu/~klein/cs288/}}} -->
 
 <H3>Further Reading</H3>
 
-(list our own paper here)
-(list our handout here)
-(mention ACL anthology)
+<p>One good introduction is the <A HREF="formulas.pdf">handout</A> that
+goes along with our <A HREF=".">visualization</A>.  
+<br><i>[We plan to add links to other good textbook and tutorial treatments.]</i></p>
 
-(@article{jaynes1982rationale,
-  title={On the rationale of maximum-entropy methods},
-  author={Jaynes, Edwin T},
-  journal={Proceedings of the IEEE},
-  volume={70},
-  number={9},
-  pages={939--952},
-  year={1982},
-  publisher={IEEE}
-})
+<p>For links into the research literature, we quote from section 8 of
+our paper (<A HREF="http://cs.jhu.edu/~jason/papers/#ferraro-eisner-2013">Ferraro
+& Eisner, 2013</A>):</p>
 
+<blockquote>
+<p>At the time of writing, 3266 papers in
+the <A HREF="http://aclweb.org/anthology/">ACL Anthology</A> mention
+log-linear models, with 137 using &#8220;log-linear,&#8221;
+&#8220;maximum entropy&#8221; or &#8220;maxent&#8221; in the paper title.
+These cover a wide range of applications that can be considered in
+lectures or homework projects.</p>
 
-(@article{berger1996maximum,
-  title={A maximum entropy approach to natural language processing},
-  author={Berger, Adam L and Pietra, Vincent J Della and Pietra, Stephen A Della},
-  journal={Computational linguistics},
-  volume={22},
-  number={1},
-  pages={39--71},
-  year={1996},
-  publisher={MIT Press}
-})
+<p>Early papers may cover the most fundamental applications and the
+clearest motivation.  Conditional log-linear models were first
+popularized in computational linguistics by a group of researchers
+associated with the IBM speech and language group, who called them
+&#8220;maximum entropy models,&#8221; after a principle that can be used
+to motivate their form
+(<A HREF="http://bayes.wustl.edu/etj/articles/theory.1.pdf">Jaynes,
+1957</A>).  They applied the method to various binary or multiclass
+classification problems in NLP, such as prepositional phrase
+attachment
+(<A HREF="http://acl.ldc.upenn.edu/H/H94/H94-1048.pdf">Ratnaparkhi et
+al., 1994</A>), text categorization
+(<A HREF="http://www.kamalnigam.com/papers/maxent-ijcaiws99.pdf">Nigam et
+al., 1999</A>), and boundary prediction
+(<A HREF="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.43.9557&rep=rep1&type=pdf">Beeferman
+et al., 1999</A>).</p>
+
+<p>Log-linear models can be also used for structured prediction
+problems in NLP such as tagging, parsing, chunking, segmentation, and
+language modeling.  A simple strategy is to reduce structured
+prediction to a sequence of multiclass predictions, which can be
+individually made with a conditional log-linear model
+(<A HREF="ftp://ftp.cis.upenn.edu/pub/ircs/tr/98-15/98-15.ps.gz">Ratnaparkhi,
+1998</A>).  A more fully probabilistic approach---used in the original
+&#8220;maximum entropy&#8221; papers---is to use (1) to define the
+conditional probabilities of the steps in a generative process that
+gradually produces the structure
+(<A HREF="http://www.cs.cmu.edu/~roni/papers/me-thesis-TR-94-138.pdf">Rosenfeld,
+1994</A>; <A HREF="http://acl.ldc.upenn.edu/J/J96/J96-1002.pdf">Berger et
+al., 1996</A>.).  <font size=-1>(Even predicting the single next word
+in a sentence can be broken down into a sequence of binary decisions
+in this way.  This avoids normalizing over the large vocabulary
+(<A HREF="http://www.gatsby.ucl.ac.uk/~amnih/papers/hlbl_final.pdf">Mnih
+& Hinton, 2008</A>).)</font>  This idea remains popular today and can
+be used to embed rich distributions into a variety of generative
+models
+(<A HREF="http://aclweb.org/anthology/N/N10/N10-1083.pdf">Berg-Kirkpatrick
+et al. 2010</A>). For example, a PCFG that uses richly annotated
+nonterminals involves a large number of context-free rules.  Rather
+than estimating their probabilities separately, or with traditional
+backoff smoothing, a better approach is to use (1) to model the
+probability of all rules given their left-hand sides, based on
+features that consider attributes of the
+nonterminals.  <font size=-1>(E.g., case, number, gender, tense,
+aspect, mood, lexical head.  In the case of a terminal rule, the
+spelling or morphology of the terminal symbol can be
+considered.)</font></p>
+
+<p>The most direct approach to structured prediction is to simply
+predict the structured output all at once, so that <i>y</i> is a large
+structured object with many features.  This is conceptually natural
+but means that the normalizer <i>Z</i>(</i>x</i>) involves summing
+over a large space &#x1D4B4;(<i>x</i>).  One can restrict &#x1D4B4;(<i>x</i>) before
+training
+(<A HREF="http://acl.ldc.upenn.edu/P/P99/P99-1069.pdf">Johnson et al.,
+1999</A>).  More common is to sum <i>efficiently</i> by dynamic
+programming or sampling, as is typical in linear-chain conditional
+random fields
+(<A HREF="http://www.cis.upenn.edu/~pereira/papers/crf.pdf">Lafferty
+et al., 2001</A>), whole-sentence language modeling
+(<A HREF="http://www.cs.cmu.edu/~roni/papers/wsme-csl-00.pdf">Rosenfeld et
+al., 2001</A>), and CRF CFGs (<A HREF="http://www.aclweb.org/anthology/P08-1109.pdf">Finkel et al, 2008</A>).</p>
+</blockquote>
+
+<hr>
+This page
+online: <CODE>http://cs.jhu.edu/~jason/tutorials/loglin/further</CODE>
+<TABLE width="100%" border=0><TR>
+  <TD><A HREF="http://www.cs.jhu.edu/~jason"><EM>Jason Eisner</EM></A> - <A HREF="mailto:jason@cs.jhu.edu"><EM>jason@cs.jhu.edu</EM></A> (suggestions welcome)</TD>
+  <TD ALIGN=right>Last Mod $Date: 2013/04/04 17:31:36 $</TD>
+</TR></TABLE> 
+</body>
+</html>
+
 
