@@ -51,12 +51,12 @@ function update_qtip_count(jhandle){
 	var x = parseInt(fi.attr("theta_index"),10);
 	jhandle.qtip({content:
 		      "Observed Count: " + 
-			  '<span style="color:' + 
+			  '<span class="bold" style="color:' + 
 			  COUNTS_EQUAL + '">' + 
 			  OBS_FEAT_COUNT[x]+ '</span>' +
 		      "<br />" +
 		      "Expected Count: " + 
-			  '<span style="color:' + 
+			  '<span class="bold" style="color:' + 
 			  ((OBS_FEAT_COUNT[x] - EXP_FEAT_COUNT[x]) > 0 ? COUNTS_TOO_LOW : COUNTS_TOO_HIGH )+
 			  ';">' + formatExpected(EXP_FEAT_COUNT[x]) +
 			  '</span>'
@@ -742,10 +742,10 @@ function updateSVGTitles(){
 	if(jthis.data("qtip")){
 	    jQuery(this).qtip({content:
 			       'Empirical Probability: ' + 
-				   '<span style="color:'+ COUNTS_EQUAL +';">' +
+				   '<span class="bold" style="color:'+ COUNTS_EQUAL +';">' +
 				   emp_prob +"</span><br/>"+
 			       'Model Probability: ' +
-				   '<span style="color:'+ 
+				   '<span class="bold" style="color:'+ 
 				   determine_color(emp_prob, model_prob,context) +';">' + model_prob + '</span>'
 			      });
 	} else{

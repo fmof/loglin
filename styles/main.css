@@ -450,6 +450,10 @@ ul #data_options_area{
     overflow:hidden;
 }
 
+.bold {
+    font-weight:bold;
+}
+
 #data_options_area dt{
     font-weight:bold;
 }
