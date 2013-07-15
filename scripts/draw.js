@@ -50,9 +50,16 @@ function update_qtip_count(jhandle){
 	var fi = jhandle.parent().parent().parent().children(":first");
 	var x = parseInt(fi.attr("theta_index"),10);
 	jhandle.qtip({content:
-		      "Observed Count: " + OBS_FEAT_COUNT[x]+
+		      "Observed Count: " + 
+			  '<span style="color:' + 
+			  COUNTS_EQUAL + '">' + 
+			  OBS_FEAT_COUNT[x]+ '</span>' +
 		      "<br />" +
-		      "Expected Count: " + formatExpected(EXP_FEAT_COUNT[x])
+		      "Expected Count: " + 
+			  '<span style="color:' + 
+			  ((OBS_FEAT_COUNT[x] - EXP_FEAT_COUNT[x]) > 0 ? COUNTS_TOO_LOW : COUNTS_TOO_HIGH )+
+			  ';">' + formatExpected(EXP_FEAT_COUNT[x]) +
+			  '</span>'
 		     });
     }
 }
@@ -731,11 +738,15 @@ function updateSVGTitles(){
 	var emp_prob = get_empirical_prob(context, typeid, false);
 	if(isNumber(emp_prob)) emp_prob=emp_prob.toPrecision(4);
 	var model_prob = (get_prob(context,typeid)/Z_THETA[context]).toPrecision(4);
-	
+	//var tooltipcolor = determine_color(emp_prob, model_prob,context);
 	if(jthis.data("qtip")){
 	    jQuery(this).qtip({content:
-			       'Empirical Probability: ' + emp_prob +"<br/>"+
-			       'Model Probability: ' + model_prob
+			       'Empirical Probability: ' + 
+				   '<span style="color:'+ COUNTS_EQUAL +';">' +
+				   emp_prob +"</span><br/>"+
+			       'Model Probability: ' +
+				   '<span style="color:'+ 
+				   determine_color(emp_prob, model_prob,context) +';">' + model_prob + '</span>'
 			      });
 	} else{
 	    jQuery(this).attr('title','Empirical Probability: ' + emp_prob +"<br/>"+

@@ -372,8 +372,8 @@ input[type=range].feature_slider{
 }
 
 .ui-tooltip, .qtip{
-    background: black;
-    border: 2px solid white;
+    background: lightgray; /*black;*/
+    border: 2px solid /*white*/ gray;
     position: absolute;
     left: -28000px;
     top: -28000px;
@@ -382,10 +382,10 @@ input[type=range].feature_slider{
     min-width: 50px;
     max-width: 250px;
     padding: 10px 20px;
-    color: white;
+    color: /*white*/ black;
     border-radius: 20px;
     font: normal 14px "Helvetica Neue", Sans-Serif;
-    box-shadow: 0 0 7px black;
+    box-shadow: 0 0 4px darkgray /*black*/;
 
 }
 
