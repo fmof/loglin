@@ -48,7 +48,9 @@ function load_html5_slider(boxid,val){
 function update_qtip_count(jhandle){
     if(jhandle.data("qtip") || jhandle.data("hasqtip")){
 	var fi = jhandle.parent().parent().parent().children(":first");
-	var x = parseInt(fi.attr("theta_index"),10);
+	var x = parseInt(fi.attr("theta_index"),10); 
+	var e = EXP_FEAT_COUNT[x];
+	var sub = OBS_FEAT_COUNT[x] - (!isFinite(e)?e:formatExpected(EXP_FEAT_COUNT[x]));
 	jhandle.qtip({content:
 		      "Observed Count: " + 
 			  '<span class="bold" style="color:' + 
@@ -57,7 +59,7 @@ function update_qtip_count(jhandle){
 		      "<br />" +
 		      "Expected Count: " + 
 			  '<span class="bold" style="color:' + 
-			  ((OBS_FEAT_COUNT[x] - EXP_FEAT_COUNT[x]) > 0 ? COUNTS_TOO_LOW : COUNTS_TOO_HIGH )+
+			  (sub > 0 ? COUNTS_TOO_LOW : COUNTS_TOO_HIGH )+
 			  ';">' + formatExpected(EXP_FEAT_COUNT[x]) +
 			  '</span>'
 		     });
