@@ -393,7 +393,9 @@ window.onload = function(){
 	url:GLOBAL_SETTINGS_FILE,
 	datatype:"json",
 	success : function(settings){
+	    if(typeOf(settings)=="string"){
 		settings = JSON.parse(settings);
+	    }
 	    var ord = settings["lesson_order"];
 	    for(var i=0;i<ord.length;i++){
 		DIR_MAPPER[i+1]=ord[i];
