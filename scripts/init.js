@@ -268,6 +268,7 @@ function load_lesson(noskip_dropdown){
     console.log("loading " + CURRENT_LESSON + ' => ' + DIR_MAPPER[CURRENT_LESSON]);
     jQuery('#show_how_many_previous_lessons').html(Math.max(1,CURRENT_LESSON-1));
     jQuery('#show_how_many_next_lessons').html(Math.min(CURRENT_LESSON+1,MAX_LESSONS));
+    jQuery('#display_num_solve_iterations').html('');
     reset_data_structures(1);
     if(!INITIAL_LOAD){
 	//remove a bunch of nodes...
