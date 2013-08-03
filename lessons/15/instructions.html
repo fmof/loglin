@@ -16,9 +16,9 @@
 
   <p>Run the solver.  How well can you fit the <code>triangle</code>
    and <code>circle</code> data with this feature set?  What weights
-   were learned for the <code>square & ...</code> features?  What else
+   were learned for the <code>pentagon & ...</code> features?  What else
    determines the probabilities of different outcomes in
-   the <code>square</code> context?</p>
+   the <code>pentagon</code> context?</p>
 
   <p>Remember from <A HREF="#2" target="_blank">lesson 2</A> that
     different weight settings can give the same answer.  How could you adjust
@@ -26,7 +26,7 @@
     probabilities in the <code>triangle</code> and <code>circle</code>
     contexts?  What effect would this adjustment have on conditional
     log-likelihood?  What effect would it have on the outcome
-    probabilities in the <code>square</code> context?  Check your
+    probabilities in the <code>pentagon</code> context?  Check your
     answers by trying your adjustment!</p>
 
   <p>Although different weights can give the same answer, a
@@ -40,17 +40,17 @@
 
   <p>Try running the solver with different values of <i>C</i> > 0.
     Discuss your findings.  Increasing <i>C</i> will drive the
-    weights closer to 0, in the sense of reducing the sum of squares
+    weights closer to 0, in the sense of reducing the sum of pentagons
     of all weights.  However, for small versus large <i>C</i>, the
     work of modeling p(<code>solid</code> | ...)  may be divided
     differently among the unigram and bigram features, with
     consequences for generalization to p(<code>solid</code>
-    | <code>square</code>).</p>
+    | <code>pentagon</code>).</p>
 
   <p>Now try an &ell;<sub>1</sub> regularizer with <i>C</i> = 1.0.  (You
     may have to click "Solve" more than once.)  How does the model
     make use of the features?  How does it therefore generalize to the
-    unobserved <code>square</code> context? If you'd like to see other
+    unobserved <code>pentagon</code> context? If you'd like to see other
     behaviors of &ell;<sub>1</sub> regularization, click "New random
     challenge" at left.</p>
 

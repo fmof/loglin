@@ -3,6 +3,6 @@ count	position	context	features	visualization
 5	0,1	triangle	striped	shape=triangle,fill=striped
 6	0,2	triangle	hollow	shape=triangle,fill=hollow
 100	0,0	circle	solid	shape=circle,fill=solid
-0	0,0	square	solid	shape=square,fill=solid
-0	0,1	square	striped	shape=square,fill=striped
-0	0,2	square	hollow	shape=square,fill=hollow
+0	0,0	pentagon	solid	shape=pentagon,fill=solid
+0	0,1	pentagon	striped	shape=pentagon,fill=striped
+0	0,2	pentagon	hollow	shape=pentagon,fill=hollow

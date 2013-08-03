@@ -8,6 +8,6 @@ context	feature	value
 	circle & solid	0
 	circle & striped	0
 	circle & hollow	0
-	square & solid	0
-	square & striped	0
-	square & hollow	0
+	pentagon & solid	0
+	pentagon & striped	0
+	pentagon & hollow	0
