@@ -16,7 +16,9 @@
 
   <p>Run the solver.  How well can you fit the <code>triangle</code>
    and <code>circle</code> data with this feature set?  What weights
-   were learned for the <code>pentagon & ...</code> features?  What else
+   were learned for the <code>triangle & solid</code>, <code>circle 
+   & solid</code> and <code>solid</code> features? What about the 
+   <code>pentagon & ...</code> features?  What else
    determines the probabilities of different outcomes in
    the <code>pentagon</code> context?</p>
 
@@ -38,14 +40,16 @@
     the higher (better) <i>regularized</i> conditional log-likelihood,
     and why?</p>
 
-  <p>Try running the solver with different values of <i>C</i> > 0.
+  <p>Try running the solver with different values of <i>C</i> &gt; 0.
     Discuss your findings.  Increasing <i>C</i> will drive the
-    weights closer to 0, in the sense of reducing the sum of pentagons
+    weights closer to 0, in the sense of reducing the sum of squares 
     of all weights.  However, for small versus large <i>C</i>, the
     work of modeling p(<code>solid</code> | ...)  may be divided
     differently among the unigram and bigram features, with
     consequences for generalization to p(<code>solid</code>
-    | <code>pentagon</code>).</p>
+    | <code>pentagon</code>). How do the weights for <code>triangle 
+    & solid</code>, <code>circle & solid</code> and <code>solid</code> 
+    change for different <i>C</i>s?</p>
 
   <p>Now try an &ell;<sub>1</sub> regularizer with <i>C</i> = 1.0.  (You
     may have to click "Solve" more than once.)  How does the model
