@@ -619,6 +619,7 @@ function init(){
     });
 
     jQuery('#step_button').click(function(){
+	jQuery('#display_num_solve_iterations').html('');
     	step_gradient();
     });
 
@@ -636,6 +637,7 @@ function init(){
     jQuery('#stop_solving_div').css('display','none');
 
     jQuery('#solve_button').click(function(){
+	jQuery('#display_num_solve_iterations').html('');
     	SOLVE_ITERATION=0;
 	if(in_solving){
 	    clearInterval(SOLVE_TIMEOUT_ID);
@@ -663,12 +665,10 @@ function init(){
 	    solved++;
 	    SOLVE_TIMEOUT_ID = setITimeout(function(iter){
 		return function(){
-		    console.log(iter);
 		    var mystep = iter==1?recompute_step_size(SOLVE_STEP,0) : recompute_step_size(SOLVE_STEP);
-		    console.log('done with recompsize : '+mystep);
-		    solve_puzzle(mystep,
-				 iter,
-				 SOLVE_STEP);
+		    //console.log('done with recompsize : '+mystep);
+		    solve_puzzle(mystep,iter,SOLVE_STEP);
+		    jQuery('#display_num_solve_iterations').html(display_number_solving_iterations(iter));
 		};}, SOLVE_TIME_DELAY/Math.sqrt(10), MAX_SOLVE_ITERATIONS);
 	    jQuery(this).blur();
 	}
