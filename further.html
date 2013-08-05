@@ -30,7 +30,7 @@ log-linear models for your own use.
     (<A HREF="http://nltk.org/book/ch06.html#maximum-entropy-classifiers">section
     6.6</A>).  The use of NLTK's
     <A HREF="http://nltk.googlecode.com/svn/trunk/doc/api/nltk.classify.maxent-module.html">maxent
-    module</A> is illustrated
+    module</A> for classification tasks is illustrated
     in <A HREF="http://nltk.org/book/ch07.html#developing-and-evaluating-chunkers">section
     7.3</A> of the book.</p>
 
@@ -57,8 +57,10 @@ log-linear models for your own use.
     best <i>y</i> for each <i>x</i>.</p>
 </ul>
 
+<!--
 <p><i>[We may add step-by-step instructions for replicating our
 <A HREF="./#1">lesson 1</A> with each piece of software.]</i></p>
+-->
 
 <!-- (GIS/IIS, Malouf, Goodman, and other people with specialized training methods) -->
 
@@ -90,7 +92,26 @@ log-linear models for your own use.
 
 <p>One good introduction is the <A HREF="formulas.pdf">handout</A> that
 goes along with our <A HREF=".">visualization</A>.  
-<br><i>[We plan to add links to other good textbook and tutorial treatments.]</i></p>
+</p>
+<!--<i>[We plan to add links to other good textbook and tutorial treatments.]</i>-->
+<p>
+Noah Smith's <a href="http://www.cs.cmu.edu/~nasmith/papers/smith.tut04.pdf" target="blank">
+tutorial</a> offers a more mathematical description of log-linear models, including how 
+the objective our <A HREF=".">visualization</A> solved (maximizing conditional 
+log-likelihood) is the dual problem of maximizing entropy. His book, 
+<a href="http://www.cs.cmu.edu/~nasmith/LSP/" target="blank">Linguistic Structure 
+Predication</a> discusses log-linear models for structure prediction (see sections 3.4 and 
+3.5, in particular).
+</p>
+
+<p>
+Charles Elkan's CIKM 2008 <a href="http://videolectures.net/cikm08_elkan_llmacrf/" target="blank">video</a> 
+tutorial comes with <a href="http://www.cs.columbia.edu/~smaskey/CS6998-0412/supportmaterial/cikmtutorial.pdf" 
+		       target="blank">notes</a>. Computational and optimization aspects are covered, and grounded 
+in logistic regression examples and conditional random field (CRF) tagging. Hanna Wallach also offers an 
+<a href="http://people.cs.umass.edu/~wallach/technical_reports/wallach04conditional.pdf" 
+   target="blank">introduction</a> to CRFs and efficient computation for linear chain CRFs.
+</p>
 
 <p>For links into the research literature, we quote from section 8 of
 our paper (<A HREF="http://cs.jhu.edu/~jason/papers/#ferraro-eisner-2013">Ferraro

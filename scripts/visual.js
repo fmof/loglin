@@ -62,3 +62,8 @@ function set_height(box, height){
     } 
     box.css('height', cssheight +'px');
 }
+
+function display_number_solving_iterations(iter_num){
+    return iter_num + " iteration" + (iter_num>1?"s":"") + " done";
+}
+
