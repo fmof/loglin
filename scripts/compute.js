@@ -59,11 +59,14 @@ function get_corrected_step(tindex, solve_step,grad_only, mult_fact){
 	    }
 	} else{ //theta == 0
 	    var g = OBS_FEAT_COUNT[tindex] - EXP_FEAT_COUNT[tindex];
+	    //console.log("\tcorrected step, tindex="+tindex+", g="+g);
 	    if(Math.abs(g) <= REGULARIZATION_SIGMA2){
+		//console.log("\t\t==> leads here");
 		retval = grad_only?(-THETA[tindex]):0;
 		//return [tindex,];
 	    }
 	    else{
+		//console.log("\t\t=--> actully, here, " + solve_step);
 		if(g>REGULARIZATION_SIGMA2){
 		    retval = solve_step*(g-REGULARIZATION_SIGMA2);
 		    //return [tindex,];
@@ -71,6 +74,7 @@ function get_corrected_step(tindex, solve_step,grad_only, mult_fact){
 		    retval = solve_step*(g+REGULARIZATION_SIGMA2);
 		    //return [tindex, ];
 		}
+		//console.log("\t\t\t"+retval);
 	    }
 	}
     } else{ //otherwise, normal L2 stuff/no regularization
@@ -107,9 +111,10 @@ function converged(step){
 	//set the third param to be 1 to only get 
 	//the new gradient step
 	var x =get_corrected_step(i,step,1, sign(jQuery('#gradient_step').val()))[1];
+	//console.log("\t\tx="+x);
 	return x*x;
     }));
-    console.log('convergence : ' + s);
+    console.log('convergence : ' + s + ' <=> ' + STOPPING_EPS);
     return s < STOPPING_EPS;
 }
 
@@ -123,7 +128,9 @@ function recompute_step_size(ostep,step_num,tol_low, tol_high){
     tol_low = typeof tol_low !== 'undefined' ? tol_low : 1e-8;
     tol_high = typeof tol_high !== 'undefined' ? tol_high : 1e3;
     if(step_num!=undefined){
-	if(converged(step_num)){
+	//Frank, 30 September 2013: why was this this way?
+	//if(converged(step_num)){
+	if(converged(ostep)){
 	    return ostep;
 	}
     }
