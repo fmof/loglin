@@ -59,27 +59,15 @@ function get_corrected_step(tindex, solve_step,grad_only, mult_fact){
 	    }
 	} else{ //theta == 0
 	    var g = OBS_FEAT_COUNT[tindex] - EXP_FEAT_COUNT[tindex];
-	    //console.log("\tcorrected step, tindex="+tindex+", g="+g);
 	    if(Math.abs(g) <= REGULARIZATION_SIGMA2){
-		//console.log("\t\t==> leads here");
 		retval = grad_only?(-THETA[tindex]):0;
-		//return [tindex,];
 	    }
 	    else{
-		//console.log("\t\t=--> actully, here, " + solve_step);
-		if(g>REGULARIZATION_SIGMA2){
-		    retval = solve_step*(g-REGULARIZATION_SIGMA2);
-		    //return [tindex,];
-		} else{
-		    retval = solve_step*(g+REGULARIZATION_SIGMA2);
-		    //return [tindex, ];
-		}
-		//console.log("\t\t\t"+retval);
+		retval = solve_step * ((g>REGULARIZATION_SIGMA2)?(g-REGULARIZATION_SIGMA2):(g+REGULARIZATION_SIGMA2));
 	    }
 	}
     } else{ //otherwise, normal L2 stuff/no regularization
 	retval = grad_only?grad_val:propval;
-	//return [tindex, ];
     }
     if(!isFinite(retval)){
 	if(isNaN(retval))
@@ -111,10 +99,9 @@ function converged(step){
 	//set the third param to be 1 to only get 
 	//the new gradient step
 	var x =get_corrected_step(i,step,1, sign(jQuery('#gradient_step').val()))[1];
-	//console.log("\t\tx="+x);
 	return x*x;
     }));
-    console.log('convergence : ' + s + ' <=> ' + STOPPING_EPS);
+    console.optimize_debug('convergence : ' + s + ' <=> ' + STOPPING_EPS);
     return s < STOPPING_EPS;
 }
 
@@ -128,8 +115,6 @@ function recompute_step_size(ostep,step_num,tol_low, tol_high){
     tol_low = typeof tol_low !== 'undefined' ? tol_low : 1e-8;
     tol_high = typeof tol_high !== 'undefined' ? tol_high : 1e3;
     if(step_num!=undefined){
-	//Frank, 30 September 2013: why was this this way?
-	//if(converged(step_num)){
 	if(converged(ostep)){
 	    return ostep;
 	}
@@ -155,11 +140,11 @@ function recompute_step_size(ostep,step_num,tol_low, tol_high){
     f(step);
     var di; var count=0; 
     var factors=[[1,2], [-1,0.5]];
-    console.log('init: oldll='+old_ll+', nll='+tll[0] + ", step="+ step);
+    console.optimize_debug('init: oldll='+old_ll+', nll='+tll[0] + ", step="+ step);
     for(var i=0;i<factors.length;i++){
 	while((di = improves_ll(tll[0],old_ll,0.01*sum(tth))) == factors[i][0]){
 	    if(count % 10 == 0) {
-		console.log('factor='+factors[i]+', di='+di+', oldll='+old_ll+', nll='+tll[0] + ", step="+ step + ", new step ="+ step*factors[i][1]);
+		console.optimize_debug('factor='+factors[i]+', di='+di+', oldll='+old_ll+', nll='+tll[0] + ", step="+ step + ", new step ="+ step*factors[i][1]);
 	    }
 	    if(step < tol_low || step > tol_high) break;
 	    step *= factors[i][1]; 
@@ -172,9 +157,9 @@ function recompute_step_size(ostep,step_num,tol_low, tol_high){
 		throw "infinite loop";
 	    }
 	}
-	console.log('last computed nll='+tll[0]);
+	console.optimize_debug('last computed nll='+tll[0]);
     }
-    console.log('finally: oldll='+old_ll+', nll='+tll[0] + ", step="+ step);
+    console.optimize_debug('finally: oldll='+old_ll+', nll='+tll[0] + ", step="+ step);
     //if we haven't actually improved, then don't bother moving...
     return old_ll>tll[0] ? 0 : step;
 }
@@ -190,11 +175,11 @@ function solve_puzzle(gamma, step_num, orig_step_size){
     var is_converged = converged(1);
     var gamma = gamma;
     if(gamma==0 || is_converged){
-	console.log('exiting because either gamma = '+ gamma + ' == 0 or is converged: '+ is_converged);
+	console.optimize_debug('exiting because either gamma = '+ gamma + ' == 0 or is converged: '+ is_converged);
 	solve_button.click();
 	return;
     }
-    console.log('my gamma is ' + gamma);
+    console.optimize_debug('my gamma is ' + gamma);
     gamma = scale_gamma_for_solve(gamma,step_num);
     if(gamma==0){
 	solve_button.click();
@@ -203,10 +188,10 @@ function solve_puzzle(gamma, step_num, orig_step_size){
     step_gradient(gamma);
     is_converged = converged(1);
     if(step_num==MAX_SOLVE_ITERATIONS || is_converged){
-	console.log('exiting because either step_num = '+ step_num + ' == ' + MAX_SOLVE_ITERATIONS + ' or is converged: '+ is_converged);
+	console.optimize_debug('exiting because either step_num = '+ step_num + ' == ' + MAX_SOLVE_ITERATIONS + ' or is converged: '+ is_converged);
 	solve_button.click();
     } else{
-	console.log('more to go...');
+	console.optimize_debug('more to go...');
     }
 }
 

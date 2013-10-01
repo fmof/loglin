@@ -112,7 +112,13 @@ SOLVE_TIMEOUT_ID={};
 SOLVE_TIME_DELAY=750; //in milliseconds
 STOPPING_EPS=0.05;
 MAX_SOLVE_ITERATIONS = 200;
-//MAX_SOLVE_ITERATIONS=1;
+PRINT_OPTIMIZE_DEBUG=0;
+
+console.optimize_debug = function(p) {
+    if(PRINT_OPTIMIZE_DEBUG){
+	console.debug(p);
+    }
+};
 
 SVG_WIDTH=100; SVG_HEIGHT=100;
 
@@ -351,7 +357,7 @@ function setITimeout( callback, init_time, times ){
 		    ep++;
 		}
 		var nt = init_time/(counter/Math.sqrt(10));
-		console.log('time delay is '+nt);
+		console.optimize_debug('time delay is '+nt);
 		SOLVE_TIMEOUT_ID = window.setTimeout(internalCallback, nt);
 		callback(counter)();
 	    } else{
@@ -667,9 +673,8 @@ function init(){
 	    solved++;
 	    SOLVE_TIMEOUT_ID = setITimeout(function(iter){
 		return function(){
-		    //console.log("before mystep set");
 		    var mystep = iter==1?recompute_step_size(SOLVE_STEP,0) : recompute_step_size(SOLVE_STEP);
-		    console.log('done with recompsize : '+mystep);
+		    console.optimize_debug('done with recompsize : '+mystep);
 		    solve_puzzle(mystep,iter,SOLVE_STEP);
 		    jQuery('#display_num_solve_iterations').html(display_number_solving_iterations(iter));
 		};}, SOLVE_TIME_DELAY/Math.sqrt(10), MAX_SOLVE_ITERATIONS);
