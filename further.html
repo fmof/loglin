@@ -49,12 +49,20 @@ log-linear models for your own use.
     super-fast program that can learn linear models with billions of
     features, using thousands of computers in parallel if you've got
     'em.  Use the argument <tt>--loss_function logistic</tt> to use
-    the log-linear training objective, adding &ell;<sub>1</sub> or
-    &ell;<sub>2</sub> regularization with <tt>--l1 1.0</tt>
+    the log-linear training objective.  Add &ell;<sub>1</sub> or
+    &ell;<sub>2</sub> regularization via <tt>--l1 1.0</tt>
     or <tt>--l2 1.0</tt> (for <i>C</i> = 1.0).  VW focuses on
     prediction, so I am not sure whether it will
     print <i>p</i>(<i>y</i> | <i>x</i>) or just tell you the
-    best <i>y</i> for each <i>x</i>.</p>
+    <i>best</i> <i>y</i> for each <i>x</i>.</p>
+
+  <li><p><A HREF="http://www.csie.ntu.edu.tw/~cjlin/liblinear/">LIBLINEAR</A>
+    is a fast and popular C++ library for learning various types of
+    linear models.  It also provides a command-line interface, and
+    interfaces are available for calling LIBLINEAR from several other
+    languages.  Log-linear models are available under the name
+    "multi-class logistic regression" (with &ell;<sub>1</sub> or
+    &ell;<sub>2</sub> regularization).</p>
 </ul>
 
 <!--
