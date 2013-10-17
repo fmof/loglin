@@ -61,9 +61,13 @@ log-linear models for your own use.
     linear models.  It provides a command-line interface via
     the <code>train</code> and <code>predict</code> programs, and
     interfaces are available for calling LIBLINEAR from several other
-    languages.  Log-linear models are handled under the name
-    "multi-class logistic regression" (with &ell;<sub>1</sub> or
-    &ell;<sub>2</sub> regularization).</p>
+    languages.  Unfortunately, it handles only the binary case
+    (where <i>y</i>=&plusmn;1), under the name "logistic regression,"
+    with &ell;<sub>1</sub> or &ell;<sub>2</sub> regularization.  (If
+    you have a larger space of <i>y</i> values, it will build a
+    multi-class classifier for you by combining several binary
+    classifiers, but this is not quite the same as a single
+    multi-class log-linear model.)</p>
 </ul>
 
 <!--
