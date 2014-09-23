@@ -27,7 +27,7 @@
   \hspace*{\fill} \url{http://cs.jhu.edu/~jason/tutorials/loglin/}. \hspace*{\fill}}}
 \end{center}
 
-\section{Starting out Concretely}\label{sec:concrete}
+\section{Starting Out Concretely}\label{sec:concrete}
 
 \subsection{Formulas for Lesson 1}
 
@@ -101,10 +101,20 @@ Now every shape has exactly two features (whereas in lesson 1, some shapes had f
 
 \section{Why We Need Log-Linear Models {\em [read after lesson 2]}}
 
-Often we make use of conditional probabilities like $p(y \mid x)$, where
-$y$ and $x$ are discrete outcomes:
+{\bf Note:} Lessons 1--10 will let you experiment with simple
+probabilities $p(y)$.  Lesson 11 will finally move to the more general
+case of conditional probabilities $p(y\mid x)$.  This handout will
+{\em focus} on conditional probabilities, mainly in order to avoid saying
+everything twice.  If you want to think first about the case of simple
+probabilities, just ignore $x$ wherever it appears; also see
+section~\ref{sec:unconditioned}.
+
+\subsection{Modeling probabilities}
+
+We often want to model conditional probabilities like $p(y
+\mid x)$, where $y$ and $x$ are discrete outcomes.
 \begin{itemize}[noitemsep]
-\item They can be used to predict $y$ directly.
+\item They can be used to predict $y$ directly, in a context $x$.
 \item We can build a more complicated model as a product
   of such probabilities.\footnote{E.g., Bayes' theorem, Bayesian
     networks, (hidden) Markov models, probabilistic context-free
@@ -158,7 +168,7 @@ independently of the others.\footnote{Though ``backoff smoothing'' does jointly
 % $x_1 \approx x_2$ are similar and have small counts,
 %  but not in a very flexible way.
 
-\section{Log-linear models {\em [read after lesson 2]}}
+\section{Log-Linear Models {\em [read after lesson 2]}}
 
 Log-linear modeling is a very popular and flexible technique for
 addressing this problem.  It has the advantage that it considers {\em
@@ -185,14 +195,14 @@ colored shapes against backgrounds.  The third column gives the
 feature values for a dark striped circle $y$ against a light
 background $x$:
 
-\smallskip
+\smallskip\noindent
 \begin{tabular}{|c|l|c|} \hline
 feature number & feature meaning   & feature value on this example \\ \hline
 1              & $y$ is circular   &    1 \\
 2              & $y$ is square     &    0 \\
 3              & $y$ is striped    &    1 \\
 4              & $y$ is a striped square & 0 \\
-5              & $y$ contrasts with background $x$ & 2 \\ \hline
+5              & how strongly $y$ contrasts with background $x$ & 2 \\ \hline
 \end{tabular}
 \smallskip
 
@@ -215,6 +225,9 @@ value $f_k(x,y)$ can be any positive or negative real number.  But
 most often your feature functions $f_k$ will be boolean functions, so
 that $f_k(x,y)$ is always either 1 or 0, according to whether $(x,y)$
 has feature $k$ or not.
+
+% \subsection{Scores}
+
 
 \subsection{The defining formula}\label{sec:formula}
 
@@ -239,14 +252,19 @@ Here $\vtheta \in \Real^K$ is a vector of feature {\bf weights}, which
 are the adjustable parameters of the model.  You control these
 with sliders in the interactive visualization.  
 
-The unnormalized probabilities $u(x,y)$ are always positive (because of the $\exp$).
-Equation~(\ref{eqn:loglin}) has to scale them, in order to get proper
-probabilities that sum to 1 (i.e., $\sum_y \ph(y\mid x) = 1$ for each
-$x$).  This is a simple matter of dividing them by a {\bf normalizing
-  constant}, namely
+The unnormalized probabilities $u(x,y)$ are always positive (because
+of the $\exp$).  Equation~(\ref{eqn:loglin}) has to scale them, in
+order to get proper probabilities that sum to 1 (i.e., $\sum_y
+\ph(y\mid x) = 1$ for each $x$).  As you can see in
+(\ref{eqn:loglin}), this is a simple matter of dividing them by a {\bf
+  normalizing constant}, namely
 \begin{equation}
   Z(x) \defeq \sum_y u(x,y)
 \end{equation}
+
+Note that the conditional log-linear modeling framework has allowed us
+to model $p(y \mid x)$ directly, rather than as a quotient $p(x,y) /
+p(x)$.  We did not have to commit to any model of $p(x)$.
 
 \subsection{Feature weights}
 
@@ -284,7 +302,7 @@ $\vtheta$ that maximizes
 does the best possible job of predicting these events in their
 contexts.  More on this later.
 
-\subsection{Unconditioned Models}
+\subsection{Unconditioned Models}\label{sec:unconditioned}
 
 The initial lessons in the interactive visualization deal with the
 simple case where there is no information about context.  So we can
@@ -302,12 +320,13 @@ turns out to be for each $y \in {\cal Y}$ in the first two lessons.
 In practical settings, the outcome $y$ and the context $x$ are
 characterized by their {\em attributes} (or {\em properties}).  Each
 feature's value is then computed from one or more of these attributes.
-$f_4$ and $f_5$ from section~\ref{sec:featfuncs} would be defined more formally as
+$f_4$ and $f_5$ from section~\ref{sec:featfuncs} would be defined more
+formally as
 \begin{align}
 f_4(x,y) & \defeq (\textsc{fill}(y)=\text{striped}) \wedge (\textsc{shape}(y)=\text{square})
              & \text{\small\it ``$y$ is a striped square''} \\
 f_5(x,y) & \defeq |\textsc{brightness}(y)-\textsc{brightness}(x)|/100
-             & \text{\small\it ``$y$ contrasts with background $x$''}
+             & \text{\small\it ``how strongly $y$ contrasts with background $x$''}
 \end{align}
 which refer to the \textsc{fill}, \textsc{shape}, and \textsc{brightness} attributes
 of $y$ and/or $x$. 
@@ -484,7 +503,7 @@ of differentiation:
   &= \sum_y \ph(y\mid x) \cdot f_k(x,y)
 \end{align}
 
-\section{Regularizing the parameter estimates {\em [read with lesson 8]}}
+\section{Regularizing the Parameter Estimates {\em [read with lesson 8]}}
 
 Problems sometimes arise when we simply maximize the log-probability.
 Why does this happen?  Can we fix it?
