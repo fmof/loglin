@@ -589,7 +589,7 @@ hence the strength of regularization.
 \subsection{Types of regularization} 
 
 A common choice is called $\ell_2$ (or $L_2$) regularization.  Define
-$R(\vtheta)=C \cdot ||\vtheta||^2 = C \cdot \sum_i \theta_i^2$.  Then
+$R(\vtheta) = ||\vtheta||^2 = \sum_i \theta_i^2$.  Then
 \begin{equation}
   \diffk F(\vtheta) = \textrm{observed count of $k$} -
   \textrm{expected count of $k$} \underbrace{\mbox{}-2C \cdot
@@ -606,7 +606,7 @@ from 0 in order to model the observations---which is exactly what we
 wanted to happen for well-observed features.  
 
 Another common choice is $\ell_1$ (or $L_1$) regularization.  Here 
-$R(\vtheta) = C \sum_i |\theta_i|$.  Then
+$R(\vtheta) = \sum_i |\theta_i|$.  Then
 \begin{equation}
   \diffk F(\vtheta) = \textrm{observed count of $k$} -
   \textrm{expected count of $k$} \underbrace{\mbox{}-C\cdot \textrm{sign}(\theta_k)}_{\textit{new term}}
