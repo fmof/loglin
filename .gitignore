@@ -6,3 +6,6 @@ paper/*.blg
 paper/*.bbl
 paper/*.d
 paper/tnlp2013.pdf
+tex/formulas.aux
+tex/formulas.log
+tex/formulas.out
