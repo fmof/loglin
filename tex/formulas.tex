@@ -644,9 +644,9 @@ Optimization is relatively easy with $\ell_2$ because the regularizer
 is differentiable.  This lets you use standard optimization techniques
 that rely on the gradient (e.g., L-BFGS or stochastic gradient ascent).
 
-\paragraph{Advantage of $\ell_1$:  Sparse solutions.}  The main reason to consider $\ell_1$ instead is that it is a ``sparsity-inducing regularizer.''  The optimal $\vtheta$ will tend to be a {\em sparse vector} with many zero elements, especially if $C$ is large.  
+\paragraph{Advantage of $\ell_1$:  Sparse solutions.}  The main reason to consider $\ell_1$ instead is that it is a ``sparsity-inducing regularizer.''  As we saw in lesson 9, the optimal $\vtheta$ will tend to be a {\em sparse vector} with many zero elements, especially if $C$ is large.  
 
-The claim here is that zero elements are good: you won't need to compute $f_k(x,y)$ at test time if $\theta_k=0$.  So this regularizer does {\bf feature selection} for you: it identifies a small set of useful features that deserve to get nonzero weights.  The resulting model may be easier for you to interpret, and is small and fast at test time.  
+You may prefer to have many zero elements: you won't need to compute $f_k(x,y)$ at test time if $\theta_k=0$.  So this regularizer does {\bf feature selection} for you: it identifies a small set of useful features that deserve to get nonzero weights.  The resulting model may be easier for you to interpret, and is small and fast at test time.  
 
 Why does $\ell_1$ regularization have this effect?  This graph shows a particular parameter $\theta_k$ on the $x$ axis.  Suppose that $\theta_k=0$.  We could increase the log-likelihood by decreasing $\theta_k$.  However, this wouldn't help the log-likelihood (blue curve) as much as it would hurt the regularizer (red curve)!  We therefore prefer to keep $\theta_k$ at 0, to avoid decreasing the {\em total} function $F(\vtheta)$ (dashed red curve).  
 
