@@ -17,7 +17,7 @@
 \newcommand{\diffk}{\frac{\partial}{\partial \theta_k}}
 
 \begin{document}
-\title{\vspace{-2cm}Log-Linear Models}
+\title{\vspace{-2.3cm}Log-Linear Models}
 \author{Jason Eisner (Johns Hopkins University)}
 \date{}
 \maketitle
@@ -34,7 +34,9 @@
 
 The four shape probabilities in lesson 1 are computed as follows,
 where $\theta_{\textrm{circle}}$ and $\theta_{\textrm{solid}}$ are the
-two parameters that you can control with the sliders.
+two parameters that you can control with the sliders.  (We'll see later
+in section \ref{sec:loglin} that these formulas are examples of a more
+general pattern, but don't worry about that yet.)
 
 % Note: My typesetting with \hspace here is awfully hacky.
 % I should really define boxes for the summands and use the width of the boxes.
@@ -169,7 +171,7 @@ independently of the others.\footnote{Though ``backoff smoothing'' does jointly
 % $x_1 \approx x_2$ are similar and have small counts,
 %  but not in a very flexible way.
 
-\section{Log-Linear Models {\em [read after lesson 2]}}
+\section{Log-Linear Models {\em [read after lesson 2]}}\label{sec:loglin}
 
 Log-linear modeling is a very popular and flexible technique for
 addressing this problem.  It has the advantage that it considers {\em
@@ -640,7 +642,7 @@ estimating $\ph(y\mid x)=0$ as happened in lesson 8.
 
 Optimization is relatively easy with $\ell_2$ because the regularizer
 is differentiable.  This lets you use standard optimization techniques
-like L-BFGS or stochastic gradient ascent.
+that rely on the gradient (e.g., L-BFGS or stochastic gradient ascent).
 
 \paragraph{Advantage of $\ell_1$:  Sparse solutions.}  The main reason to consider $\ell_1$ instead is that it is a ``sparsity-inducing regularizer.''  The optimal $\vtheta$ will tend to be a {\em sparse vector} with many zero elements, especially if $C$ is large.  
 
