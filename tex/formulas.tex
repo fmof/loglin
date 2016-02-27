@@ -689,7 +689,7 @@ and in this case, the $\ell_1$ regularizer will prefer the third option (since i
   An approximate version is called {\bf forward selection}.  Instead of trying all $2^K$ subsets, greedily expand the feature set by one feature at a time
   (starting with the empty set), in a way that increases \eqref{eqn:loglin-regularized} as fast as possible until it can't be increased anymore.  This no longer takes exponential time, but it is still rather slow.}
 
-In fact, what you want is probably $\ell_0 + \ell_2$, which says ``Try to have a small set of nonzero weights, and keep those small.''  A common choice is to approximate this by $\ell_1+\ell_2$, giving a concave $F(\vtheta)$.  Note that when you add two regularization terms in this way, you probably want to give them separate coefficients (both tuned on dev data).  A nice trick is to optimize with $\ell_1+\ell_2$ in order to get the benefit of feature selection, then remove the weight-0 features and re-optimize with $\ell_2$ only.  
+In fact, what you want is probably $\ell_0 + \ell_2$, which says ``Try to have a small set of nonzero weights, and keep those small.''  A common choice is to approximate this by $\ell_1+\ell_2$ (the ``elastic net'' regularizer), giving a concave $F(\vtheta)$.  Note that when you add two regularization terms in this way, you probably want to give them separate coefficients (both tuned on dev data).  A nice trick is to optimize with $\ell_1+\ell_2$ to accomplish feature selection, and then remove the weight-0 features and re-optimize the other weights with $\ell_2$ only (``debiasing'').  
 
 
 \subsection{A interpretation of regularization as MAP estimation}
