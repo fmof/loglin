@@ -1,6 +1,6 @@
 \documentclass[11pt]{article}
 \usepackage[colorlinks]{hyperref}
-\usepackage{fullpage}
+\usepackage[margin=1in]{geometry}
 \usepackage[noend]{algpseudocode}
 \usepackage{enumitem}
 \usepackage{graphicx}
@@ -8,6 +8,7 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{xspace}
+\usepackage{tcolorbox}
 \newcommand{\defeq}{\;\stackrel{\mbox{\tiny def}}{=}\;}
 \newcommand{\horizrule}{\noindent\rule{\textwidth}{2pt}}
 \newcommand{\vtheta}{\vec{\theta}}
@@ -22,11 +23,47 @@
 \date{}
 \maketitle
 
+\tcolorbox
+\begin{small}
 \begin{center}
-\framebox{\parbox{4.75in}{This handout is intended to be used with the
-    interactive visualization at \\
-  \hspace*{\fill} \url{http://cs.jhu.edu/~jason/tutorials/loglin/}. \hspace*{\fill}}}
+This handout is intended to be used with the
+    interactive visualization at
+\url{http://cs.jhu.edu/~jason/tutorials/loglin/}.
 \end{center}
+
+The visualization is designed to help you understand log-linear
+models, a popular and flexible family of probability distributions.
+As you'll see, a conditional log-linear model defines
+\begin{align*}
+  p(y \mid x) & \defeq \frac{1}{Z(x)} \exp \sum_{k=1}^K \theta_k \cdot
+                f_k(x,y)
+\end{align*}
+for some fixed set of real-valued feature functions $f_k$ with adjustable
+weights $\theta_k \in \Real$.  For each $x$, the denominator $Z(x) >
+0$ is a scaling factor
+chosen specifically
+% given by
+% \begin{align*}
+% Z(x) & \defeq \sum_{y} \exp \sum_{k=1}^K \theta_k \cdot f_k(x,y)
+% \end{align*}
+% in order
+to ensure that $\sum_y p(y \mid x) = 1$.
+
+\medskip
+The model can equivalently be written as
+\begin{align*}
+p(y \mid x) & \defeq \frac{1}{Z(x)} \prod_{k=1}^K (\exp \theta_k)^{f_k(x,y)}
+\end{align*}
+
+\medskip
+Playing with the visualization will help you get the hang of
+how changing the parameters $\theta_k$ affects the relative
+probabilities of different $y$ values, and how those parameters can be
+set automatically.  Our paper
+\url{http://cs.jhu.edu/~jason/papers/#ferraro-eisner-2013} explains
+why we built the visualization and what we hope you'll get out of it.
+\end{small}
+\endtcolorbox
 
 \section{Starting Out Concretely}\label{sec:concrete}
 
@@ -86,7 +123,8 @@ natural logarithms).\footnote{If $y=e^x$, then $x=\log y$.  That's the
 Hence, when raising $\theta_{\textrm{solid}}$ makes the solid
 probabilities \eqref{eqn:solidcircle} and \eqref{eqn:solidtriangle} go
 up, the striped probabilities \eqref{eqn:stripedcircle} and
-\eqref{eqn:stripedtriangle} must go down to compensate.  \hspace{-2pt}This keeps the sum at 1.  Lowering $\theta_{\textrm{solid}}$ does the reverse.
+\eqref{eqn:stripedtriangle} must go down to compensate.
+This keeps the sum at 1.  Lowering $\theta_{\textrm{solid}}$ does the reverse.
 
 \subsection{Formulas for Lesson 2}
 
@@ -99,7 +137,7 @@ Now every shape has exactly two features (whereas in lesson 1, some shapes had f
 \rule{0in}{1.5\baselineskip}
 \hspace{-12mm}p(\text{solid triangle}) & \defeq \frac{\hspace{32mm}\exp (\theta_{\textrm{triangle}}+\theta_{\textrm{solid}})}{\exp (\theta_{\textrm{circle}} + \theta_{\textrm{solid}}) + \exp (\theta_{\textrm{circle}} + \theta_{\textrm{striped}}) + \exp (\theta_{\textrm{triangle}} + \theta_{\textrm{solid}}) + \exp (\theta_{\textrm{triangle}} + \theta_{\textrm{striped}})} \\
 \rule{0in}{1.5\baselineskip}
-\hspace{-12mm}p(\text{striped triangle}) & \defeq \frac{\hspace{111mm}\exp (\theta_{\textrm{triangle}}+\theta_{\textrm{striped}})}{\exp (\theta_{\textrm{circle}} + \theta_{\textrm{solid}}) + \exp (\theta_{\textrm{circle}} + \theta_{\textrm{striped}}) + \exp (\theta_{\textrm{triangle}} + \theta_{\textrm{solid}}) + \exp (\theta_{\textrm{triangle}} + \theta_{\textrm{striped}})} 
+\hspace{-12mm}p(\text{striped triangle}) & \defeq \frac{\hspace{111mm}\exp (\theta_{\textrm{triangle}}+\theta_{\textrm{striped}})}{\exp (\theta_{\textrm{circle}} + \theta_{\textrm{solid}}) + \exp (\theta_{\textrm{circle}} + \theta_{\textrm{striped}}) + \exp (\theta_{\textrm{triangle}} + \theta_{\textrm{solid}}) + \exp (\theta_{\textrm{triangle}} + \theta_{\textrm{striped}})}
 \end{align*}
 
 \section{Why We Need Log-Linear Models {\em [read after lesson 2]}}
@@ -137,7 +175,7 @@ this is just an estimate, not the true probability.
 \subsection{Simple methods}\label{sec:mle}
 
 A simple idea is to estimate each conditional probability separately,
-using simple count ratios: 
+using simple count ratios:
 \begin{equation}
 \ph(y \mid x) \defeq \frac{\textrm{count}(x,y)}{\textrm{count}(x)}
 \end{equation}
@@ -150,12 +188,12 @@ either count is small:
 \begin{itemize}[noitemsep]
 \item Suppose the denominator $\textrm{count}(x)$ is 2, then the estimate
   will be either 0, 0.5, or 1.  These estimates are quite different,
-  and which one you get depends on your particular dataset.  
+  and which one you get depends on your particular dataset.
 \item It's even worse if the denominator is 1 or 0.  What happens in
   each case?
 \item If the numerator $\textrm{count}(x,y)$ is 0, meaning that $y$
   was not {\em observed} in context $x$, then the estimate will
-  be 0, indicating that $y$ is {\em impossible} in context $x$.  
+  be 0, jumping to the conclusion that $y$ is essentially {\em impossible} in context $x$.
 \item If the numerator is 1, then the estimate might be too high,
   since perhaps $y$ is just one of many unlikely events---it's the one
   we happened to see.
@@ -179,7 +217,7 @@ addressing this problem.  It has the advantage that it considers {\em
 {\em similar} descriptions tend to have similar probabilities---a form
 of generalization.
 % That is, if $\vec{f}(x_1,y_1) \approx \vec{f}(x_2,y_2)$, then
-% $\hat{p}(y_1 \mid x_1) \approx \hat{p}(y_2 \mid x_2)$.  
+% $\hat{p}(y_1 \mid x_1) \approx \hat{p}(y_2 \mid x_2)$.
 
 \subsection{Feature functions}\label{sec:featfuncs}
 
@@ -215,8 +253,8 @@ that features 1, 3, and 5 {\bf fire} on this contextualized event
 $(x,y)$, and that feature 5 fires twice (or fires with strength 2).
 
 % That means that you chose to describe the contextualized event $(x,y)$
-% as ``having'' features 1, 3, and 5 but not features 2 and 4.  
-% 
+% as ``having'' features 1, 3, and 5 but not features 2 and 4.
+%
 % Furthermore, by defining $f_5(x,y)=2.0$, you chose to say that $(x,y)$
 % has feature 5 especially strongly.  A common figure of speech is that
 % feature 5 {\bf fires} especially strongly on $(x,y)$.
@@ -257,7 +295,7 @@ defined by
 \end{align}
 Here $\vtheta \in \Real^K$ is a vector of feature {\bf weights}, which
 are the adjustable parameters of the model.  You control these
-with sliders in the interactive visualization.  
+with sliders in the interactive visualization.
 
 The unnormalized probabilities $u(x,y)$ are always positive (because
 of the $\exp$).  Equation~(\ref{eqn:loglin}) has to scale them, in
@@ -319,8 +357,18 @@ omit $x$.  We now have a simple distribution over possible $y$ values,
   u(y) &\defeq \exp \left(\vtheta \cdot \vec{f}(y)\right) > 0 \\
   Z &\defeq \sum_y u(y)
 \end{align}
-Section~\ref{sec:concrete} of this handout shows what \eqref{eqn:unconditioned}
-turns out to be for each $y \in {\cal Y}$ in the first two lessons.
+For example, in the first two lessons, \eqref{eqn:unconditioned} is
+used to define two probability models over the four shapes
+$y \in {\cal Y} = \{\text{solid circle}, \text{striped circle},
+\text{solid triangle}, \text{striped triangle}\}$.
+In each of these models, a shape's features are computed by
+functions like $f_{\textrm{solid}}(y)$, which returns 1 on the solid
+circle and solid triangle, and returns 0 on the other two shapes.
+Thus, the parameters of the model are real numbers like
+$\theta_{\textrm{solid}}$.  The larger $\theta_{\textrm{solid}}$ is,
+the more the probability distribution favors the solid circle and
+solid triangle.  Look back at section~\ref{sec:concrete} of this
+handout to see exactly what the probabilities of the 4 shapes are.
 
 \subsection{Features versus Attributes}
 
@@ -336,7 +384,7 @@ f_5(x,y) & \defeq |\textsc{brightness}(y)-\textsc{brightness}(x)|/100
              & \text{\small\it ``how strongly $y$ contrasts with background $x$''}
 \end{align}
 which refer to the \textsc{fill}, \textsc{shape}, and \textsc{brightness} attributes
-of $y$ and/or $x$. 
+of $y$ and/or $x$.
 
 You will sometimes hear people refer to individual attributes as the
 ``features'' or ``basic features'' of $x$ and $y$.  That's confusing.
@@ -362,12 +410,12 @@ name instead of a number.
 
 The dot product $\vtheta \cdot \vec{f}(x,y)$ is now defined by
 $\sum_k \theta_k \cdot f_k(x,y)$ where $k$ ranges over the set of
-feature names.  
+feature names.
 In computing this sum, it is fine to skip features $k$ where $f_k(x,y)
 = 0$.  In many cases, this is a big speedup because only a few of the
 $K$ features will fire on a given contextualized event $(x,y)$.  For
 example, $f_k(x,y)$ will be 1 for only one of the shapes $k \in \{{\sf
-  circle}, {\sf square}, \ldots\}$, and 0 for all other shapes.  So the 
+  circle}, {\sf square}, \ldots\}$, and 0 for all other shapes.  So the
 sum includes just one of the weights $\theta_{\textsf{circle}},
 \theta_{\textsf{square}}, \ldots$.
 
@@ -396,7 +444,7 @@ $\ph(y\mid x)$ are so prevalent that they have been rediscovered many
 times!  So you will see lots of names for them.  The following are all
 roughly equivalent: log-linear models, Gibbs distributions, undirected
 graphical models, Markov Random Fields or Conditional Random Fields,
-exponential models, and (regularized) maximum entropy models.  
+exponential models, and (regularized) maximum entropy models.
 Special cases include logistic regression and Boltzmann machines.
 
 In all these cases, you define a probability by multiplying some
@@ -404,7 +452,7 @@ positive numbers together and dividing by a constant $Z$ so that your
 probabilities will sum to 1.
 
 \section{Finding the Parameters {\em [read with lesson 6]}}
-  
+
 We will try some examples in the interactive visualization where it's
 tricky to adjust $\vtheta$ by hand.  So let's ask, how {\em should}
 one adjust it?
@@ -450,32 +498,32 @@ maximizes the logarithm of (\ref{eqn:loglin-likelihood}):\footnote{It
   % p$ reaches a maximum is $p$ maximized.
 }
 \begin{align}
-  F(\vtheta) & \defeq \log \prod_{i=1}^N \ph(y_i \mid x_i) = \sum_{i=1}^N \log \ph(y_i \mid x_i) 
+  F(\vtheta) & \defeq \log \prod_{i=1}^N \ph(y_i \mid x_i) = \sum_{i=1}^N \log \ph(y_i \mid x_i)
 \label{eqn:loglin-log-likelihood}
 \end{align}
 
 \subsection{Formula for the gradient}
 
-You can see this by computing the partial derivatives of $F(\vtheta)$ 
+You can see this by computing the partial derivatives of $F(\vtheta)$
 with respect to the $k$ weights:
 
 \begin{align}
-  \diffk F(\vtheta) 
-  &= \sum_{i=1}^N \diffk \log \ph(y_i \mid x_i)  \\ %   - \left( \theta_k / \sigma^2 \right) 
+  \diffk F(\vtheta)
+  &= \sum_{i=1}^N \diffk \log \ph(y_i \mid x_i)  \\ %   - \left( \theta_k / \sigma^2 \right)
   &= \sum_{i=1}^N \diffk \log u(y_i \mid x_i) - \diffk \log Z(x_i) \\
-  & \hspace{1in}\vdots \nonumber \\ 
+  & \hspace{1in}\vdots \nonumber \\
   &= \underbrace{\left( \sum_{i=1}^N f_k(x_i,y_i) \right)}_{\textit{observed count $O$ of feature $k$}}
   - \underbrace{\left( \sum_{i=1}^N \sum_y \ph(y\mid x_i) f_k(x_i,y) \right)}_{\textit{expected count $E$ of feature $k$}} \label{eqn:obsexp}
 \end{align}
 
 At the max of $F(\vtheta)$, this derivative must be 0 for each
-$\theta_k$, and hence $E=O$ for each feature $k$.  
+$\theta_k$, and hence $E=O$ for each feature $k$.
 
 {\bf Clarification:} So far in the online toy, you have only been
 modeling $\ph(y)$.  However, soon you'll try $\ph(y\mid x)$ as
 defined in section~\ref{sec:formula}.  What does ``expected count'' mean in this
 setting?  (\ref{eqn:obsexp}) defined it as $\sum_{i=1}^N \sum_y
-\ph(y\mid x_i) f_k(x_i,y)$.  This measures how many times $f_k$ would
+\ph(y\mid x_i) f_k(x_i,y)$.  This counts how many times $f_k$ would
 have fired on average if we had still observed exactly the same
 training contexts $x_1,\ldots x_n$, but if the corresponding training events
 $y_1,\ldots y_n$ were respectively replaced by random draws from the
@@ -483,7 +531,7 @@ conditional distributions $\ph(y \mid x_i)$.
 
 \subsection{Algorithm for maximizing the log-probability}
 
-It can be shown that $F$ is a concave function, so it is like a simple hill with only one local maximum.  There are many reasonable ways to climb to the top of this hill.  One option is {\bf gradient ascent},\footnote{\label{fn:sgd}For large $N$, it is popular nowadays to use 
+It can be shown that $F$ is a concave function, so it is like a simple hill with only one local maximum.  There are many reasonable ways to climb to the top of this hill.  One option is {\bf gradient ascent},\footnote{\label{fn:sgd}For large $N$, it is popular nowadays to use
   {\bf stochastic gradient ascent}, which is faster in practice because it does not have to fully evaluate the sum $F(\vtheta) = \sum_{i=1}^N \cdots$ or $\diffk F(\vtheta) = \sum_{i=1}^N \cdots$ before updating $\vtheta$.  Rather, it updates to improve each summand in turn.  \href{http://research.microsoft.com/pubs/192769/tricks-2012.pdf}{Bottou (2012)} gives a good presentation with practical advice.} a
 simple function maximization algorithm that increases $\theta_k$ at a
 rate proportional to $\diffk F(\vtheta)=O-E$, for all $k$ in parallel.
@@ -491,20 +539,19 @@ These rates of increase are positive or negative for $E < O$ or $E >
 O$ respectively.  As $\vtheta$ is adjusted, these rates will also
 gradually change, eventually reaching 0 at the top of the hill.
 
-
 \subsection{Details for the curious}
 
 We got to (\ref{eqn:obsexp}) above by applying basic rules
 of differentiation:
 \begin{align}
-  \diffk \log u(y \mid x) 
+  \diffk \log u(y \mid x)
   &= \diffk \left( \sum_{k=1}^K \theta_k \cdot f_k(x,y) \right) \\
   & = \diffk \left( \theta_k \cdot f_k(x,y) + \textrm{constant not involving $\theta_k$} \right) = f_k(x,y)\\
 %
-  \diffk \log Z(x) &= \frac{1}{Z(x)} \diffk Z(x) 
+  \diffk \log Z(x) &= \frac{1}{Z(x)} \diffk Z(x)
   = \frac{1}{Z(x)} \sum_y \diffk u(x,y)  \\
   &= \frac{1}{Z(x)} \sum_y \diffk \exp (\vtheta \cdot \vec{f}(x,y))\\
-  &= \frac{1}{Z(x)} \sum_y \left( \exp (\vtheta \cdot \vec{f}(x,y)) \right) 
+  &= \frac{1}{Z(x)} \sum_y \left( \exp (\vtheta \cdot \vec{f}(x,y)) \right)
   \left( \diffk (\vtheta \cdot \vec{f}(x,y)) \right) \\
   &= \frac{1}{Z(x)} \sum_y u(x,y) \cdot f_k(x,y) \\
   &= \sum_y \ph(y\mid x) \cdot f_k(x,y)
@@ -515,7 +562,7 @@ of differentiation:
 Problems sometimes arise when we simply maximize the log-probability.
 Why does this happen?  Can we fix it?
 
-\subsection{Overfitting, underfitting, and the bias/variance tradeoff} 
+\subsection{Overfitting, underfitting, and the bias/variance tradeoff}
 
 You saw in lesson 8 that maximizing $F(\vtheta)$ might actually be a
 bad idea.  The resulting estimate of $\vtheta$ makes the {\em
@@ -583,17 +630,17 @@ has no effect on the model, and a feature with low weight has little
 effect.  So the regularization principle is ``All weights should stay
 close to 0, except where really needed to model the data.''
 
-So instead of maximizing the log-likelihood 
+So instead of maximizing the log-likelihood
 (\ref{eqn:loglin-log-likelihood}), let's maximize the
-{\bf regularized log-likelihood}, 
+{\bf regularized log-likelihood},
 \begin{equation}\label{eqn:loglin-regularized}
   F(\vtheta) = \left( \sum_{i=1}^N \log \ph(y_i \mid x_i) \right) - C\cdot R(\vtheta)
 \end{equation}
 where $R(\vtheta)$ is a penalty for weights that get far away from 0.
 A parameter $C \geq 0$, which can be tuned via cross-validation, will control the size of this penalty and
-hence the strength of regularization. 
+hence the strength of regularization.
 
-\subsection{Types of regularization} 
+\subsection{Types of regularization}
 
 A common choice is called $\ell_2$ (or $L_2$) regularization.  Define
 $R(\vtheta) = ||\vtheta||^2 = \sum_i \theta_i^2$.  Then
@@ -610,9 +657,9 @@ training data, then $\diffk F(\vtheta)$ will be dominated by the
 counts, and the regularization term will have comparatively little
 influence.  In this case, $\theta_k$ will be able to pull farther away
 from 0 in order to model the observations---which is exactly what we
-wanted to happen for well-observed features.  
+wanted to happen for well-observed features.
 
-Another common choice is $\ell_1$ (or $L_1$) regularization.  Here 
+Another common choice is $\ell_1$ (or $L_1$) regularization.  Here
 $R(\vtheta) = \sum_i |\theta_i|$.  Then
 \begin{equation}
   \diffk F(\vtheta) = \textrm{observed count of $k$} -
@@ -631,7 +678,7 @@ estimating $\ph(y\mid x)=0$ as happened in lesson 8.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 % L1-L2.png was created like this in gnuplot:
-% 
+%
 % # set termoption dash   # allow dashed lines
 % set term pngcairo dashed   # make PNG file, and allow dashed lines
 % set output "L1-L2.png"
@@ -644,11 +691,11 @@ Optimization is relatively easy with $\ell_2$ because the regularizer
 is differentiable.  This lets you use standard optimization techniques
 that rely on the gradient (e.g., L-BFGS or stochastic gradient ascent).
 
-\paragraph{Advantage of $\ell_1$:  Sparse solutions.}  The main reason to consider $\ell_1$ instead is that it is a ``sparsity-inducing regularizer.''  As we saw in lesson 9, the optimal $\vtheta$ will tend to be a {\em sparse vector} with many zero elements, especially if $C$ is large.  
+\paragraph{Advantage of $\ell_1$:  Sparse solutions.}  The main reason to consider $\ell_1$ instead is that it is a ``sparsity-inducing regularizer.''  As we saw in lesson 9, the optimal $\vtheta$ will tend to be a {\em sparse vector} with many zero elements, especially if $C$ is large.
 
-You may prefer to have many zero elements: you won't need to compute $f_k(x,y)$ at test time if $\theta_k=0$.  So this regularizer does {\bf feature selection} for you: it identifies a small set of useful features that deserve to get nonzero weights.  The resulting model may be easier for you to interpret, and is small and fast at test time.  
+You may prefer to have many zero elements: you won't need to compute $f_k(x,y)$ at test time if $\theta_k=0$.  So this regularizer does {\bf feature selection} for you: it identifies a small set of useful features that deserve to get nonzero weights.  The resulting model may be easier for you to interpret, and is small and fast at test time.
 
-Why does $\ell_1$ regularization have this effect?  This graph shows a particular parameter $\theta_k$ on the $x$ axis.  Suppose that $\theta_k=0$.  We could increase the log-likelihood by decreasing $\theta_k$.  However, this wouldn't help the log-likelihood (blue curve) as much as it would hurt the regularizer (red curve)!  We therefore prefer to keep $\theta_k$ at 0, to avoid decreasing the {\em total} function $F(\vtheta)$ (dashed red curve).  
+Why does $\ell_1$ regularization have this effect?  This graph shows a particular parameter $\theta_k$ on the $x$ axis.  Suppose that $\theta_k=0$.  We could increase the log-likelihood by decreasing $\theta_k$.  However, this wouldn't help the log-likelihood (blue curve) as much as it would hurt the regularizer (red curve)!  We therefore prefer to keep $\theta_k$ at 0, to avoid decreasing the {\em total} function $F(\vtheta)$ (dashed red curve).
 
 \begin{wrapfigure}{r}{3in}
 \includegraphics[width=3in]{L1-L2}
@@ -659,7 +706,7 @@ In general, moving $\theta_k$ away from 0 (in either direction) will increase th
 An $\ell_2$ regularizer does {\em not} promote sparsity.  If $\theta_k=0$, we can again increase log-likelihood (blue curve) by decreasing $\theta_k$---but this time, we may as well do so, since the regularizer (green curve) has a flat derivative at $\theta_k=0$ and so will suffer only negligible harm if we move a tiny bit leftward.  Notice that the total function $F(\theta)$ (dashed green curve) is differentiable and happens to have its maximum at $\theta_k < 0$. Once we use $\ell_2$, there is nothing very special about 0 anymore---it would be surprising if the maximum were achieved at $\theta_k=0$ exactly.
 
 \paragraph{Computational disadvantage of $\ell_1$: More complicated optimization.}
-With either $\ell_2$ or $\ell_1$, the function $F(\vtheta)$ in \eqref{eqn:loglin-regularized} is concave,\footnote{Why?  $F(\vtheta)$ is a sum of concave functions, which is always concave.  We noted before that log-likelihood is a concave function.  As for the regularizer $R(\vtheta)$, it is a convex function, which becomes concave when we ``turn it upside down'' by multiplying it by $-C < 0$.} so it has a single global maximum that can be found efficiently by greedily climbing the hill.  However, with $\ell_1$, it is somewhat harder to perform the maximization.  The practical difficulty is that $F(\vtheta)$ (dashed red line) is non-differentiable, so methods like gradient ascent and L-BFGS no longer work.\footnote{The simplest approach is the {\bf subgradient method}.  However, this is not very good at achieving sparsity: even when the optimum $\vtheta$ is sparse, so that some elements of $\vtheta$ will converge to 0 {\em in the limit}, these elements may never hit 0 exactly {\em in finite time}.  A popular approach that fixes this is the {\bf proximal gradient} algorithm, which is explained along with other approaches in the monograph of \href{http://www.di.ens.fr/~fbach/bach_jenatton_mairal_obozinski_FOT.pdf}{Bach et al. (2012)}.  {\bf Stochastic gradient ascent} (footnote \ref{fn:sgd}) can also be adapted to this setting, as explained by \href{http://www.aclweb.org/anthology/P09-1054}{Tsuruoka et al. (2009)} and \href{http://www.jmlr.org/papers/volume12/shalev-shwartz11a/shalev-shwartz11a.pdf}{Shalev-Shwartz and Tewari (2011)}.}  
+With either $\ell_2$ or $\ell_1$, the function $F(\vtheta)$ in \eqref{eqn:loglin-regularized} is concave,\footnote{Why?  $F(\vtheta)$ is a sum of concave functions, which is always concave.  We noted before that log-likelihood is a concave function.  As for the regularizer $R(\vtheta)$, it is a convex function, which becomes concave when we ``turn it upside down'' by multiplying it by $-C < 0$.} so it has a single global maximum that can be found efficiently by greedily climbing the hill.  However, with $\ell_1$, it is somewhat harder to perform the maximization.  The practical difficulty is that $F(\vtheta)$ (dashed red line) is non-differentiable, so methods like gradient ascent and L-BFGS no longer work.\footnote{The simplest approach is the {\bf subgradient method}.  However, this is not very good at achieving sparsity: even when the optimum $\vtheta$ is sparse, so that some elements of $\vtheta$ will converge to 0 {\em in the limit}, these elements may never hit 0 exactly {\em in finite time}.  A popular approach that fixes this is the {\bf proximal gradient} algorithm, which is explained along with other approaches in the monograph of \href{http://www.di.ens.fr/~fbach/bach_jenatton_mairal_obozinski_FOT.pdf}{Bach et al. (2012)}.  {\bf Stochastic gradient ascent} (footnote \ref{fn:sgd}) can also be adapted to this setting, as explained by \href{http://www.aclweb.org/anthology/P09-1054}{Tsuruoka et al. (2009)} and \href{http://www.jmlr.org/papers/volume12/shalev-shwartz11a/shalev-shwartz11a.pdf}{Shalev-Shwartz and Tewari (2011)}.}
 
 \paragraph{Statistical disadvantage of $\ell_1$ (and of sparsity in general): Forced choices.}\label{sec:eggs}
 Consider the setting where you have two features that fire in very similar circumstances on training data: $f_1(x,y) \approx f_2(x,y)$.  In that case, which feature should get
@@ -685,11 +732,11 @@ The $\ell_1$ regularizer thinks all three of these cases are {\em equally} good.
 and in this case, the $\ell_1$ regularizer will prefer the third option (since it wants to minimize $|\theta_1|+|\theta_2|$).  This shouldn't be surprising since $\ell_1$ likes a sparse weight vector.  However, $\ell_1$ is putting all its eggs in one basket (as any feature selection method does).  It ``arbitrarily'' selects $f_1$ as important and $f_2$ as irrelevant, even though they had very similar behavior on training data.  It might turn out that this was the wrong decision.  Perhaps $f_2$ is actually more helpful for this problem in general, even though $f_1$ appeared to be slightly more helpful on the limited sample of training data.
 
 \paragraph{Why $\ell_1$ and not $\ell_0$?}  If your goal is to achieve sparsity, then $\ell_1$ is not quite appropriate.  You should really use $\ell_0$, where $\ell_0(\vtheta)$ returns the number of nonzero elements of $\vtheta$.  Keeping this small is equivalent to keeping the vector sparse.  If you really think that only a few features are relevant, then $\ell_0$ assesses whether your weight vector is plausible.  However, using $\ell_0$ would make $F(\vtheta)$ really hard to maximize.  So $\ell_1$ is commonly used as a convex approximation to $\ell_0$.\footnote{What would it take to maximize exactly using $\ell_0$ regularization?  Notice that it is straightforward to maximize the log-likelihood {\em after} you have done feature selection.  For example, you can find the values of $\theta_2, \theta_5, \theta_7$ that are optimal when you require all other weights to be 0.  (The $\ell_0$ regularizer would be pretty happy with this $\vtheta$, since $R(\vtheta)=3$ is nice and small, but the log-likelihood may not be so great since your model only has 3 features.)  You could repeat this convex maximization for {\em each} subset of the $K$ features, and return the model for which the regularized log-likelihood \eqref{eqn:loglin-regularized} is maximized.  Unfortunately, this method involves looping over all $2^K$ subsets!
-  % 
+  %
   An approximate version is called {\bf forward selection}.  Instead of trying all $2^K$ subsets, greedily expand the feature set by one feature at a time
   (starting with the empty set), in a way that increases \eqref{eqn:loglin-regularized} as fast as possible until it can't be increased anymore.  This no longer takes exponential time, but it is still rather slow.}
 
-In fact, what you want is probably $\ell_0 + \ell_2$, which says ``Try to have a small set of nonzero weights, and keep those small.''  A common choice is to approximate this by $\ell_1+\ell_2$ (the ``elastic net'' regularizer), giving a concave $F(\vtheta)$.  Note that when you add two regularization terms in this way, you probably want to give them separate coefficients (both tuned on dev data).  A nice trick is to optimize with $\ell_1+\ell_2$ to accomplish feature selection, and then remove the weight-0 features and re-optimize the other weights with $\ell_2$ only (``debiasing'').  
+In fact, what you want is probably $\ell_0 + \ell_2$, which says ``Try to have a small set of nonzero weights, and keep those small.''  A common choice is to approximate this by $\ell_1+\ell_2$ (the ``elastic net'' regularizer), giving a concave $F(\vtheta)$.  Note that when you add two regularization terms in this way, you probably want to give them separate coefficients (both tuned on dev data).  A nice trick is to optimize with $\ell_1+\ell_2$ to accomplish feature selection, and then remove the weight-0 features and re-optimize the other weights with $\ell_2$ only (``debiasing'').
 
 
 \subsection{A interpretation of regularization as MAP estimation}
@@ -702,7 +749,7 @@ principle), we'll more sensibly choose it to maximize $p(\vtheta \mid
 \textrm{data})$ (the {\bf maximum a posteriori (MAP)} principle).  By
 Bayes' Theorem, $p(\vtheta \mid \textrm{data})$ is proportional to
 \begin{equation}
-\underbrace{p(\textrm{data} \mid \vtheta)}_{\textit{likelihood}} \cdot \underbrace{p(\vtheta)}_{\textit{prior}} 
+\underbrace{p(\textrm{data} \mid \vtheta)}_{\textit{likelihood}} \cdot \underbrace{p(\vtheta)}_{\textit{prior}}
 \end{equation}
 And maximizing the log of this is precisely the same as maximizing
 (\ref{eqn:loglin-regularized}), provided that we define $p(\vtheta)$
@@ -722,19 +769,19 @@ corresponds to a Gaussian prior,\footnote{Since the exp of a quadratic
   % $p(z \mid xy)$.  Ask me if you're curious.)
 }  and $\ell_1$
 regularization corresponds to an exponential prior.  Both of these say
-that {\em a priori}, we expect each $\theta_k$ to be close to 0. 
+that {\em a priori}, we expect each $\theta_k$ to be close to 0.
 
 \subsection{The full Bayesian treatment}
 
 MAP estimation as in the previous section is sometimes called {\bf empirical Bayes}.  But a real Bayesian wouldn't just use the single best choice of $\vtheta$.  After all, Bayes' Theorem doesn't pick one $\vtheta$ for us; it gives us a whole posterior probability distribution over models, $p(\vtheta \mid \textrm{data})$.  This represents our uncertainty about what the true $\vtheta$ is.  So ideally, we would average over all of these models, like this!
 \begin{align}
-\ph(y \mid x) 
+\ph(y \mid x)
 &= \int_{\vtheta\in \Real^K} p(y, \vtheta \mid x)\,d\vtheta \\
 &= \int_{\vtheta\in \Real^K} p(y \mid x,\vtheta)\cdot p(\vtheta \mid \textrm{data}) \,d\vtheta
 \end{align}
 where $p(y \mid x,\vtheta)$ is the conditional distribution given by a log-linear model with parameters $\vtheta$.
 
-This {\bf fully Bayesian} approach gives a principled solution to our feature selection dificulty from section \ref{sec:eggs}.  Suppose you have a Bayesian prior that explicitly prefers a sparse solution, for example $\exp -R(\theta)$ where $R$ is the $\ell_0+\ell_2$ regularizer.  Then the $\vtheta$ vectors that are most probable ({\em a posteriori} as well as {\em a priori}) will generally be sparse.  But since we're not sure which one is correct, we average over their predictions.  We are no longer choosing just one sparse vector from which to make our predictions; that is, we no longer put all our eggs in one basket.  
+This {\bf fully Bayesian} approach gives a principled solution to our feature selection dificulty from section \ref{sec:eggs}.  Suppose you have a Bayesian prior that explicitly prefers a sparse solution, for example $\exp -R(\theta)$ where $R$ is the $\ell_0+\ell_2$ regularizer.  Then the $\vtheta$ vectors that are most probable ({\em a posteriori} as well as {\em a priori}) will generally be sparse.  But since we're not sure which one is correct, we average over their predictions.  We are no longer choosing just one sparse vector from which to make our predictions; that is, we no longer put all our eggs in one basket.
 
 The fully Bayesian approach to log-linear models is the ``right way'' to use them.  Unfortunately, it is highly computationally intensive.  There is some work on it, but it is not widely used in practice.
 
