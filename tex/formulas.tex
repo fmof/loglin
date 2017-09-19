@@ -368,14 +368,15 @@ used to define two probability models over the four shapes
 $y \in {\cal Y} = \{\text{solid circle}, \text{striped circle},
 \text{solid triangle}, \text{striped triangle}\}$.
 Look back at section~\ref{sec:concrete} of this
-handout to see exactly what the probabilities of the 4 shapes are.
+handout to see the concrete formulas for the probabilities of the 4
+shapes, which sum to 1.
 
 \medskip
 In each of these models, a shape's features are computed by
 functions like $f_{\textrm{solid}}(y)$, which returns 1 on the solid
 circle and solid triangle, and returns 0 on the other two shapes.
-Thus, the parameters of the model are real numbers like
-$\theta_{\textrm{solid}}$.  The larger $\theta_{\textrm{solid}}$ is,
+Therefore, the parameters of the model are feature weights like
+$\theta_{\textrm{solid}} \in \Real$.  The larger $\theta_{\textrm{solid}}$ is,
 the more the probability distribution favors the solid circle and
 solid triangle.
 
