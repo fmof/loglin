@@ -40,8 +40,7 @@ As you'll see, a conditional log-linear model defines
 \end{align*}
 for some fixed set of real-valued feature functions $f_k$ with adjustable
 weights $\theta_k \in \Real$.  For each $x$, the denominator $Z(x) >
-0$ is a scaling factor
-chosen specifically
+0$ is a scaling factor chosen specifically
 % given by
 % \begin{align*}
 % Z(x) & \defeq \sum_{y} \exp \sum_{k=1}^K \theta_k \cdot f_k(x,y)
@@ -214,7 +213,7 @@ independently of the others.\footnote{Though ``backoff smoothing'' does jointly
 Log-linear modeling is a very popular and flexible technique for
 addressing this problem.  It has the advantage that it considers {\em
   descriptions} of the events.  Contextualized events $(x,y)$ with
-{\em similar} descriptions tend to have similar probabilities---a form
+{\em similar descriptions} tend to have {\em similar probabilities}---a form
 of generalization.
 % That is, if $\vec{f}(x_1,y_1) \approx \vec{f}(x_2,y_2)$, then
 % $\hat{p}(y_1 \mid x_1) \approx \hat{p}(y_2 \mid x_2)$.
@@ -260,7 +259,6 @@ $(x,y)$, and that feature 5 fires twice (or fires with strength 2).
 % feature 5 {\bf fires} especially strongly on $(x,y)$.
 
 \medskip
-
 It is slightly unusual that $f_5(x,y)=2.0$.  In principle a feature
 value $f_k(x,y)$ can be any positive or negative real number.  But
 most often your feature functions $f_k$ will be boolean functions, so
@@ -297,12 +295,15 @@ Here $\vtheta \in \Real^K$ is a vector of feature {\bf weights}, which
 are the adjustable parameters of the model.  You control these
 with sliders in the interactive visualization.
 
+\medskip
 The unnormalized probabilities $u(x,y)$ are always positive (because
 of the $\exp$).  Equation~(\ref{eqn:loglin}) has to scale them, in
 order to get proper probabilities that sum to 1 (i.e., $\sum_y
 \ph(y\mid x) = 1$ for each $x$).  As you can see in
 (\ref{eqn:loglin}), this is a simple matter of dividing them by a {\bf
   normalizing constant}, namely
+
+\vspace{-16pt}
 \begin{equation}
   Z(x) \defeq \sum_y u(x,y)
 \end{equation}
@@ -335,6 +336,7 @@ that dark shapes $y$ are probable when the background $x$ is light,
 and vice-versa.  Alternatively, setting $\theta_5 < 0$ makes
 contrasting colors less common.
 
+\medskip
 In general, the linear coefficients $\vtheta$ in \eqref{eqn:logversion} are incredibly
 important: the way you pick them will determine all the probabilities
 in the model, and even the normalizing constants!  Fortunately, to
@@ -351,24 +353,31 @@ contexts.  More on this later.
 
 The initial lessons in the interactive visualization deal with the
 simple case where there is no information about context.  So we can
-omit $x$.  We now have a simple distribution over possible $y$ values,
+omit $x$.  We now have a simple distribution over possible $y$ values,\looseness=-1
+
+\vspace{-16pt}
 \begin{align}
   \ph(y) &\defeq \frac{u(y)}{Z} \label{eqn:unconditioned} \\
   u(y) &\defeq \exp \left(\vtheta \cdot \vec{f}(y)\right) > 0 \\
   Z &\defeq \sum_y u(y)
 \end{align}
+\vspace{-12pt}
+
 For example, in the first two lessons, \eqref{eqn:unconditioned} is
 used to define two probability models over the four shapes
 $y \in {\cal Y} = \{\text{solid circle}, \text{striped circle},
 \text{solid triangle}, \text{striped triangle}\}$.
+Look back at section~\ref{sec:concrete} of this
+handout to see exactly what the probabilities of the 4 shapes are.
+
+\medskip
 In each of these models, a shape's features are computed by
 functions like $f_{\textrm{solid}}(y)$, which returns 1 on the solid
 circle and solid triangle, and returns 0 on the other two shapes.
 Thus, the parameters of the model are real numbers like
 $\theta_{\textrm{solid}}$.  The larger $\theta_{\textrm{solid}}$ is,
 the more the probability distribution favors the solid circle and
-solid triangle.  Look back at section~\ref{sec:concrete} of this
-handout to see exactly what the probabilities of the 4 shapes are.
+solid triangle.
 
 \subsection{Features versus Attributes}
 
@@ -386,6 +395,7 @@ f_5(x,y) & \defeq |\textsc{brightness}(y)-\textsc{brightness}(x)|/100
 which refer to the \textsc{fill}, \textsc{shape}, and \textsc{brightness} attributes
 of $y$ and/or $x$.
 
+\medskip
 You will sometimes hear people refer to individual attributes as the
 ``features'' or ``basic features'' of $x$ and $y$.  That's confusing.
 I recommend that you use ``features'' only to refer to feature
@@ -398,6 +408,7 @@ features.  This lets you represent the parameter vector $\vtheta$
 (as well as each feature vector $\vec{f}(x,y)$) by an {\em array} of
 $K$ real numbers.
 
+\medskip
 However, it is often more convenient to refer to the features by names
 instead of numbers.  The names can be strings or other objects that
 describe the feature.  For example, in the table from
@@ -408,6 +419,7 @@ $\vtheta$ can be implemented as a hash table instead of an array.  It
 still maps the index $k$ to the weight $\theta_k$, but now $k$ is a
 name instead of a number.
 
+\medskip
 The dot product $\vtheta \cdot \vec{f}(x,y)$ is now defined by
 $\sum_k \theta_k \cdot f_k(x,y)$ where $k$ ranges over the set of
 feature names.
@@ -419,6 +431,7 @@ example, $f_k(x,y)$ will be 1 for only one of the shapes $k \in \{{\sf
 sum includes just one of the weights $\theta_{\textsf{circle}},
 \theta_{\textsf{square}}, \ldots$.
 
+\medskip
 In our example from section~\ref{sec:featfuncs}, $\vtheta \cdot \vec{f}(x,y)$ could be efficiently
 computed as
 \begin{algorithmic}
@@ -447,6 +460,7 @@ graphical models, Markov Random Fields or Conditional Random Fields,
 exponential models, and (regularized) maximum entropy models.
 Special cases include logistic regression and Boltzmann machines.
 
+\medskip
 In all these cases, you define a probability by multiplying some
 positive numbers together and dividing by a constant $Z$ so that your
 probabilities will sum to 1.
@@ -465,7 +479,7 @@ not too hard.  Suppose your training set has $N=100$ events of which
 says that circles only happen 0.7 of the time, i.e.,
 $$\ph(\textrm{striped circle}) + \ph(\textrm{solid circle}) = 0.7$$
 so your model predicts that only 70 of the 100 events should be circles.
-
+%
 In that case, you should increase the weight of the ``circle''feature,
 because the {\bf expected count} $70$ is smaller than the {\bf
   observed count} $80$ ($E < O$) and so you need to make circles more
@@ -473,6 +487,7 @@ likely in your model.  Similarly, if $E > O$ then you should decrease this weigh
 Either way, by gradually adjusting this weight you can make $E=O$, so
 that your model correctly predicts the observed number of circles.
 
+\medskip
 As you've probably noticed, the feature weights do interact.  Once
 you've made $E=O$ for the circle feature, trying to make $E=O$ for the
 striped feature may mess up your first move, so that $E \neq O$ again
