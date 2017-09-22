@@ -7,6 +7,7 @@
 \usepackage{wrapfig}
 \usepackage{amsmath}
 \usepackage{amsfonts}
+\usepackage{mathtools}
 \usepackage{xspace}
 \usepackage{tcolorbox}
 \newcommand{\defeq}{\;\stackrel{\mbox{\tiny def}}{=}\;}
@@ -49,12 +50,13 @@ weights $\theta_k \in \Real$.  For each $x$, the denominator $Z(x) >
 to ensure that $\sum_y p(y \mid x) = 1$.
 
 \medskip
-The model can equivalently be written as
+If every $f_k$ returns values in $\{0,1\}$ only, then the above is a scaled product of
+positive numbers,
 \begin{align*}
-p(y \mid x) & \defeq \frac{1}{Z(x)} \prod_{k=1}^K (\exp \theta_k)^{f_k(x,y)}
+p(y \mid x) & \defeq \frac{1}{Z(x)} \smashoperator[r]{\prod_{\substack{k\text{
+              such that} \\ f_k(x,y)=1}}} \ \ (\exp \theta_k)
 \end{align*}
 
-\medskip
 Playing with the visualization will help you get the hang of
 how changing the parameters $\theta_k$ affects the relative
 probabilities of different $y$ values, and how those parameters can be
