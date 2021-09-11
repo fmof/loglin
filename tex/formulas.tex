@@ -14,6 +14,7 @@
 \newcommand{\horizrule}{\noindent\rule{\textwidth}{2pt}}
 \newcommand{\vtheta}{\vec{\theta}}
 \newcommand{\ph}{\hat{p}}
+\newcommand{\ptilde}{\tilde{p}}
 \newcommand{\pdisc}{p_{\rm disc}}
 \newcommand{\Real}{{\mathbb R}}
 \newcommand{\diffk}{\frac{\partial}{\partial \theta_k}}
@@ -164,7 +165,7 @@ We often want to model conditional probabilities like $p(y
 \end{itemize}
 But where do we get these probabilities?
 
-\subsection{Notation}
+\subsection{Notation}\label{sec:notation}
 
 Suppose $X$ denotes a random context and $Y$ is a random event that
 happens in that context.  Let $\ph(Y=y \mid X=x)$ be our estimate of
@@ -276,38 +277,41 @@ has feature $k$ or not.
 % And perhaps define set of outcomes Y for each x:
 %    see discussion at https://piazza.com/class/hzdzwofeqmh54o?cid=63 .
 
-The log-linear probability model $\ph$ computes a contextualized
-event's probability from its features.\footnote{We are still using the
-  $\ph$ notation because this is only a model that we are trying to
-  fit to the data.  In most cases, we will never know whether the true
-  probability distribution $p$ has this form.}  For example, given a
+The log-linear probability model computes a contextualized
+event's probability from its features.
+% CHANGED THIS BACK
+% \footnote{We are still using the
+%   $\ph$ notation because this is only a model that we are trying to
+%   fit to the data.  In most cases, we will never know whether the true
+%   probability distribution $p$ has this form.}
+For example, given a
 light background $x$, how likely is the shape $y$ to be a dark striped circle?
 
 Specifically, the log-linear model defines
 \begin{equation}\label{eqn:loglin}
-  \ph(y \mid x) \defeq \frac{u(x,y)}{Z(x)}
+  p(y \mid x) \defeq \frac{\ptilde(x,y)}{Z(x)}
 \end{equation}
 where the interesting part is the {\bf unnormalized probability}
 defined by
 \begin{align}\label{eqn:unnorm}
-  u(x,y) &\defeq \exp \sum_{k=1}^K \left( \theta_k \cdot f_k(x,y) \right)  \\
+  \ptilde(x,y) &\defeq \exp \sum_{k=1}^K \left( \theta_k \cdot f_k(x,y) \right)  \\
          &= \exp \left(\vtheta \cdot \vec{f}(x,y)\right) > 0
 \end{align}
 Here $\vtheta \in \Real^K$ is a vector of feature {\bf weights}, which
 are the adjustable parameters of the model.  You control these
-with sliders in the interactive visualization.
+with sliders in the interactive visualization.  
 
 \medskip
-The unnormalized probabilities $u(x,y)$ are always positive (because
+The unnormalized probabilities $\ptilde(x,y)$ are always positive (because
 of the $\exp$).  Equation~(\ref{eqn:loglin}) has to scale them, in
 order to get proper probabilities that sum to 1 (i.e., $\sum_y
-\ph(y\mid x) = 1$ for each $x$).  As you can see in
+p(y\mid x) = 1$ for each $x$).  As you can see in
 (\ref{eqn:loglin}), this is a simple matter of dividing them by a {\bf
   normalizing constant}, namely
 
 \vspace{-16pt}
 \begin{equation}
-  Z(x) \defeq \sum_y u(x,y)
+  Z(x) \defeq \sum_y \ptilde(x,y)
 \end{equation}
 
 Note that the conditional log-linear modeling framework has allowed us
@@ -322,18 +326,18 @@ over the events $y$ that could occur in context $x$.  You can also see
 now why the model is ``log-linear''---for each context $x$, the
 log-probability is a linear function of the feature vector:
 \begin{equation}\label{eqn:logversion}
-\log \ph(y \mid x) = \vtheta \cdot \vec{f}(x,y) - \log Z(x)
+\log p(y \mid x) = \vtheta \cdot \vec{f}(x,y) - \log Z(x)
 \end{equation}
 
 % LEAVE THIS FOR THE ONLINE LESSONS
-% This doesn't mean that our model $\ph$ is the {\em correct}
-% distribution!  Does $\ph(y \mid x)$ equal the true probability
-% $p(y \mid x)$?  There is no guarantee that $p$ can be accurately
+% This doesn't mean that our model $p$ is the {\em correct}
+% distribution!  Does $p(y \mid x)$ equal the true probability?
+% There is no guarantee that the true probability can be accurately
 % described at all using a log-linear model with these features,
 % let alone with the specific weights $\vtheta$.
 
 In our earlier example, setting the parameter $\theta_5 > 0$ makes
-contrasting colors more common: the resulting $\ph(y \mid x)$ says
+contrasting colors more common: the resulting $p(y \mid x)$ says
 that dark shapes $y$ are probable when the background $x$ is light,
 and vice-versa.  Alternatively, setting $\theta_5 < 0$ makes
 contrasting colors less common.
@@ -344,9 +348,9 @@ important: the way you pick them will determine all the probabilities
 in the model, and even the normalizing constants!  Fortunately, to
 help you set $\vtheta$, you'll have a training set of events in their
 contexts, $\{(x_1,y_1), (x_2,y_2), \ldots (x_N,y_N)\}$.  Then the
-$\vtheta$ that maximizes
+weight vector $\vtheta$ that maximizes
 \begin{equation}\label{eqn:loglin-likelihood}
-\prod_{i=1}^N \ph(y_i \mid x_i)
+\prod_{i=1}^N p(y_i \mid x_i)
 \end{equation}
 does the best possible job of predicting these events in their
 contexts.  More on this later.
@@ -359,9 +363,9 @@ omit $x$.  We now have a simple distribution over possible $y$ values,\looseness
 
 \vspace{-16pt}
 \begin{align}
-  \ph(y) &\defeq \frac{u(y)}{Z} \label{eqn:unconditioned} \\
-  u(y) &\defeq \exp \left(\vtheta \cdot \vec{f}(y)\right) > 0 \\
-  Z &\defeq \sum_y u(y)
+  p(y) &\defeq \frac{\ptilde(y)}{Z} \label{eqn:unconditioned} \\
+  \ptilde(y) &\defeq \exp \left(\vtheta \cdot \vec{f}(y)\right) > 0 \\
+  Z &\defeq \sum_y \ptilde(y)
 \end{align}
 \vspace{-12pt}
 
@@ -455,8 +459,8 @@ $\Comment{where $f_{\textsf{contrast}}(x,y) \equiv ||\textrm{color}(x)-\textrm{c
 
 \subsection{Remark: Other names for log-linear models}
 
-Log-linear models $\ph(y)$ and conditional log-linear models
-$\ph(y\mid x)$ are so prevalent that they have been rediscovered many
+Log-linear models $p(y)$ and conditional log-linear models
+$p(y\mid x)$ are so prevalent that they have been rediscovered many
 times!  So you will see lots of names for them.  The following are all
 roughly equivalent: log-linear models, Gibbs distributions, undirected
 graphical models, Markov Random Fields or Conditional Random Fields,
@@ -480,7 +484,7 @@ It turns out that maximizing equation (\ref{eqn:loglin-likelihood}) is
 not too hard.  Suppose your training set has $N=100$ events of which
 80 are circles (some solid, some striped).  But your current $\vtheta$
 says that circles only happen 0.7 of the time, i.e.,
-$$\ph(\textrm{striped circle}) + \ph(\textrm{solid circle}) = 0.7$$
+$$p(\textrm{striped circle}) + p(\textrm{solid circle}) = 0.7$$
 so your model predicts that only 70 of the 100 events should be circles.
 %
 In that case, you should increase the weight of the ``circle''feature,
@@ -516,7 +520,7 @@ maximizes the logarithm of (\ref{eqn:loglin-likelihood}):\footnote{It
   % p$ reaches a maximum is $p$ maximized.
 }
 \begin{align}
-  F(\vtheta) & \defeq \log \prod_{i=1}^N \ph(y_i \mid x_i) = \sum_{i=1}^N \log \ph(y_i \mid x_i)
+  F(\vtheta) & \defeq \log \prod_{i=1}^N p(y_i \mid x_i) = \sum_{i=1}^N \log p(y_i \mid x_i)
 \label{eqn:loglin-log-likelihood}
 \end{align}
 
@@ -527,25 +531,25 @@ with respect to the $k$ weights:
 
 \begin{align}
   \diffk F(\vtheta)
-  &= \sum_{i=1}^N \diffk \log \ph(y_i \mid x_i)  \\ %   - \left( \theta_k / \sigma^2 \right)
-  &= \sum_{i=1}^N \diffk \log u(y_i \mid x_i) - \diffk \log Z(x_i) \\
+  &= \sum_{i=1}^N \diffk \log p(y_i \mid x_i)  \\ %   - \left( \theta_k / \sigma^2 \right)
+  &= \sum_{i=1}^N \diffk \log \ptilde(y_i \mid x_i) - \diffk \log Z(x_i) \\
   & \hspace{1in}\vdots \nonumber \\
   &= \underbrace{\left( \sum_{i=1}^N f_k(x_i,y_i) \right)}_{\textit{observed count $O$ of feature $k$}}
-  - \underbrace{\left( \sum_{i=1}^N \sum_y \ph(y\mid x_i) f_k(x_i,y) \right)}_{\textit{expected count $E$ of feature $k$}} \label{eqn:obsexp}
+  - \underbrace{\left( \sum_{i=1}^N \sum_y p(y\mid x_i) f_k(x_i,y) \right)}_{\textit{expected count $E$ of feature $k$}} \label{eqn:obsexp}
 \end{align}
 
 At the max of $F(\vtheta)$, this derivative must be 0 for each
 $\theta_k$, and hence $E=O$ for each feature $k$.
 
 {\bf Clarification:} So far in the online toy, you have only been
-modeling $\ph(y)$.  However, soon you'll try $\ph(y\mid x)$ as
+modeling $p(y)$.  However, soon you'll try $p(y\mid x)$ as
 defined in section~\ref{sec:formula}.  What does ``expected count'' mean in this
 setting?  (\ref{eqn:obsexp}) defined it as $\sum_{i=1}^N \sum_y
-\ph(y\mid x_i) f_k(x_i,y)$.  This counts how many times $f_k$ would
+p(y\mid x_i) f_k(x_i,y)$.  This counts how many times $f_k$ would
 have fired on average if we had still observed exactly the same
 training contexts $x_1,\ldots x_n$, but if the corresponding training events
 $y_1,\ldots y_n$ were respectively replaced by random draws from the
-conditional distributions $\ph(y \mid x_i)$.
+conditional distributions $p(y \mid x_i)$.
 
 \subsection{Algorithm for maximizing the log-probability}
 
@@ -557,22 +561,28 @@ These rates of increase are positive or negative for $E < O$ or $E >
 O$ respectively.  As $\vtheta$ is adjusted, these rates will also
 gradually change, eventually reaching 0 at the top of the hill.
 
+The final value of $\vtheta$---at the top of the hill---is our estimate of the ``true'' 
+$\vtheta$ value that we have assumed to exist.  It might sometimes be
+denoted by $\widehat{\vtheta}$, since a ``hat'' indicates an estimate
+(as in section~\ref{sec:notation}).  (The true value would be denoted
+by $\vtheta^*$.)
+
 \subsection{Details for the curious}
 
 We got to (\ref{eqn:obsexp}) above by applying basic rules
 of differentiation:
 \begin{align}
-  \diffk \log u(y \mid x)
+  \diffk \log \ptilde(y \mid x)
   &= \diffk \left( \sum_{k=1}^K \theta_k \cdot f_k(x,y) \right) \\
   & = \diffk \left( \theta_k \cdot f_k(x,y) + \textrm{constant not involving $\theta_k$} \right) = f_k(x,y)\\
 %
   \diffk \log Z(x) &= \frac{1}{Z(x)} \diffk Z(x)
-  = \frac{1}{Z(x)} \sum_y \diffk u(x,y)  \\
+  = \frac{1}{Z(x)} \sum_y \diffk \ptilde(x,y)  \\
   &= \frac{1}{Z(x)} \sum_y \diffk \exp (\vtheta \cdot \vec{f}(x,y))\\
   &= \frac{1}{Z(x)} \sum_y \left( \exp (\vtheta \cdot \vec{f}(x,y)) \right)
   \left( \diffk (\vtheta \cdot \vec{f}(x,y)) \right) \\
-  &= \frac{1}{Z(x)} \sum_y u(x,y) \cdot f_k(x,y) \\
-  &= \sum_y \ph(y\mid x) \cdot f_k(x,y)
+  &= \frac{1}{Z(x)} \sum_y \ptilde(x,y) \cdot f_k(x,y) \\
+  &= \sum_y p(y\mid x) \cdot f_k(x,y)
 \end{align}
 
 \section{Regularizing the Parameter Estimates {\em [read with lesson 8]}}
@@ -652,7 +662,7 @@ So instead of maximizing the log-likelihood
 (\ref{eqn:loglin-log-likelihood}), let's maximize the
 {\bf regularized log-likelihood},
 \begin{equation}\label{eqn:loglin-regularized}
-  F(\vtheta) = \left( \sum_{i=1}^N \log \ph(y_i \mid x_i) \right) - C\cdot R(\vtheta)
+  F(\vtheta) = \left( \sum_{i=1}^N \log p(y_i \mid x_i) \right) - C\cdot R(\vtheta)
 \end{equation}
 where $R(\vtheta)$ is a penalty for weights that get far away from 0.
 A parameter $C \geq 0$, which can be tuned via cross-validation, will control the size of this penalty and
@@ -688,7 +698,7 @@ This has a similar effect.  See the next section for the differences.
 Notice that for any $C > 0$, regularization will always prevent
 $\theta_k$ from zooming off to $\infty$ or $-\infty$ (because that
 would make $R(\vtheta)$ infinitely bad).  Happily, this prevents us from
-estimating $\ph(y\mid x)=0$ as happened in lesson 8.
+estimating $p(y\mid x)=0$ as happened in lesson 8.
 
 \section{More Remarks on Regularization {\em [read if curious]}}
 
@@ -719,7 +729,7 @@ Why does $\ell_1$ regularization have this effect?  This graph shows a particula
 \includegraphics[width=3in]{L1-L2}
 \end{wrapfigure}
 
-In general, moving $\theta_k$ away from 0 (in either direction) will increase the $\ell_1$ regularization penalty at rate $C$ (where $C=1$ in this drawing).  Hence we will not be willing to do this unless it increases the log-likelihood at an even greater rate, that is, $|\diffk F(\vtheta)| > C$.  That's not the case in the situation shown.
+In general, moving $\theta_k$ away from 0 {\em in either direction} will increase the $\ell_1$ regularization penalty at rate $C$ (where $C=1$ in this drawing).  Hence we will not be willing to do this unless it increases the log-likelihood at an even greater rate, that is, $|\diffk F(\vtheta)| > C$.  That's not the case in the situation shown.
 
 An $\ell_2$ regularizer does {\em not} promote sparsity.  If $\theta_k=0$, we can again increase log-likelihood (blue curve) by decreasing $\theta_k$---but this time, we may as well do so, since the regularizer (green curve) has a flat derivative at $\theta_k=0$ and so will suffer only negligible harm if we move a tiny bit leftward.  Notice that the total function $F(\theta)$ (dashed green curve) is differentiable and happens to have its maximum at $\theta_k < 0$. Once we use $\ell_2$, there is nothing very special about 0 anymore---it would be surprising if the maximum were achieved at $\theta_k=0$ exactly.
 
