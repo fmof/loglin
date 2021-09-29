@@ -279,7 +279,7 @@ has feature $k$ or not.
 
 The log-linear probability model computes a contextualized
 event's probability from its features.
-% CHANGED THIS BACK
+% CHANGED THIS BACK - WE NOW USE \hat{\theta} but not \ph
 % \footnote{We are still using the
 %   $\ph$ notation because this is only a model that we are trying to
 %   fit to the data.  In most cases, we will never know whether the true
@@ -534,12 +534,12 @@ with respect to the $k$ weights:
   &= \sum_{i=1}^N \diffk \log p(y_i \mid x_i)  \\ %   - \left( \theta_k / \sigma^2 \right)
   &= \sum_{i=1}^N \diffk \log \ptilde(y_i \mid x_i) - \diffk \log Z(x_i) \\
   & \hspace{1in}\vdots \nonumber \\
-  &= \underbrace{\left( \sum_{i=1}^N f_k(x_i,y_i) \right)}_{\textit{observed count $O$ of feature $k$}}
-  - \underbrace{\left( \sum_{i=1}^N \sum_y p(y\mid x_i) f_k(x_i,y) \right)}_{\textit{expected count $E$ of feature $k$}} \label{eqn:obsexp}
+  &= \underbrace{\left( \sum_{i=1}^N f_k(x_i,y_i) \right)}_{\textit{observed count $O_k$ of feature $k$}}
+  - \underbrace{\left( \sum_{i=1}^N \sum_y p(y\mid x_i) f_k(x_i,y) \right)}_{\textit{expected count $E_k$ of feature $k$}} \label{eqn:obsexp}
 \end{align}
 
 At the max of $F(\vtheta)$, this derivative must be 0 for each
-$\theta_k$, and hence $E=O$ for each feature $k$.
+$\theta_k$, and hence $E_k=O_k$ for each feature $k$.
 
 {\bf Clarification:} So far in the online toy, you have only been
 modeling $p(y)$.  However, soon you'll try $p(y\mid x)$ as
@@ -556,10 +556,11 @@ conditional distributions $p(y \mid x_i)$.
 It can be shown that $F$ is a concave function, so it is like a simple hill with only one local maximum.  There are many reasonable ways to climb to the top of this hill.  One option is {\bf gradient ascent},\footnote{\label{fn:sgd}For large $N$, it is popular nowadays to use
   {\bf stochastic gradient ascent}, which is faster in practice because it does not have to fully evaluate the sum $F(\vtheta) = \sum_{i=1}^N \cdots$ or $\diffk F(\vtheta) = \sum_{i=1}^N \cdots$ before updating $\vtheta$.  Rather, it updates to improve each summand in turn.  \href{http://research.microsoft.com/pubs/192769/tricks-2012.pdf}{Bottou (2012)} gives a good presentation with practical advice.} a
 simple function maximization algorithm that increases $\theta_k$ at a
-rate proportional to $\diffk F(\vtheta)=O-E$, for all $k$ in parallel.
-These rates of increase are positive or negative for $E < O$ or $E >
-O$ respectively.  As $\vtheta$ is adjusted, these rates will also
-gradually change, eventually reaching 0 at the top of the hill.
+rate proportional to $\diffk F(\vtheta)=O_k-E_k$, for all $k$ in parallel.
+These partial derivatives are positive when $E_k < O_k$ or negative
+when $E_k > O_k$.  As $\vtheta$ is adjusted, the partial derivatives  will also
+gradually change, eventually reaching 0 at the top of the hill, where
+$E_k=O_k$ exactly for all $k$.
 
 The final value of $\vtheta$---at the top of the hill---is our estimate of the ``true'' 
 $\vtheta$ value that we have assumed to exist.  It might sometimes be
