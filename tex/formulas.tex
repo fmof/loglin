@@ -19,6 +19,9 @@
 \newcommand{\Real}{{\mathbb R}}
 \newcommand{\diffk}{\frac{\partial}{\partial \theta_k}}
 
+\newcommand{\lesson}[1]{\href{http://cs.jhu.edu/~jason/tutorials/loglin/\##1}{lesson~#1}}
+\newcommand{\Lesson}[1]{\href{http://cs.jhu.edu/~jason/tutorials/loglin/\##1}{Lesson~#1}}
+
 \begin{document}
 \title{\vspace{-2.3cm}Log-Linear Models}
 \author{Jason Eisner (Johns Hopkins University)}
@@ -69,9 +72,9 @@ why we built the visualization and what we hope you'll get out of it.
 
 \section{Starting Out Concretely}\label{sec:concrete}
 
-\subsection{Formulas for Lesson 1}
+\subsection{Formulas for \lesson{1}}
 
-The four shape probabilities in lesson 1 are computed as follows,
+The four shape probabilities in \lesson{1} are computed as follows,
 where $\theta_{\textrm{circle}}$ and $\theta_{\textrm{solid}}$ are the
 two parameters that you can control with the sliders.  (We'll see later
 in section \ref{sec:loglin} that these formulas are examples of a more
@@ -128,9 +131,9 @@ up, the striped probabilities \eqref{eqn:stripedcircle} and
 \eqref{eqn:stripedtriangle} must go down to compensate.
 This keeps the sum at 1.  Lowering $\theta_{\textrm{solid}}$ does the reverse.
 
-\subsection{Formulas for Lesson 2}
+\subsection{Formulas for \lesson{2}}
 
-Now every shape has exactly two features (whereas in lesson 1, some shapes had fewer):
+Now every shape has exactly two features (whereas in \lesson{1}, some shapes had fewer):
 
 \begin{align*}
 \hspace{-12mm}p(\text{solid circle}) & \defeq \frac{\exp (\theta_{\textrm{circle}}+\theta_{\textrm{solid}})\hspace{118mm}}{\exp (\theta_{\textrm{circle}} + \theta_{\textrm{solid}}) + \exp (\theta_{\textrm{circle}} + \theta_{\textrm{striped}}) + \exp (\theta_{\textrm{triangle}} + \theta_{\textrm{solid}}) + \exp (\theta_{\textrm{triangle}} + \theta_{\textrm{striped}})} \\
@@ -142,10 +145,10 @@ Now every shape has exactly two features (whereas in lesson 1, some shapes had f
 \hspace{-12mm}p(\text{striped triangle}) & \defeq \frac{\hspace{111mm}\exp (\theta_{\textrm{triangle}}+\theta_{\textrm{striped}})}{\exp (\theta_{\textrm{circle}} + \theta_{\textrm{solid}}) + \exp (\theta_{\textrm{circle}} + \theta_{\textrm{striped}}) + \exp (\theta_{\textrm{triangle}} + \theta_{\textrm{solid}}) + \exp (\theta_{\textrm{triangle}} + \theta_{\textrm{striped}})}
 \end{align*}
 
-\section{Why We Need Log-Linear Models {\em [read after lesson 2]}}
+\section{Why We Need Log-Linear Models {\em [read after \lesson{2}]}}
 
 {\bf Note:} Lessons 1--10 will let you experiment with simple
-probabilities $p(y)$.  Lesson 11 will finally move to the more general
+probabilities $p(y)$.  \Lesson{11} will finally move to the more general
 case of conditional probabilities $p(y\mid x)$.  But this handout will
 {\em focus} on conditional probabilities, mainly in order to avoid saying
 everything twice.  If you want to think first about the case of simple
@@ -211,7 +214,7 @@ independently of the others.\footnote{Though ``backoff smoothing'' does jointly
 % $x_1 \approx x_2$ are similar and have small counts,
 %  but not in a very flexible way.
 
-\section{Log-Linear Models {\em [read after lesson 2]}}\label{sec:loglin}
+\section{Log-Linear Models {\em [read after \lesson{2}]}}\label{sec:loglin}
 
 Log-linear modeling is a very popular and flexible technique for
 addressing this problem.  It has the advantage that it considers {\em
@@ -472,7 +475,7 @@ In all these cases, you define a probability by multiplying some
 positive numbers together and dividing by a constant $Z$ so that your
 probabilities will sum to 1.
 
-\section{Finding the Parameters {\em [read with lesson 6]}}
+\section{Finding the Parameters {\em [read with \lesson{6}]}}
 
 We will try some examples in the interactive visualization where it's
 tricky to adjust $\vtheta$ by hand.  So let's ask, how {\em should}
@@ -560,7 +563,7 @@ simple function maximization algorithm that increases $\theta_k$ at a
 rate proportional to $\diffk F(\vtheta)=O_k-E_k$, for all $k$ in parallel.
 These partial derivatives are positive when $E_k < O_k$ or negative
 when $E_k > O_k$.  In the interactive visualization, they are shown
-as ``hints'' on the sliders if you check the ``Show gradient'' box (see lesson 6).
+as ``hints'' on the sliders if you check the ``Show gradient'' box (see \lesson{6}).
 You can see that as you adjust the $\vtheta$ slides, these partial derivatives 
 also gradually change, eventually reaching 0 at the top of the hill, where
 $E_k=O_k$ exactly for all $k$.
@@ -589,14 +592,14 @@ of differentiation:
   &= \sum_y p(y\mid x) \cdot f_k(x,y)
 \end{align}
 
-\section{Regularizing the Parameter Estimates {\em [read with lesson 8]}}
+\section{Regularizing the Parameter Estimates {\em [read with \lesson{8}]}}
 
 Problems sometimes arise when we simply maximize the log-probability.
 Why does this happen?  Can we fix it?
 
 \subsection{Overfitting, underfitting, and the bias/variance tradeoff}
 
-You saw in lesson 8 that maximizing $F(\vtheta)$ might actually be a
+You saw in \lesson{8} that maximizing $F(\vtheta)$ might actually be a
 bad idea.  The resulting estimate of $\vtheta$ makes the {\em
   training} data very probable, but it might not generalize well to
 {\em test} data.  That is called {\bf overfitting} the training data.
@@ -623,9 +626,9 @@ log-linear model.
 
 If the log-linear model has only a few parameters, that may save us
 from overfitting---we will be unable to fit the training data too
-closely, which forces us to generalize.  You saw this in lesson 3 of
+closely, which forces us to generalize.  You saw this in \lesson{3} of
 the interactive visualization.  On the other hand, if the log-linear
-model has enough features, as in lesson 4, then you can again fit the
+model has enough features, as in \lesson{4}, then you can again fit the
 training data perfectly.  Maximizing (\ref{eqn:loglin-likelihood})
 will then get you exactly the same bad probabilities as in
 section~\ref{sec:mle}.
@@ -702,7 +705,7 @@ This has a similar effect.  See the next section for the differences.
 Notice that for any $C > 0$, regularization will always prevent
 $\theta_k$ from zooming off to $\infty$ or $-\infty$ (because that
 would make $R(\vtheta)$ infinitely bad).  Happily, this prevents us from
-estimating $p(y\mid x)=0$ as happened in lesson 8.
+estimating $p(y\mid x)=0$ as happened in \lesson{8}.
 
 \section{More Remarks on Regularization {\em [read if curious]}}
 
@@ -723,7 +726,7 @@ Optimization is relatively easy with $\ell_2$ because the regularizer
 is differentiable.  This lets you use standard optimization techniques
 that rely on the gradient (e.g., L-BFGS or stochastic gradient ascent).
 
-\paragraph{Advantage of $\ell_1$:  Sparse solutions.}  The main reason to consider $\ell_1$ instead is that it is a ``sparsity-inducing regularizer.''  As we saw in lesson 9, the optimal $\vtheta$ will tend to be a {\em sparse vector} with many zero elements, especially if $C$ is large.
+\paragraph{Advantage of $\ell_1$:  Sparse solutions.}  The main reason to consider $\ell_1$ instead is that it is a ``sparsity-inducing regularizer.''  As we saw in \lesson{9}, the optimal $\vtheta$ will tend to be a {\em sparse vector} with many zero elements, especially if $C$ is large.
 
 You may prefer to have many zero elements: you won't need to compute $f_k(x,y)$ at test time if $\theta_k=0$.  So this regularizer does {\bf feature selection} for you: it identifies a small set of useful features that deserve to get nonzero weights.  The resulting model may be easier for you to interpret, and is small and fast at test time.
 
