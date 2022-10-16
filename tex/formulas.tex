@@ -1,6 +1,7 @@
 \documentclass[11pt]{article}
 \usepackage[colorlinks]{hyperref}
 \usepackage[margin=1in]{geometry}
+\setlength{\parskip}{6pt}
 \usepackage[noend]{algpseudocode}
 \usepackage{enumitem}
 \usepackage{graphicx}
@@ -18,6 +19,7 @@
 \newcommand{\pdisc}{p_{\rm disc}}
 \newcommand{\Real}{{\mathbb R}}
 \newcommand{\diffk}{\frac{\partial}{\partial \theta_k}}
+\newcommand{\diffj}{\frac{\partial}{\partial \theta_j}}
 
 \newcommand{\lesson}[1]{\href{http://cs.jhu.edu/~jason/tutorials/loglin/\##1}{lesson~#1}}
 \newcommand{\Lesson}[1]{\href{http://cs.jhu.edu/~jason/tutorials/loglin/\##1}{Lesson~#1}}
@@ -555,9 +557,9 @@ training contexts $x_1,\ldots x_n$, but if the corresponding training events
 $y_1,\ldots y_n$ were respectively replaced by random draws from the
 conditional distributions $p(y \mid x_i)$.
 
-\subsection{Algorithm for maximizing the log-probability}
+\subsection{Algorithm for maximizing the log-probability}\label{sec:concave-claim}
 
-It can be shown that $F$ is a concave function, so it is like a simple hill with only one local maximum.  There are many reasonable ways to climb to the top of this hill.  One option is {\bf gradient ascent},\footnote{\label{fn:sgd}For large $N$, it is popular nowadays to use
+It can be shown that $F$ is a concave function (see appendix~\ref{app:hessian}), so it is like a simple hill with only one local maximum.  There are many reasonable ways to climb to the top of this hill.  One option is {\bf gradient ascent},\footnote{\label{fn:sgd}For large $N$, it is popular nowadays to use
   {\bf stochastic gradient ascent}, which is faster in practice because it does not have to fully evaluate the sum $F(\vtheta) = \sum_{i=1}^N \cdots$ or $\diffk F(\vtheta) = \sum_{i=1}^N \cdots$ before updating $\vtheta$.  Rather, it updates to improve each summand in turn.  \href{http://research.microsoft.com/pubs/192769/tricks-2012.pdf}{Bottou (2012)} gives a good presentation with practical advice.} a
 simple function maximization algorithm that increases $\theta_k$ at a
 rate proportional to $\diffk F(\vtheta)=O_k-E_k$, for all $k$ in parallel.
@@ -569,12 +571,12 @@ also gradually change---eventually reaching 0 at the top of the hill, where
 $E_k=O_k$ exactly for all $k$.
 
 The final value of $\vtheta$---at the top of the hill---is our estimate of the ``true'' 
-$\vtheta$ value that we have assumed to exist.  It might sometimes be
+$\vtheta$ value that we have assumed to exist.  (It might sometimes be
 denoted by $\widehat{\vtheta}$, since a ``hat'' indicates an estimate
-(as in section~\ref{sec:notation}).  (The true value would be denoted
+(as in section~\ref{sec:notation}).  The true value would be denoted
 by $\vtheta^*$.)
 
-\subsection{Details for the curious}
+\subsection{Detailed derivation for the curious}
 
 We got to (\ref{eqn:obsexp}) above by applying basic rules
 of differentiation:
@@ -589,10 +591,18 @@ of differentiation:
   &= \frac{1}{Z(x)} \sum_y \left( \exp (\vtheta \cdot \vec{f}(x,y)) \right)
   \left( \diffk (\vtheta \cdot \vec{f}(x,y)) \right) \\
   &= \frac{1}{Z(x)} \sum_y \ptilde(x,y) \cdot f_k(x,y) \\
-  &= \sum_y p(y\mid x) \cdot f_k(x,y)
+  &= \underbrace{\sum_y p(y\mid x) \cdot f_k(x,y)}_{\textit{expected value $e_k(x)$ of feature $k$ in context $x$}} \label{eqn:exp}
+\intertext{hence}
+  \diffk \log p(y \mid x) 
+  &= \diffk \log \ptilde(y \mid x) - \diffk \log Z(x) = f_k(x,y) - e_k(x) \label{eqn:obsexp-deriv}
 \end{align}
 
-\section{Regularizing the Parameter Estimates {\em [read with \lesson{8}]}}
+Equation~\eqref{eqn:obsexp} simply sums this over all training pairs $(x_i,y_i)$ to 
+find that $\diffk F(\vtheta) = \sum_i f_k(x_i,y_i) - e_k(x_i)$.  We can regard this
+as the total ``error'' in the observed features compared to what the
+model would have predicted.
+
+\section{Regularizing the Parameter Estimates {\em [read with \lesson{8}]}}\label{sec:regularization}
 
 Problems sometimes arise when we simply maximize the log-probability.
 Why does this happen?  Can we fix it?
@@ -700,14 +710,16 @@ $R(\vtheta) = \sum_i |\theta_i|$.  Then
   \diffk F(\vtheta) = \textrm{observed count of $k$} -
   \textrm{expected count of $k$} \underbrace{\mbox{}-C\cdot \textrm{sign}(\theta_k)}_{\textit{new term}}
 \end{equation}
-This has a similar effect.  See the next section for the differences.
+This has a similar effect.  See appendix~\ref{app:more-regularization} for the differences.
 
 Notice that for any $C > 0$, regularization will always prevent
 $\theta_k$ from zooming off to $\infty$ or $-\infty$ (because that
 would make $R(\vtheta)$ infinitely bad).  Happily, this prevents us from
 estimating $p(y\mid x)=0$ as happened in \lesson{8}.
 
-\section{More Remarks on Regularization {\em [read if curious]}}
+\appendix
+\clearpage
+\section{More Remarks on Regularization {\em [read if curious]}}\label{app:more-regularization}
 
 \subsection{Which regularizer to use?}
 
@@ -818,6 +830,75 @@ where $p(y \mid x,\vtheta)$ is the conditional distribution given by a log-linea
 
 This {\bf fully Bayesian} approach gives a principled solution to our feature selection dificulty from section \ref{sec:eggs}.  Suppose you have a Bayesian prior that explicitly prefers a sparse solution, for example $\exp -R(\theta)$ where $R$ is the $\ell_0+\ell_2$ regularizer.  Then the $\vtheta$ vectors that are most probable ({\em a posteriori} as well as {\em a priori}) will generally be sparse.  But since we're not sure which one is correct, we average over their predictions.  We are no longer choosing just one sparse vector from which to make our predictions; that is, we no longer put all our eggs in one basket.
 
-The fully Bayesian approach to log-linear models is the ``right way'' to use them.  Unfortunately, it is highly computationally intensive.  There is some work on it, but it is not widely used in practice.
+The fully Bayesian approach to log-linear models is the ``right way''
+to use them.  Unfortunately, it is highly computationally intensive.
+There is some work on it, but it is not widely used in practice.
+
+\section{Second derivatives  {\em [read if curious]}}\label{app:hessian}
+
+Recall equation~\eqref{eqn:obsexp-deriv}:
+$$\diffk \log p(y \mid x) = f_k(x,y) - e_k(x)$$
+
+You can differentiate this a second time to get the second derivative $\diffj
+\diffk \log p(y \mid x)$, which also turns out to have a nice form:
+\begin{align}
+  \diffj \diffk \log p(y \mid x) &= -\underbrace{\sum_{y'} p(y' \mid x) \left( f_j(x,y') - e_j(x) \right)
+                                   \cdot \left( f_k(x,y') - e_k(x)
+                                   \right)}_{\textit{covariance of
+                                   features $j$ and $k$ in context
+                                   $x$}} \label{eqn:covar}
+\end{align}
+where $e_j(x)$ and $e_k(x)$ are defined by \eqref{eqn:exp}.  Isn't that cute?
+
+Equation~\eqref{eqn:covar} is the negated covariance of $f_j(x,y')$
+and $f_k(x,y')$ when $y'$ is randomly distributed (given $x$)
+according to the model.  Note that it does not depend on $y$.
+
+The Hessian of $\log p(y \mid x)$ is therefore a negated covariance
+matrix, which means that it must be negative semidefinite.  And since
+$F(\vtheta) = \sum_i \log p(y_i \mid x_i)$, its Hessian is a sum of
+such matrices, so it is also negative semidefinite.  This proves the
+claim in section~\ref{sec:concave-claim} that $F(\vec{\theta})$ is
+concave.
+
+In fact, the Hessian of $-\frac{1}{N}F(\vtheta)$ can also be regarded
+directly as a covariance matrix, specifically the covariance matrix of
+$\vec{f}(x,y)$ when $x$ is distributed according to the dataset and
+$y$ given $x$ is distributed according to the model.
+
+% You can find more detailed presentations of this point in notes by
+% \href{http://qwone.com/~jason/writing/convexLR.pdf}{Jason Rennie} or
+% \href{http://www.cs.cmu.edu/~nasmith/papers/smith.tut04.pdf}{Noah
+% A. Smith}.
+
+\subsection{Detailed derivation for the \emph{really} curious}
+
+We can check that equation~\eqref{eqn:covar} is correct:
+\begin{align}
+ & -\sum_{y'} p(y' \mid x) \left( f_j(x,y') - e_j(x) \right) \cdot \left( f_k(x,y') - e_k(x) \right) \\
+ &= - \sum_{y'} p(y' \mid x) \underbrace{\left( f_j(x,y') - e_j(x)
+   \right)}_{\textit{see \eqref{eqn:obsexp-deriv}}} \cdot f_k(x,y')
+   \nonumber \\
+ &\quad  + \underbrace{\left( \sum_{y'} p(y' \mid x) \left( f_j(x,y') - e_j(x) \right) \right)}_{\textit{$= 0$ by definition of $e_j(x)$}} \cdot e_k(x) \label{eqn:zeroexp}\\
+ &= - \sum_{y'} p(y' \mid x) \underbrace{\left( \diffj \log p(y' \mid
+   x) \right)}_{\textit{differentiate by chain rule}} \cdot f_k(x,y')
+   = - \sum_{y'} p(y' \mid x) \frac{1}{p(y' \mid x)} \diffj p(y' \mid
+   x) \cdot f_k(x,y') 
+   \raisetag{12pt} \label{eqn:logderivative} \\
+ &= - \sum_{y'} \left( \diffj p(y' \mid x) \right) \cdot f_k(x,y') \text{ where each $f_k(x,y')$ is a constant}\\
+ &= - \diffj \underbrace{\sum_{y'} \left( p(y' \mid x) \cdot
+   f_k(x,y'))}_{\textit{see \eqref{eqn:exp}}} \text{ i.e., the derivative of a linear combination} \\
+ &= - \diffj e_k(x) 
+   \quad = \diffj\underbrace{(f_k(x,y) - e_k(x))}_{\textit{see
+   \eqref{eqn:obsexp-deriv} again}} \text{ for any $y$, since $f_k(x,y)$ is a constant} \\
+ &= \diffj \diffk \log p(y \mid x) 
+\end{align}
+
+Step~\eqref{eqn:zeroexp} notes that the difference of $f_j$
+from its expectation is 0 on average---that's in the nature of an
+expectation.  You could write this out formally
+as $\sum_{y'} p(y' \mid x) \left( f_j(x,y') - e_j(x) \right) =
+\left( \sum_{y'} p(y' \mid x) f_j(x,y') \right) - \left( \sum_{y'}
+  p(y' \mid x) \right) \cdot e_j(x) = e_j(x) - 1 \cdot e_j(x) = 0$.
 
 \end{document}
