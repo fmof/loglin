@@ -25,6 +25,9 @@
 \newcommand{\lesson}[1]{\href{http://cs.jhu.edu/~jason/tutorials/loglin/\##1}{lesson~#1}}
 \newcommand{\Lesson}[1]{\href{http://cs.jhu.edu/~jason/tutorials/loglin/\##1}{Lesson~#1}}
 
+\usepackage[noabbrev]{cleveref} 
+\newcommand{\crefrangeconjunction}{--}
+
 \begin{document}
 \title{\vspace{-2.3cm}Log-Linear Models}
 \author{Jason Eisner (Johns Hopkins University)}
@@ -80,7 +83,7 @@ why we built the visualization and what we hope you'll get out of it.
 The four shape probabilities in \lesson{1} are computed as follows,
 where $\theta_{\textrm{circle}}$ and $\theta_{\textrm{solid}}$ are the
 two parameters that you can control with the sliders.  (We'll see later
-in section \ref{sec:loglin} that these formulas are examples of a more
+in \cref{sec:loglin} that these formulas are examples of a more
 general pattern, but don't worry about that yet.)
 
 % Note: My typesetting with \hspace here is awfully hacky.
@@ -129,9 +132,8 @@ natural logarithms).\footnote{If $y=e^x$, then $x=\log y$.  That's the
   p(\text{solid circle}) + p(\text{striped circle}) + p(\text{solid circle}) + p(\text{striped triangle}) = 1
 \end{equation}
 Hence, when raising $\theta_{\textrm{solid}}$ makes the solid
-probabilities \eqref{eqn:solidcircle} and \eqref{eqn:solidtriangle} go
-up, the striped probabilities \eqref{eqn:stripedcircle} and
-\eqref{eqn:stripedtriangle} must go down to compensate.
+probabilities \labelcref{eqn:solidcircle,eqn:solidtriangle} go
+up, the striped probabilities \labelcref{eqn:stripedcircle,eqn:stripedtriangle} must go down to compensate.
 This keeps the sum at 1.  Lowering $\theta_{\textrm{solid}}$ does the reverse.
 
 \subsection{Formulas for \lesson{2}}
@@ -156,7 +158,7 @@ case of conditional probabilities $p(y\mid x)$.  But this handout will
 {\em focus} on conditional probabilities, mainly in order to avoid saying
 everything twice.  If you want to think first about the case of simple
 probabilities, just ignore $x$ wherever it appears; also see
-section~\ref{sec:unconditioned}.
+\cref{sec:unconditioned}.
 
 \subsection{Modeling probabilities}
 
@@ -309,10 +311,10 @@ with sliders in the interactive visualization.
 
 \medskip
 The unnormalized probabilities $\ptilde(x,y)$ are always positive (because
-of the $\exp$).  Equation~(\ref{eqn:loglin}) has to scale them, in
+of the $\exp$).  \Cref{eqn:loglin} has to scale them, in
 order to get proper probabilities that sum to 1 (i.e., $\sum_y
 p(y\mid x) = 1$ for each $x$).  As you can see in
-(\ref{eqn:loglin}), this is a simple matter of dividing them by a {\bf
+\eqref{eqn:loglin}, this is a simple matter of dividing them by a {\bf
   normalizing constant}, namely
 
 \vspace{-16pt}
@@ -327,7 +329,7 @@ p(x)$.  We did not have to commit to any model of $p(x)$.
 \subsection{Feature weights}
 
 You can easily see that for any choice of $\vtheta$ and any $x$,
-equation~(\ref{eqn:loglin}) gives a genuine probability distribution
+\cref{eqn:loglin} gives a genuine probability distribution
 over the events $y$ that could occur in context $x$.  You can also see
 now why the model is ``log-linear''---for each context $x$, the
 log-probability is a linear function of the feature vector:
@@ -379,7 +381,7 @@ For example, in the first two lessons, \eqref{eqn:unconditioned} is
 used to define two probability models over the four shapes
 $y \in {\cal Y} = \{\text{solid circle}, \text{striped circle},
 \text{solid triangle}, \text{striped triangle}\}$.
-Look back at section~\ref{sec:concrete} of this
+Look back at \cref{sec:concrete} of this
 handout to see the concrete formulas for the probabilities of the 4
 shapes, which sum to 1.
 
@@ -397,7 +399,7 @@ solid triangle.
 In practical settings, the outcome $y$ and the context $x$ are
 characterized by their {\em attributes} (or {\em properties}).  Each
 feature's value is then computed from one or more of these attributes.
-$f_4$ and $f_5$ from section~\ref{sec:featfuncs} would be defined more
+$f_4$ and $f_5$ from \cref{sec:featfuncs} would be defined more
 formally as
 \begin{align}
 f_4(x,y) & \defeq (\textsc{fill}(y)=\text{striped}) \wedge (\textsc{shape}(y)=\text{square})
@@ -425,7 +427,7 @@ $K$ real numbers.
 However, it is often more convenient to refer to the features by names
 instead of numbers.  The names can be strings or other objects that
 describe the feature.  For example, in the table from
-section~\ref{sec:featfuncs}, the first feature function might be
+\cref{sec:featfuncs}, the first feature function might be
 called $f_{\sf circle}$ instead of $f_1$, with corresponding weight
 $\theta_{\textsf{circle}}$ instead of $\theta_1$.  Then the weight vector
 $\vtheta$ can be implemented as a hash table instead of an array.  It
@@ -445,7 +447,7 @@ sum includes just one of the weights $\theta_{\textsf{circle}},
 \theta_{\textsf{square}}, \ldots$.
 
 \medskip
-In our example from section~\ref{sec:featfuncs}, $\vtheta \cdot \vec{f}(x,y)$ could be efficiently
+In our example from \cref{sec:featfuncs}, $\vtheta \cdot \vec{f}(x,y)$ could be efficiently
 computed as
 \begin{algorithmic}
 \State $s \gets 0$\Comment{initialize sum}
@@ -486,7 +488,7 @@ one adjust it?
 
 \subsection{An intuition}
 
-It turns out that maximizing equation (\ref{eqn:loglin-likelihood}) is
+It turns out that maximizing \cref{eqn:loglin-likelihood} is
 not too hard.  Suppose your training set has $N=100$ events of which
 80 are circles (some solid, some striped).  But your current $\vtheta$
 says that circles only happen 0.7 of the time, i.e.,
@@ -512,10 +514,10 @@ then you will eventually reach a setting where $E=O$ for all features!
 
 The setting where $E=O$ for all features is actually the
 setting of $\vtheta$ that maximizes equation
-(\ref{eqn:loglin-likelihood}), or equivalently, the setting that
-maximizes the logarithm of (\ref{eqn:loglin-likelihood}):\footnote{It
+\eqref{eqn:loglin-likelihood}, or equivalently, the setting that
+maximizes the logarithm of \eqref{eqn:loglin-likelihood}:\footnote{It
   just happens that the logarithm is easier to work with
-  mathematically, because of the $\exp$ in (\ref{eqn:unnorm}).  But
+  mathematically, because of the $\exp$ in \eqref{eqn:unnorm}.  But
   why is it equivalent to maximize the logarithm?  Because $p_1 > p_2$
   if and only if $\log p_1 > \log p_2$.  That is, $\log p$ is
   an increasing function of $p$ (look at the graph of the $\log$ function).%
@@ -550,8 +552,8 @@ $\theta_k$, and hence $E_k=O_k$ for each feature $k$.
 \medskip
 {\bf Clarification:} So far in the online toy, you have only been
 modeling $p(y)$.  However, soon you'll try $p(y\mid x)$ as
-defined in section~\ref{sec:formula}.  What does ``expected count'' mean in this
-setting?  (\ref{eqn:obsexp}) defined it as $\sum_{i=1}^N \sum_y
+defined in \cref{sec:formula}.  What does ``expected count'' mean in this
+setting?  \eqref{eqn:obsexp} defined it as $\sum_{i=1}^N \sum_y
 p(y\mid x_i) f_k(x_i,y)$.  This counts how many times $f_k$ would
 have fired on average if we had still observed exactly the same
 training contexts $x_1,\ldots x_n$, but if the corresponding training events
@@ -560,7 +562,7 @@ conditional distributions $p(y \mid x_i)$.
 
 \subsection{Algorithm for maximizing the log-probability}\label{sec:concave-claim}
 
-It can be shown that $F$ is a concave function (see Appendix~\ref{app:hessian}), so it is like a simple hill with only one local maximum.  There are many reasonable ways to climb to the top of this hill.  One option is {\bf gradient ascent},\footnote{\label{fn:sgd}For large $N$, it is popular nowadays to use
+It can be shown that $F$ is a concave function (see \cref{app:hessian}), so it is like a simple hill with only one local maximum.  There are many reasonable ways to climb to the top of this hill.  One option is {\bf gradient ascent},\footnote{\label{fn:sgd}For large $N$, it is popular nowadays to use
   {\bf stochastic gradient ascent}, which is faster in practice because it does not have to fully evaluate the sum $F(\vtheta) = \sum_{i=1}^N \cdots$ or $\diffk F(\vtheta) = \sum_{i=1}^N \cdots$ before updating $\vtheta$.  Rather, it updates to improve each summand in turn.  \href{http://research.microsoft.com/pubs/192769/tricks-2012.pdf}{Bottou (2012)} gives a good presentation with practical advice.} a
 simple function maximization algorithm that increases $\theta_k$ at a
 rate proportional to $\diffk F(\vtheta)=O_k-E_k$, for all $k$ in parallel.
@@ -574,12 +576,12 @@ $E_k=O_k$ exactly for all $k$.
 The final value of $\vtheta$---at the top of the hill---is our estimate of the ``true'' 
 $\vtheta$ value that we have assumed to exist.  (It might sometimes be
 denoted by $\widehat{\vtheta}$, since a ``hat'' indicates an estimate
-(as in section~\ref{sec:notation}).  The true value would be denoted
+(as in \cref{sec:notation}).  The true value would be denoted
 by $\vtheta^*$.)
 
 \subsection{Detailed derivation for the curious}\label{sec:bias-claim}
 
-We got to (\ref{eqn:obsexp}) above by applying basic rules
+We got to \eqref{eqn:obsexp} above by applying basic rules
 of differentiation:
 \begin{align}
   \diffk \log \ptilde(y \mid x)
@@ -598,10 +600,10 @@ of differentiation:
   &= \diffk \log \ptilde(y \mid x) - \diffk \log Z(x) = f_k(x,y) - e_k(x) \label{eqn:obsexp-deriv}
 \end{align}
 
-Equation~\eqref{eqn:obsexp} simply sums this over all training pairs $(x_i,y_i)$ to 
+\Cref{eqn:obsexp} simply sums this over all training pairs $(x_i,y_i)$ to 
 find that $\diffk F(\vtheta) = \sum_i f_k(x_i,y_i) - e_k(x_i)$.
 
-\emph{Cool remark:} The function $-\frac{1}{N} F(\vtheta)$ gives the average surprisal of a training example.  Differentiating with respect to $\theta_k$, we get $\mean_i e_k(x_i) - f_k(x_i,y_i)$.  This can be regarded as the model's \emph{bias}---its average error in predicting feature $k$ when using the current parameters.  And Appendix~\ref{app:hessian} shows that differentiating twice with respect to $\theta_j$ and $\theta_k$, we get the \emph{covariance} of the model's predictions of features $j$ and $k$!
+\emph{Cool remark:} The function $-\frac{1}{N} F(\vtheta)$ gives the average surprisal of a training example.  Differentiating with respect to $\theta_k$, we get $\mean_i e_k(x_i) - f_k(x_i,y_i)$ (easy to see from the above).  This can be regarded as the model's \emph{bias}---its average error in predicting feature $k$ when using the current parameters.  And \cref{app:hessian} shows that differentiating twice with respect to $\theta_j$ and $\theta_k$, we get the \emph{covariance} of the model's predictions of features $j$ and $k$!
 
 \section{Regularizing the Parameter Estimates {\em [read with \lesson{8}]}}\label{sec:regularization}
 
@@ -616,20 +618,20 @@ bad idea.  The resulting estimate of $\vtheta$ makes the {\em
 {\em test} data.  That is called {\bf overfitting} the training data.
 
 In fact, there is a close connection to the bad unsmoothed estimates
-of section~\ref{sec:mle}, which also overfitted.  Both cases use {\bf
+of \cref{sec:mle}, which also overfitted.  Both cases use {\bf
   maximum-likelihood estimates}---that is, they model the training
 data as well as they can, using the available
 parameters.\footnote{Technically, the {\bf likelihood} of the
   parameter vector $\vtheta$ is defined by
-  (\ref{eqn:loglin-likelihood}), which says how probable the training
+  \eqref{eqn:loglin-likelihood}, which says how probable the training
   data would be if we used {\em that} $\vtheta$.  We have been finding
   the {\bf maximum-likelihood} estimate of $\vtheta$ by maximizing the
-  likelihood (\ref{eqn:loglin-likelihood}) or equivalently the
-  log-likelihood (\ref{eqn:loglin-log-likelihood}).}
+  likelihood \eqref{eqn:loglin-likelihood} or equivalently the
+  log-likelihood \eqref{eqn:loglin-log-likelihood}.}
 
 \subsection{How many parameters?}
 
-What are the available parameters?  In section~\ref{sec:mle} we were
+What are the available parameters?  In \cref{sec:mle} we were
 able to choose the probabilities individually, so we could model the
 training data perfectly (a bad idea!).  But now we can only manipulate
 the probabilities indirectly through the $\vtheta$ parameters of our
@@ -640,9 +642,9 @@ from overfitting---we will be unable to fit the training data too
 closely, which forces us to generalize.  You saw this in \lesson{3} of
 the interactive visualization.  On the other hand, if the log-linear
 model has enough features, as in \lesson{4}, then you can again fit the
-training data perfectly.  Maximizing (\ref{eqn:loglin-likelihood})
+training data perfectly.  Maximizing \eqref{eqn:loglin-likelihood}
 will then get you exactly the same bad probabilities as in
-section~\ref{sec:mle}.
+\cref{sec:mle}.
 
 So perhaps we should simply build a simple log-linear model with few
 parameters.  But wait \ldots do we really want to break our good model
@@ -677,7 +679,7 @@ effect.  So the regularization principle is ``All weights should stay
 close to 0, except where really needed to model the data.''
 
 So instead of maximizing the log-likelihood
-(\ref{eqn:loglin-log-likelihood}), let's maximize the
+\eqref{eqn:loglin-log-likelihood}, let's maximize the
 {\bf regularized log-likelihood},
 \begin{equation}\label{eqn:loglin-regularized}
   F(\vtheta) = \left( \sum_{i=1}^N \log p(y_i \mid x_i) \right) - C\cdot R(\vtheta)
@@ -711,14 +713,14 @@ $R(\vtheta) = \sum_i |\theta_i|$.  Then
   \diffk F(\vtheta) = \textrm{observed count of $k$} -
   \textrm{expected count of $k$} \underbrace{\mbox{}-C\cdot \textrm{sign}(\theta_k)}_{\textit{new term}}
 \end{equation}
-This has a similar effect.  See Appendix~\ref{app:more-regularization} for the differences.
+This has a similar effect.  See \cref{app:more-regularization} for the differences.
 
 Notice that for any $C > 0$, regularization will always prevent
 $\theta_k$ from zooming off to $\infty$ or $-\infty$ (because that
 would make $R(\vtheta)$ infinitely bad).  Happily, this prevents us from
 estimating $p(y\mid x)=0$ as happened in \lesson{8}.
 
-With either $\ell_2$ or $\ell_1$, the function $F(\vtheta)$ in \eqref{eqn:loglin-regularized} is concave---in fact strictly concave.\footnote{Why? Because $F(\vtheta)$ is a sum of concave functions.  We noted earlier that log-likelihood is a concave function (see Appendix~\ref{sec:hessian} for a proof).  The regularizer $R(\vtheta)$, it is a strictly convex function, which becomes strictly concave when we ``turn it upside down'' by multiplying it by $-C < 0$.  Their sum is therefore strictly concave.} So it has a single global maximum that can be found efficiently by greedily climbing the hill.
+With either $\ell_2$ or $\ell_1$, the function $F(\vtheta)$ in \eqref{eqn:loglin-regularized} is concave---in fact strictly concave.\footnote{Why? Because $F(\vtheta)$ is a sum of concave functions.  We noted earlier that log-likelihood is a concave function (see \cref{app:hessian} for a proof).  The regularizer $R(\vtheta)$, it is a strictly convex function, which becomes strictly concave when we ``turn it upside down'' by multiplying it by $-C < 0$.  Their sum is therefore strictly concave.} So it has a single global maximum that can be found efficiently by greedily climbing the hill.
 
 \appendix
 \clearpage
@@ -757,7 +759,7 @@ An $\ell_2$ regularizer does {\em not} promote sparsity.  If $\theta_k=0$, we ca
 
 \paragraph{Computational disadvantage of $\ell_1$: More complicated optimization.}
 We already mentioned that with either $\ell_2$ or $\ell_1$, the objective function is concave.
-However, with $\ell_1$, it is somewhat harder to perform the maximization.  The practical difficulty is that $F(\vtheta)$ (dashed red line) is non-differentiable, so methods like gradient ascent and L-BFGS no longer work.\footnote{The simplest approach is the {\bf subgradient method}.  However, this is not very good at achieving sparsity: even when the optimum $\vtheta$ is sparse, so that some elements of $\vtheta$ will converge to 0 {\em in the limit}, these elements may never hit 0 exactly {\em in finite time}.  A popular approach that fixes this is the {\bf proximal gradient} algorithm, which is explained along with other approaches in the monograph of \href{http://www.di.ens.fr/~fbach/bach_jenatton_mairal_obozinski_FOT.pdf}{Bach et al. (2012)}.  {\bf Stochastic gradient ascent} (footnote \ref{fn:sgd}) can also be adapted to this setting, as explained by \href{http://www.aclweb.org/anthology/P09-1054}{Tsuruoka et al. (2009)} and \href{http://www.jmlr.org/papers/volume12/shalev-shwartz11a/shalev-shwartz11a.pdf}{Shalev-Shwartz and Tewari (2011)}.}
+However, with $\ell_1$, it is somewhat harder to perform the maximization.  The practical difficulty is that $F(\vtheta)$ (dashed red line) is non-differentiable, so methods like gradient ascent and L-BFGS no longer work.\footnote{The simplest approach is the {\bf subgradient method}.  However, this is not very good at achieving sparsity: even when the optimum $\vtheta$ is sparse, so that some elements of $\vtheta$ will converge to 0 {\em in the limit}, these elements may never hit 0 exactly {\em in finite time}.  A popular approach that fixes this is the {\bf proximal gradient} algorithm, which is explained along with other approaches in the monograph of \href{http://www.di.ens.fr/~fbach/bach_jenatton_mairal_obozinski_FOT.pdf}{Bach et al. (2012)}.  {\bf Stochastic gradient ascent} (\cref{fn:sgd}) can also be adapted to this setting, as explained by \href{http://www.aclweb.org/anthology/P09-1054}{Tsuruoka et al. (2009)} and \href{http://www.jmlr.org/papers/volume12/shalev-shwartz11a/shalev-shwartz11a.pdf}{Shalev-Shwartz and Tewari (2011)}.}
 
 \paragraph{Statistical disadvantage of $\ell_1$ (and of sparsity in general): Forced choices.}\label{sec:eggs}
 Consider the setting where you have two features that fire in very similar circumstances on training data: $f_1(x,y) \approx f_2(x,y)$.  In that case, which feature should get
@@ -803,7 +805,7 @@ Bayes' Theorem, $p(\vtheta \mid \textrm{data})$ is proportional to
 \underbrace{p(\textrm{data} \mid \vtheta)}_{\textit{likelihood}} \cdot \underbrace{p(\vtheta)}_{\textit{prior}}
 \end{equation}
 And maximizing the log of this is precisely the same as maximizing
-(\ref{eqn:loglin-regularized}), provided that we define $p(\vtheta)$
+\eqref{eqn:loglin-regularized}, provided that we define $p(\vtheta)$
 to be proportional to $\exp -R(\vtheta)$.  In other words, our prior
 distribution says that if $R(\vtheta)$ is large then $\vtheta$ has low
 probability.  From this point of view, $\ell_2$ regularization
@@ -832,7 +834,7 @@ MAP estimation as in the previous section is sometimes called {\bf empirical Bay
 \end{align}
 where $p(y \mid x,\vtheta)$ is the conditional distribution given by a log-linear model with parameters $\vtheta$.
 
-This {\bf fully Bayesian} approach gives a principled solution to our feature selection dificulty from section \ref{sec:eggs}.  Suppose you have a Bayesian prior that explicitly prefers a sparse solution, for example $\exp -R(\theta)$ where $R$ is the $\ell_0+\ell_2$ regularizer.  Then the $\vtheta$ vectors that are most probable ({\em a posteriori} as well as {\em a priori}) will generally be sparse.  But since we're not sure which one is correct, we average over their predictions.  We are no longer choosing just one sparse vector from which to make our predictions; that is, we no longer put all our eggs in one basket.
+This {\bf fully Bayesian} approach gives a principled solution to our feature selection dificulty from \cref{sec:eggs}.  Suppose you have a Bayesian prior that explicitly prefers a sparse solution, for example $\exp -R(\theta)$ where $R$ is the $\ell_0+\ell_2$ regularizer.  Then the $\vtheta$ vectors that are most probable ({\em a posteriori} as well as {\em a priori}) will generally be sparse.  But since we're not sure which one is correct, we average over their predictions.  We are no longer choosing just one sparse vector from which to make our predictions; that is, we no longer put all our eggs in one basket.
 
 The fully Bayesian approach to log-linear models is the ``right way''
 to use them.  Unfortunately, it is highly computationally intensive.
@@ -840,7 +842,7 @@ There is some work on it, but it is not widely used in practice.
 
 \section{Second derivatives  {\em [read if curious]}}\label{app:hessian}
 
-Recall equation~\eqref{eqn:obsexp-deriv}:
+Recall \cref{eqn:obsexp-deriv}:
 $$\diffk \log p(y \mid x) = f_k(x,y) - e_k(x)$$
 
 You can differentiate this a second time to get the second derivative $\diffj
@@ -854,7 +856,7 @@ You can differentiate this a second time to get the second derivative $\diffj
 \end{align}
 where $e_j(x)$ and $e_k(x)$ are defined by \eqref{eqn:exp}.  Isn't that cute?
 
-Equation~\eqref{eqn:covar} is the negated covariance of $f_j(x,y')$
+\Cref{eqn:covar} is the negated covariance of $f_j(x,y')$
 and $f_k(x,y')$ when $y'$ is randomly distributed (given $x$)
 according to the model.  Note that it does not depend on $y$.
 
@@ -862,7 +864,7 @@ The Hessian of $\log p(y \mid x)$ is therefore a negated covariance
 matrix, which means that it must be negative semidefinite.  And since
 $F(\vtheta) = \sum_i \log p(y_i \mid x_i)$, its Hessian is a sum of
 such matrices, so it is also negative semidefinite.  This proves the
-claim in section~\ref{sec:concave-claim} that $F(\vec{\theta})$ is
+claim in \cref{sec:concave-claim} that $F(\vec{\theta})$ is
 concave.
 
 Alternatively, the Hessian of $-\frac{1}{N}F(\vtheta)$ can also be
@@ -871,14 +873,14 @@ matrix of $\vec{f}(x,y)$ when $x$ is distributed according to the
 dataset and $y$ given $x$ is distributed according to the model.  This
 means that $-\frac{1}{N}F(\vtheta)$ must be convex, again proving that
 $F(\vec{\theta})$ is concave.  (As noted in
-section~\ref{sec:bias-claim}, the function $-\frac{1}{N}F(\vtheta)$
+\cref{sec:bias-claim}, the function $-\frac{1}{N}F(\vtheta)$
 can be interpreted as ``average surprisal'' and its gradient can be
 regarded as a bias vector, which goes nicely with the observation that
 its Hessian can be regarded as a covariance matrix.)
 
 \subsection{Detailed derivation for the \emph{really} curious}
 
-We can check that equation~\eqref{eqn:covar} is correct:
+We can check that \cref{eqn:covar} is correct:
 \begin{align}
  & -\sum_{y'} p(y' \mid x) \left( f_j(x,y') - e_j(x) \right) \cdot \left( f_k(x,y') - e_k(x) \right) \\
  &= - \sum_{y'} p(y' \mid x) \underbrace{\left( f_j(x,y') - e_j(x)
