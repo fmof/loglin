@@ -601,7 +601,7 @@ of differentiation:
 \end{align}
 
 \Cref{eqn:obsexp} simply sums this over all training pairs $(x_i,y_i)$ to 
-find that $\diffk F(\vtheta) = \sum_i f_k(x_i,y_i) - e_k(x_i)$.
+find that $\diffk F(\vtheta) = \sum_i f_k(x_i,y_i) - e_k(x_i) = O_k - E_k$.
 
 \emph{Cool remark:} The function $-\frac{1}{N} F(\vtheta)$ gives the average surprisal of a training example.  Differentiating with respect to $\theta_k$, we get $\mean_i e_k(x_i) - f_k(x_i,y_i)$ (easy to see from the above).  This can be regarded as the model's \emph{bias}---its average error in predicting feature $k$ when using the current parameters.  And \cref{app:hessian} shows that differentiating twice with respect to $\theta_j$ and $\theta_k$, we get the \emph{covariance} of the model's predictions of features $j$ and $k$!
 
