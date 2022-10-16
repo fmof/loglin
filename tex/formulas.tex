@@ -865,18 +865,16 @@ such matrices, so it is also negative semidefinite.  This proves the
 claim in section~\ref{sec:concave-claim} that $F(\vec{\theta})$ is
 concave.
 
-In fact, the Hessian of $-\frac{1}{N}F(\vtheta)$ can also be regarded
-directly as a covariance matrix, specifically the covariance matrix of
-$\vec{f}(x,y)$ when $x$ is distributed according to the dataset and
-$y$ given $x$ is distributed according to the model.  This again
-shows that $F(\vec{\theta})$ is concave.  It goes nicely with the 
-observation in section~\ref{sec:bias-claim} that the gradient of
-$-\frac{1}{N}F(\vtheta)$ can be regarded as a bias vector.
-
-% You can find more detailed presentations of this point in notes by
-% \href{http://qwone.com/~jason/writing/convexLR.pdf}{Jason Rennie} or
-% \href{http://www.cs.cmu.edu/~nasmith/papers/smith.tut04.pdf}{Noah
-% A. Smith}.
+Alternatively, the Hessian of $-\frac{1}{N}F(\vtheta)$ can also be
+regarded directly as a covariance matrix, specifically the covariance
+matrix of $\vec{f}(x,y)$ when $x$ is distributed according to the
+dataset and $y$ given $x$ is distributed according to the model.  This
+means that $-\frac{1}{N}F(\vtheta)$ must be convex, again proving that
+$F(\vec{\theta})$ is concave.  As noted in
+section~\ref{sec:bias-claim}, the function $-\frac{1}{N}F(\vtheta)$
+can be interpreted as ``average surprisal'' and its gradient can be
+regarded as a bias vector, which goes nicely with the observation that
+its Hessian can be regarded as a covariance matrix.
 
 \subsection{Detailed derivation for the \emph{really} curious}
 
@@ -907,5 +905,10 @@ expectation.  You could write this out formally
 as $\sum_{y'} p(y' \mid x) \left( f_j(x,y') - e_j(x) \right) =
 \left( \sum_{y'} p(y' \mid x) f_j(x,y') \right) - \left( \sum_{y'}
   p(y' \mid x) \right) \cdot e_j(x) = e_j(x) - 1 \cdot e_j(x) = 0$.
+
+% Alternative treatments are in notes by
+% \href{http://qwone.com/~jason/writing/convexLR.pdf}{Jason Rennie} or
+% \href{http://www.cs.cmu.edu/~nasmith/papers/smith.tut04.pdf}{Noah
+% A. Smith}.
 
 \end{document}
