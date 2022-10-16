@@ -576,7 +576,7 @@ denoted by $\widehat{\vtheta}$, since a ``hat'' indicates an estimate
 (as in section~\ref{sec:notation}).  The true value would be denoted
 by $\vtheta^*$.)
 
-\subsection{Detailed derivation for the curious}
+\subsection{Detailed derivation for the curious}\label{sec:bias-claim}
 
 We got to (\ref{eqn:obsexp}) above by applying basic rules
 of differentiation:
@@ -598,9 +598,9 @@ of differentiation:
 \end{align}
 
 Equation~\eqref{eqn:obsexp} simply sums this over all training pairs $(x_i,y_i)$ to 
-find that $\diffk F(\vtheta) = \sum_i f_k(x_i,y_i) - e_k(x_i)$.  We can regard this
-as the total ``error'' in the observed features compared to what the
-model would have predicted.
+find that $\diffk F(\vtheta) = \sum_i f_k(x_i,y_i) - e_k(x_i)$.  Thus, 
+$-\frac{1}{N} \diffk F(\vtheta)$ can be regarded as the model's \emph{bias}---its
+average error in predicting feature $k$ with the current parameters.\footnote{And appendix~\ref{app:hessian} shows that $-\frac{1}{N} \diffj \diffk F(\vtheta)$ gives the \emph{covariance} of the model's predictions of features $j$ and $k$!}
 
 \section{Regularizing the Parameter Estimates {\em [read with \lesson{8}]}}\label{sec:regularization}
 
@@ -864,7 +864,10 @@ concave.
 In fact, the Hessian of $-\frac{1}{N}F(\vtheta)$ can also be regarded
 directly as a covariance matrix, specifically the covariance matrix of
 $\vec{f}(x,y)$ when $x$ is distributed according to the dataset and
-$y$ given $x$ is distributed according to the model.
+$y$ given $x$ is distributed according to the model.  This again
+shows that $F(\vec{\theta})$ is concave.  It goes nicely with the 
+observation in section~\ref{sec:bias-claim} that the gradient of
+$-\frac{1}{N}F(\vtheta)$ can be regarded as a bias vector.
 
 % You can find more detailed presentations of this point in notes by
 % \href{http://qwone.com/~jason/writing/convexLR.pdf}{Jason Rennie} or
@@ -887,7 +890,7 @@ We can check that equation~\eqref{eqn:covar} is correct:
    \raisetag{12pt} \label{eqn:logderivative} \\
  &= - \sum_{y'} \left( \diffj p(y' \mid x) \right) \cdot f_k(x,y') \text{ where each $f_k(x,y')$ is a constant}\\
  &= - \diffj \underbrace{\sum_{y'} \left( p(y' \mid x) \cdot
-   f_k(x,y'))}_{\textit{see \eqref{eqn:exp}}} \text{ i.e., the derivative of a linear combination} \\
+   f_k(x,y')) \right)}_{\textit{see \eqref{eqn:exp}}} \text{ i.e., the derivative of a linear combination} \\
  &= - \diffj e_k(x) 
    \quad = \diffj\underbrace{(f_k(x,y) - e_k(x))}_{\textit{see
    \eqref{eqn:obsexp-deriv} again}} \text{ for any $y$, since $f_k(x,y)$ is a constant} \\
