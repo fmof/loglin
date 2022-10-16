@@ -559,7 +559,7 @@ conditional distributions $p(y \mid x_i)$.
 
 \subsection{Algorithm for maximizing the log-probability}\label{sec:concave-claim}
 
-It can be shown that $F$ is a concave function (see appendix~\ref{app:hessian}), so it is like a simple hill with only one local maximum.  There are many reasonable ways to climb to the top of this hill.  One option is {\bf gradient ascent},\footnote{\label{fn:sgd}For large $N$, it is popular nowadays to use
+It can be shown that $F$ is a concave function (see Appendix~\ref{app:hessian}), so it is like a simple hill with only one local maximum.  There are many reasonable ways to climb to the top of this hill.  One option is {\bf gradient ascent},\footnote{\label{fn:sgd}For large $N$, it is popular nowadays to use
   {\bf stochastic gradient ascent}, which is faster in practice because it does not have to fully evaluate the sum $F(\vtheta) = \sum_{i=1}^N \cdots$ or $\diffk F(\vtheta) = \sum_{i=1}^N \cdots$ before updating $\vtheta$.  Rather, it updates to improve each summand in turn.  \href{http://research.microsoft.com/pubs/192769/tricks-2012.pdf}{Bottou (2012)} gives a good presentation with practical advice.} a
 simple function maximization algorithm that increases $\theta_k$ at a
 rate proportional to $\diffk F(\vtheta)=O_k-E_k$, for all $k$ in parallel.
@@ -600,7 +600,7 @@ of differentiation:
 Equation~\eqref{eqn:obsexp} simply sums this over all training pairs $(x_i,y_i)$ to 
 find that $\diffk F(\vtheta) = \sum_i f_k(x_i,y_i) - e_k(x_i)$.  Converting this sum to an average, 
 and negating, $-\frac{1}{N} \diffk F(\vtheta)$ can be regarded as the model's \emph{bias}---its
-average error in predicting feature $k$ when using the current parameters.\footnote{And appendix~\ref{app:hessian} shows that $-\frac{1}{N} \diffj \diffk F(\vtheta)$ gives the \emph{covariance} of the model's predictions of features $j$ and $k$!}
+average error in predicting feature $k$ when using the current parameters.\footnote{And Appendix~\ref{app:hessian} shows that $-\frac{1}{N} \diffj \diffk F(\vtheta)$ gives the \emph{covariance} of the model's predictions of features $j$ and $k$!}
 
 \section{Regularizing the Parameter Estimates {\em [read with \lesson{8}]}}\label{sec:regularization}
 
@@ -710,12 +710,14 @@ $R(\vtheta) = \sum_i |\theta_i|$.  Then
   \diffk F(\vtheta) = \textrm{observed count of $k$} -
   \textrm{expected count of $k$} \underbrace{\mbox{}-C\cdot \textrm{sign}(\theta_k)}_{\textit{new term}}
 \end{equation}
-This has a similar effect.  See appendix~\ref{app:more-regularization} for the differences.
+This has a similar effect.  See Appendix~\ref{app:more-regularization} for the differences.
 
 Notice that for any $C > 0$, regularization will always prevent
 $\theta_k$ from zooming off to $\infty$ or $-\infty$ (because that
 would make $R(\vtheta)$ infinitely bad).  Happily, this prevents us from
 estimating $p(y\mid x)=0$ as happened in \lesson{8}.
+
+With either $\ell_2$ or $\ell_1$, the function $F(\vtheta)$ in \eqref{eqn:loglin-regularized} is concave---in fact strictly concave.\footnote{Why? Because $F(\vtheta)$ is a sum of concave functions.  We noted earlier that log-likelihood is a concave function (see Appendix~\ref{sec:hessian} for a proof).  The regularizer $R(\vtheta)$, it is a strictly convex function, which becomes strictly concave when we ``turn it upside down'' by multiplying it by $-C < 0$.  Their sum is therefore strictly concave.} So it has a single global maximum that can be found efficiently by greedily climbing the hill.
 
 \appendix
 \clearpage
@@ -753,7 +755,8 @@ In general, moving $\theta_k$ away from 0 {\em in either direction} will increas
 An $\ell_2$ regularizer does {\em not} promote sparsity.  If $\theta_k=0$, we can again increase log-likelihood (blue curve) by decreasing $\theta_k$---but this time, we may as well do so, since the regularizer (green curve) has a flat derivative at $\theta_k=0$ and so will suffer only negligible harm if we move a tiny bit leftward.  Notice that the total function $F(\theta)$ (dashed green curve) is differentiable and happens to have its maximum at $\theta_k < 0$. Once we use $\ell_2$, there is nothing very special about 0 anymore---it would be surprising if the maximum were achieved at $\theta_k=0$ exactly.
 
 \paragraph{Computational disadvantage of $\ell_1$: More complicated optimization.}
-With either $\ell_2$ or $\ell_1$, the function $F(\vtheta)$ in \eqref{eqn:loglin-regularized} is concave,\footnote{Why?  $F(\vtheta)$ is a sum of concave functions, which is always concave.  We noted before that log-likelihood is a concave function.  As for the regularizer $R(\vtheta)$, it is a convex function, which becomes concave when we ``turn it upside down'' by multiplying it by $-C < 0$.} so it has a single global maximum that can be found efficiently by greedily climbing the hill.  However, with $\ell_1$, it is somewhat harder to perform the maximization.  The practical difficulty is that $F(\vtheta)$ (dashed red line) is non-differentiable, so methods like gradient ascent and L-BFGS no longer work.\footnote{The simplest approach is the {\bf subgradient method}.  However, this is not very good at achieving sparsity: even when the optimum $\vtheta$ is sparse, so that some elements of $\vtheta$ will converge to 0 {\em in the limit}, these elements may never hit 0 exactly {\em in finite time}.  A popular approach that fixes this is the {\bf proximal gradient} algorithm, which is explained along with other approaches in the monograph of \href{http://www.di.ens.fr/~fbach/bach_jenatton_mairal_obozinski_FOT.pdf}{Bach et al. (2012)}.  {\bf Stochastic gradient ascent} (footnote \ref{fn:sgd}) can also be adapted to this setting, as explained by \href{http://www.aclweb.org/anthology/P09-1054}{Tsuruoka et al. (2009)} and \href{http://www.jmlr.org/papers/volume12/shalev-shwartz11a/shalev-shwartz11a.pdf}{Shalev-Shwartz and Tewari (2011)}.}
+We already mentioned that with either $\ell_2$ or $\ell_1$, the objective function is concave.
+However, with $\ell_1$, it is somewhat harder to perform the maximization.  The practical difficulty is that $F(\vtheta)$ (dashed red line) is non-differentiable, so methods like gradient ascent and L-BFGS no longer work.\footnote{The simplest approach is the {\bf subgradient method}.  However, this is not very good at achieving sparsity: even when the optimum $\vtheta$ is sparse, so that some elements of $\vtheta$ will converge to 0 {\em in the limit}, these elements may never hit 0 exactly {\em in finite time}.  A popular approach that fixes this is the {\bf proximal gradient} algorithm, which is explained along with other approaches in the monograph of \href{http://www.di.ens.fr/~fbach/bach_jenatton_mairal_obozinski_FOT.pdf}{Bach et al. (2012)}.  {\bf Stochastic gradient ascent} (footnote \ref{fn:sgd}) can also be adapted to this setting, as explained by \href{http://www.aclweb.org/anthology/P09-1054}{Tsuruoka et al. (2009)} and \href{http://www.jmlr.org/papers/volume12/shalev-shwartz11a/shalev-shwartz11a.pdf}{Shalev-Shwartz and Tewari (2011)}.}
 
 \paragraph{Statistical disadvantage of $\ell_1$ (and of sparsity in general): Forced choices.}\label{sec:eggs}
 Consider the setting where you have two features that fire in very similar circumstances on training data: $f_1(x,y) \approx f_2(x,y)$.  In that case, which feature should get
