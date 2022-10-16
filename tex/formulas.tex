@@ -9,6 +9,7 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{mathtools}
+\DeclareMathOperator*{\mean}{mean}
 \usepackage{xspace}
 \usepackage{tcolorbox}
 \newcommand{\defeq}{\;\stackrel{\mbox{\tiny def}}{=}\;}
@@ -598,9 +599,9 @@ of differentiation:
 \end{align}
 
 Equation~\eqref{eqn:obsexp} simply sums this over all training pairs $(x_i,y_i)$ to 
-find that $\diffk F(\vtheta) = \sum_i f_k(x_i,y_i) - e_k(x_i)$.  Converting this sum to an average, 
-and negating, $-\frac{1}{N} \diffk F(\vtheta)$ can be regarded as the model's \emph{bias}---its
-average error in predicting feature $k$ when using the current parameters.\footnote{And Appendix~\ref{app:hessian} shows that $-\frac{1}{N} \diffj \diffk F(\vtheta)$ gives the \emph{covariance} of the model's predictions of features $j$ and $k$!}
+find that $\diffk F(\vtheta) = \sum_i f_k(x_i,y_i) - e_k(x_i)$.
+
+\emph{Cool remark:} The function $-\frac{1}{N} F(\vtheta)$ gives the average surprisal of a training example.  Differentiating with respect to $\theta_k$, we get $\mean_i e_k(x_i) - f_k(x_i,y_i)$.  This can be regarded as the model's \emph{bias}---its average error in predicting feature $k$ when using the current parameters.  And Appendix~\ref{app:hessian} shows that differentiating twice with respect to $\theta_j$ and $\theta_k$, we get the \emph{covariance} of the model's predictions of features $j$ and $k$!
 
 \section{Regularizing the Parameter Estimates {\em [read with \lesson{8}]}}\label{sec:regularization}
 
