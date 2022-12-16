@@ -540,7 +540,7 @@ with respect to the $k$ weights:
 \begin{align}
   \diffk F(\vtheta)
   &= \sum_{i=1}^N \diffk \log p(y_i \mid x_i)  \\ %   - \left( \theta_k / \sigma^2 \right)
-  &= \sum_{i=1}^N \diffk \log \ptilde(y_i \mid x_i) - \diffk \log Z(x_i) \\
+  &= \sum_{i=1}^N \diffk \log \ptilde(x_i, y_i) - \diffk \log Z(x_i) \\
   & \hspace{1in}\vdots \nonumber \\
   &= \underbrace{\left( \sum_{i=1}^N f_k(x_i,y_i) \right)}_{\textit{observed count $O_k$ of feature $k$}}
   - \underbrace{\left( \sum_{i=1}^N \sum_y p(y\mid x_i) f_k(x_i,y) \right)}_{\textit{expected count $E_k$ of feature $k$}} \label{eqn:obsexp}
