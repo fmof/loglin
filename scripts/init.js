@@ -419,7 +419,7 @@ window.onload = function(){
 	error : function(jqXHR, textStatus, errorThrown){
 	    if(jqXHR.status == 404){
 		console.error("But don't worry, this 404 is allowed.");
-		LESSON_SETTINGS={};
+		GLOBAL_SETTINGS={};
 	    } else{
 		console.log(jqXHR);
 		console.log(textStatus);
