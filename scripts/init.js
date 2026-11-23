@@ -2,6 +2,7 @@ TRUE_THETA_PATH='';
 OBSERVATION_PATH='';
 INSTRUCTION_PATH='';
 LESSON_SETTINGS_PATH='';
+TRELLIS_PATH='';
 GLOBAL_SETTINGS_FILE='lessons/settings.json';
 GLOBAL_SETTINGS={};
 LESSON_SETTINGS={};
@@ -215,6 +216,7 @@ function reset_data_structures(full){
 	THETA=[];
 
 	FEATURE_POS_UNDEFINED=false;	
+	trellis_reset();
 	//per-context layout tables: must be cleared, or a later lesson with
 	//fewer contexts inherits the previous lesson's (empty) slots
 	THETA_POSITION_BY_CONTEXT=[];
@@ -306,6 +308,7 @@ function load_lesson(noskip_dropdown){
     TRUE_THETA_PATH = 'lessons/'+dmcl+'/theta';
     OBSERVATION_PATH = 'lessons/'+dmcl+'/observations';    
     INSTRUCTION_PATH = 'lessons/'+dmcl+'/instructions.html';
+    TRELLIS_PATH = 'lessons/'+dmcl+'/trellis.json';
 
     loading_object.start();
     document.title = 'Log-Linear Models: Lesson '+CURRENT_LESSON;
@@ -491,6 +494,7 @@ function init(){
     });
 
     create_lesson_dropdown();
+    trellis_init_controls();
     
 
     /*if($('change_num_tokens_form')){
@@ -657,7 +661,7 @@ function init(){
 	    //orig_solve_step
 	    jQuery('#gradient_step').val(SOLVE_STEP.toPrecision(5));
 	    this.innerHTML="Solve";
-	    jQuery('#step_button,#next_lesson,#prev_lesson').removeAttr("disabled");
+	    jQuery('#step_button,#next_lesson,#prev_lesson,#trellis_dataset').removeAttr("disabled");
 	    jQuery('#next_lesson,#prev_lesson').trigger('verify');
 	    //$('change_num_tokens').disabled="";
 	    jQuery('#gradient_step').change();
@@ -671,7 +675,7 @@ function init(){
 	    button_color=this.style.backgroundColor;
 	    this.style.backgroundColor='red';
 	    this.innerHTML="Stop";
-	    jQuery('#step_button,#next_lesson,#prev_lesson').attr("disabled","disabled");
+	    jQuery('#step_button,#next_lesson,#prev_lesson,#trellis_dataset').attr("disabled","disabled");
 	    jQuery('#gradient_step').val(scale_gamma_for_solve(SOLVE_STEP,1).toPrecision(5));
 	    solved++;
 	    //setITimeout records each pending timer in SOLVE_TIMEOUT_ID itself;

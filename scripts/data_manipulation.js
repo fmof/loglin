@@ -141,7 +141,7 @@ function reset_manually_from_theta(slider,val){
     if(x< 1e-10) x=1e-5;
     h.style['left'] = x+'px';
     var jhandle = jQuery(h);
-    if(jhandle.data("qtip") || jhandle.data("hasqtip")){
+    if((jhandle.data("qtip") || jhandle.data("hasqtip")) && !(TRELLIS && TRELLIS.compare_counts)){
 	var x = parseInt(h.parentNode.parentNode.parentNode.childNodes[0].getAttribute("theta_index"),10);
 	jhandle.qtip({content:
 		      "Observed Count: " + OBS_FEAT_COUNT[x]+

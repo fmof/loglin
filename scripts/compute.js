@@ -5,6 +5,12 @@ function recompute_partition_function(theta,ztheta){
     ztheta=ztheta || Z_THETA;
     //iterate through contexts
     for(var c=0;c<CONTEXTS.length;c++){
+	//a "structured" context (e.g., a sentence whose outcomes are all of
+	//its taggings) is too big to enumerate: sum over the trellis instead
+	if(trellis_is_structured(c)){
+	    ztheta[c]=trellis_partition_function(c,theta);
+	    continue;
+	}
 	//iterate through type observations of context c
 	var tz=0;
 	var obs_in_c=TYPE_OBSERVATIONS_IN_C[c];
@@ -214,6 +220,13 @@ function compute_gradient(){
     }
     //iterate through contexts
     for(var c=0;c<CONTEXTS.length;c++){
+	//in a structured context, the listed types are only some of the
+	//possible outcomes: they supply the observed counts, while the
+	//expected counts come from forward-backward on the trellis
+	var structured = trellis_is_structured(c);
+	if(structured){
+	    trellis_add_expected_counts(c, NUM_TOKENS_C[c], EXP_FEAT_COUNT, GRADIENT);
+	}
 	//iterate through types in c
 	var obs_in_c=TYPE_OBSERVATIONS_IN_C[c];
 	for(var j=0;j<obs_in_c.length;j++){
@@ -236,7 +249,7 @@ function compute_gradient(){
 	    var backoff = INVERSE_FEATURE_LIST[[CONTEXTS[c],'']];
 	    if(backoff!==undefined) fired.push(backoff);
 
-	    var exp_tokens = NUM_TOKENS_C[c]*get_prob(c,id_num)/Z_THETA[c];
+	    var exp_tokens = structured ? 0 : NUM_TOKENS_C[c]*get_prob(c,id_num)/Z_THETA[c];
 	    for(var fi=0;fi<fired.length;fi++){
 		var fnum=fired[fi];
 		//observed feature counts
