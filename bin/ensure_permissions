@@ -1,26 +1,29 @@
 #!/bin/bash
+# Make the publicly served files world-readable (644) and their directories
+# world-traversable (755). Run from the repository root before deploying.
 
 PUBLIC_OBSERVABLES=( index.html further.html scripts imgs tex lessons styles LICENSE )
 
 FILE_PERM=644
 DIR_PERM=755
 
-for dir in "${PUBLIC_OBSERVABLES[@]}"; do
-    files=$(find $dir -name '*.git*' -prune -o -name '*~' -prune -o -type f -print) 
-    for f in $files; do
-	fp=$(stat -c "%a" $f)
-	if [[ $fp -ne $FILE_PERM ]]; then
-	    echo -e "$f\t$fp => $FILE_PERM"
-	    chmod $FILE_PERM $f
-	fi
-    done
+# octal permission bits of a path, on both GNU (Linux) and BSD (macOS) stat
+perm_of() {
+    stat -c "%a" "$1" 2>/dev/null || stat -f "%Lp" "$1"
+}
 
-    dirs=$(find $dir -name '*.git*' -prune -o -name '*~' -prune -o -type d -print) 
-    for d in $dirs; do
-	fp=$(stat -c "%a" $d)
-	if [[ $fp -ne $DIR_PERM ]]; then
-	    echo -e "$d\t$fp => $DIR_PERM"
-	    chmod $DIR_PERM $d
+fix_perms() { # $1 = find type (f|d), $2 = wanted permission, $3 = root
+    find "$3" -name '*.git*' -prune -o -name '*~' -prune -o -type "$1" -print0 |
+    while IFS= read -r -d '' p; do
+	fp=$(perm_of "$p")
+	if [[ "$fp" != "$2" ]]; then
+	    echo -e "$p\t$fp => $2"
+	    chmod "$2" "$p"
 	fi
     done
+}
+
+for dir in "${PUBLIC_OBSERVABLES[@]}"; do
+    fix_perms f "$FILE_PERM" "$dir"
+    fix_perms d "$DIR_PERM" "$dir"
 done
