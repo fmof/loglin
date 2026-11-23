@@ -475,6 +475,8 @@ function addFeaturesToList(selectObj, array){
 	num_rows = highest_row_cols[0]+1;
 	num_cols = highest_row_cols[1]+1;
 	for(var c = 0; c< THETA_POSITION_BY_CONTEXT.length; c++){
+	    //only lay out the contexts that actually have positioned features
+	    if(is_empty(THETA_POSITION_BY_CONTEXT[c])) continue;
 	    for(var i =0; i< num_rows;i++){
 		var tr=document.createElement('tr'); //div
 		tr.id='row'+i;
