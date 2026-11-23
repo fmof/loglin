@@ -151,13 +151,17 @@ function addSliderEffects(){
     });
 
     
-    var originalAnimate = jQuery.fn.animate;
-    jQuery.fn.animate = function(a,b,c,d){
-	if(this.hasClass('handle')){
-	    this.attr("moving_to", a.left);
-	}
-	return originalAnimate.call(this, a,b,c,d);
-    };
+    //wrap animate() only once; this function runs on every lesson load
+    if(!jQuery.fn.animate.loglin_wrapped){
+	var originalAnimate = jQuery.fn.animate;
+	jQuery.fn.animate = function(a,b,c,d){
+	    if(this.hasClass('handle')){
+		this.attr("moving_to", a.left);
+	    }
+	    return originalAnimate.call(this, a,b,c,d);
+	};
+	jQuery.fn.animate.loglin_wrapped = true;
+    }
 
     var originalVal = jQuery.fn.val;
     //there's a weird click event happening, so try to override it
