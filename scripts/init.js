@@ -637,19 +637,6 @@ function init(){
     	step_gradient();
     });
 
-    jQuery('#stop_solving').click(function(){
-	clearInterval(SOLVE_TIMEOUT_ID);
-	jQuery('#stop_solving_div').css('display','none');
-	jQuery('#solve_button,#step_button').removeAttr('disabled');
-	jQuery('#next_lesson,#prev_lesson').removeAttr("disabled")
-	    .trigger('verify');
-	//$('change_num_tokens').disabled="";
-	jQuery('#gradient_step').val(orig_step_size.toPrecision(5))
-	    .change();
-	jQuery(this).blur();
-    });
-    jQuery('#stop_solving_div').css('display','none');
-
     jQuery('#solve_button').click(function(){
 	jQuery('#display_num_solve_iterations').html('');
     	SOLVE_ITERATION=0;
