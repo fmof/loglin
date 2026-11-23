@@ -70,9 +70,10 @@ function get_corrected_step(tindex, solve_step,grad_only, mult_fact){
 	retval = grad_only?grad_val:propval;
     }
     if(!isFinite(retval)){
-	if(isNaN(retval))
+	if(isNaN(retval)) //no usable gradient: don't move
 	    retval = grad_only?0:THETA[tindex];
-	retval = retval>0? 100 : -100;
+	else //+/-Infinity: clamp
+	    retval = retval>0? 100 : -100;
     }
     return [tindex, retval];
 }
