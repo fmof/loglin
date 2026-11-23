@@ -218,10 +218,12 @@ do_all_loading = function(){
 			if(record['position']==undefined){
 			    FEATURE_POS_UNDEFINED=true;
 			}
-			var temp_pos = [FEATURE_POS_UNDEFINED ? [0,feature_number] : (d3.csv.parseRows(record['position'])[0]).map(function(d){return parseInt(d);})];
+			var temp_pos = FEATURE_POS_UNDEFINED ? [0,feature_number] : (d3.csv.parseRows(record['position'])[0]).map(function(d){return parseInt(d);});
 			THETA_POSITION_BY_CONTEXT[context_id][temp_pos] = feature_number;
-			MAX_THETA_ROWS = temp_pos[0]>=MAX_THETA_ROWS?temp_pos[0]+1:MAX_THETA_ROWS;
-			MAX_THETA_COLS = temp_pos[1]>=MAX_THETA_COLS?temp_pos[1]+1:MAX_THETA_COLS;
+			//NOTE: MAX_THETA_ROWS/MAX_THETA_COLS are fixed layout limits
+			//(see init.js), not running maxima. Code here used to try to grow
+			//them, but a bug meant it never did; growing them would change
+			//the slider layout of every lesson, so they stay constant.
 		    });
 		    //now load the actual data
 		    data_loader.request_data_load();
