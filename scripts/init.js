@@ -161,7 +161,6 @@ GRAD_LOW_C='red';
 GRAD_HIGH_C='blue';
 
 INITIAL_LOAD=1;
-skip_next_hashchange=0;
 initialize=0;
 svg_loaded=0;
 user_input_tokens_added=0;
@@ -300,7 +299,12 @@ function load_lesson(noskip_dropdown){
 
     loading_object.start();
     document.title = 'Log-Linear Models: Lesson '+CURRENT_LESSON;
-    HISTORY.pushState({CURRENT_LESSON:CURRENT_LESSON},'','#'+CURRENT_LESSON);
+    //only add a history entry when the URL actually changes; when we got
+    //here via Back/Forward or a typed URL, the hash is already correct, and
+    //pushing again would truncate the forward history
+    if(window.location.hash !== '#'+CURRENT_LESSON){
+	HISTORY.pushState({CURRENT_LESSON:CURRENT_LESSON},'','#'+CURRENT_LESSON);
+    }
     var j_jump_to_lesson_select=jQuery('#jump_to_lesson_select');
     j_jump_to_lesson_select.val(CURRENT_LESSON);
     if(!noskip_dropdown && !j_jump_to_lesson_select.is(":visible")){
@@ -378,24 +382,15 @@ window.onload = function(){
     HISTORY = history;
 
     window.onhashchange = function(){
-    	if(skip_next_hashchange){
-    	    skip_next_hashchange=0;
-    	    return 0;
-    	}
-    	var n = parseInt(window.location.hash.substring(1));
-    	if(isNumber(n) && isFinite(n)){
-    	    if(n>=1 && n<=MAX_LESSONS){
-    		CURRENT_LESSON=n;
-    		load_lesson();
-    	    } else{
-    		n=-CURRENT_LESSON;
-    		skip_next_hashchange=1;
-    		window.location.hash='#'+CURRENT_LESSON;
-    	    }
+    	var n = parseInt(window.location.hash.substring(1), 10);
+    	if(isNumber(n) && n>=1 && n<=MAX_LESSONS){
+    	    CURRENT_LESSON=n;
+    	    load_lesson();
     	} else{
+    	    //invalid hash: correct the URL in place (replaceState fires no
+    	    //hashchange and adds no history entry)
     	    n=-CURRENT_LESSON;
-    	    skip_next_hashchange=1;
-    	    window.location.hash='#'+CURRENT_LESSON;
+    	    HISTORY.replaceState({CURRENT_LESSON:CURRENT_LESSON},'','#'+CURRENT_LESSON);
     	}
     	return n;
     }
