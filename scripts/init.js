@@ -215,6 +215,11 @@ function reset_data_structures(full){
 	THETA=[];
 
 	FEATURE_POS_UNDEFINED=false;	
+	//per-context layout tables: must be cleared, or a later lesson with
+	//fewer contexts inherits the previous lesson's (empty) slots
+	THETA_POSITION_BY_CONTEXT=[];
+	POSITION_BY_CONTEXT=[];
+	NUM_TOKENS_C=[];
 	NUM_TOKENS=0; //the number of *token* observations
 	GRADIENT=[]; OBS_FEAT_COUNT=[]; EXP_FEAT_COUNT=[]; REG_FOR_GRAD=[];
 	POSITIONS=[];
