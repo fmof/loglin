@@ -393,6 +393,11 @@ window.onload = function(){
     
     HISTORY = history;
 
+    //the lesson order in settings.json numbers every lesson, and a browser
+    //may reuse a stale copy of it (even on reload) when the server sends no
+    //cache headers.  So always fetch the settings and lesson files afresh.
+    jQuery.ajaxSetup({cache:false});
+
     window.onhashchange = function(){
     	var n = parseInt(window.location.hash.substring(1), 10);
     	if(isNumber(n) && n>=1 && n<=MAX_LESSONS){
