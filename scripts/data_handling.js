@@ -62,11 +62,30 @@ do_all_loading = function(){
     this.show_data = 1;
     this.timer_started = 0;
 
+    //Lesson files arrive asynchronously, and the user can change lessons before
+    //they do.  Only the newest load may act on what it receives: if an older one
+    //did too, they would both add to the features and sliders.
+    this.ajax = function(options){
+	var data_loader = this;
+	['success','error','complete'].forEach(function(name){
+	    var handler = options[name];
+	    if(handler){
+		options[name] = function(){
+		    if(loading_object === data_loader){
+			return handler.apply(this,arguments);
+		    }
+		};
+	    }
+	});
+	return jQuery.ajax(options);
+    };
+
     this.start_timer = function(){
 	var data_loader = this;	
 	var ia=jQuery('#loading_area');
 	ia.html('');
 	data_loader.timer_started=1;
+	clearTimeout(window.show_loading_bar); //from a load that this one replaced
 	show_loading_bar = setTimeout(function(){
 	    show_loader(ia, 'instruction_loader');
 	}, LOADING_TIME_DELAY);
@@ -106,7 +125,7 @@ do_all_loading = function(){
     };
 
     this.load_settings = function(obj){
-	jQuery.ajax({
+	obj.ajax({
 	    url:LESSON_SETTINGS_PATH,
 	    dataType:"json",
 	    success : function(settings){
@@ -135,7 +154,7 @@ do_all_loading = function(){
 
     this.load_instructions = function (ia){
 	var data_loader = this;
-	jQuery.ajax({
+	data_loader.ajax({
 	    url:INSTRUCTION_PATH,
 	    dataType:"html",
 	    success : function(txt){
@@ -155,7 +174,7 @@ do_all_loading = function(){
 	    THETA[l]=0; TRUE_THETA[l]=0;
 	}
 	var data_loader = this;
-	jQuery.ajax({
+	data_loader.ajax({
 	    url:TRUE_THETA_PATH,
 	    dataType:"text",
 	    error : function(jqXHR, textStatus, errorThrown){
@@ -237,7 +256,7 @@ do_all_loading = function(){
     
     this.request_data_load = function (){
 	var data_loader = this;
-	jQuery.ajax({
+	data_loader.ajax({
 	    url:OBSERVATION_PATH,
 	    dataType:"text",
 	    success : function(response){
