@@ -165,9 +165,12 @@ skip_next_hashchange=0;
 initialize=0;
 svg_loaded=0;
 user_input_tokens_added=0;
+//true iff n is a finite number, or a non-blank string that parses
+//entirely as one (so "", "abc", "2x", NaN, Infinity and undefined are rejected)
 function isNumber(n) {
-    return (n==null || n==undefined || !(n.length)) || 
-	(!isNaN(parseFloat(n)) && isFinite(n));
+    if(typeof n === 'number') return isFinite(n);
+    if(typeof n !== 'string' || n.trim() === '') return false;
+    return isFinite(Number(n));
 }
 
 function get_sigmoid(amp,hmove, xdef, ratio){
@@ -493,7 +496,8 @@ function init(){
 	for(var c=0;c<CONTEXTS.length;c++){
 	    if(USED_CONTEXTS[c]){
 		var v = jQuery('#num_tokens_context_'+c).val();
-		v= isNumber(v)?parseFloat(v):-1;
+		//invalid => undefined, so sampling keeps the current N
+		v= isNumber(v)?parseFloat(v):undefined;
 		console.log("v = " + v);
 		//don't do the following when v == NUM_TOKENS_C[c]
 		//why again?
