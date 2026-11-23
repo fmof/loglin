@@ -45,10 +45,16 @@ function load_html5_slider(boxid,val){
 }
 
 //jhandle should be a jQuery object representing a slider handle
-function update_qtip_count(jhandle){
+function update_qtip_count(jhandle, sentence_counts){
     if(jhandle.data("qtip") || jhandle.data("hasqtip")){
 	var fi = jhandle.parent().parent().parent().children(":first");
 	var x = parseInt(fi.attr("theta_index"),10); 
+	if(TRELLIS && TRELLIS.compare_counts){
+	    jhandle.qtip({content:trellis_feature_tip(x, sentence_counts),
+			  style:{classes:'ui-tooltip trellis_count_qtip'},
+			  position:{viewport:jQuery(window), adjust:{method:'flip shift'}}});
+	    return;
+	}
 	var e = EXP_FEAT_COUNT[x];
 	var sub = OBS_FEAT_COUNT[x] - (!isFinite(e)?e:formatExpected(EXP_FEAT_COUNT[x]));
 	jhandle.qtip({content:
@@ -67,7 +73,8 @@ function update_qtip_count(jhandle){
 }
 
 function update_all_qtip_counts(){
-    jQuery('.handle').each(function(){ update_qtip_count(jQuery(this));});
+    var sentence_counts = TRELLIS && TRELLIS.compare_counts ? trellis_sentence_feature_counts() : null;
+    jQuery('.handle').each(function(){ update_qtip_count(jQuery(this), sentence_counts);});
 }
 
 //REQUIRES: svg_loaded=1
@@ -86,6 +93,8 @@ function redraw_all(){
     compute_ll(TRUE_THETA,TRUE_Z_THETA,TRUE_LOG_LIKELIHOOD,TRUE_REGULARIZATION);
     updateLLBar();
     compute_gradient();   
+    //lessons on tagging also show a trellis
+    trellis_redraw();
 }
 
 
@@ -378,9 +387,11 @@ function draw_gradient(){
 	break;
     }
     //scale gradient
-    var abs_max_val = SOLVE_STEP;
+    //a lesson with a small step size can keep its hints long enough to see
+    var hint_step = (TRELLIS && TRELLIS.hint_step) || SOLVE_STEP;
+    var abs_max_val = hint_step;
     var scaled_grad = GRADIENT.map(function(g,i){ 
-	    var x=get_corrected_step(i,SOLVE_STEP)[1];
+	    var x=get_corrected_step(i,hint_step)[1];
 	    return x;
     });
     jQuery('.slider').each(function(i){
@@ -663,6 +674,7 @@ function updateD3Shape(container, id_num, id_name, width,height,visuals,color,co
 	max_count : isFinite(max_count) ? max_count : 1,
 	scale : scale,
 	value : visuals['value'],
+	visuals : visuals,
 	is_observed : (typeof(hack_observed)!=="undefined" || hack_observed)
     };
     var sdshape = SHAPE_DICTIONARY[visuals['shape']];
@@ -693,6 +705,7 @@ function createD3Shape(container, id_num, id_name, width,height, visuals, color,
 	scale : scale,
 	first_draw : true,
 	value : visuals['value'],
+	visuals : visuals,
 	opacity : opacity,
 	is_observed : is_observed,
 	hide : {

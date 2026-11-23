@@ -127,7 +127,73 @@ function createShapeDictionary(){
 			     return SVG_HEIGHT*SVG_WIDTH;
 			 }
 			};
+    //a tagging (path through a small trellis)
+    //visualization: shape=path,value=H H C,tags=H C
+    //  value = the path's tag at each position; tags = the trellis rows
+    //The probability is shown as a bar along the bottom, as for "text".
+    shapedict["path"] = {"human":"path", "svg":"g",
+			 draw : function(shape_obj, shape_params){
+			     var vis = shape_params.visuals || {};
+			     var path = (shape_params.value || '').split(' ').filter(function(t){return t!=='';});
+			     var tags = (vis['tags'] || '').split(' ').filter(function(t){return t!=='';});
+			     var hidden = shape_params.hide != undefined && shape_params.hide['text'];
+			     if(shape_params.first_draw){
+				 if(!hidden){
+				     draw_path_glyph(shape_obj.append("g").attr("class","path_glyph"),
+						     path, tags, shape_params.width);
+				 }
+				 shape_obj.append("rect");
+			     }
+			     var rhei = 9;
+			     var rwid = shape_params.count/shape_params.max_count/SVG_HEIGHT;
+			     shape_obj.selectAll("rect")
+				 .attr("x",0)
+				 .attr("y",SVG_HEIGHT-rhei)
+				 .attr("width",rwid)
+				 .attr("height",rhei);
+			     if(shape_params.first_draw &&
+				shape_params.opacity!=undefined){
+				 shape_obj.selectAll("rect").attr("opacity",shape_params.opacity);
+			     }
+			 },
+			 skip_opacity:true,
+			 max_area : function(){
+			     return SVG_HEIGHT*SVG_WIDTH;
+			 }
+			};
     return shapedict;
+}
+
+//draw a tagging as a path through a miniature trellis: one row per tag,
+//one column per position.  g is a d3 selection of an svg group.
+function draw_path_glyph(g, path, tags, width){
+    var n = path.length, k = Math.max(tags.length,1);
+    var x0 = 30, x1 = width-12, y0 = 16, y1 = 72;
+    var dx = n>1 ? (x1-x0)/(n-1) : 0;
+    var dy = k>1 ? Math.min(26,(y1-y0)/(k-1)) : 0;
+    var ytop = y0 + ((y1-y0) - dy*(k-1))/2;
+    var xs = function(i){ return n>1 ? x0+i*dx : (x0+x1)/2; };
+    var ys = function(t){ var j = tags.indexOf(t); return ytop + (j<0?0:j)*dy; };
+    tags.forEach(function(t){
+	g.append("text").text(t)
+	    .attr("x", 12).attr("y", ys(t)+4)
+	    .attr("text-anchor","middle")
+	    .attr("fill","#888").attr("stroke","none")
+	    .style("font-size","11px");
+	for(var i=0;i<n;i++){
+	    g.append("circle").attr("cx",xs(i)).attr("cy",ys(t)).attr("r",2.5)
+		.attr("fill","#D8D8D8").attr("stroke","none");
+	}
+    });
+    var pts = path.map(function(t,i){ return [xs(i), ys(t)]; });
+    g.append("polyline")
+	.attr("points", pts.map(function(d){return d.join(",");}).join(" "))
+	.attr("fill","none").attr("stroke","#555").attr("stroke-width",2)
+	.attr("stroke-linejoin","round");
+    pts.forEach(function(d){
+	g.append("circle").attr("cx",d[0]).attr("cy",d[1]).attr("r",4)
+	    .attr("fill","#555").attr("stroke","none");
+    });
 }
 
 function createStar(){

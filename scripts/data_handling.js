@@ -116,6 +116,8 @@ do_all_loading = function(){
 	    display_gradient_hints_portions();
 	    update_all_qtip_counts();
 	    redraw_all();
+	    //lessons on tagging: draw the trellis (and its controls)
+	    trellis_setup();
 	    //maybe highlight counts (something *like* this, but
 	    //not exactly... the red is hideous and was only for
 	    //experimenting
@@ -247,8 +249,10 @@ do_all_loading = function(){
 			//them, but a bug meant it never did; growing them would change
 			//the slider layout of every lesson, so they stay constant.
 		    });
-		    //now load the actual data
-		    data_loader.request_data_load();
+		    //then the (optional) trellis description, then the actual data
+		    trellis_load(data_loader, TRELLIS_PATH, function(){
+			data_loader.request_data_load();
+		    });
 		})(d3.tsv.parse(response))} // end ajax success
 	}); //end ajax request
     }

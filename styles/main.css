@@ -4,6 +4,9 @@
 div.body {
     margin: auto;
     width: 80%;
+    /* Below this width, the fixed-size graphs and sliders no longer fit.
+       The page then scrolls sideways, so that zooming in hides nothing. */
+    min-width: 1220px;
     font: small Verdana, Arial, 'MS Sans Serif';
     background: white;
 }
@@ -231,6 +234,7 @@ hr.slider{
 
 #slider_area{
     overflow:hidden;
+    clear:both;
 }
 #model_option_area{
 }
@@ -315,9 +319,7 @@ hr.slider{
 }
 
 #instruction_wrapper{
-    width:80%;
-    margin-left:auto;
-    margin-right:auto;
+    width:100%;
 }
 
 #loading_area {
@@ -346,7 +348,15 @@ input[type=range].feature_slider{
   background-image: -webkit-linear-gradient(right, #000000, #333333, #000000);*/
 }
 
+/* Auto margins keep the box centered, so dragging its corner moves both
+   sides.  The maximum makes it as wide as the fieldsets below it, which
+   have 2px margins. */
 #instruction_area {
+    box-sizing: border-box;
+    width: 80%;
+    max-width: calc(100% - 4px);
+    margin-left: auto;
+    margin-right: auto;
     overflow-y: auto;
     resize: both;
     border: 1px solid gray;
@@ -444,7 +454,7 @@ ul #data_options_area{
     
 }
 
-#shapes_area {
+#shapes_area, #data_options_area + #trellis_area {
     padding-left:5px;
     padding-right:5px;
     overflow:hidden;
@@ -485,3 +495,207 @@ svg#ll_bars{
     padding:12px;
 }
 
+
+/*********************************************/
+/* Trellis (lessons on tagging)               */
+
+#trellis_controls > span {
+    margin-right: 1.6em;
+    white-space: nowrap;
+    line-height: 2em;
+}
+
+#trellis_controls button {
+    margin-right: 0.3em;
+}
+
+#trellis_summary {
+    margin: 0.5em 0 0.3em 0;
+    line-height: 1.6em;
+}
+
+#trellis_summary .trellis_best_key {
+    border-bottom: 2px dashed #E07B00;
+}
+
+#data_options_area fieldset, #trellis_fieldset {
+    min-width: 0; /* or wide contents push the box past its column */
+}
+
+#trellis_dataset {
+    max-width: 100%;
+    font-size: 12px; /* to fit its longest item */
+}
+
+#trellis_dataset_dt {
+    margin-top: 0.6em;
+}
+
+.qtip.trellis_count_qtip {
+    max-width: none;
+}
+
+.trellis_tip_table td {
+    padding: 0 0 0 0.4em;
+    white-space: nowrap;
+}
+
+.trellis_tip_number {
+    padding-right: 1em !important;
+    text-align: right;
+}
+
+#trellis_svg line.trellis_hovered {
+    stroke: black !important;
+    stroke-opacity: 0.2;
+}
+
+#trellis_svg g.trellis_hovered circle {
+    stroke: black !important;
+    stroke-width: 2px;
+}
+
+#trellis_draw {
+    overflow-x: auto;
+    text-align: center;
+}
+
+#trellis_key {
+    color: #555;
+    font-size: 0.92em;
+    line-height: 1.8em;
+}
+
+#trellis_key > span {
+    margin-right: 1.4em;
+    white-space: nowrap;
+}
+
+#trellis_key svg {
+    vertical-align: middle;
+}
+
+#trellis_key .trellis_hint {
+    font-style: italic;
+}
+
+#trellis_svg text {
+    font-family: Verdana, Arial, sans-serif;
+}
+
+#trellis_svg .trellis_word {
+    font-size: 13px;
+    font-weight: bold;
+    fill: #333;
+}
+
+#trellis_svg .trellis_poslabel {
+    font-size: 10px;
+    fill: #888;
+}
+
+#trellis_svg .trellis_taglabel {
+    font-size: 13px;
+    font-weight: bold;
+    fill: #888;
+}
+
+#trellis_svg .trellis_endlabel {
+    font-size: 10px;
+    fill: #666;
+}
+
+#trellis_svg .trellis_nodeprob {
+    font-size: 10px;
+}
+
+#trellis_svg .trellis_ab {
+    font-size: 9px;
+    fill: #555;
+}
+
+#trellis_select_row {
+    margin-bottom: 0.3em;
+}
+
+#trellis_controls {
+    margin-top: 0.4em;
+}
+
+#trellis_svg .trellis_edgeprob {
+    font-size: 10px;
+    fill: #5A2470;
+}
+
+#trellis_components {
+    margin-top: 0.6em;
+    padding-top: 0.6em;
+    border-top: 1px solid #DDD;
+    text-align: center;
+}
+
+.trellis_component {
+    display: inline-block;
+    margin: 0 0.4em 0.6em 0.4em;
+    vertical-align: top;
+}
+
+.trellis_component_svg text {
+    font-size: 11px;
+}
+
+.trellis_component_svg .trellis_component_word {
+    font-weight: bold;
+}
+
+.trellis_component_caption {
+    font-size: 0.92em;
+}
+
+.trellis_dataset_table {
+    border-collapse: collapse;
+    font-size: 12px; /* to fit a six-word sentence */
+    margin-top: 0.5em;
+}
+
+.trellis_dataset_table td {
+    padding: 0 0.2em;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.trellis_dataset_words td {
+    color: #555;
+}
+
+.trellis_dataset_table td.trellis_dataset_count {
+    color: #555;
+    padding-left: 0.4em;
+    text-align: left;
+}
+
+#trellis_best_tied {
+    color: #777;
+    font-style: italic;
+}
+
+#trellis_draw.trellis_draw_beside {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#trellis_z_beside {
+    /* a fixed width, or the trellis shifts as the digits of Z change */
+    flex: none;
+    width: 185px;
+    margin-left: 1em;
+    line-height: 1.6em;
+    text-align: left;
+    white-space: nowrap;
+}
+
+#trellis_svg .trellis_tag_label {
+    font-size: 13px;
+    font-weight: bold;
+}

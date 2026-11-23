@@ -40,6 +40,8 @@
     <script type="text/javascript" src="scripts/data_handling.js"></script>
     <script type="text/javascript" src="scripts/data_manipulation.js"></script>
     <script type="text/javascript" src="scripts/compute.js"></script>
+    <!-- trellis.js has literal non-ASCII labels, and this page declares no charset -->
+    <script type="text/javascript" src="scripts/trellis.js" charset="utf-8"></script>
     <script type="text/javascript" src="scripts/draw.js"></script>
     <script type="text/javascript" src="scripts/math.js"></script>
     <script type="text/javascript" src="scripts/util.js"></script>
@@ -104,14 +106,63 @@
 
       <br />      
 
+      <div id="trellis_area" style="display:none;">
+	<fieldset id="trellis_fieldset">
+	  <legend>Trellis</legend>
+	  <div id="trellis_select_row">
+	    <span id="trellis_select_span">Show the trellis for <span id="trellis_x_name">sentence</span>
+	      <select id="trellis_select"></select></span>
+	  </div>
+	  <div id="trellis_key">
+	    <span class="trellis_key_plain"><svg width="22" height="14"><circle cx="11" cy="7" r="6" fill="#A043BF" fill-opacity="0.6" stroke="#999"/></svg> probability of each state (darker = more probable)</span>
+	    <span class="trellis_key_plain"><svg width="30" height="14"><line x1="2" y1="7" x2="28" y2="7" style="stroke:#A043BF" stroke-width="5" stroke-opacity="0.8"/></svg> probability of each edge (wider = more probable)</span>
+	    <span class="trellis_key_plain" id="trellis_key_observed"><svg width="30" height="14"><line x1="4" y1="7" x2="26" y2="7" style="stroke:#B8B8B8" stroke-width="7" stroke-linecap="round"/></svg> <span id="trellis_key_observed_text">observed</span></span>
+	    <span class="trellis_key_counts" style="display:none;"><svg width="30" height="14"><line x1="2" y1="7" x2="28" y2="7" style="stroke:#EE4455" stroke-width="5"/></svg> expected count too small</span>
+	    <span class="trellis_key_counts" style="display:none;"><svg width="30" height="14"><line x1="2" y1="7" x2="28" y2="7" style="stroke:#4455EE" stroke-width="5"/></svg> too big</span>
+	    <span class="trellis_key_counts" style="display:none;"><svg width="30" height="14"><line x1="2" y1="7" x2="28" y2="7" style="stroke:#9E9E9E" stroke-width="5"/></svg> matches the observed count</span>
+	    <span class="trellis_key_compare" style="display:none;">darker state or wider edge = more probable</span>
+	    <span id="trellis_key_best"><svg width="30" height="14"><line id="trellis_key_best_outline" x1="2" y1="7" x2="28" y2="7" style="stroke:none" stroke-width="4.6" stroke-dasharray="9,3" stroke-dashoffset="1"/><line id="trellis_key_best_main" x1="2" y1="7" x2="28" y2="7" style="stroke:#E07B00" stroke-width="3" stroke-dasharray="7,5"/></svg> best path</span>
+	    <div id="trellis_key_tags" style="display:none;">Under each word, its most probable tags (a slash means they're close):
+	      <b style="color:#4455EE">too probable</b>, <b style="color:#EE4455">not probable enough</b>, <b style="color:#777">fine</b></div>
+	    <div class="trellis_hint">Hover over a state or an edge for details.</div>
+	  </div>
+	  <div id="trellis_summary"></div>
+	  <div id="trellis_draw"></div>
+	  <div id="trellis_components" style="display:none;"></div>
+	  <div id="trellis_controls">
+	    <span id="trellis_show_best_span">
+	      <input type="checkbox" id="trellis_show_best" checked="checked" />
+	      <label for="trellis_show_best">Show best path</label>
+	      <span id="trellis_best_tied" style="display:none;"></span>
+	    </span>
+	    <span id="trellis_show_tags_span" style="display:none;">
+	      <input type="checkbox" id="trellis_show_tags" />
+	      <label for="trellis_show_tags">Show best tags</label>
+	    </span>
+	    <span id="trellis_show_edge_probs_span">
+	      <input type="checkbox" id="trellis_show_edge_probs" />
+	      <label for="trellis_show_edge_probs">Show edge probabilities</label>
+	    </span>
+	    <span id="trellis_show_ab_span">
+	      <input type="checkbox" id="trellis_show_ab" />
+	      <label for="trellis_show_ab">Show &alpha; and &beta;</label>
+	    </span>
+	    <span id="trellis_disaggregate_span" style="display:none;">
+	      <button type="button" id="trellis_disaggregate">Disaggregate</button>
+	    </span>
+	  </div>
+	</fieldset>
+	<br />
+      </div>
+
       <div id="data_area">
 
 	<div id="data_options_area">
 	  <fieldset>
 	    <legend>Data &amp; Model Options</legend>
 	    <dl>
-	      <dt>Change the data</dt>
-	      <dd>
+	      <dt id="change_data_dt">Change the data</dt>
+	      <dd id="change_data_dd">
 		<ul>
 		  <li>
 		    <button type="button" id="new_challenge">New random challenge</button>
@@ -144,6 +195,11 @@
 		    <i>C</i> = <input type="text" name="regularization_constant" id="regularization_constant" value="1.0" size="5"/>
 		  </div>
 		</div>
+	      </dd>
+	      <dt id="trellis_dataset_dt" style="display:none;">Training data</dt>
+	      <dd id="trellis_dataset_dd" style="display:none;">
+		<select id="trellis_dataset"></select>
+		<div id="trellis_dataset_counts"></div>
 	      </dd>
 	    </dl>
 	  </fieldset>

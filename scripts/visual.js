@@ -51,7 +51,7 @@ function show_loader(box,id){
 //box is jQuery object
 //height is pixels
 function set_instructions_height(box){
-    set_height(box, 165);
+    set_height(box, 320);
 }
 
 function set_height(box, height){

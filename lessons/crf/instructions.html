@@ -1,0 +1,91 @@
+<div id="p1" class="showable_instructions">
+  <p>In <A HREF="#17" target="_blank">lesson 17</A>, each outcome was a
+    single label.  Now let's label <i>every</i> word of a sentence as
+    <code>N</code> (noun), <code>V</code> (verb), <code>P</code>
+    (preposition), or <code>D</code> (determiner).  The context is a
+    sentence, and each outcome is a whole tagging of it.  A conditional
+    log-linear model over outcomes like these is called a <i>conditional
+    random field</i> (CRF).</p>
+
+  <p><b>Features.</b> A <i>transition</i> feature such as
+    <code>N V</code> fires each time a <code>V</code> follows an
+    <code>N</code>.  An <i>emission</i> feature such as
+    <code>V&rarr;like</code> fires each time <code>like</code> is tagged
+    <code>V</code>.  (A small dictionary limits each word's tags.)</p>
+
+  <p><b>The trellis.</b> Each tagging is a path from <code>BOS</code> to
+    <code>EOS</code>.  An edge's weight is exp of the total weight of its
+    features, a path's weight is the product of its edges' weights, and
+    <i>Z</i> totals all the paths.  The <i>forward-backward algorithm</i>
+    computes <i>Z</i> and the expected counts without listing the paths.</p>
+
+  <p><b>Try it out.</b> Click "Disaggregate," which groups the paths by how
+    they tag <code>time flies</code>.  Set <code>V&rarr;flies</code> to 1.
+    Which groups gain?  Check "Show edge probabilities."  How do the groups
+    give you the probability of the <code>BOS N</code> edge?</p>
+
+  <p><b>Counts and the gradient.</b> Click "Zero weights" and choose
+    <code>fruit flies like a banana</code>.  As with the shapes in earlier
+    lessons, colors compare the model with the training data.  A state or
+    edge turns <font color="#EE4455">red</font> if its expected count is
+    smaller than its observed count, <font color="#4455EE">blue</font> if
+    larger, and <font color="gray">gray</font> if they match.  ("Training data"
+    on the left lists the observed taggings, and hovering shows both counts.)  Why
+    are some edges on the observed tagging gray?  Why is the held-out
+    sentence all gray?</p>
+
+  <p><b>Red doesn't mean wrong!</b> Only something that was observed can be
+    red.  It's usually right, and the <i>model</i> is wrong not to give it
+    enough probability.  So it's good if a red path is at least the best path
+    (the dashed gold line that "Show best path" draws).</p>
+
+  <p>Each slider's hint is still (observed count) &minus; (expected count),
+    totaled over the sentences.  An edge's expected count is <i>N</i> &times;
+    p(edge | words).  Hover over a slider's handle to see its counts, in total
+    and for this sentence.  Why does <code>V&rarr;travels</code> have a hint, but
+    not <code>V&rarr;flies</code>?</p>
+
+  <p><b>Generalizing.</b> <code>time flies like an arrow</code> is held
+    out, with <i>N</i> = 0.  Run the solver.  Check "Show best path" and
+    "Show best tags."</p>
+  <ol type="a">
+    <li>Under each word are its most probable tags, with a slash if they're
+      within 0.1.  A tag is <font color="#4455EE">blue</font> if it wasn't the
+      tag observed most there in the training data,
+      <font color="#EE4455">red</font> if it was but a blue tag is beside it,
+      and <font color="gray">gray</font> otherwise.  Which two taggings of
+      the held-out sentence are marked as best?  What does each one mean?
+    <li>How is <code>fruit flies like a banana</code> tagged?  Compare
+      <code>a bird flies like an arrow</code>.  Why can't any weights get
+      both right?
+    <li>A CRF's features may look at any of the words.  What new feature
+      would fix this?  What would it do to the held-out sentence?
+  </ol>
+
+  <p><b>Changing the data.</b> Train on "flies: mostly a noun," then on
+    "flies: mostly a verb."  The held-out sentence was never observed, so
+    how can its odds change?</p>
+
+  <p><b>Inertia.</b> Click "Zero weights" and choose the sentence
+    <code>time time time&hellip;</code>.</p>
+  <ol type="a">
+    <li>Set <code>N N</code> and <code>V V</code> to 2.  Why does each state
+      say 0.50?
+    <li>Raise <code>N N</code> to 3, then lower it to 1.  This habit of
+      keeping a tag is <i>inertia</i>.  What do <code>N V</code> and
+      <code>V N</code> do instead?
+    <li>Train on each "time time time&hellip;" dataset.  What happens to the held-out
+      sentence, and to <code>time travels like an arrow</code>?
+  </ol>
+
+  <p><b>The best path.</b> The dashed gold line is the most probable path
+    (or paths, if some tie).
+    Under each word is its most probable tag.  Can they disagree?
+    (<i>Hint:</i> on the held-out sentence, from zero weights, set
+    <code>V V</code> to &minus;3 and <code>V P</code> to 1.)  Which would you report if scored word by
+    word?</p>
+
+  <p><b>Regularization.</b> Train on "flies: mostly a noun" with
+    &ell;<sub>2</sub> regularization, <i>C</i> = 0.5.  How confident should a
+    model be about a sentence it has never seen?</p>
+</div>

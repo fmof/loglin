@@ -1,0 +1,10 @@
+count	position	context	features	visualization
+0	0,0	time flies like an arrow	BOS N,N→time,N N,N→flies,N V,V→like,V D,N EOS	shape=path,value=N N V D N,tags=N V P D,fill=solid
+0	0,1	time flies like an arrow	BOS N,N→time,N V,V→flies,V P,P→like,P D,N EOS	shape=path,value=N V P D N,tags=N V P D,fill=solid
+5	0,0	fruit flies like a banana	BOS N,N N,N→flies,N V,V→like,V D,N EOS	shape=path,value=N N V D N,tags=N V P D,fill=solid
+5	0,0	time travels like an arrow	BOS N,N→time,N V,V→travels,V P,P→like,P D,N EOS	shape=path,value=N V P D N,tags=N V P D,fill=solid
+5	0,0	a bird flies like an arrow	N V,V→flies,V P,P→like,P D,N EOS	shape=path,value=D N V P D N,tags=N V P D,fill=solid
+0	0,0	time time time time time time	BOS N,N→time,N N,N→time,N N,N→time,N N,N→time,N N,N→time,N N,N→time,N EOS	shape=path,value=N N N N N N,tags=N V P D,fill=solid
+0	0,1	time time time time time time	BOS V,V→time,V V,V→time,V V,V→time,V V,V→time,V V,V→time,V V,V→time,V EOS	shape=path,value=V V V V V V,tags=N V P D,fill=solid
+0	0,2	time time time time time time	BOS N,N→time,N V,V→time,V N,N→time,N V,V→time,V N,N→time,N V,V→time,V EOS	shape=path,value=N V N V N V,tags=N V P D,fill=solid
+0	0,3	time time time time time time	BOS V,V→time,V N,N→time,N V,V→time,V N,N→time,N V,V→time,V N,N→time,N EOS	shape=path,value=V N V N V N,tags=N V P D,fill=solid

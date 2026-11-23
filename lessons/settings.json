@@ -17,6 +17,7 @@
 	15,
 	16,
 	17,
+	"crf",
 	18
     ],
     "tooltips" : {
@@ -39,7 +40,14 @@
 	    ".observed_count" : "",
 	    ".handle" : "",
 	    ".num_tokens_context_div" : "The total number of observations in this context.  (Changing it will rescale all the gray counts.)",
-	    "#zero_weights_button" : "Reset all weights to zero.  Then nothing distinguishes the outcomes in each context: they all get the same probability."
+	    "#zero_weights_button" : "Reset all weights to zero.  Then nothing distinguishes the outcomes in each context: they all get the same probability.",
+	    "#trellis_select_span" : "Choose which input to show the trellis for.",
+	    "#trellis_show_best_span" : "Mark the single most probable path (found by the Viterbi algorithm).",
+	    "#trellis_show_ab_span" : "Label each state with α (total weight of all paths from the first state to this one) and β (total weight of all paths from this state to the last one).",
+	    "#trellis_show_edge_probs_span" : "Label each edge with the probability that the path uses it, given the input.",
+	    "#trellis_disaggregate" : "Split the paths through this trellis into groups, and draw each group separately.  An edge's probability in the full trellis is the total over the groups.",
+	    "#trellis_dataset" : "Choose which taggings were observed, and how many times.  Then click \"Solve\" to retrain.",
+	    "#trellis_show_tags_span" : "Show the most probable tags under each word, colored by comparing them with the training data."
 	}
     }
 }
