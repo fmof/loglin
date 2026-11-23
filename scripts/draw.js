@@ -866,7 +866,8 @@ function drawSVGBoxes(selectObj){
 	ntok.setAttribute('size',6);
 	ntok.onchange = function(){
 	    var v = this.value; var cc = parseInt(this.getAttribute('context_id'));
-	    if(isNumber(v) /* && NUM_TOKENS_C[cc]!=0*/ ){
+	    //N must be a non-negative number; anything else reverts the box
+	    if(isNumber(v) && parseFloat(v) >= 0){
 		v=parseFloat(v);
 		var ov = NUM_TOKENS_C[cc];
 		NUM_TOKENS = NUM_TOKENS - ov + v;
