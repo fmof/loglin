@@ -117,6 +117,8 @@ do_all_loading = function(){
 		    console.error("But don't worry, this 404 is allowed.");
 		    LESSON_SETTINGS={};
 		} else{
+		    //don't keep applying the previous lesson's settings
+		    LESSON_SETTINGS={};
 		    console.log(jqXHR);
 		    console.log(textStatus);
 		    console.log(errorThrown);
