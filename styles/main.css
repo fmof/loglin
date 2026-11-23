@@ -4,6 +4,9 @@
 div.body {
     margin: auto;
     width: 80%;
+    /* Below this width, the fixed-size graphs and sliders no longer fit.
+       The page then scrolls sideways, so that zooming in hides nothing. */
+    min-width: 1220px;
     font: small Verdana, Arial, 'MS Sans Serif';
     background: white;
 }
