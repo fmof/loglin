@@ -701,40 +701,31 @@ function init(){
     jQuery('#show_gradient:checked').click();
 
 
+    //on invalid input, put back the value the model is actually using, so
+    //the box never disagrees with the model
     jQuery('#gradient_step')
-	.focus(function(){
-	    jQuery(this).attr("previous",this.value-0);
-	})
 	.change(function(){
     	    if(isNumber(this.value)){	
-		this.setAttribute("previous", this.value-0);
     		SOLVE_STEP=(this.value - 0);		
     	    } else{
-    		this.value = getAttribute("previous");
-    		//display error
+    		this.value = SOLVE_STEP;
     	    }
 	})
 	.val(SOLVE_STEP);
     
     
     jQuery('#regularization_constant')
-	.focus(function(){
-	    jQuery(this).attr("previous",this.value-0);
-	})
 	.change(function(){
-    	    if(isNumber(this.value)){
+	    //C must be a non-negative number
+    	    if(isNumber(this.value) && (this.value - 0) >= 0){
     		REGULARIZATION_SIGMA2=(this.value - 0);		
-		this.setAttribute("previous", this.value-0);
+		//if the data hasn't loaded yet, the loader's own redraw_all()
+		//will pick up the new constant
     		if(svg_loaded){
     		    redraw_all();
-		} else{
-    		    recompute_partition_function_single();
-    		    compute_gradient();
-    		    draw_gradient();
-    		}
+		}
     	    } else{
-    		this.value = getAttribute("previous");    		
-    		//display error
+    		this.value = REGULARIZATION_SIGMA2;
     	    }
 	});
 }
