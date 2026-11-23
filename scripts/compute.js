@@ -199,7 +199,7 @@ function solve_puzzle(gamma, step_num, orig_step_size){
 function compute_gradient(){
     var print=0;
     //zero out gradient by setting to regularization, if used
-    var gl= GRADIENT.length;
+    var gl= FEATURE_LIST.length;
     GRADIENT=[];
     OBS_FEAT_COUNT=[]; EXP_FEAT_COUNT=[]; REG_FOR_GRAD=[];
     for(var l=0;l < gl; l++) {
@@ -221,24 +221,32 @@ function compute_gradient(){
 	    var id_num=obs_in_c[j];
 	    //data *is* human readable, e.g., ['circle','solid']
 	    var data = TYPE_INDEX[id_num];
-	    var stop_length = data.length;
-	    var tmp=0; var key; var local_theta;
+	    //collect the features that fire on this type in this context;
+	    //this must mirror get_prob() exactly
+	    var fired=[];
 	    var ittc=CONTEXTS[c]==''?['']:[CONTEXTS[c],''];
-	    for(var i=0;i<stop_length;i++){
+	    for(var i=0;i<data.length;i++){
 		for(var ci=0;ci<ittc.length;ci++){
 		    //get the unique identifying key for this feature in the context
 		    var feat_num = INVERSE_FEATURE_LIST[ [ittc[ci], data[i]]];
-		    local_theta = THETA[feat_num];
-		    //observed feature counts
-		    tmp = (COUNTS[c][id_num]-0)*THETA_STRENGTH[feat_num];
-		    OBS_FEAT_COUNT[feat_num] += tmp;
-		    //expected feature counts
-		    var tmp_e=NUM_TOKENS_C[c]*get_prob(c,id_num)/Z_THETA[c]*THETA_STRENGTH[feat_num];
-		    EXP_FEAT_COUNT[feat_num]+=tmp_e;
-		    tmp -= tmp_e;
-		    //regularization has been taken care of...
-		    GRADIENT[feat_num]= ((GRADIENT[feat_num]==undefined)?0:(GRADIENT[feat_num])) + tmp;
+		    if(feat_num!==undefined) fired.push(feat_num);
 		}
+	    }
+	    //the context's backoff feature (fires once per type)
+	    var backoff = INVERSE_FEATURE_LIST[[CONTEXTS[c],'']];
+	    if(backoff!==undefined) fired.push(backoff);
+
+	    var exp_tokens = NUM_TOKENS_C[c]*get_prob(c,id_num)/Z_THETA[c];
+	    for(var fi=0;fi<fired.length;fi++){
+		var fnum=fired[fi];
+		//observed feature counts
+		var tmp = (COUNTS[c][id_num]-0)*THETA_STRENGTH[fnum];
+		OBS_FEAT_COUNT[fnum] += tmp;
+		//expected feature counts
+		var tmp_e = exp_tokens*THETA_STRENGTH[fnum];
+		EXP_FEAT_COUNT[fnum] += tmp_e;
+		//regularization has been taken care of...
+		GRADIENT[fnum] += tmp - tmp_e;
 	    }
 	}
     }
@@ -286,10 +294,12 @@ function get_prob(context,id_num,log,theta){
 	if(CONTEXTS[context]!='' && (ifl=INVERSE_FEATURE_LIST[['',data[i]]])!=undefined){
 	    ret += theta[ifl]*THETA_STRENGTH[ifl];
 	}
-	//and backoff
-	if((ifl=INVERSE_FEATURE_LIST[[CONTEXTS[context],'']])!=undefined){
-	    ret += theta[ifl]*THETA_STRENGTH[ifl];
-	}
+    }
+    //and backoff: fires once per type, not once per attribute
+    //(compute_gradient() must mirror this)
+    var bo=INVERSE_FEATURE_LIST[[CONTEXTS[context],'']];
+    if(bo!=undefined){
+	ret += theta[bo]*THETA_STRENGTH[bo];
     }
     return log?ret:Math.exp(ret);
 }
