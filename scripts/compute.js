@@ -152,7 +152,7 @@ function recompute_step_size(ostep,step_num,tol_low, tol_high){
 	    count++;	
 	    if(count > 1000){
 		//should get here, but just in case...
-		clearInterval(SOLVE_TIMEOUT_ID);
+		clearTimeout(SOLVE_TIMEOUT_ID);
 		jQuery('#solve_button').click();
 		throw "infinite loop";
 	    }

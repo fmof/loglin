@@ -358,6 +358,8 @@ function apply_settings(){
 function setITimeout( callback, init_time, times ){
     var internalCallback = function( t, ep, counter ){
 	return function(){
+	    //solving was stopped (e.g., the user clicked "Stop"): end the chain
+	    if(!in_solving) return;
 	    if ( t-- > 0 ){
 		counter++;
 		if(counter%10==0){
@@ -647,7 +649,7 @@ function init(){
 	jQuery('#display_num_solve_iterations').html('');
     	SOLVE_ITERATION=0;
 	if(in_solving){
-	    clearInterval(SOLVE_TIMEOUT_ID);
+	    clearTimeout(SOLVE_TIMEOUT_ID);
 	    in_solving=0;
 	    this.style.backgroundColor=button_color;
 	    //orig_solve_step
@@ -670,7 +672,9 @@ function init(){
 	    jQuery('#step_button,#next_lesson,#prev_lesson').attr("disabled","disabled");
 	    jQuery('#gradient_step').val(scale_gamma_for_solve(SOLVE_STEP,1).toPrecision(5));
 	    solved++;
-	    SOLVE_TIMEOUT_ID = setITimeout(function(iter){
+	    //setITimeout records each pending timer in SOLVE_TIMEOUT_ID itself;
+	    //don't assign its (undefined) return value over it
+	    setITimeout(function(iter){
 		return function(){
 		    var mystep = iter==1?recompute_step_size(SOLVE_STEP,0) : recompute_step_size(SOLVE_STEP);
 		    console.optimize_debug('done with recompsize : '+mystep);
