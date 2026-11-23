@@ -161,13 +161,15 @@ GRAD_LOW_C='red';
 GRAD_HIGH_C='blue';
 
 INITIAL_LOAD=1;
-skip_next_hashchange=0;
 initialize=0;
 svg_loaded=0;
 user_input_tokens_added=0;
+//true iff n is a finite number, or a non-blank string that parses
+//entirely as one (so "", "abc", "2x", NaN, Infinity and undefined are rejected)
 function isNumber(n) {
-    return (n==null || n==undefined || !(n.length)) || 
-	(!isNaN(parseFloat(n)) && isFinite(n));
+    if(typeof n === 'number') return isFinite(n);
+    if(typeof n !== 'string' || n.trim() === '') return false;
+    return isFinite(Number(n));
 }
 
 function get_sigmoid(amp,hmove, xdef, ratio){
@@ -213,6 +215,11 @@ function reset_data_structures(full){
 	THETA=[];
 
 	FEATURE_POS_UNDEFINED=false;	
+	//per-context layout tables: must be cleared, or a later lesson with
+	//fewer contexts inherits the previous lesson's (empty) slots
+	THETA_POSITION_BY_CONTEXT=[];
+	POSITION_BY_CONTEXT=[];
+	NUM_TOKENS_C=[];
 	NUM_TOKENS=0; //the number of *token* observations
 	GRADIENT=[]; OBS_FEAT_COUNT=[]; EXP_FEAT_COUNT=[]; REG_FOR_GRAD=[];
 	POSITIONS=[];
@@ -273,8 +280,13 @@ function load_lesson(noskip_dropdown){
     show_text_portion();
     show_data_portion();
     console.log("loading " + CURRENT_LESSON + ' => ' + DIR_MAPPER[CURRENT_LESSON]);
-    jQuery('#show_how_many_previous_lessons').html(Math.max(1,CURRENT_LESSON-1));
-    jQuery('#show_how_many_next_lessons').html(Math.min(CURRENT_LESSON+1,MAX_LESSONS));
+    //each label names the button's destination, so the first and last lessons
+    //have no label on the button that can't go anywhere ("hidden" rather than
+    //removed, so that the heading doesn't shift between lessons)
+    jQuery('#show_how_many_previous_lessons').html(CURRENT_LESSON-1);
+    jQuery('#show_how_many_next_lessons').html(CURRENT_LESSON+1);
+    jQuery('#prev_lesson_label').css('visibility', CURRENT_LESSON>1 ? 'visible' : 'hidden');
+    jQuery('#next_lesson_label').css('visibility', CURRENT_LESSON<MAX_LESSONS ? 'visible' : 'hidden');
     jQuery('#display_num_solve_iterations').html('');
     reset_data_structures(1);
     if(!INITIAL_LOAD){
@@ -297,7 +309,12 @@ function load_lesson(noskip_dropdown){
 
     loading_object.start();
     document.title = 'Log-Linear Models: Lesson '+CURRENT_LESSON;
-    HISTORY.pushState({CURRENT_LESSON:CURRENT_LESSON},'','#'+CURRENT_LESSON);
+    //only add a history entry when the URL actually changes; when we got
+    //here via Back/Forward or a typed URL, the hash is already correct, and
+    //pushing again would truncate the forward history
+    if(window.location.hash !== '#'+CURRENT_LESSON){
+	HISTORY.pushState({CURRENT_LESSON:CURRENT_LESSON},'','#'+CURRENT_LESSON);
+    }
     var j_jump_to_lesson_select=jQuery('#jump_to_lesson_select');
     j_jump_to_lesson_select.val(CURRENT_LESSON);
     if(!noskip_dropdown && !j_jump_to_lesson_select.is(":visible")){
@@ -351,6 +368,8 @@ function apply_settings(){
 function setITimeout( callback, init_time, times ){
     var internalCallback = function( t, ep, counter ){
 	return function(){
+	    //solving was stopped (e.g., the user clicked "Stop"): end the chain
+	    if(!in_solving) return;
 	    if ( t-- > 0 ){
 		counter++;
 		if(counter%10==0){
@@ -375,31 +394,22 @@ window.onload = function(){
     HISTORY = history;
 
     window.onhashchange = function(){
-    	if(skip_next_hashchange){
-    	    skip_next_hashchange=0;
-    	    return 0;
-    	}
-    	var n = parseInt(window.location.hash.substring(1));
-    	if(isNumber(n) && isFinite(n)){
-    	    if(n>=1 && n<=MAX_LESSONS){
-    		CURRENT_LESSON=n;
-    		load_lesson();
-    	    } else{
-    		n=-CURRENT_LESSON;
-    		skip_next_hashchange=1;
-    		window.location.hash='#'+CURRENT_LESSON;
-    	    }
+    	var n = parseInt(window.location.hash.substring(1), 10);
+    	if(isNumber(n) && n>=1 && n<=MAX_LESSONS){
+    	    CURRENT_LESSON=n;
+    	    load_lesson();
     	} else{
+    	    //invalid hash: correct the URL in place (replaceState fires no
+    	    //hashchange and adds no history entry)
     	    n=-CURRENT_LESSON;
-    	    skip_next_hashchange=1;
-    	    window.location.hash='#'+CURRENT_LESSON;
+    	    HISTORY.replaceState({CURRENT_LESSON:CURRENT_LESSON},'','#'+CURRENT_LESSON);
     	}
     	return n;
     }
 
     jQuery.ajax({
 	url:GLOBAL_SETTINGS_FILE,
-	datatype:"json",
+	dataType:"json",
 	success : function(settings){
 	    if(typeOf(settings)=="string"){
 		settings = JSON.parse(settings);
@@ -414,7 +424,7 @@ window.onload = function(){
 	error : function(jqXHR, textStatus, errorThrown){
 	    if(jqXHR.status == 404){
 		console.error("But don't worry, this 404 is allowed.");
-		LESSON_SETTINGS={};
+		GLOBAL_SETTINGS={};
 	    } else{
 		console.log(jqXHR);
 		console.log(textStatus);
@@ -493,7 +503,8 @@ function init(){
 	for(var c=0;c<CONTEXTS.length;c++){
 	    if(USED_CONTEXTS[c]){
 		var v = jQuery('#num_tokens_context_'+c).val();
-		v= isNumber(v)?parseFloat(v):-1;
+		//invalid => undefined, so sampling keeps the current N
+		v= isNumber(v)?parseFloat(v):undefined;
 		console.log("v = " + v);
 		//don't do the following when v == NUM_TOKENS_C[c]
 		//why again?
@@ -631,24 +642,11 @@ function init(){
     	step_gradient();
     });
 
-    jQuery('#stop_solving').click(function(){
-	clearInterval(SOLVE_TIMEOUT_ID);
-	jQuery('#stop_solving_div').css('display','none');
-	jQuery('#solve_button,#step_button').removeAttr('disabled');
-	jQuery('#next_lesson,#prev_lesson').removeAttr("disabled")
-	    .trigger('verify');
-	//$('change_num_tokens').disabled="";
-	jQuery('#gradient_step').val(orig_step_size.toPrecision(5))
-	    .change();
-	jQuery(this).blur();
-    });
-    jQuery('#stop_solving_div').css('display','none');
-
     jQuery('#solve_button').click(function(){
 	jQuery('#display_num_solve_iterations').html('');
     	SOLVE_ITERATION=0;
 	if(in_solving){
-	    clearInterval(SOLVE_TIMEOUT_ID);
+	    clearTimeout(SOLVE_TIMEOUT_ID);
 	    in_solving=0;
 	    this.style.backgroundColor=button_color;
 	    //orig_solve_step
@@ -671,7 +669,9 @@ function init(){
 	    jQuery('#step_button,#next_lesson,#prev_lesson').attr("disabled","disabled");
 	    jQuery('#gradient_step').val(scale_gamma_for_solve(SOLVE_STEP,1).toPrecision(5));
 	    solved++;
-	    SOLVE_TIMEOUT_ID = setITimeout(function(iter){
+	    //setITimeout records each pending timer in SOLVE_TIMEOUT_ID itself;
+	    //don't assign its (undefined) return value over it
+	    setITimeout(function(iter){
 		return function(){
 		    var mystep = iter==1?recompute_step_size(SOLVE_STEP,0) : recompute_step_size(SOLVE_STEP);
 		    console.optimize_debug('done with recompsize : '+mystep);
@@ -698,40 +698,31 @@ function init(){
     jQuery('#show_gradient:checked').click();
 
 
+    //on invalid input, put back the value the model is actually using, so
+    //the box never disagrees with the model
     jQuery('#gradient_step')
-	.focus(function(){
-	    jQuery(this).attr("previous",this.value-0);
-	})
 	.change(function(){
     	    if(isNumber(this.value)){	
-		this.setAttribute("previous", this.value-0);
     		SOLVE_STEP=(this.value - 0);		
     	    } else{
-    		this.value = getAttribute("previous");
-    		//display error
+    		this.value = SOLVE_STEP;
     	    }
 	})
 	.val(SOLVE_STEP);
     
     
     jQuery('#regularization_constant')
-	.focus(function(){
-	    jQuery(this).attr("previous",this.value-0);
-	})
 	.change(function(){
-    	    if(isNumber(this.value)){
+	    //C must be a non-negative number
+    	    if(isNumber(this.value) && (this.value - 0) >= 0){
     		REGULARIZATION_SIGMA2=(this.value - 0);		
-		this.setAttribute("previous", this.value-0);
+		//if the data hasn't loaded yet, the loader's own redraw_all()
+		//will pick up the new constant
     		if(svg_loaded){
     		    redraw_all();
-		} else{
-    		    recompute_partition_function_single();
-    		    compute_gradient();
-    		    draw_gradient();
-    		}
+		}
     	    } else{
-    		this.value = getAttribute("previous");    		
-    		//display error
+    		this.value = REGULARIZATION_SIGMA2;
     	    }
 	});
 }

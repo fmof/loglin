@@ -151,13 +151,17 @@ function addSliderEffects(){
     });
 
     
-    var originalAnimate = jQuery.fn.animate;
-    jQuery.fn.animate = function(a,b,c,d){
-	if(this.hasClass('handle')){
-	    this.attr("moving_to", a.left);
-	}
-	return originalAnimate.call(this, a,b,c,d);
-    };
+    //wrap animate() only once; this function runs on every lesson load
+    if(!jQuery.fn.animate.loglin_wrapped){
+	var originalAnimate = jQuery.fn.animate;
+	jQuery.fn.animate = function(a,b,c,d){
+	    if(this.hasClass('handle')){
+		this.attr("moving_to", a.left);
+	    }
+	    return originalAnimate.call(this, a,b,c,d);
+	};
+	jQuery.fn.animate.loglin_wrapped = true;
+    }
 
     var originalVal = jQuery.fn.val;
     //there's a weird click event happening, so try to override it
@@ -866,7 +870,8 @@ function drawSVGBoxes(selectObj){
 	ntok.setAttribute('size',6);
 	ntok.onchange = function(){
 	    var v = this.value; var cc = parseInt(this.getAttribute('context_id'));
-	    if(isNumber(v) /* && NUM_TOKENS_C[cc]!=0*/ ){
+	    //N must be a non-negative number; anything else reverts the box
+	    if(isNumber(v) && parseFloat(v) >= 0){
 		v=parseFloat(v);
 		var ov = NUM_TOKENS_C[cc];
 		NUM_TOKENS = NUM_TOKENS - ov + v;

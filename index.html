@@ -55,7 +55,7 @@
       <div id="button_navigation_area">
 	<ul class="hlist ulcenter">
 	  <li>
-	    <span id="show_how_many_previous_lessons"></span>&nbsp;(of&nbsp;<span class="of_total_lessons"></span>) 
+	    <span id="prev_lesson_label"><span id="show_how_many_previous_lessons"></span>&nbsp;(of&nbsp;<span class="of_total_lessons"></span>)</span>
 	    <button type="button" class="lesson_button_nav" id="prev_lesson" disabled="disabled">Previous lesson</button>
 	  </li>
 	  <!-- <li> -->
@@ -75,7 +75,7 @@
 
 	  <li class="lastli">
 	    <button type="button" class="lesson_button_nav" id="next_lesson" disabled="disabled">Next lesson</button> 
-	    <span id="show_how_many_next_lessons"></span>&nbsp;(of&nbsp;<span class="of_total_lessons"></span>) 
+	    <span id="next_lesson_label"><span id="show_how_many_next_lessons"></span>&nbsp;(of&nbsp;<span class="of_total_lessons"></span>)</span>
 	  </li>
 	</ul>
       </div>
@@ -232,10 +232,6 @@
       <p>
 	Authors: Frank Ferraro and Jason Eisner.  <br />
 	Find a bug? Want a feature? Think something can be improved? Please fill out an <a href="https://github.com/fmof/loglin/issues" title="Issue report for suggestions, comments and improvements.">issue report</a>.<br />
-	<?php
-$last_mod = filemtime(".");
-?>
-	Last change: <?= $last_mod?date("F jS, Y H:i", $last_mod):"18 August 2011" ?><br />
       </p>
       <p id="license_area">
 	The source code is released <A HREF="https://github.com/fmof/loglin">here</A> under the <a href="http://opensource.org/licenses/AGPL-3.0" title="GNU Affero license">GNU Affero 3.0</a> license.
