@@ -404,7 +404,7 @@ window.onload = function(){
 
     jQuery.ajax({
 	url:GLOBAL_SETTINGS_FILE,
-	datatype:"json",
+	dataType:"json",
 	success : function(settings){
 	    if(typeOf(settings)=="string"){
 		settings = JSON.parse(settings);
