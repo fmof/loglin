@@ -160,10 +160,11 @@ do_all_loading = function(){
 		data_loader.show_data = 0;
 		if(jqXHR.status == 404){
 		    console.error("But don't worry, this 404 is allowed.");
-		    data_loader.callback();
 		} else{
 		    print_loading_error(jqXHR, textStatus, errorThrown);
 		}		
+		//always finish loading, or the loading bar never goes away
+		data_loader.callback();
 		hide_data_portion();
 	    },
 	    success : function(response){
