@@ -280,8 +280,13 @@ function load_lesson(noskip_dropdown){
     show_text_portion();
     show_data_portion();
     console.log("loading " + CURRENT_LESSON + ' => ' + DIR_MAPPER[CURRENT_LESSON]);
-    jQuery('#show_how_many_previous_lessons').html(Math.max(1,CURRENT_LESSON-1));
-    jQuery('#show_how_many_next_lessons').html(Math.min(CURRENT_LESSON+1,MAX_LESSONS));
+    //each label names the button's destination, so the first and last lessons
+    //have no label on the button that can't go anywhere ("hidden" rather than
+    //removed, so that the heading doesn't shift between lessons)
+    jQuery('#show_how_many_previous_lessons').html(CURRENT_LESSON-1);
+    jQuery('#show_how_many_next_lessons').html(CURRENT_LESSON+1);
+    jQuery('#prev_lesson_label').css('visibility', CURRENT_LESSON>1 ? 'visible' : 'hidden');
+    jQuery('#next_lesson_label').css('visibility', CURRENT_LESSON<MAX_LESSONS ? 'visible' : 'hidden');
     jQuery('#display_num_solve_iterations').html('');
     reset_data_structures(1);
     if(!INITIAL_LOAD){
