@@ -318,9 +318,7 @@ hr.slider{
 }
 
 #instruction_wrapper{
-    width:80%;
-    margin-left:auto;
-    margin-right:auto;
+    width:100%;
 }
 
 #loading_area {
@@ -349,7 +347,15 @@ input[type=range].feature_slider{
   background-image: -webkit-linear-gradient(right, #000000, #333333, #000000);*/
 }
 
+/* Auto margins keep the box centered, so dragging its corner moves both
+   sides.  The maximum makes it as wide as the fieldsets below it, which
+   have 2px margins. */
 #instruction_area {
+    box-sizing: border-box;
+    width: 80%;
+    max-width: calc(100% - 4px);
+    margin-left: auto;
+    margin-right: auto;
     overflow-y: auto;
     resize: both;
     border: 1px solid gray;
