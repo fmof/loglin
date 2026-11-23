@@ -1,0 +1,804 @@
+{
+ "tags": [
+  "N",
+  "V",
+  "P",
+  "D"
+ ],
+ "start": "BOS",
+ "stop": "EOS",
+ "structured": true,
+ "x_name": "sentence",
+ "y_name": "tagging",
+ "tag_name": "tag",
+ "given_name": "words",
+ "transition_sep": " ",
+ "hide_best_summary": true,
+ "hide_ab": true,
+ "z_beside": true,
+ "best_tie": 0.05,
+ "tag_tie": 0.1,
+ "tag_labels": true,
+ "highlight_ties": true,
+ "compare_counts": true,
+ "best_color": "#FFD700",
+ "best_outline": "black",
+ "step_size": 0.004,
+ "hint_step": 0.1,
+ "show_gradient": true,
+ "best_off": true,
+ "datasets": [
+  {
+   "name": "flies: noun and verb equally",
+   "counts": {
+    "fruit flies like a banana": {
+     "N N V D N": 5
+    },
+    "time travels like an arrow": {
+     "N V P D N": 5
+    },
+    "a bird flies like an arrow": {
+     "D N V P D N": 5
+    }
+   }
+  },
+  {
+   "name": "flies: mostly a noun",
+   "counts": {
+    "fruit flies like a banana": {
+     "N N V D N": 15
+    },
+    "time travels like an arrow": {
+     "N V P D N": 5
+    },
+    "a bird flies like an arrow": {
+     "D N V P D N": 5
+    }
+   }
+  },
+  {
+   "name": "flies: mostly a verb",
+   "counts": {
+    "fruit flies like a banana": {
+     "N N V D N": 5
+    },
+    "time travels like an arrow": {
+     "N V P D N": 5
+    },
+    "a bird flies like an arrow": {
+     "D N V P D N": 15
+    }
+   }
+  },
+  {
+   "name": "time time time…: all N or all V",
+   "counts": {
+    "fruit flies like a banana": {
+     "N N V D N": 5
+    },
+    "time travels like an arrow": {
+     "N V P D N": 5
+    },
+    "time time time time time time": {
+     "N N N N N N": 5,
+     "V V V V V V": 5
+    }
+   }
+  },
+  {
+   "name": "time time time…: alternating N and V",
+   "counts": {
+    "fruit flies like a banana": {
+     "N N V D N": 5
+    },
+    "time travels like an arrow": {
+     "N V P D N": 5
+    },
+    "time time time time time time": {
+     "N V N V N V": 5,
+     "V N V N V N": 5
+    }
+   }
+  }
+ ],
+ "sentences": [
+  {
+   "context": "time flies like an arrow",
+   "words": [
+    "time",
+    "flies",
+    "like",
+    "an",
+    "arrow"
+   ],
+   "edges": [
+    [
+     {
+      "from": "BOS",
+      "to": "N",
+      "f": [
+       "BOS N",
+       "N→time"
+      ]
+     },
+     {
+      "from": "BOS",
+      "to": "V",
+      "f": [
+       "BOS V",
+       "V→time"
+      ]
+     }
+    ],
+    [
+     {
+      "from": "N",
+      "to": "N",
+      "f": [
+       "N N",
+       "N→flies"
+      ]
+     },
+     {
+      "from": "N",
+      "to": "V",
+      "f": [
+       "N V",
+       "V→flies"
+      ]
+     },
+     {
+      "from": "V",
+      "to": "N",
+      "f": [
+       "V N",
+       "N→flies"
+      ]
+     },
+     {
+      "from": "V",
+      "to": "V",
+      "f": [
+       "V V",
+       "V→flies"
+      ]
+     }
+    ],
+    [
+     {
+      "from": "N",
+      "to": "P",
+      "f": [
+       "N P",
+       "P→like"
+      ]
+     },
+     {
+      "from": "N",
+      "to": "V",
+      "f": [
+       "N V",
+       "V→like"
+      ]
+     },
+     {
+      "from": "V",
+      "to": "P",
+      "f": [
+       "V P",
+       "P→like"
+      ]
+     },
+     {
+      "from": "V",
+      "to": "V",
+      "f": [
+       "V V",
+       "V→like"
+      ]
+     }
+    ],
+    [
+     {
+      "from": "P",
+      "to": "D",
+      "f": [
+       "P D"
+      ]
+     },
+     {
+      "from": "V",
+      "to": "D",
+      "f": [
+       "V D"
+      ]
+     }
+    ],
+    [
+     {
+      "from": "D",
+      "to": "N",
+      "f": []
+     }
+    ],
+    [
+     {
+      "from": "N",
+      "to": "EOS",
+      "f": [
+       "N EOS"
+      ]
+     }
+    ]
+   ],
+   "disaggregate": 2
+  },
+  {
+   "context": "fruit flies like a banana",
+   "words": [
+    "fruit",
+    "flies",
+    "like",
+    "a",
+    "banana"
+   ],
+   "edges": [
+    [
+     {
+      "from": "BOS",
+      "to": "N",
+      "f": [
+       "BOS N"
+      ]
+     }
+    ],
+    [
+     {
+      "from": "N",
+      "to": "N",
+      "f": [
+       "N N",
+       "N→flies"
+      ]
+     },
+     {
+      "from": "N",
+      "to": "V",
+      "f": [
+       "N V",
+       "V→flies"
+      ]
+     }
+    ],
+    [
+     {
+      "from": "N",
+      "to": "P",
+      "f": [
+       "N P",
+       "P→like"
+      ]
+     },
+     {
+      "from": "N",
+      "to": "V",
+      "f": [
+       "N V",
+       "V→like"
+      ]
+     },
+     {
+      "from": "V",
+      "to": "P",
+      "f": [
+       "V P",
+       "P→like"
+      ]
+     },
+     {
+      "from": "V",
+      "to": "V",
+      "f": [
+       "V V",
+       "V→like"
+      ]
+     }
+    ],
+    [
+     {
+      "from": "P",
+      "to": "D",
+      "f": [
+       "P D"
+      ]
+     },
+     {
+      "from": "V",
+      "to": "D",
+      "f": [
+       "V D"
+      ]
+     }
+    ],
+    [
+     {
+      "from": "D",
+      "to": "N",
+      "f": []
+     }
+    ],
+    [
+     {
+      "from": "N",
+      "to": "EOS",
+      "f": [
+       "N EOS"
+      ]
+     }
+    ]
+   ],
+   "disaggregate": 3
+  },
+  {
+   "context": "time travels like an arrow",
+   "words": [
+    "time",
+    "travels",
+    "like",
+    "an",
+    "arrow"
+   ],
+   "edges": [
+    [
+     {
+      "from": "BOS",
+      "to": "N",
+      "f": [
+       "BOS N",
+       "N→time"
+      ]
+     },
+     {
+      "from": "BOS",
+      "to": "V",
+      "f": [
+       "BOS V",
+       "V→time"
+      ]
+     }
+    ],
+    [
+     {
+      "from": "N",
+      "to": "N",
+      "f": [
+       "N N",
+       "N→travels"
+      ]
+     },
+     {
+      "from": "N",
+      "to": "V",
+      "f": [
+       "N V",
+       "V→travels"
+      ]
+     },
+     {
+      "from": "V",
+      "to": "N",
+      "f": [
+       "V N",
+       "N→travels"
+      ]
+     },
+     {
+      "from": "V",
+      "to": "V",
+      "f": [
+       "V V",
+       "V→travels"
+      ]
+     }
+    ],
+    [
+     {
+      "from": "N",
+      "to": "P",
+      "f": [
+       "N P",
+       "P→like"
+      ]
+     },
+     {
+      "from": "N",
+      "to": "V",
+      "f": [
+       "N V",
+       "V→like"
+      ]
+     },
+     {
+      "from": "V",
+      "to": "P",
+      "f": [
+       "V P",
+       "P→like"
+      ]
+     },
+     {
+      "from": "V",
+      "to": "V",
+      "f": [
+       "V V",
+       "V→like"
+      ]
+     }
+    ],
+    [
+     {
+      "from": "P",
+      "to": "D",
+      "f": [
+       "P D"
+      ]
+     },
+     {
+      "from": "V",
+      "to": "D",
+      "f": [
+       "V D"
+      ]
+     }
+    ],
+    [
+     {
+      "from": "D",
+      "to": "N",
+      "f": []
+     }
+    ],
+    [
+     {
+      "from": "N",
+      "to": "EOS",
+      "f": [
+       "N EOS"
+      ]
+     }
+    ]
+   ],
+   "disaggregate": 2
+  },
+  {
+   "context": "a bird flies like an arrow",
+   "words": [
+    "a",
+    "bird",
+    "flies",
+    "like",
+    "an",
+    "arrow"
+   ],
+   "edges": [
+    [
+     {
+      "from": "BOS",
+      "to": "D",
+      "f": []
+     }
+    ],
+    [
+     {
+      "from": "D",
+      "to": "N",
+      "f": []
+     }
+    ],
+    [
+     {
+      "from": "N",
+      "to": "N",
+      "f": [
+       "N N",
+       "N→flies"
+      ]
+     },
+     {
+      "from": "N",
+      "to": "V",
+      "f": [
+       "N V",
+       "V→flies"
+      ]
+     }
+    ],
+    [
+     {
+      "from": "N",
+      "to": "P",
+      "f": [
+       "N P",
+       "P→like"
+      ]
+     },
+     {
+      "from": "N",
+      "to": "V",
+      "f": [
+       "N V",
+       "V→like"
+      ]
+     },
+     {
+      "from": "V",
+      "to": "P",
+      "f": [
+       "V P",
+       "P→like"
+      ]
+     },
+     {
+      "from": "V",
+      "to": "V",
+      "f": [
+       "V V",
+       "V→like"
+      ]
+     }
+    ],
+    [
+     {
+      "from": "P",
+      "to": "D",
+      "f": [
+       "P D"
+      ]
+     },
+     {
+      "from": "V",
+      "to": "D",
+      "f": [
+       "V D"
+      ]
+     }
+    ],
+    [
+     {
+      "from": "D",
+      "to": "N",
+      "f": []
+     }
+    ],
+    [
+     {
+      "from": "N",
+      "to": "EOS",
+      "f": [
+       "N EOS"
+      ]
+     }
+    ]
+   ],
+   "disaggregate": 4
+  },
+  {
+   "context": "time time time time time time",
+   "words": [
+    "time",
+    "time",
+    "time",
+    "time",
+    "time",
+    "time"
+   ],
+   "edges": [
+    [
+     {
+      "from": "BOS",
+      "to": "N",
+      "f": [
+       "BOS N",
+       "N→time"
+      ]
+     },
+     {
+      "from": "BOS",
+      "to": "V",
+      "f": [
+       "BOS V",
+       "V→time"
+      ]
+     }
+    ],
+    [
+     {
+      "from": "N",
+      "to": "N",
+      "f": [
+       "N N",
+       "N→time"
+      ]
+     },
+     {
+      "from": "N",
+      "to": "V",
+      "f": [
+       "N V",
+       "V→time"
+      ]
+     },
+     {
+      "from": "V",
+      "to": "N",
+      "f": [
+       "V N",
+       "N→time"
+      ]
+     },
+     {
+      "from": "V",
+      "to": "V",
+      "f": [
+       "V V",
+       "V→time"
+      ]
+     }
+    ],
+    [
+     {
+      "from": "N",
+      "to": "N",
+      "f": [
+       "N N",
+       "N→time"
+      ]
+     },
+     {
+      "from": "N",
+      "to": "V",
+      "f": [
+       "N V",
+       "V→time"
+      ]
+     },
+     {
+      "from": "V",
+      "to": "N",
+      "f": [
+       "V N",
+       "N→time"
+      ]
+     },
+     {
+      "from": "V",
+      "to": "V",
+      "f": [
+       "V V",
+       "V→time"
+      ]
+     }
+    ],
+    [
+     {
+      "from": "N",
+      "to": "N",
+      "f": [
+       "N N",
+       "N→time"
+      ]
+     },
+     {
+      "from": "N",
+      "to": "V",
+      "f": [
+       "N V",
+       "V→time"
+      ]
+     },
+     {
+      "from": "V",
+      "to": "N",
+      "f": [
+       "V N",
+       "N→time"
+      ]
+     },
+     {
+      "from": "V",
+      "to": "V",
+      "f": [
+       "V V",
+       "V→time"
+      ]
+     }
+    ],
+    [
+     {
+      "from": "N",
+      "to": "N",
+      "f": [
+       "N N",
+       "N→time"
+      ]
+     },
+     {
+      "from": "N",
+      "to": "V",
+      "f": [
+       "N V",
+       "V→time"
+      ]
+     },
+     {
+      "from": "V",
+      "to": "N",
+      "f": [
+       "V N",
+       "N→time"
+      ]
+     },
+     {
+      "from": "V",
+      "to": "V",
+      "f": [
+       "V V",
+       "V→time"
+      ]
+     }
+    ],
+    [
+     {
+      "from": "N",
+      "to": "N",
+      "f": [
+       "N N",
+       "N→time"
+      ]
+     },
+     {
+      "from": "N",
+      "to": "V",
+      "f": [
+       "N V",
+       "V→time"
+      ]
+     },
+     {
+      "from": "V",
+      "to": "N",
+      "f": [
+       "V N",
+       "N→time"
+      ]
+     },
+     {
+      "from": "V",
+      "to": "V",
+      "f": [
+       "V V",
+       "V→time"
+      ]
+     }
+    ],
+    [
+     {
+      "from": "N",
+      "to": "EOS",
+      "f": [
+       "N EOS"
+      ]
+     },
+     {
+      "from": "V",
+      "to": "EOS",
+      "f": [
+       "V EOS"
+      ]
+     }
+    ]
+   ],
+   "disaggregate": 2
+  }
+ ]
+}
